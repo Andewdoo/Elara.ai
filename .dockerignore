@@ -1,0 +1,41 @@
+.git
+.gitignore
+
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+real_environment
+*-service-account.json
+service-account*.json
+
+# JavaScript dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Python dependencies and build output
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local tooling and operating-system files
+.turbo/
+.DS_Store
+Thumbs.db
+
+# Local dumps and logs
+*.dump
+*.sql
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+

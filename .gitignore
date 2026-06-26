@@ -1,0 +1,45 @@
+# Private environment files
+.env
+.env.*
+!.env.example
+real_environment
+
+# Local credentials and service-account files
+*-service-account.json
+service-account*.json
+
+# JavaScript dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Python dependencies and build output
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local tooling and operating-system files
+.turbo/
+.DS_Store
+Thumbs.db
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Local object storage and database dumps
+*.dump
+*.sql
+minio-data/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
