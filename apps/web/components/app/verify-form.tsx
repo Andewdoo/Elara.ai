@@ -1,19 +1,21 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, FileText, Link2, MessageSquareQuote, Upload } from "lucide-react";
+import { ArrowRight, FileText, Link2, MessageSquareQuote } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Select, Textarea } from "@/components/ui/form-controls";
-import { mockedRunId } from "@/lib/mock-report";
+import { apiErrorMessage, authenticatedApiFetch } from "@/lib/auth";
 
 const verificationSchema = z
   .object({
-    inputType: z.enum(["CLAIM", "ARTICLE_URL", "ARTICLE_TEXT", "QUOTE", "PARAPHRASE", "UPLOADED_DOCUMENT"]),
+    inputType: z.enum(["CLAIM", "ARTICLE_URL", "ARTICLE_TEXT", "QUOTE", "PARAPHRASE"]),
     target: z.string().trim().min(1, "Enter a claim, URL, text, quote, or document note.").max(12000),
     speaker: z.string().trim().max(160).optional(),
     researchDepth: z.enum(["QUICK", "STANDARD", "DEEP"]),
@@ -46,16 +48,19 @@ const inputTypes = [
   { value: "ARTICLE_TEXT", label: "Pasted article", icon: FileText },
   { value: "QUOTE", label: "Quote", icon: MessageSquareQuote },
   { value: "PARAPHRASE", label: "Paraphrase", icon: MessageSquareQuote },
-  { value: "UPLOADED_DOCUMENT", label: "Document note", icon: Upload },
 ] as const;
+
+type VerificationCreateResponse = { run_id: string; status: "QUEUED"; events_url: string };
 
 export function VerifyForm() {
   const router = useRouter();
+  const { user } = useFirebaseAuth();
+  const [apiError, setApiError] = useState<string | null>(null);
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<VerificationFormValues>({
     resolver: zodResolver(verificationSchema),
     defaultValues: {
@@ -76,8 +81,35 @@ export function VerifyForm() {
       <CardContent>
         <form
           className="grid gap-4"
-          onSubmit={handleSubmit(() => {
-            router.push(`/verify/${mockedRunId}`);
+          onSubmit={handleSubmit(async (values) => {
+            if (!user) {
+              setApiError("Sign in before starting a verification.");
+              return;
+            }
+            setApiError(null);
+            try {
+              const payload = {
+                input_type: values.inputType,
+                research_depth: values.researchDepth,
+                ...(values.inputType === "ARTICLE_URL"
+                  ? { url: values.target }
+                  : values.inputType === "QUOTE"
+                    ? { quote: values.target, speaker: values.speaker || undefined }
+                    : { text: values.target }),
+              };
+              const response = await authenticatedApiFetch(user, "/v1/verifications", {
+                method: "POST",
+                body: JSON.stringify(payload),
+              });
+              if (!response.ok) {
+                setApiError(await apiErrorMessage(response));
+                return;
+              }
+              const created = (await response.json()) as VerificationCreateResponse;
+              router.push(`/verify/${created.run_id}`);
+            } catch (error) {
+              setApiError(error instanceof Error ? error.message : "Could not reach the verification API.");
+            }
           })}
         >
           <div className="grid gap-2 md:grid-cols-3">
@@ -115,10 +147,11 @@ export function VerifyForm() {
           </label>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground">
-              This mock shell validates client-side only. FastAPI remains the final validation and run-creation authority.
+              FastAPI performs final validation and durably queues the run. Research begins in a later worker step.
             </p>
-            <Button type="submit">
-              Start mocked run
+            {apiError && <p className="text-xs text-destructive" role="alert">{apiError}</p>}
+            <Button type="submit" disabled={isSubmitting}>
+              Create verification
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>

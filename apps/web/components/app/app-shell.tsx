@@ -3,12 +3,12 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { Archive, BookOpenText, Clock, FileCheck2, History, Settings, ShieldCheck } from "lucide-react";
+import { Archive, BookOpenText, FileCheck2, History, Settings, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
+import { AuthControls } from "@/components/app/auth-controls";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { cn } from "@/lib/utils";
 
 const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> = [
@@ -22,7 +22,7 @@ const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> =
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { configured, loading, user } = useFirebaseAuth();
+  const { configured } = useFirebaseAuth();
 
   return (
     <div className="min-h-screen">
@@ -60,10 +60,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Badge tone={configured ? "support" : "warning"}>
               {configured ? "Firebase web ready" : "Firebase web config missing"}
             </Badge>
-            <Button variant="secondary" size="sm" className="hidden sm:inline-flex">
-              <Clock className="h-4 w-4" aria-hidden="true" />
-              {loading ? "Auth loading" : user?.email ?? "Auth shell"}
-            </Button>
+            <AuthControls />
           </div>
         </div>
         <nav className="flex gap-1 overflow-x-auto border-t px-3 py-2 lg:hidden" aria-label="Mobile primary">
