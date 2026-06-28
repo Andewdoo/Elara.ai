@@ -1,8 +1,11 @@
 FROM python:3.12-slim
 
-WORKDIR /app
+WORKDIR /srv
 
-COPY apps/worker /app
+COPY apps/api /srv/api
+RUN pip install --no-cache-dir /srv/api
 
-CMD ["python", "-m", "celery", "-A", "tasks.app", "worker", "--loglevel=info"]
+COPY apps/worker /srv/worker
+RUN pip install --no-cache-dir /srv/worker
 
+CMD ["python", "-m", "celery", "-A", "app.celery_app:celery_app", "worker", "--loglevel=info", "--queues=verification.quick,verification.standard,verification.deep"]

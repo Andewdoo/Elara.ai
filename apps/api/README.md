@@ -16,6 +16,11 @@ FastAPI backend for Elara.ai.
 
 This service is the authorization boundary for Firebase-authenticated users, durable verification run creation, report reads, SSE progress, protected snapshot/export access, and Celery job enqueueing.
 
+Verification creation commits the run and first public event before dispatching
+`verification.verify_run`. Research depth selects one of `verification.quick`,
+`verification.standard`, or `verification.deep`. Queue failures are recorded durably
+with the public `QUEUE_UNAVAILABLE` code.
+
 ## Local checks
 
 ```powershell

@@ -84,6 +84,29 @@ class VerificationCreateResponse(BaseModel):
     report_url: str | None = None
 
 
+class VerificationCancelResponse(BaseModel):
+    run_id: UUID
+    status: RunStatus
+    cancellation_requested_at: datetime | None
+
+
+class VerificationRunResponse(BaseModel):
+    run_id: UUID
+    status: RunStatus
+    input_type: InputType
+    research_depth: ResearchDepth
+    title: str | None
+    verdict: str | None
+    queued_at: datetime
+    started_at: datetime | None
+    completed_at: datetime | None
+    failed_at: datetime | None
+    cancellation_requested_at: datetime | None
+    failure_code: str | None
+    failure_message: str | None
+    updated_at: datetime
+
+
 class ProgressEvent(BaseModel):
     run_id: UUID
     stage: RunStatus

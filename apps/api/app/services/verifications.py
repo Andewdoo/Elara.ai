@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -120,3 +120,59 @@ def get_owned_run(db: Session, *, owner_id: UUID, run_id: UUID) -> VerificationR
     if run is None:
         raise RunNotFoundError("Verification run not found")
     return run
+
+
+def get_authorized_run(db: Session, *, viewer_id: UUID, run_id: UUID) -> VerificationRun:
+    """Authorize an owner or a run explicitly shared to all authenticated users."""
+    run = db.scalar(
+        select(VerificationRun).where(
+            VerificationRun.id == run_id,
+            or_(VerificationRun.user_id == viewer_id, VerificationRun.visibility == "public"),
+        )
+    )
+    if run is None:
+        # Keep cross-user existence private.
+        raise RunNotFoundError("Verification run not found")
+    return run
+
+
+def request_run_cancellation(
+    db: Session, *, owner_id: UUID, run_id: UUID
+) -> tuple[VerificationRun, AgentEvent | None]:
+    run = db.scalar(
+        select(VerificationRun)
+        .where(VerificationRun.id == run_id, VerificationRun.user_id == owner_id)
+        .with_for_update()
+    )
+    if run is None:
+        raise RunNotFoundError("Verification run not found")
+    if run.status in {RunStatus.COMPLETED, RunStatus.FAILED, RunStatus.CANCELLED}:
+        return run, None
+    if run.cancellation_requested_at is not None:
+        return run, None
+
+    now = utc_now()
+    run.cancellation_requested_at = run.cancellation_requested_at or now
+    queued = run.status == RunStatus.QUEUED
+    if queued:
+        run.status = RunStatus.CANCELLED
+    sequence = int(
+        db.scalar(select(func.max(AgentEvent.sequence)).where(AgentEvent.run_id == run_id)) or 0
+    ) + 1
+    event = AgentEvent(
+        run_id=run.id,
+        sequence=sequence,
+        stage=run.status,
+        event_type="run.cancelled" if queued else "run.cancellation_requested",
+        public_message=(
+            "Verification cancelled before research began."
+            if queued
+            else "Cancellation requested; the worker will stop before the next expensive stage."
+        ),
+        payload={},
+        created_at=now,
+    )
+    db.add(event)
+    db.commit()
+    db.refresh(run)
+    return run, event

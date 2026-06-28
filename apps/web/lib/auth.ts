@@ -11,7 +11,7 @@ import {
 
 import { getFirebaseAuth } from "@/lib/firebase";
 
-const apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "");
+export const apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 function requireFirebaseAuth() {
   const auth = getFirebaseAuth();

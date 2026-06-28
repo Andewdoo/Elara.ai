@@ -2,17 +2,80 @@ from collections.abc import Generator
 
 import pytest
 from fastapi.testclient import TestClient
+from redis.exceptions import ResponseError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.auth.dependencies import AuthenticatedUser, get_authenticated_bearer
+from app.auth.dependencies import (
+    AuthenticatedUser,
+    get_authenticated_bearer,
+    get_authenticated_session,
+)
 from app.config import Settings, get_settings
 from app.database.base import Base
 from app.database.session import get_db
 from app.main import create_app
+from app.routes.verifications import get_request_redis_client
 from app.models import User
 from app.schemas.auth import FirebasePrincipal
+from app.services.queueing import get_verification_dispatcher
+
+
+class FakeRedis:
+    def __init__(self) -> None:
+        self.streams: dict[str, list[dict[str, str]]] = {}
+        self.stream_ids: dict[str, set[str]] = {}
+        self.stream_entries: dict[str, list[tuple[str, dict[str, str]]]] = {}
+        self.values: dict[str, str] = {}
+        self.expirations: dict[str, int] = {}
+
+    def xadd(self, key: str, fields: dict[str, str], **_: object) -> str:
+        event_id = str(_.get("id", f"{len(self.streams.get(key, [])) + 1}-0"))
+        ids = self.stream_ids.setdefault(key, set())
+        if event_id in ids:
+            raise ResponseError("ID is equal or smaller than the target stream top item")
+        ids.add(event_id)
+        events = self.streams.setdefault(key, [])
+        events.append(fields)
+        self.stream_entries.setdefault(key, []).append((event_id, fields))
+        return event_id
+
+    def xread(self, streams: dict[str, str], **_: object):
+        batches = []
+        for key, cursor in streams.items():
+            cursor_parts = tuple(int(part) for part in cursor.split("-", maxsplit=1))
+            entries = [
+                (event_id, fields)
+                for event_id, fields in self.stream_entries.get(key, [])
+                if tuple(int(part) for part in event_id.split("-", maxsplit=1)) > cursor_parts
+            ]
+            if entries:
+                batches.append((key, entries))
+        return batches
+
+    def expire(self, key: str, ttl: int) -> bool:
+        self.expirations[key] = ttl
+        return True
+
+    def set(self, key: str, value: str, **_: object) -> bool:
+        self.values[key] = value
+        return True
+
+    def exists(self, key: str) -> int:
+        return int(key in self.values)
+
+
+class RecordingDispatcher:
+    def __init__(self) -> None:
+        self.calls: list[tuple[object, object]] = []
+        self.failure: Exception | None = None
+
+    def enqueue(self, run_id: object, research_depth: object) -> str:
+        self.calls.append((run_id, research_depth))
+        if self.failure is not None:
+            raise self.failure
+        return "task-test-id"
 
 
 @pytest.fixture
@@ -23,6 +86,16 @@ def settings() -> Settings:
         cors_allowed_origins=["http://localhost:3000"],
         firebase_session_cookie_name="elara_session",
     )
+
+
+@pytest.fixture
+def fake_redis() -> FakeRedis:
+    return FakeRedis()
+
+
+@pytest.fixture
+def dispatcher() -> RecordingDispatcher:
+    return RecordingDispatcher()
 
 
 @pytest.fixture
@@ -59,7 +132,11 @@ def owner(session_factory: sessionmaker[Session]) -> User:
 
 @pytest.fixture
 def client(
-    session_factory: sessionmaker[Session], owner: User, settings: Settings
+    session_factory: sessionmaker[Session],
+    owner: User,
+    settings: Settings,
+    fake_redis: FakeRedis,
+    dispatcher: RecordingDispatcher,
 ) -> Generator[TestClient, None, None]:
     app = create_app()
 
@@ -81,6 +158,9 @@ def client(
 
     app.dependency_overrides[get_db] = override_db
     app.dependency_overrides[get_authenticated_bearer] = override_authenticated
+    app.dependency_overrides[get_authenticated_session] = override_authenticated
     app.dependency_overrides[get_settings] = lambda: settings
+    app.dependency_overrides[get_request_redis_client] = lambda: fake_redis
+    app.dependency_overrides[get_verification_dispatcher] = lambda: dispatcher
     with TestClient(app, base_url="https://api.example.test") as test_client:
         yield test_client

@@ -19,6 +19,13 @@ class Settings(BaseSettings):
     environment: Literal["development", "test", "staging", "production"] = "development"
     database_url: str = "postgresql+psycopg://elara:elara-local-password@localhost:5432/elara"
     redis_url: str = "redis://localhost:6379/0"
+    celery_broker_url: str | None = None
+    celery_result_backend: str | None = None
+    redis_progress_max_events: int = Field(default=1_000, ge=100, le=100_000)
+    redis_progress_ttl_seconds: int = Field(default=86_400, ge=300)
+    redis_cancellation_ttl_seconds: int = Field(default=86_400, ge=300)
+    redis_lock_ttl_seconds: int = Field(default=3_600, ge=60)
+    sse_heartbeat_seconds: int = Field(default=20, ge=15, le=30)
     web_app_url: str = "http://localhost:3000"
     cors_allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
 
@@ -38,7 +45,7 @@ class Settings(BaseSettings):
     firebase_fresh_token_max_age_seconds: int = Field(default=300, ge=60, le=600)
     firebase_session_same_site: Literal["lax", "strict", "none"] = "lax"
 
-    workflow_version: str = "step-4"
+    workflow_version: str = "step-6"
     passage_embedding_dimension: int = Field(default=1536, gt=0)
 
     @field_validator("cors_allowed_origins", mode="before")
@@ -66,6 +73,14 @@ class Settings(BaseSettings):
     @classmethod
     def restore_private_key_newlines(cls, value: str | None) -> str | None:
         return value.replace("\\n", "\n") if value else value
+
+    @property
+    def effective_celery_broker_url(self) -> str:
+        return self.celery_broker_url or self.redis_url
+
+    @property
+    def effective_celery_result_backend(self) -> str:
+        return self.celery_result_backend or self.redis_url
 
     def firebase_admin_credentials(self) -> dict[str, str]:
         required_values = {
