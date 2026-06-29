@@ -8,6 +8,41 @@ The Step 5 worker registers `verification.verify_run`, uses a per-run Redis lock
 loads the authoritative run from PostgreSQL, checks both durable and transient
 cancellation flags, and mirrors public events to PostgreSQL plus the Redis Stream
 `elara:run:{run_id}:events`. It performs bounded retries only for explicitly mapped
-transient provider and fetch errors. The task currently stops at the validated
-handoff; the controlled LangGraph stages are introduced in Step 8 and must use the
-same cancellation check before each expensive operation.
+transient provider and fetch errors.
+
+Step 7 adds the server-side `agents.deepseek_client.DeepSeekClient`, using
+`httpx.AsyncClient` for low-temperature JSON calls. It returns validated Pydantic
+outputs together with model, prompt-version, latency, response-id, and token-usage
+metadata. Provider failures expose redacted operational metadata and retryable
+failures inherit the worker's existing transient-provider contract. Raw prompts,
+source passages, credentials, and provider response bodies are never logged.
+The client also prepends a fixed boundary that treats submitted and retrieved
+content as untrusted evidence rather than executable instructions.
+
+Structured language-agent contracts live in `agents.schemas` for intake,
+decomposition, planning, evidence classification, report synthesis, and citation
+auditing. These schemas do not calculate scores or authorize a run to complete;
+those decisions remain deterministic workflow controls.
+
+Step 8 adds the controlled workflow in `graph`. `VerificationState` is a strict
+Pydantic contract for every durable/auditable artifact and contains no prompt or
+private-reasoning fields. Intake, decomposition, planning, evidence classification,
+synthesis, and citation audit use DeepSeek only for language understanding. Python
+guards validate all claim, objective, passage, and citation references and recompute
+citation-audit completion flags. Every node checks cancellation, writes public
+progress, and records a typed recoverable error before stopping safely.
+
+The workflow validates the declared input type, enforces primary and contradiction
+paths per fact-checkable claim, treats extraction certainty and citation presence as
+deterministic controls, and emits public progress across all 13 methodology stages.
+Provider failures retain only redacted operational details in durable public events.
+Non-retryable graph stops become concise durable run failures, while retryable
+provider failures retain the bounded Celery retry policy. Citation audit rows and
+the final completion gate are deterministic; a report needing citation revision is
+never eligible for `COMPLETED`.
+
+Typed extension hooks reserve the full methodology sequence for discovery/source
+selection, secure retrieval, extraction, passage segmentation/embedding,
+provenance/dependency analysis, deterministic scoring, and numerical audit. A
+`planning_only` compilation mode provides the safe Step 8 production handoff until
+those later implementations are installed.

@@ -1,0 +1,247 @@
+import asyncio
+import json
+import logging
+from pathlib import Path
+
+import httpx
+import pytest
+from pydantic import BaseModel
+
+from agents.deepseek_client import (
+    DeepSeekAuthenticationError,
+    DeepSeekClient,
+    DeepSeekConfig,
+    DeepSeekConfigurationError,
+    DeepSeekRateLimitError,
+    DeepSeekResponseError,
+    DeepSeekUnavailableError,
+)
+from elara_worker.errors import TransientProviderError
+
+
+class ExampleOutput(BaseModel):
+    answer: str
+
+
+def config() -> DeepSeekConfig:
+    return DeepSeekConfig(
+        api_key="server-secret-key",
+        base_url="https://provider.example.test",
+        chat_model="deepseek-chat-test",
+        reasoning_model="deepseek-reasoning-test",
+        embedding_model=None,
+    )
+
+
+def run(coro):
+    return asyncio.run(coro)
+
+
+def test_environment_validation_requires_only_deepseek_server_settings(monkeypatch):
+    names = (
+        "DEEPSEEK_API_KEY",
+        "DEEPSEEK_BASE_URL",
+        "DEEPSEEK_CHAT_MODEL",
+        "DEEPSEEK_REASONING_MODEL",
+        "DEEPSEEK_EMBEDDING_MODEL",
+    )
+    for name in names:
+        monkeypatch.delenv(name, raising=False)
+
+    with pytest.raises(DeepSeekConfigurationError) as exc_info:
+        DeepSeekConfig.from_env()
+
+    assert "DEEPSEEK_API_KEY" in str(exc_info.value)
+    assert "DEEPSEEK_EMBEDDING_MODEL" not in str(exc_info.value)
+
+
+def test_environment_loads_optional_embedding_model_and_validates_base_url():
+    values = {
+        "DEEPSEEK_API_KEY": "secret",
+        "DEEPSEEK_BASE_URL": "https://api.deepseek.example/v1/",
+        "DEEPSEEK_CHAT_MODEL": "chat",
+        "DEEPSEEK_REASONING_MODEL": "reasoner",
+        "DEEPSEEK_EMBEDDING_MODEL": "embedding-approved",
+    }
+
+    loaded = DeepSeekConfig.from_env(values)
+
+    assert loaded.base_url == "https://api.deepseek.example/v1"
+    assert loaded.embedding_model == "embedding-approved"
+    with pytest.raises(DeepSeekConfigurationError):
+        DeepSeekConfig.from_env({**values, "DEEPSEEK_BASE_URL": "file:///private"})
+    with pytest.raises(DeepSeekConfigurationError):
+        DeepSeekConfig.from_env({**values, "DEEPSEEK_CHAT_MODEL": "private\ncontent"})
+
+
+def test_structured_json_parsing_and_metadata_are_recorded():
+    captured_request: dict[str, object] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured_request.update(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={
+                "id": "response-123",
+                "model": "deepseek-chat-test",
+                "choices": [
+                    {
+                        "message": {"content": "```json\n{\"answer\":\"grounded\"}\n```"},
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 17,
+                    "completion_tokens": 5,
+                    "total_tokens": 22,
+                },
+            },
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "private source passage"}],
+                output_schema=ExampleOutput,
+                prompt_version="intake-v1",
+                temperature=0.1,
+            )
+        finally:
+            await http_client.aclose()
+
+    result = run(exercise())
+
+    assert result.output.answer == "grounded"
+    assert result.metadata.model == "deepseek-chat-test"
+    assert result.metadata.prompt_version == "intake-v1"
+    assert result.metadata.usage.total_tokens == 22
+    assert result.metadata.latency_ms >= 0
+    assert captured_request["response_format"] == {"type": "json_object"}
+    assert captured_request["temperature"] == 0.1
+    assert captured_request["stream"] is False
+    assert "untrusted evidence" in captured_request["messages"][0]["content"]
+
+
+@pytest.mark.parametrize(
+    ("status_code", "expected_error", "is_transient"),
+    [
+        (401, DeepSeekAuthenticationError, False),
+        (429, DeepSeekRateLimitError, True),
+        (503, DeepSeekUnavailableError, True),
+    ],
+)
+def test_provider_error_mapping_and_safe_logging(
+    caplog: pytest.LogCaptureFixture,
+    status_code: int,
+    expected_error: type[Exception],
+    is_transient: bool,
+):
+    private_text = "DO-NOT-LOG-PRIVATE-SOURCE"
+    provider_detail = "DO-NOT-LOG-PROVIDER-BODY"
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            status_code,
+            json={"error": {"code": "rate_limit", "message": provider_detail}},
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": private_text}],
+                output_schema=ExampleOutput,
+                prompt_version="evidence-v2",
+            )
+        finally:
+            await http_client.aclose()
+
+    with caplog.at_level(logging.WARNING), pytest.raises(expected_error) as exc_info:
+        run(exercise())
+
+    assert isinstance(exc_info.value, TransientProviderError) is is_transient
+    assert exc_info.value.metadata.status_code == status_code
+    assert exc_info.value.metadata.prompt_version == "evidence-v2"
+    assert exc_info.value.metadata.temperature == 0.1
+    assert private_text not in caplog.text
+    assert provider_detail not in caplog.text
+    assert "server-secret-key" not in caplog.text
+
+
+def test_invalid_json_maps_to_redacted_response_error():
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": "not json"}}]},
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "untrusted evidence"}],
+                output_schema=ExampleOutput,
+                prompt_version="audit-v1",
+            )
+        finally:
+            await http_client.aclose()
+
+    with pytest.raises(DeepSeekResponseError) as exc_info:
+        run(exercise())
+
+    assert exc_info.value.metadata.error_code == "invalid_structured_response"
+    assert exc_info.value.__cause__ is None
+
+
+def test_loggable_request_metadata_must_be_non_sensitive_identifiers():
+    async def exercise():
+        http_client = httpx.AsyncClient(
+            transport=httpx.MockTransport(
+                lambda _request: httpx.Response(500, json={"error": {}})
+            )
+        )
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "evidence"}],
+                output_schema=ExampleOutput,
+                prompt_version="private source text with spaces",
+            )
+        finally:
+            await http_client.aclose()
+
+    with pytest.raises(ValueError, match="non-sensitive identifier"):
+        run(exercise())
+
+
+def test_api_key_is_redacted_from_configuration_representation():
+    assert "server-secret-key" not in repr(config())
+
+
+def test_worker_has_no_disallowed_provider_or_environment_references():
+    worker_root = Path(__file__).resolve().parents[1]
+    repository_root = worker_root.parents[1]
+    forbidden_provider = "open" + "ai"
+    forbidden_environment = forbidden_provider + "_api_key"
+
+    inspected_paths = [
+        *worker_root.rglob("*.py"),
+        worker_root / "pyproject.toml",
+        repository_root / ".env.example",
+    ]
+    for source_path in inspected_paths:
+        source = source_path.read_text(encoding="utf-8").casefold()
+        assert forbidden_provider not in source, source_path
+        assert forbidden_environment not in source, source_path
+
+    for source_path in (repository_root / "apps" / "web").rglob("*"):
+        if (
+            source_path.is_file()
+            and "tests" not in source_path.parts
+            and source_path.suffix in {".ts", ".tsx", ".js", ".mjs"}
+        ):
+            assert "deepseek_" not in source_path.read_text(encoding="utf-8").casefold()

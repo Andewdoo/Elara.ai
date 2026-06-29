@@ -25,6 +25,7 @@ from app.services.run_lifecycle import (
     persist_progress,
 )
 from elara_worker.errors import TransientFetchError, TransientProviderError
+from graph.runtime import execute_planning_workflow
 
 
 logger = logging.getLogger(__name__)
@@ -163,7 +164,7 @@ def prepare_run(
                 stage=RunStatus.VALIDATING,
                 event_type="run.validated",
                 message="Verification target validated and ready for research.",
-                payload={"completed_steps": 1, "total_steps": 9},
+                payload={"completed_steps": 0, "total_steps": 13},
             )
         return
     if run.status != RunStatus.QUEUED:
@@ -191,7 +192,7 @@ def prepare_run(
         stage=RunStatus.VALIDATING,
         event_type="run.validating",
         message="Validating the submitted verification target.",
-        payload={"completed_steps": 0, "total_steps": 9},
+        payload={"completed_steps": 0, "total_steps": 13},
     )
     if _cancel_if_requested(factory, redis_client, settings, run_id):
         return
@@ -203,7 +204,7 @@ def prepare_run(
         stage=RunStatus.VALIDATING,
         event_type="run.validated",
         message="Verification target validated and ready for research.",
-        payload={"completed_steps": 1, "total_steps": 9},
+        payload={"completed_steps": 0, "total_steps": 13},
     )
 
 
@@ -252,6 +253,28 @@ def verify_run(self: Task, run_id: str) -> None:
                 logger.info("Run %s is already owned by another worker", parsed_run_id)
                 return
             prepare_run(factory, redis_client, settings, parsed_run_id)
+            if _cancel_if_requested(factory, redis_client, settings, parsed_run_id):
+                return
+            result = execute_planning_workflow(
+                factory,
+                redis_client,
+                settings,
+                parsed_run_id,
+                record=_record,
+                is_cancelled=_is_cancelled,
+            )
+            if result is not None and any(error.retryable for error in result.recoverable_errors):
+                raise TransientProviderError("A recoverable language-analysis step failed")
+            if result is not None and result.recoverable_errors:
+                error = result.recoverable_errors[-1]
+                _mark_failure_safely(
+                    factory,
+                    redis_client,
+                    settings,
+                    parsed_run_id,
+                    code=error.code,
+                    message=error.public_message,
+                )
     except TerminalRunTransitionError:
         # Cancellation can win the race after the pre-stage check. The durable
         # terminal status is authoritative and is a successful no-op here.

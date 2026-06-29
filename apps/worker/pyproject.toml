@@ -7,7 +7,11 @@ name = "elara-worker"
 version = "0.1.0"
 description = "Elara.ai Celery verification worker"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+  "httpx>=0.28,<1",
+  "langgraph>=1.0,<2",
+  "pydantic>=2.10,<3",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.3,<9"]
@@ -17,4 +21,4 @@ testpaths = ["tests"]
 addopts = "-q"
 
 [tool.setuptools.packages.find]
-include = ["elara_worker*"]
+include = ["agents*", "elara_worker*", "graph*"]

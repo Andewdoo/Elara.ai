@@ -15,6 +15,12 @@ from app.services.run_lifecycle import persist_progress
 from elara_worker.errors import TransientFetchError, TransientProviderError
 from elara_worker.tasks import verification as task_module
 from elara_worker.tasks.verification import prepare_run, verify_run
+from graph.state import (
+    RecoverableError,
+    ResearchDepth as GraphResearchDepth,
+    VerificationState,
+    WorkflowStage,
+)
 
 
 class FakeRedis:
@@ -89,6 +95,81 @@ def test_task_contract_has_bounded_transient_retries():
     assert verify_run.name == "verification.verify_run"
     assert verify_run.max_retries == 2
     assert verify_run.autoretry_for == (TransientProviderError, TransientFetchError)
+
+
+def test_task_invokes_planning_graph_after_durable_validation(monkeypatch: pytest.MonkeyPatch):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+    settings = Settings(environment="test")
+    calls: list[object] = []
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: settings)
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(
+        task_module,
+        "execute_planning_workflow",
+        lambda *_args, **_kwargs: calls.append((_args, _kwargs)),
+    )
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.successful()
+    assert len(calls) == 1
+    with factory() as db:
+        durable_run = db.get(VerificationRun, run.id)
+    assert durable_run is not None and durable_run.status == RunStatus.VALIDATING
+
+
+def test_task_marks_nonretryable_workflow_stop_failed(monkeypatch: pytest.MonkeyPatch):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+    settings = Settings(environment="test")
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    stopped = VerificationState(
+        run_id=run.id,
+        user_id=run.user_id,
+        research_depth=GraphResearchDepth.STANDARD,
+        methodology_version="1.0",
+        recoverable_errors=[
+            RecoverableError(
+                stage=WorkflowStage.PLANNER,
+                code="INVALID_RESEARCH_PLAN",
+                public_message="Research planning returned invalid references.",
+            )
+        ],
+    )
+    monkeypatch.setattr(task_module, "get_settings", lambda: settings)
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_planning_workflow", lambda *_args, **_kwargs: stopped)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.successful()
+    with factory() as db:
+        durable_run = db.get(VerificationRun, run.id)
+        last_event = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id)
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
+    assert durable_run is not None and durable_run.status == RunStatus.FAILED
+    assert durable_run.failure_code == "INVALID_RESEARCH_PLAN"
+    assert last_event is not None and last_event.event_type == "run.failed"
 
 
 @pytest.mark.parametrize(

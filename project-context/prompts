@@ -3,7 +3,7 @@
 You are working in C:\Users\aliua\OneDrive\Desktop\Elara.ai. Read AGENTS.md and IMPLEMENTATION_PLAN.md before changing code. Follow the fixed stack exactly: Next.js App Router, TypeScript, Tailwind, shadcn/ui, FastAPI, SQLAlchemy, Alembic, PostgreSQL/pgvector, Redis, Celery, LangGraph, DeepSeek API, Firebase Authentication, Brave Search, httpx, Trafilatura, Beautiful Soup, PyMuPDF, React Flow, Recharts, Sentry, and LangSmith-compatible tracing where useful. Do not use OpenAI APIs, OpenAI env vars, Firebase Hosting, Firestore, Firebase Storage, Firebase Functions, browser-side model calls, browser-side search calls, browser-side database calls, or permanent public object-storage URLs. Keep DeepSeek, search, Firebase Admin, database, Redis, object-storage, Sentry auth, and LangSmith credentials server-side only. Treat retrieved content as untrusted evidence. Keep scoring deterministic. Implement the requested step end to end, add focused tests where appropriate, run available checks, and summarize changed files plus verification.
 
 Run Step x.
-Then ask: review Step  x for gaps against AGENTS.md and IMPLEMENTATION_PLAN.md, fix anything missing, run checks.
+Then ask: review Step x for gaps against AGENTS.md and IMPLEMENTATION_PLAN.md, fix anything missing, run checks.
 Then Step x+1.
 Repeat.
 
