@@ -1,8 +1,10 @@
 from functools import lru_cache
+from pathlib import Path
+from tempfile import gettempdir
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -45,8 +47,41 @@ class Settings(BaseSettings):
     firebase_fresh_token_max_age_seconds: int = Field(default=300, ge=60, le=600)
     firebase_session_same_site: Literal["lax", "strict", "none"] = "lax"
 
-    workflow_version: str = "step-8"
+    workflow_version: str = "step-9"
     passage_embedding_dimension: int = Field(default=1536, gt=0)
+
+    search_provider: Literal["brave"] = "brave"
+    search_api_key: str | None = None
+    search_base_url: str = "https://api.search.brave.com/res/v1"
+    search_cache_ttl_seconds: int = Field(default=3_600, ge=60, le=86_400)
+    fetch_cache_ttl_seconds: int = Field(default=21_600, ge=60, le=604_800)
+    fetch_connect_timeout_seconds: float = Field(default=5.0, gt=0, le=20)
+    fetch_read_timeout_seconds: float = Field(default=10.0, gt=0, le=30)
+    fetch_total_timeout_seconds: float = Field(default=20.0, gt=0, le=60)
+    fetch_max_redirects: int = Field(default=3, ge=0, le=5)
+    fetch_network_retries: int = Field(default=1, ge=0, le=2)
+    fetch_max_html_bytes: int = Field(default=5_000_000, ge=100_000, le=25_000_000)
+    fetch_max_pdf_bytes: int = Field(default=25_000_000, ge=100_000, le=100_000_000)
+    fetch_allowed_ports: str = "80,443"
+    fetch_storage_dir: Path = Field(
+        default_factory=lambda: Path(gettempdir()) / "elara-fetched-sources"
+    )
+
+    @property
+    def allowed_fetch_ports(self) -> frozenset[int]:
+        try:
+            ports = frozenset(int(value.strip()) for value in self.fetch_allowed_ports.split(","))
+        except ValueError as exc:
+            raise ValueError("FETCH_ALLOWED_PORTS must be a comma-separated list of ports") from exc
+        if not ports or any(port < 1 or port > 65535 for port in ports):
+            raise ValueError("FETCH_ALLOWED_PORTS contains an invalid port")
+        return ports
+
+    @model_validator(mode="after")
+    def object_storage_credentials_are_paired(self) -> "Settings":
+        if bool(self.s3_access_key_id) != bool(self.s3_secret_access_key):
+            raise ValueError("S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY must be configured together")
+        return self
 
     @field_validator("cors_allowed_origins", mode="before")
     @classmethod

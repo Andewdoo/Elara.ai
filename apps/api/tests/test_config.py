@@ -55,3 +55,8 @@ def test_credentialed_cors_requires_exact_origins(monkeypatch, origin: str):
     monkeypatch.setenv("CORS_ALLOWED_ORIGINS", origin)
     with pytest.raises(ValidationError):
         Settings()
+
+
+def test_object_storage_credentials_must_be_paired():
+    with pytest.raises(ValidationError, match="configured together"):
+        Settings(environment="test", s3_access_key_id="access", s3_secret_access_key=None)

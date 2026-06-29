@@ -25,6 +25,29 @@ from agents.schemas import (
 
 UnitDecimal = Annotated[Decimal, Field(ge=Decimal("0"), le=Decimal("1"))]
 ScoreValue = Annotated[int, Field(ge=0, le=100)]
+AccessStatusValue = Literal[
+    "PENDING", "FETCHED", "INACCESSIBLE", "PAYWALLED", "BOT_BLOCKED", "UNSUPPORTED", "FAILED"
+]
+SourceTypeValue = Literal[
+    "PRIMARY",
+    "OFFICIAL_SELF_REPORT",
+    "INDEPENDENT_ANALYSIS",
+    "SECONDARY_REPORT",
+    "DERIVATIVE_REPORT",
+    "OPINION",
+    "UNKNOWN",
+]
+EvidenceIntentValue = Literal[
+    "primary",
+    "support",
+    "contradiction",
+    "correction",
+    "attribution",
+    "definition",
+    "historical_context",
+    "surrounding_context",
+    "existing_fact_check",
+]
 
 
 class StateModel(BaseModel):
@@ -60,8 +83,9 @@ class CandidateSource(StateModel):
     domain: str | None = Field(default=None, max_length=255)
     snippet: str | None = None
     objective_refs: list[str] = Field(default_factory=list)
+    evidence_intents: list[EvidenceIntentValue] = Field(default_factory=list)
     title: str | None = Field(default=None, max_length=1000)
-    source_type: str = Field(default="UNKNOWN", max_length=100)
+    source_type: SourceTypeValue = "UNKNOWN"
     selection_reason: str = Field(min_length=1)
     priority: UnitDecimal = Decimal("0")
 
@@ -69,19 +93,42 @@ class CandidateSource(StateModel):
 class SnapshotRecord(StateModel):
     snapshot_id: str = Field(min_length=1, max_length=128)
     source_ref: str = Field(min_length=1, max_length=128)
-    access_status: str = Field(min_length=1, max_length=100)
+    access_status: AccessStatusValue
     retrieved_at: datetime
+    published_at: datetime | None = None
+    updated_at: datetime | None = None
     content_hash: str | None = Field(default=None, max_length=128)
+    content_type: str | None = Field(default=None, max_length=255)
+    snapshot_path: str | None = None
     parser_name: str | None = Field(default=None, max_length=100)
     parser_version: str | None = Field(default=None, max_length=100)
+    extraction_quality: UnitDecimal | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
     failure_reason: str | None = None
 
-    @field_validator("retrieved_at")
+    @field_validator("retrieved_at", "published_at", "updated_at")
     @classmethod
-    def retrieved_at_is_timezone_aware(cls, value: datetime) -> datetime:
-        if value.tzinfo is None or value.utcoffset() is None:
-            raise ValueError("retrieved_at must be timezone-aware")
+    def retrieved_at_is_timezone_aware(cls, value: datetime | None) -> datetime | None:
+        if value is not None and (value.tzinfo is None or value.utcoffset() is None):
+            raise ValueError("snapshot timestamps must be timezone-aware")
         return value
+
+
+class ExtractedSourceRecord(StateModel):
+    source_ref: str = Field(min_length=1, max_length=128)
+    snapshot_id: str = Field(min_length=1, max_length=128)
+    body: str = Field(min_length=1)
+    title: str | None = Field(default=None, max_length=1000)
+    author: str | None = Field(default=None, max_length=1000)
+    publisher: str | None = Field(default=None, max_length=1000)
+    published_at: datetime | None = None
+    updated_at: datetime | None = None
+    headings: list[str] = Field(default_factory=list)
+    tables: list[str] = Field(default_factory=list)
+    quotes: list[str] = Field(default_factory=list)
+    correction_notices: list[str] = Field(default_factory=list)
+    outbound_links: list[str] = Field(default_factory=list)
+    page_positions: list[str] = Field(default_factory=list)
 
 
 class PassageRecord(StateModel):
@@ -152,7 +199,7 @@ class VerificationState(StateModel):
     normalized_input: IntakeClassificationOutput | None = None
     research_depth: ResearchDepth
     methodology_version: str = Field(min_length=1, max_length=100)
-    workflow_version: str = Field(default="step-8", min_length=1, max_length=100)
+    workflow_version: str = Field(default="step-9", min_length=1, max_length=100)
     parser_versions: dict[str, str] = Field(default_factory=dict)
     claims: list[AtomicClaimOutput] = Field(default_factory=list)
     unresolved_ambiguities: list[str] = Field(default_factory=list)
@@ -161,7 +208,9 @@ class VerificationState(StateModel):
     primary_source_targets: list[str] = Field(default_factory=list)
     known_evidence_gaps: list[str] = Field(default_factory=list)
     candidate_sources: list[CandidateSource] = Field(default_factory=list)
+    query_result_counts: dict[str, int] = Field(default_factory=dict)
     snapshots: list[SnapshotRecord] = Field(default_factory=list)
+    extracted_sources: list[ExtractedSourceRecord] = Field(default_factory=list)
     passages: list[PassageRecord] = Field(default_factory=list)
     evidence: list[EvidenceClassificationItemOutput] = Field(default_factory=list)
     dependencies: list[DependencyRecord] = Field(default_factory=list)
@@ -220,6 +269,7 @@ __all__ = [
     "CalculationRecord",
     "CandidateSource",
     "DependencyRecord",
+    "ExtractedSourceRecord",
     "PassageRecord",
     "RecoverableError",
     "ResearchDepth",

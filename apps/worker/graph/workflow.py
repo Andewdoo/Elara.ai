@@ -768,12 +768,21 @@ class WorkflowNodes:
                 if not isinstance(updated, VerificationState):
                     raise TypeError("workflow extensions must return VerificationState")
                 updated = VerificationState.model_validate(updated.model_dump())
-            except Exception:
+            except Exception as exc:
+                retryable = bool(getattr(exc, "retryable", False))
                 return await self._failure(
                     state,
                     stage,
                     code="WORKFLOW_EXTENSION_FAILED",
                     message=f"The {stage.value.replace('_', ' ')} stage could not be completed.",
+                    retryable=retryable,
+                    details={
+                        "failure_kind": (
+                            "fetch"
+                            if stage in {WorkflowStage.RETRIEVAL, WorkflowStage.EXTRACTION}
+                            else "provider" if stage == WorkflowStage.DISCOVERY else "workflow"
+                        )
+                    },
                 )
             updated = updated.complete(stage)
             return await self._finish(updated, stage)
@@ -781,7 +790,9 @@ class WorkflowNodes:
         return run
 
 
-def build_workflow(services: WorkflowServices, *, planning_only: bool = False):
+def build_workflow(
+    services: WorkflowServices, *, planning_only: bool = False, retrieval_only: bool = False
+):
     """Compile the controlled graph; planning-only is the Step 8 production handoff."""
     nodes = WorkflowNodes(services)
     graph = StateGraph(VerificationState)
@@ -826,6 +837,9 @@ def build_workflow(services: WorkflowServices, *, planning_only: bool = False):
         _conditional(graph, "planner", "discovery_source_selection", stop_requested)
         _conditional(graph, "discovery_source_selection", "secure_retrieval", stop_requested)
         _conditional(graph, "secure_retrieval", "extraction", stop_requested)
+        if retrieval_only:
+            graph.add_edge("extraction", END)
+            return graph.compile()
         _conditional(graph, "extraction", "passage_segmentation_embedding", stop_requested)
         _conditional(
             graph,

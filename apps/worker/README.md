@@ -46,3 +46,15 @@ selection, secure retrieval, extraction, passage segmentation/embedding,
 provenance/dependency analysis, deterministic scoring, and numerical audit. A
 `planning_only` compilation mode provides the safe Step 8 production handoff until
 those later implementations are installed.
+
+Step 9 installs the first three hooks. `research` contains the server-only Brave
+Search client, deterministic usefulness ranking, Redis search/fetch cache and rate
+limits, URL guard, and bounded `httpx` fetcher. The fetcher accepts only HTTP(S),
+pins validated public DNS addresses at connection time, revalidates redirects,
+never forwards user credentials, rejects unsupported/executable or oversized
+responses, stages bytes outside worker code paths, and writes private content-addressed
+objects to S3-compatible storage when credentials are configured. `extraction` applies
+Trafilatura, Beautiful Soup, the explicit future Playwright boundary, and page-aware
+PyMuPDF parsing. PostgreSQL stores every selected source, immutable snapshot, run
+link, parser version, and explicit inaccessible status before the workflow hands off
+to Step 10 passage segmentation.

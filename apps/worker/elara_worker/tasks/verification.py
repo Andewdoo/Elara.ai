@@ -262,9 +262,15 @@ def verify_run(self: Task, run_id: str) -> None:
                 parsed_run_id,
                 record=_record,
                 is_cancelled=_is_cancelled,
+                retrieve=True,
             )
             if result is not None and any(error.retryable for error in result.recoverable_errors):
-                raise TransientProviderError("A recoverable language-analysis step failed")
+                error = next(
+                    item for item in reversed(result.recoverable_errors) if item.retryable
+                )
+                if error.details.get("failure_kind") == "fetch":
+                    raise TransientFetchError("A recoverable retrieval step failed")
+                raise TransientProviderError("A recoverable provider step failed")
             if result is not None and result.recoverable_errors:
                 error = result.recoverable_errors[-1]
                 _mark_failure_safely(

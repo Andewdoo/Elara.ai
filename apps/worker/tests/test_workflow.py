@@ -456,6 +456,21 @@ def test_extension_outputs_are_revalidated():
     assert result.recoverable_errors[0].code == "WORKFLOW_EXTENSION_FAILED"
 
 
+def test_retryable_retrieval_extension_preserves_fetch_failure_kind():
+    class TemporaryFetchFailure(RuntimeError):
+        retryable = True
+
+    async def unavailable(_value: VerificationState) -> VerificationState:
+        raise TemporaryFetchFailure("private detail")
+
+    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
+    result = asyncio.run(node.extension(WorkflowStage.RETRIEVAL, unavailable)(state()))
+
+    assert result.recoverable_errors[0].retryable is True
+    assert result.recoverable_errors[0].details == {"failure_kind": "fetch"}
+    assert "private detail" not in result.recoverable_errors[0].public_message
+
+
 def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     async def discovery(value: VerificationState) -> VerificationState:
         return value.model_copy(
@@ -600,7 +615,7 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
         "Source source-2 was paywalled: Subscription required"
     ]
     assert result.report_draft.methodology_version == "1.0"
-    assert result.report_draft.workflow_version == "step-8"
+    assert result.report_draft.workflow_version == "step-9"
     assert result.report_draft.model_versions["synthesis"] == "deepseek-chat"
     assert result.evidence[0].quality.extraction_certainty == 0.95
     assert result.completed_stages[-1] == WorkflowStage.CITATION_AUDIT
@@ -733,6 +748,96 @@ def test_runtime_executes_and_persists_planning_handoff():
         assert durable_run.normalized_target["input_kind"] == "claim"
         assert db.scalar(select(func.count()).select_from(AtomicClaim)) == 1
         assert db.scalar(select(func.count()).select_from(SearchQuery)) == 2
+
+
+def test_runtime_resumes_retryable_retrieval_from_extracting_status():
+    engine = create_engine(
+        "sqlite+pysqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(engine)
+    factory = sessionmaker(bind=engine, expire_on_commit=False)
+    with factory() as db:
+        owner = User(
+            auth_provider="firebase",
+            auth_subject="retry-owner",
+            email="retry@example.test",
+            plan_tier="free",
+            role="user",
+            usage_limits={},
+        )
+        db.add(owner)
+        db.flush()
+        run = VerificationRun(
+            user_id=owner.id,
+            input_type=InputType.CLAIM,
+            research_depth="STANDARD",
+            status=RunStatus.VALIDATING,
+            submitted_text="Company X doubled net income in Q1 2026.",
+            normalized_target={},
+            workflow_version="step-9-retry-test",
+        )
+        db.add(run)
+        db.commit()
+        run_id = run.id
+
+    execute_planning_workflow(
+        factory,
+        object(),
+        Settings(environment="test"),
+        run_id,
+        record=lambda *_args, **_kwargs: None,
+        is_cancelled=lambda *_args: False,
+        model=FakeModel([INTAKE, DECOMPOSITION, PLAN]),
+    )
+    with factory() as db:
+        run = db.get(VerificationRun, run_id)
+        run.status = RunStatus.EXTRACTING
+        db.commit()
+
+    class RetryablePipeline:
+        calls = 0
+
+        async def discover(self, value):
+            self.calls += 1
+            return value.model_copy(
+                update={
+                    "candidate_sources": [
+                        CandidateSource(
+                            source_ref="source-1",
+                            url="https://example.test/source",
+                            selection_reason="retry test",
+                        )
+                    ]
+                }
+            )
+
+        async def retrieve(self, _value):
+            error = RuntimeError("temporary private storage failure")
+            error.retryable = True
+            raise error
+
+        async def extract(self, value):
+            return value
+
+    pipeline = RetryablePipeline()
+    result = execute_planning_workflow(
+        factory,
+        object(),
+        Settings(environment="test"),
+        run_id,
+        record=lambda *_args, **_kwargs: None,
+        is_cancelled=lambda *_args: False,
+        model=FakeModel([]),
+        retrieve=True,
+        retrieval_pipeline=pipeline,
+    )
+
+    assert result is not None
+    assert pipeline.calls == 1
+    assert result.recoverable_errors[-1].retryable is True
+    assert result.recoverable_errors[-1].details == {"failure_kind": "fetch"}
 
 
 def test_sql_state_writer_persists_citation_audit_rows():
