@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     firebase_fresh_token_max_age_seconds: int = Field(default=300, ge=60, le=600)
     firebase_session_same_site: Literal["lax", "strict", "none"] = "lax"
 
-    workflow_version: str = "step-9"
+    workflow_version: str = "step-10"
     passage_embedding_dimension: int = Field(default=1536, gt=0)
 
     search_provider: Literal["brave"] = "brave"

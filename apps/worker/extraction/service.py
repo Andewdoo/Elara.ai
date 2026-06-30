@@ -37,6 +37,7 @@ class ExtractionService:
                     quotes=structure.quotes,
                     correction_notices=structure.correction_notices,
                     outbound_links=structure.outbound_links,
+                    blocks=structure.blocks,
                     metadata={**structure.metadata, **result.metadata, "structure_parser": "beautifulsoup4"},
                 )
             return _assess(result, expected_terms)

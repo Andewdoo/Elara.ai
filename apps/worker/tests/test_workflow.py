@@ -615,7 +615,7 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
         "Source source-2 was paywalled: Subscription required"
     ]
     assert result.report_draft.methodology_version == "1.0"
-    assert result.report_draft.workflow_version == "step-9"
+    assert result.report_draft.workflow_version == "step-10"
     assert result.report_draft.model_versions["synthesis"] == "deepseek-chat"
     assert result.evidence[0].quality.extraction_certainty == 0.95
     assert result.completed_stages[-1] == WorkflowStage.CITATION_AUDIT

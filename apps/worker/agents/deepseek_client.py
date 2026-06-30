@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import os
 import re
 import time
@@ -121,6 +122,13 @@ class StructuredResponse(BaseModel, Generic[OutputT]):
     metadata: CallMetadata
 
 
+class EmbeddingResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    vectors: list[list[float]]
+    metadata: CallMetadata
+
+
 class ProviderErrorMetadata(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -166,6 +174,10 @@ class DeepSeekResponseError(DeepSeekProviderError):
     pass
 
 
+class DeepSeekEmbeddingUnavailableError(DeepSeekProviderError):
+    pass
+
+
 class DeepSeekClient:
     """Make low-temperature, structured calls without exposing source content."""
 
@@ -192,6 +204,91 @@ class DeepSeekClient:
     async def aclose(self) -> None:
         if self._owns_client:
             await self._http.aclose()
+
+    @property
+    def embedding_available(self) -> bool:
+        return self.config.embedding_model is not None
+
+    async def generate_embeddings(self, texts: Sequence[str]) -> EmbeddingResponse:
+        """Generate vectors only through the configured DeepSeek-compatible route."""
+        model = self.config.embedding_model
+        if model is None:
+            metadata = self._error_metadata(
+                "unconfigured", "embedding-v1", 0.0, 0, error_code="embedding_route_unavailable"
+            )
+            raise DeepSeekEmbeddingUnavailableError(
+                "No approved DeepSeek-compatible embedding route is configured",
+                metadata=metadata,
+            )
+        if not texts or any(not isinstance(text, str) or not text.strip() for text in texts):
+            raise ValueError("embedding input requires non-empty text values")
+        if len(texts) > 128:
+            raise ValueError("embedding batches are limited to 128 passages")
+        started = time.perf_counter()
+        try:
+            response = await self._http.post(
+                f"{self.config.base_url}/embeddings",
+                headers={
+                    "Authorization": f"Bearer {self.config.api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={"model": model, "input": list(texts)},
+            )
+        except httpx.TimeoutException:
+            metadata = self._error_metadata(
+                model, "embedding-v1", 0.0, self._latency_ms(started), retryable=True
+            )
+            raise DeepSeekTimeoutError("DeepSeek embedding request timed out", metadata=metadata) from None
+        except httpx.RequestError:
+            metadata = self._error_metadata(
+                model, "embedding-v1", 0.0, self._latency_ms(started), retryable=True
+            )
+            raise DeepSeekUnavailableError(
+                "DeepSeek embedding request transport failed", metadata=metadata
+            ) from None
+        latency_ms = self._latency_ms(started)
+        if response.status_code >= 400:
+            raise self._map_http_error(
+                response,
+                model=model,
+                prompt_version="embedding-v1",
+                temperature=0.0,
+                latency_ms=latency_ms,
+            )
+        try:
+            body = response.json()
+            items = sorted(body["data"], key=lambda item: int(item["index"]))
+            vectors = [[float(value) for value in item["embedding"]] for item in items]
+            if len(vectors) != len(texts):
+                raise ValueError("embedding count mismatch")
+            dimensions = {len(vector) for vector in vectors}
+            if len(dimensions) != 1 or not dimensions or 0 in dimensions:
+                raise ValueError("embedding dimensions are inconsistent")
+            if any(not math.isfinite(value) for vector in vectors for value in vector):
+                raise ValueError("embedding contains non-finite values")
+            usage = TokenUsage.model_validate(body.get("usage") or {})
+        except (KeyError, TypeError, ValueError, ValidationError):
+            metadata = self._error_metadata(
+                model,
+                "embedding-v1",
+                0.0,
+                latency_ms,
+                status_code=response.status_code,
+                error_code="invalid_embedding_response",
+            )
+            raise DeepSeekResponseError(
+                "DeepSeek returned an invalid embedding response", metadata=metadata
+            ) from None
+        metadata = CallMetadata(
+            model=self._safe_response_identifier(body.get("model")) or model,
+            prompt_version="embedding-v1",
+            temperature=0.0,
+            latency_ms=latency_ms,
+            response_id=self._safe_response_identifier(body.get("id")),
+            usage=usage,
+        )
+        logger.info("DeepSeek embedding request completed", extra=metadata.model_dump())
+        return EmbeddingResponse(vectors=vectors, metadata=metadata)
 
     async def generate_structured(
         self,
@@ -435,12 +532,14 @@ __all__ = [
     "DeepSeekClient",
     "DeepSeekConfig",
     "DeepSeekConfigurationError",
+    "DeepSeekEmbeddingUnavailableError",
     "DeepSeekError",
     "DeepSeekProviderError",
     "DeepSeekRateLimitError",
     "DeepSeekResponseError",
     "DeepSeekTimeoutError",
     "DeepSeekUnavailableError",
+    "EmbeddingResponse",
     "ProviderErrorMetadata",
     "StructuredResponse",
     "TokenUsage",

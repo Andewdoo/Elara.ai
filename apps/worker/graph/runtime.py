@@ -32,11 +32,12 @@ from app.models.agent_event import AgentEvent
 from app.models.enums import AccessStatus, InputType, RunStatus, SourceType
 from app.models.evidence import ReportCitation
 from app.models.methodology import MethodologyVersion
-from app.models.sources import RunSource, Source, SourceSnapshot
+from app.models.sources import RunSource, Source, SourcePassage, SourceSnapshot
 from app.models.verification_run import VerificationRun
 from graph.state import ResearchDepth, VerificationState, WorkflowStage
 from graph.workflow import WorkflowExtensions, WorkflowServices, build_workflow
 from extraction.service import ExtractionService
+from extraction.passages import PassageEmbeddingService, PassagePipeline, PassageSegmenter
 from research.cache import RetrievalCache, RetrievalRateLimiter
 from research.fetcher import S3SnapshotStore, SecureFetcher, SnapshotFileStore
 from research.pipeline import RetrievalPipeline
@@ -93,7 +94,7 @@ class RunCancellationChecker:
 
 
 class SqlWorkflowStateWriter:
-    """Persist currently available Step 8 outputs; later stages extend this adapter."""
+    """Persist typed workflow outputs at their durable stage boundaries."""
 
     def __init__(self, factory: sessionmaker[Session]) -> None:
         self._factory = factory
@@ -117,6 +118,11 @@ class SqlWorkflowStateWriter:
                 and state.snapshots
             ):
                 self._persist_sources(db, run, state)
+            elif (
+                stage == WorkflowStage.SEGMENTATION
+                and WorkflowStage.SEGMENTATION in state.completed_stages
+            ):
+                self._persist_passages(db, run, state)
             elif stage == WorkflowStage.SYNTHESIS and state.report_draft is not None:
                 run.title = state.report_draft.title
                 run.evidence_reviewed_at = state.evidence_reviewed_at
@@ -200,6 +206,66 @@ class SqlWorkflowStateWriter:
                 snapshot.failure_reason if snapshot.access_status != AccessStatus.FETCHED.value else None
             )
         run.parser_versions = dict(state.parser_versions)
+
+    @staticmethod
+    def _persist_passages(db: Session, run: VerificationRun, state: VerificationState) -> None:
+        source_by_snapshot = {
+            str(snapshot_id): source_id
+            for snapshot_id, source_id in db.execute(
+                select(RunSource.snapshot_id, RunSource.source_id).where(
+                    RunSource.run_id == run.id,
+                    RunSource.snapshot_id.is_not(None),
+                )
+            )
+        }
+        for passage in state.passages:
+            source_id = source_by_snapshot.get(passage.snapshot_id)
+            if source_id is None:
+                raise ValueError("passage snapshot is not attached to this verification run")
+            snapshot_id = UUID(passage.snapshot_id)
+            existing = db.scalar(
+                select(SourcePassage).where(
+                    SourcePassage.snapshot_id == snapshot_id,
+                    SourcePassage.text_hash == passage.text_hash,
+                )
+            )
+            if existing is None:
+                existing = SourcePassage(
+                    id=UUID(passage.passage_id),
+                    snapshot_id=snapshot_id,
+                    source_id=source_id,
+                    text=passage.text,
+                    text_hash=passage.text_hash,
+                    extraction_certainty=passage.extraction_certainty,
+                )
+                db.add(existing)
+            existing.heading_path = passage.heading_path
+            existing.page_or_position = passage.page_or_position
+            existing.paragraph_index = passage.paragraph_index
+            existing.speaker = passage.speaker
+            existing.table_ref = passage.table_ref
+            existing.embedding = passage.embedding
+            existing.embedding_model = passage.embedding_model
+            existing.passage_metadata = passage.metadata
+        models = dict(run.model_versions)
+        models["embedding"] = {
+            **(
+                state.embedding_run_metadata.model_dump(mode="json")
+                if state.embedding_run_metadata is not None
+                else {
+                    "provider": "deepseek",
+                    "configured_model": state.embedding_model_version,
+                    "used_model": state.embedding_model_version,
+                    "status": (
+                        "embedded"
+                        if state.embedding_model_version
+                        else "unconfigured_fallback"
+                    ),
+                }
+            ),
+            "retrieval_mode": state.passage_retrieval_mode,
+        }
+        run.model_versions = models
 
     @staticmethod
     def _persist_claims(db: Session, run: VerificationRun, state: VerificationState) -> None:
@@ -537,13 +603,20 @@ def execute_planning_workflow(
                         discovery_source_selection=pipeline.discover,
                         secure_retrieval=pipeline.retrieve,
                         extraction=pipeline.extract,
+                        passage_segmentation_embedding=PassagePipeline(
+                            PassageSegmenter(),
+                            PassageEmbeddingService(
+                                client,
+                                expected_dimension=settings.passage_embedding_dimension,
+                            ),
+                        ).process,
                     )
                     if pipeline is not None
                     else WorkflowExtensions()
                 ),
             )
             result = await build_workflow(
-                services, planning_only=not retrieve, retrieval_only=retrieve
+                services, planning_only=not retrieve, segmentation_only=retrieve
             ).ainvoke(initial)
             return VerificationState.model_validate(result)
         finally:

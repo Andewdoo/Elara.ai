@@ -8,7 +8,7 @@ from urllib.parse import urlsplit
 from uuid import uuid4
 
 from extraction.service import ExtractionService
-from graph.state import CandidateSource, ExtractedSourceRecord, SnapshotRecord, VerificationState
+from graph.state import CandidateSource, ExtractedBlockRecord, ExtractedSourceRecord, SnapshotRecord, VerificationState
 from research.cache import RetrievalRateLimiter
 from research.fetcher import FetchError, SecureFetcher
 from research.ranking import RankingSignals, lexical_overlap, priority_score, select_diverse
@@ -230,6 +230,19 @@ class RetrievalPipeline:
                     correction_notices=list(document.correction_notices),
                     outbound_links=list(document.outbound_links),
                     page_positions=list(document.page_positions),
+                    blocks=[
+                        ExtractedBlockRecord(
+                            kind=block.kind,
+                            text=block.text,
+                            heading_path=list(block.heading_path),
+                            page_or_position=block.page_or_position,
+                            paragraph_index=block.paragraph_index,
+                            speaker=block.speaker,
+                            table_ref=block.table_ref,
+                            metadata=block.metadata,
+                        )
+                        for block in document.blocks
+                    ],
                 )
             )
         parser_versions = dict(state.parser_versions)

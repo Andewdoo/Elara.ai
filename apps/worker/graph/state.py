@@ -129,6 +129,18 @@ class ExtractedSourceRecord(StateModel):
     correction_notices: list[str] = Field(default_factory=list)
     outbound_links: list[str] = Field(default_factory=list)
     page_positions: list[str] = Field(default_factory=list)
+    blocks: list["ExtractedBlockRecord"] = Field(default_factory=list)
+
+
+class ExtractedBlockRecord(StateModel):
+    kind: str = Field(min_length=1, max_length=50)
+    text: str = Field(min_length=1)
+    heading_path: list[str] = Field(default_factory=list)
+    page_or_position: str | None = Field(default=None, max_length=500)
+    paragraph_index: int | None = Field(default=None, ge=0)
+    speaker: str | None = None
+    table_ref: str | None = Field(default=None, max_length=500)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class PassageRecord(StateModel):
@@ -143,7 +155,9 @@ class PassageRecord(StateModel):
     speaker: str | None = None
     table_ref: str | None = Field(default=None, max_length=500)
     extraction_certainty: UnitDecimal
+    embedding: list[float] | None = None
     embedding_model: str | None = Field(default=None, max_length=255)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class DependencyRecord(StateModel):
@@ -181,6 +195,26 @@ class ScoreBundle(StateModel):
     deterministic: Literal[True] = True
 
 
+class EmbeddingRunMetadata(StateModel):
+    provider: Literal["deepseek"] = "deepseek"
+    configured_model: str | None = Field(default=None, max_length=255)
+    used_model: str | None = Field(default=None, max_length=255)
+    status: Literal[
+        "embedded",
+        "unconfigured_fallback",
+        "provider_fallback",
+        "dimension_fallback",
+        "no_passages",
+    ]
+    request_count: int = Field(default=0, ge=0)
+    latency_ms: int = Field(default=0, ge=0)
+    prompt_tokens: int = Field(default=0, ge=0)
+    total_tokens: int = Field(default=0, ge=0)
+    error_code: str | None = Field(default=None, max_length=100)
+    status_code: int | None = Field(default=None, ge=100, le=599)
+    retryable: bool = False
+
+
 class RecoverableError(StateModel):
     stage: WorkflowStage
     code: str = Field(pattern=r"^[A-Z][A-Z0-9_]{1,99}$")
@@ -199,7 +233,7 @@ class VerificationState(StateModel):
     normalized_input: IntakeClassificationOutput | None = None
     research_depth: ResearchDepth
     methodology_version: str = Field(min_length=1, max_length=100)
-    workflow_version: str = Field(default="step-9", min_length=1, max_length=100)
+    workflow_version: str = Field(default="step-10", min_length=1, max_length=100)
     parser_versions: dict[str, str] = Field(default_factory=dict)
     claims: list[AtomicClaimOutput] = Field(default_factory=list)
     unresolved_ambiguities: list[str] = Field(default_factory=list)
@@ -221,6 +255,11 @@ class VerificationState(StateModel):
     evidence_reviewed_at: datetime | None = None
     recoverable_errors: list[RecoverableError] = Field(default_factory=list)
     model_calls: dict[str, CallMetadata] = Field(default_factory=dict)
+    embedding_model_version: str | None = Field(default=None, max_length=255)
+    passage_retrieval_mode: Literal["hybrid", "lexical_metadata_fallback"] = (
+        "lexical_metadata_fallback"
+    )
+    embedding_run_metadata: EmbeddingRunMetadata | None = None
     completed_stages: list[WorkflowStage] = Field(default_factory=list)
     cancelled: bool = False
 
@@ -269,6 +308,8 @@ __all__ = [
     "CalculationRecord",
     "CandidateSource",
     "DependencyRecord",
+    "EmbeddingRunMetadata",
+    "ExtractedBlockRecord",
     "ExtractedSourceRecord",
     "PassageRecord",
     "RecoverableError",

@@ -791,7 +791,11 @@ class WorkflowNodes:
 
 
 def build_workflow(
-    services: WorkflowServices, *, planning_only: bool = False, retrieval_only: bool = False
+    services: WorkflowServices,
+    *,
+    planning_only: bool = False,
+    retrieval_only: bool = False,
+    segmentation_only: bool = False,
 ):
     """Compile the controlled graph; planning-only is the Step 8 production handoff."""
     nodes = WorkflowNodes(services)
@@ -841,6 +845,9 @@ def build_workflow(
             graph.add_edge("extraction", END)
             return graph.compile()
         _conditional(graph, "extraction", "passage_segmentation_embedding", stop_requested)
+        if segmentation_only:
+            graph.add_edge("passage_segmentation_embedding", END)
+            return graph.compile()
         _conditional(
             graph,
             "passage_segmentation_embedding",

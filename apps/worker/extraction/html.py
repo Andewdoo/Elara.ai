@@ -8,10 +8,11 @@ from urllib.parse import urljoin
 import trafilatura
 from bs4 import BeautifulSoup, Comment
 
-from extraction.models import ExtractedDocument
+from extraction.models import ExtractedBlock, ExtractedDocument
 
 
 _SPACE = re.compile(r"[ \t\r\f\v]+")
+_SPEAKER = re.compile(r"^(?P<speaker>[A-Z][\w .'-]{0,79}):\s+(?P<text>.+)$")
 _BARRIER_TERMS = ("enable javascript", "access denied", "verify you are human", "subscribe to continue")
 
 
@@ -76,6 +77,7 @@ def extract_with_beautiful_soup(content: bytes, *, url: str) -> ExtractedDocumen
     corrections = tuple(
         block for block in blocks if any(term in block.casefold() for term in ("correction", "retraction", "editor's note"))
     )
+    structured_blocks = _structured_blocks(root)
     return ExtractedDocument(
         body=text,
         title=title,
@@ -88,6 +90,7 @@ def extract_with_beautiful_soup(content: bytes, *, url: str) -> ExtractedDocumen
         quotes=quotes,
         correction_notices=corrections,
         outbound_links=links,
+        blocks=structured_blocks,
         parser_name="beautifulsoup4",
         parser_version=version("beautifulsoup4"),
         quality=_quality(text),
@@ -135,6 +138,85 @@ def _table_is_rectangular(table) -> bool:
     widths = [len(row.find_all(["th", "td"])) for row in table.find_all("tr")]
     widths = [width for width in widths if width]
     return not widths or len(set(widths)) == 1
+
+
+def _structured_blocks(root) -> tuple[ExtractedBlock, ...]:
+    heading_stack: list[str] = []
+    paragraph_index = 0
+    table_index = 0
+    result: list[ExtractedBlock] = []
+    selected = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "li", "blockquote", "pre", "table"]
+    for node in root.find_all(selected):
+        if node.name != "table" and node.find_parent("table") is not None:
+            continue
+        if node.find_parent(selected) is not None:
+            continue
+        if node.name and node.name.startswith("h"):
+            text = _normalize(node.get_text(" ", strip=True))
+            if not text:
+                continue
+            level = int(node.name[1])
+            heading_stack = heading_stack[: level - 1]
+            while len(heading_stack) < level - 1:
+                heading_stack.append("")
+            heading_stack.append(text)
+            result.append(
+                ExtractedBlock(
+                    kind="heading",
+                    text=text,
+                    heading_path=tuple(value for value in heading_stack if value),
+                    page_or_position=f"heading {len(result) + 1}",
+                )
+            )
+            continue
+        if node.name == "table":
+            table_index += 1
+            rows = node.find_all("tr")
+            header_cells = rows[0].find_all(["th", "td"]) if rows else []
+            headers = [_normalize(cell.get_text(" ", strip=True)) for cell in header_cells]
+            for row_index, row in enumerate(rows, start=1):
+                values = [_normalize(cell.get_text(" ", strip=True)) for cell in row.find_all(["th", "td"])]
+                if not any(values):
+                    continue
+                if row_index > 1 and headers and len(headers) == len(values):
+                    text = " | ".join(
+                        f"{header}: {value}" if header else value
+                        for header, value in zip(headers, values, strict=True)
+                    )
+                else:
+                    text = " | ".join(values)
+                result.append(
+                    ExtractedBlock(
+                        kind="table_row",
+                        text=text,
+                        heading_path=tuple(value for value in heading_stack if value),
+                        page_or_position=f"table {table_index}, row {row_index}",
+                        table_ref=f"table {table_index} row {row_index}",
+                        metadata={"column_labels": headers},
+                    )
+                )
+            continue
+        text = _normalize(node.get_text(" ", strip=True))
+        if not text:
+            continue
+        paragraph_index += 1
+        speaker_match = _SPEAKER.match(text)
+        result.append(
+            ExtractedBlock(
+                kind="transcript_turn" if speaker_match else ("quote" if node.name == "blockquote" else "paragraph"),
+                text=text,
+                heading_path=tuple(value for value in heading_stack if value),
+                page_or_position=f"paragraph {paragraph_index}",
+                paragraph_index=paragraph_index,
+                speaker=speaker_match.group("speaker") if speaker_match else None,
+                metadata=(
+                    {"quote_citation": str(node.get("cite"))}
+                    if node.name == "blockquote" and node.get("cite")
+                    else {}
+                ),
+            )
+        )
+    return tuple(result)
 
 
 def _parse_date(value: object) -> datetime | None:
