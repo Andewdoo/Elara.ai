@@ -48,6 +48,14 @@ EvidenceIntentValue = Literal[
     "surrounding_context",
     "existing_fact_check",
 ]
+DependencyRelationshipValue = Literal[
+    "CITES",
+    "REPUBLISHES",
+    "QUOTES",
+    "DERIVES_FROM",
+    "USES_SAME_DATA",
+    "POSSIBLE_DUPLICATE",
+]
 
 
 class StateModel(BaseModel):
@@ -163,15 +171,32 @@ class PassageRecord(StateModel):
 class DependencyRecord(StateModel):
     parent_source_ref: str = Field(min_length=1, max_length=128)
     child_source_ref: str = Field(min_length=1, max_length=128)
-    relationship: str = Field(min_length=1, max_length=100)
+    relationship: DependencyRelationshipValue
     confidence: UnitDecimal
     detection_method: str = Field(min_length=1, max_length=100)
+    information_cluster_ref: str | None = Field(default=None, max_length=128)
+    dependency_multiplier: UnitDecimal = Decimal("1.00")
 
     @model_validator(mode="after")
     def no_self_edge(self) -> "DependencyRecord":
         if self.parent_source_ref == self.child_source_ref:
             raise ValueError("source dependencies cannot be self-referential")
         return self
+
+
+class InformationClusterRecord(StateModel):
+    cluster_ref: str = Field(min_length=1, max_length=128)
+    label: str = Field(min_length=1, max_length=500)
+    origin_type: str = Field(min_length=1, max_length=100)
+    representative_source_ref: str = Field(min_length=1, max_length=128)
+    source_refs: list[str] = Field(min_length=1)
+
+    @field_validator("source_refs")
+    @classmethod
+    def unique_members(cls, value: list[str]) -> list[str]:
+        if len(value) != len(set(value)):
+            raise ValueError("information cluster members must be unique")
+        return value
 
 
 class CalculationRecord(StateModel):
@@ -183,6 +208,32 @@ class CalculationRecord(StateModel):
     units: str | None = Field(default=None, max_length=100)
     decimal_context: dict[str, Any]
     audit_status: str = Field(min_length=1, max_length=50)
+    claim_ref: str | None = Field(default=None, max_length=64)
+
+
+class ScoredEvidenceRecord(StateModel):
+    claim_ref: str = Field(min_length=1, max_length=64)
+    passage_id: str = Field(min_length=1, max_length=128)
+    stance_value: Decimal = Field(ge=Decimal("-1"), le=Decimal("1"))
+    base_quality: UnitDecimal
+    dependency_multiplier: UnitDecimal
+    adjusted_weight: UnitDecimal
+    rejection_reasons: list[str] = Field(default_factory=list)
+
+
+class ClaimScoreRecord(StateModel):
+    claim_ref: str = Field(min_length=1, max_length=64)
+    supporting_weight: Decimal = Field(ge=0)
+    contradicting_weight: Decimal = Field(ge=0)
+    total_adjusted_evidence: Decimal = Field(ge=0)
+    evidence_support: ScoreValue | None = None
+    evidence_consistency: ScoreValue | None = None
+    verdict_confidence: ScoreValue
+    context_completeness: ScoreValue
+    average_quality: ScoreValue
+    adequate_evidence: bool
+    final_label: str = Field(min_length=1, max_length=100)
+    gates: dict[str, Any] = Field(default_factory=dict)
 
 
 class ScoreBundle(StateModel):
@@ -190,6 +241,9 @@ class ScoreBundle(StateModel):
     verdict_confidence: ScoreValue | None = None
     source_independence: ScoreValue | None = None
     context_completeness: ScoreValue | None = None
+    evidence_consistency: ScoreValue | None = None
+    quote_fidelity: ScoreValue | None = None
+    article_factual_accuracy: ScoreValue | None = None
     final_label: str | None = Field(default=None, max_length=100)
     methodology_version: str = Field(min_length=1, max_length=100)
     deterministic: Literal[True] = True
@@ -247,7 +301,11 @@ class VerificationState(StateModel):
     extracted_sources: list[ExtractedSourceRecord] = Field(default_factory=list)
     passages: list[PassageRecord] = Field(default_factory=list)
     evidence: list[EvidenceClassificationItemOutput] = Field(default_factory=list)
+    information_clusters: list[InformationClusterRecord] = Field(default_factory=list)
     dependencies: list[DependencyRecord] = Field(default_factory=list)
+    source_dependency_multipliers: dict[str, UnitDecimal] = Field(default_factory=dict)
+    scored_evidence: list[ScoredEvidenceRecord] = Field(default_factory=list)
+    claim_scores: list[ClaimScoreRecord] = Field(default_factory=list)
     calculations: list[CalculationRecord] = Field(default_factory=list)
     scores: ScoreBundle | None = None
     report_draft: SynthesisOutput | None = None
@@ -311,6 +369,7 @@ __all__ = [
     "EmbeddingRunMetadata",
     "ExtractedBlockRecord",
     "ExtractedSourceRecord",
+    "InformationClusterRecord",
     "PassageRecord",
     "RecoverableError",
     "ResearchDepth",

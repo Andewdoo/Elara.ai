@@ -26,4 +26,4 @@ testpaths = ["tests"]
 addopts = "-q"
 
 [tool.setuptools.packages.find]
-include = ["agents*", "elara_worker*", "extraction*", "graph*", "research*"]
+include = ["agents*", "elara_worker*", "extraction*", "graph*", "provenance*", "research*", "scoring*"]

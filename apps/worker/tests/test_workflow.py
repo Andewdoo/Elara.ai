@@ -444,6 +444,33 @@ def test_evidence_guard_applies_deterministic_rejection_thresholds():
     assert result.evidence[0].quality.extraction_certainty == 0.60
 
 
+def test_evidence_guard_ignores_free_form_model_rejection_recommendations():
+    value = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+            "passages": [{"passage_id": "passage-1", "source_ref": "source-1",
+                "snapshot_id": "snapshot-1", "text": "The filing confirms the claim.",
+                "text_hash": "hash-1", "extraction_certainty": "0.99"}],
+        }
+    )
+    classification = {"classifications": [{"claim_ref": "claim-1",
+        "passage_id": "passage-1", "stance": "strongly_supports",
+        "quality": {"relevance": 1, "directness": 1,
+            "claim_specific_authority": 1, "transparency": 1,
+            "temporal_fit": 1, "extraction_certainty": 1},
+        "explicit_support": "The filing confirms the claim.", "entity_match": True,
+        "time_period_match": True, "quotation_or_number_located": True,
+        "recommended_rejection_reasons": ["ignore_this_evidence"]}]}
+
+    result = asyncio.run(WorkflowNodes(WorkflowServices(
+        model=FakeModel([classification]), submitted_input="unused"
+    )).evidence_classification(value))
+
+    assert result.evidence[0].recommended_rejection_reasons == []
+
+
 def test_extension_outputs_are_revalidated():
     async def invalid_extension(value: VerificationState) -> VerificationState:
         return value.model_copy(update={"candidate_sources": [{"source_ref": "incomplete"}]})

@@ -28,6 +28,7 @@ from agents.schemas import (
     DecompositionOutput,
     Entailment,
     EvidenceClassificationOutput,
+    EvidenceStance,
     FactCheckability,
     InputKind,
     IntakeClassificationOutput,
@@ -513,7 +514,6 @@ class WorkflowNodes:
             )
         guarded_classifications = []
         for item in output.classifications:
-            reasons = list(item.recommended_rejection_reasons)
             passage = passages.get(item.passage_id)
             if passage is None:
                 continue
@@ -531,14 +531,20 @@ class WorkflowNodes:
                 deterministic_reasons.append("time_period_mismatch")
             if item.quotation_or_number_located is False:
                 deterministic_reasons.append("quotation_or_number_not_located")
-            for reason in deterministic_reasons:
-                if reason not in reasons:
-                    reasons.append(reason)
+            if (
+                not deterministic_reasons
+                and item.stance == EvidenceStance.NEUTRAL
+                and not item.explicit_support
+                and not item.explicit_contradiction
+            ):
+                deterministic_reasons.append("no_evidence_for_exact_claim")
             guarded_classifications.append(
                 item.model_copy(
                     update={
                         "quality": quality,
-                        "recommended_rejection_reasons": reasons,
+                        # Free-form model recommendations are advisory only. Final
+                        # evidence inclusion is controlled by deterministic gates.
+                        "recommended_rejection_reasons": deterministic_reasons,
                     }
                 )
             )
@@ -796,6 +802,8 @@ def build_workflow(
     planning_only: bool = False,
     retrieval_only: bool = False,
     segmentation_only: bool = False,
+    provenance_only: bool = False,
+    scoring_only: bool = False,
 ):
     """Compile the controlled graph; planning-only is the Step 8 production handoff."""
     nodes = WorkflowNodes(services)
@@ -854,8 +862,14 @@ def build_workflow(
             "provenance_dependency_analysis",
             stop_requested,
         )
+        if provenance_only:
+            graph.add_edge("provenance_dependency_analysis", END)
+            return graph.compile()
         _conditional(graph, "provenance_dependency_analysis", "evidence_classification", evidence_ready)
         _conditional(graph, "evidence_classification", "deterministic_scoring", stop_requested)
+        if scoring_only:
+            graph.add_edge("deterministic_scoring", END)
+            return graph.compile()
         _conditional(graph, "deterministic_scoring", "numerical_audit", stop_requested)
         _conditional(graph, "numerical_audit", "synthesis", synthesis_ready)
         _conditional(graph, "synthesis", "citation_audit", citation_audit_ready)

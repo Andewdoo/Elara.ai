@@ -159,6 +159,8 @@ class SourceGraphNode(BaseModel):
     id: str
     type: str
     label: str
+    data: dict[str, Any] = Field(default_factory=dict)
+    position: dict[str, float]
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -166,8 +168,10 @@ class SourceGraphEdge(BaseModel):
     id: str
     source: str
     target: str
+    label: str
     relationship: str
     confidence: float
+    data: dict[str, Any] = Field(default_factory=dict)
 
 
 class SourceGraphResponse(BaseModel):

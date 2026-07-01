@@ -58,3 +58,23 @@ Trafilatura, Beautiful Soup, the explicit future Playwright boundary, and page-a
 PyMuPDF parsing. PostgreSQL stores every selected source, immutable snapshot, run
 link, parser version, and explicit inaccessible status before the workflow hands off
 to Step 10 passage segmentation.
+
+Step 10 adds structure-aware passage segmentation, stable text hashing, the
+approved server-side DeepSeek embedding route, pgvector persistence, and a
+lexical/metadata fallback when embeddings are unavailable.
+
+Step 11 installs deterministic provenance analysis. It detects outbound and
+named citations, first-known copies, syndication, near-duplicate text, shared
+quotations, statistics, tables, and correction/error fragments. Information
+clusters and dependency edges are persisted before scoring, with contribution
+multipliers fixed at 1.00, 0.35, 0.10, or 0.00. The protected FastAPI source
+graph endpoint exports run-scoped source, snapshot, and cluster nodes plus
+auditable relationship metadata for React Flow.
+
+Step 12 installs pure-Python Decimal scoring in `scoring`. The published quality,
+dependency, evidence balance, support, consistency, confidence, independence,
+quote-fidelity, context, and article formulas are isolated from model output.
+Deterministic insufficient-evidence, misleading-context, confidence, and essential-
+claim gates produce final labels. Accepted and rejected evidence weights, per-claim
+scores, overall scores, formula text, inputs, results, units, Decimal context, and
+audit status are persisted before the workflow hands off to numerical auditing.

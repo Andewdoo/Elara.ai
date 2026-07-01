@@ -29,9 +29,11 @@ from agents.schemas import (
 from app.config import Settings
 from app.models.claims import AtomicClaim, SearchQuery
 from app.models.agent_event import AgentEvent
-from app.models.enums import AccessStatus, InputType, RunStatus, SourceType
-from app.models.evidence import ReportCitation
+from app.models.enums import AccessStatus, DependencyRelationship, EvidenceStance, InputType, RunStatus, SourceType
+from app.models.evidence import EvidenceItem, ReportCitation
+from app.models.records import Calculation
 from app.models.methodology import MethodologyVersion
+from app.models.provenance import InformationCluster, SourceDependency
 from app.models.sources import RunSource, Source, SourcePassage, SourceSnapshot
 from app.models.verification_run import VerificationRun
 from graph.state import ResearchDepth, VerificationState, WorkflowStage
@@ -43,6 +45,8 @@ from research.fetcher import S3SnapshotStore, SecureFetcher, SnapshotFileStore
 from research.pipeline import RetrievalPipeline
 from research.search import BraveSearchClient
 from research.url_guard import UrlGuard
+from provenance.dependencies import ProvenancePipeline
+from scoring.service import DeterministicScoringService
 
 
 _RUN_STATUSES = {
@@ -123,6 +127,17 @@ class SqlWorkflowStateWriter:
                 and WorkflowStage.SEGMENTATION in state.completed_stages
             ):
                 self._persist_passages(db, run, state)
+            elif (
+                stage == WorkflowStage.PROVENANCE
+                and WorkflowStage.PROVENANCE in state.completed_stages
+            ):
+                self._persist_provenance(db, run, state)
+            elif (
+                stage == WorkflowStage.SCORING
+                and WorkflowStage.SCORING in state.completed_stages
+                and state.scores is not None
+            ):
+                self._persist_scoring(db, run, state)
             elif stage == WorkflowStage.SYNTHESIS and state.report_draft is not None:
                 run.title = state.report_draft.title
                 run.evidence_reviewed_at = state.evidence_reviewed_at
@@ -266,6 +281,98 @@ class SqlWorkflowStateWriter:
             "retrieval_mode": state.passage_retrieval_mode,
         }
         run.model_versions = models
+
+    @staticmethod
+    def _persist_provenance(db: Session, run: VerificationRun, state: VerificationState) -> None:
+        snapshot_by_ref = {
+            snapshot.source_ref: UUID(snapshot.snapshot_id) for snapshot in state.snapshots
+        }
+        source_by_snapshot = {
+            snapshot_id: source_id
+            for snapshot_id, source_id in db.execute(
+                select(RunSource.snapshot_id, RunSource.source_id).where(
+                    RunSource.run_id == run.id,
+                    RunSource.snapshot_id.is_not(None),
+                )
+            )
+        }
+        source_by_ref = {
+            source_ref: source_by_snapshot[snapshot_id]
+            for source_ref, snapshot_id in snapshot_by_ref.items()
+            if snapshot_id in source_by_snapshot
+        }
+        expected_refs = {source.source_ref for source in state.candidate_sources}
+        if expected_refs - source_by_ref.keys():
+            raise ValueError("provenance source is not attached to this verification run")
+
+        db.execute(delete(SourceDependency).where(SourceDependency.run_id == run.id))
+        db.execute(delete(InformationCluster).where(InformationCluster.run_id == run.id))
+        for cluster in state.information_clusters:
+            db.add(
+                InformationCluster(
+                    id=UUID(cluster.cluster_ref),
+                    run_id=run.id,
+                    label=cluster.label,
+                    origin_type=cluster.origin_type,
+                    representative_source_id=source_by_ref[cluster.representative_source_ref],
+                )
+            )
+        db.flush()
+        for edge in state.dependencies:
+            db.add(
+                SourceDependency(
+                    run_id=run.id,
+                    parent_source_id=source_by_ref[edge.parent_source_ref],
+                    child_source_id=source_by_ref[edge.child_source_ref],
+                    relationship=DependencyRelationship(edge.relationship),
+                    confidence=edge.confidence,
+                    detection_method=edge.detection_method,
+                    information_cluster_id=(
+                        UUID(edge.information_cluster_ref)
+                        if edge.information_cluster_ref is not None
+                        else None
+                    ),
+                )
+            )
+
+    @staticmethod
+    def _persist_scoring(db: Session, run: VerificationRun, state: VerificationState) -> None:
+        claims = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
+        claim_by_ref = {str(row.gates.get("claim_ref")): row for row in claims}
+        claim_ids = [row.id for row in claims]
+        if claim_ids:
+            db.execute(delete(EvidenceItem).where(EvidenceItem.atomic_claim_id.in_(claim_ids)))
+        db.execute(delete(Calculation).where(Calculation.run_id == run.id))
+        stance_names = {
+            Decimal("-1.00"): "STRONGLY_CONTRADICTS", Decimal("-0.50"): "PARTIALLY_CONTRADICTS",
+            Decimal("0.00"): "NEUTRAL", Decimal("0.50"): "PARTIALLY_SUPPORTS",
+            Decimal("1.00"): "STRONGLY_SUPPORTS",
+        }
+        classifications = {(item.claim_ref, item.passage_id): item for item in state.evidence}
+        for item in state.scored_evidence:
+            classification = classifications[(item.claim_ref, item.passage_id)]
+            db.add(EvidenceItem(
+                atomic_claim_id=claim_by_ref[item.claim_ref].id, passage_id=UUID(item.passage_id),
+                stance=EvidenceStance[stance_names[item.stance_value]], stance_value=item.stance_value,
+                relevance=Decimal(str(classification.quality.relevance)), directness=Decimal(str(classification.quality.directness)),
+                authority=Decimal(str(classification.quality.claim_specific_authority)), transparency=Decimal(str(classification.quality.transparency)),
+                temporal_fit=Decimal(str(classification.quality.temporal_fit)), extraction_certainty=Decimal(str(classification.quality.extraction_certainty)),
+                base_quality=item.base_quality, dependency_multiplier=item.dependency_multiplier, adjusted_weight=item.adjusted_weight,
+                rejection_reason=";".join(item.rejection_reasons) or None, citation_status="rejected" if item.rejection_reasons else "pending",
+            ))
+        for item in state.calculations:
+            db.add(Calculation(id=UUID(item.calculation_ref), run_id=run.id,
+                atomic_claim_id=claim_by_ref[item.claim_ref].id if item.claim_ref else None,
+                formula_name=item.formula_name, formula_text=item.formula_text, inputs=item.inputs,
+                result=item.result, units=item.units, decimal_context=item.decimal_context, audit_status=item.audit_status))
+        for item in state.claim_scores:
+            row = claim_by_ref[item.claim_ref]
+            row.support_score, row.confidence_score = item.evidence_support, item.verdict_confidence
+            row.context_completeness, row.final_label = item.context_completeness, item.final_label
+            row.gates = {**row.gates, **item.gates, "adequate_evidence": item.adequate_evidence}
+        run.evidence_support, run.verdict_confidence = state.scores.evidence_support, state.scores.verdict_confidence
+        run.source_independence, run.context_completeness = state.scores.source_independence, state.scores.context_completeness
+        run.verdict = state.scores.final_label
 
     @staticmethod
     def _persist_claims(db: Session, run: VerificationRun, state: VerificationState) -> None:
@@ -610,13 +717,15 @@ def execute_planning_workflow(
                                 expected_dimension=settings.passage_embedding_dimension,
                             ),
                         ).process,
+                        provenance_dependency_analysis=ProvenancePipeline().process,
+                        deterministic_scoring=DeterministicScoringService().process,
                     )
                     if pipeline is not None
                     else WorkflowExtensions()
                 ),
             )
             result = await build_workflow(
-                services, planning_only=not retrieve, segmentation_only=retrieve
+                services, planning_only=not retrieve, scoring_only=retrieve
             ).ainvoke(initial)
             return VerificationState.model_validate(result)
         finally:

@@ -74,6 +74,39 @@ class EvidenceStance(StrEnum):
     STRONGLY_SUPPORTS = "strongly_supports"
 
 
+class ContextIssue(StrEnum):
+    KEY_TERM_UNDEFINED = "key_term_undefined"
+    DATE_RANGE_OMITTED = "date_range_omitted"
+    BASELINE_OR_DENOMINATOR_OMITTED = "baseline_or_denominator_omitted"
+    RELATIVE_WITHOUT_ABSOLUTE = "relative_without_absolute"
+    CORRELATION_AS_CAUSATION = "correlation_as_causation"
+    MATERIAL_QUALIFIER_OMITTED = "material_qualifier_omitted"
+    INCOMPARABLE_GROUPS = "incomparable_groups"
+    UNIT_OR_MEASURE_CHANGED = "unit_or_measure_changed"
+    SURROUNDING_QUOTE_CHANGES_MEANING = "surrounding_quote_changes_meaning"
+    CONDITIONAL_LANGUAGE_REMOVED = "conditional_language_removed"
+    ADJACENT_SENTENCE_OMITTED = "adjacent_sentence_omitted"
+    SCOPE_OMITTED = "scope_omitted"
+    SPEAKER_QUOTING_ANOTHER = "speaker_quoting_another"
+    NONLITERAL_PRESENTED_LITERALLY = "nonliteral_presented_literally"
+    QUESTION_AS_ASSERTION = "question_as_assertion"
+    TRANSLATION_QUALIFIER_REMOVED = "translation_qualifier_removed"
+    EDIT_HIDES_CORRECTION = "edit_hides_correction"
+
+
+class ConfidenceIssue(StrEnum):
+    ESSENTIAL_TERM_AMBIGUOUS = "essential_term_ambiguous"
+    SPEAKER_OR_DATE_UNRESOLVED = "speaker_or_date_unresolved"
+    PRIMARY_EVIDENCE_UNAVAILABLE = "primary_evidence_unavailable"
+    MAJOR_CONTRADICTION_UNRESOLVED = "major_contradiction_unresolved"
+    SINGLE_INFORMATION_CLUSTER = "single_information_cluster"
+    IMPORTANT_SOURCE_INACCESSIBLE = "important_source_inaccessible"
+    TRANSLATION_UNCERTAIN = "translation_uncertain"
+    EDITED_MEDIA_UNAUTHENTICATED = "edited_media_unauthenticated"
+    DEVELOPING_EVENT_LOW = "developing_event_low"
+    DEVELOPING_EVENT_HIGH = "developing_event_high"
+
+
 class Entailment(StrEnum):
     ENTAILED = "entailed"
     PARTIAL = "partial"
@@ -199,6 +232,14 @@ class EvidenceQualityOutput(AgentOutput):
     extraction_certainty: UnitScore
 
 
+class QuoteFidelityComponentsOutput(AgentOutput):
+    wording: UnitScore
+    speaker_identity: UnitScore
+    completeness: UnitScore
+    sequence_integrity: UnitScore
+    translation_accuracy: UnitScore | None = None
+
+
 class EvidenceClassificationItemOutput(AgentOutput):
     claim_ref: str = Field(min_length=1, max_length=64)
     passage_id: str = Field(min_length=1, max_length=128)
@@ -208,6 +249,9 @@ class EvidenceClassificationItemOutput(AgentOutput):
     explicit_contradiction: str | None = None
     uncertainty: str | None = None
     omitted_context: list[str] = Field(default_factory=list)
+    context_issues: list[ContextIssue] = Field(default_factory=list)
+    confidence_issues: list[ConfidenceIssue] = Field(default_factory=list)
+    quote_fidelity: QuoteFidelityComponentsOutput | None = None
     entity_match: bool
     time_period_match: bool
     quotation_or_number_located: bool | None = None
@@ -276,12 +320,15 @@ class CitationAuditOutput(AgentOutput):
 __all__ = [
     "AtomicClaimOutput",
     "CitationAuditOutput",
+    "ConfidenceIssue",
+    "ContextIssue",
     "CitedReportSentenceOutput",
     "DecompositionOutput",
     "EvidenceClassificationOutput",
     "EvidenceQualityOutput",
     "IntakeClassificationOutput",
     "PlanningOutput",
+    "QuoteFidelityComponentsOutput",
     "SentenceCitationAuditOutput",
     "SynthesisOutput",
 ]
