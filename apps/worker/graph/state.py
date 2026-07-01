@@ -307,6 +307,9 @@ class VerificationState(StateModel):
     scored_evidence: list[ScoredEvidenceRecord] = Field(default_factory=list)
     claim_scores: list[ClaimScoreRecord] = Field(default_factory=list)
     calculations: list[CalculationRecord] = Field(default_factory=list)
+    # Model- or parser-identified candidates remain untrusted dictionaries until
+    # auditing.numerical validates them deterministically.
+    numerical_candidates: list[dict[str, Any]] = Field(default_factory=list)
     scores: ScoreBundle | None = None
     report_draft: SynthesisOutput | None = None
     citation_audit: CitationAuditOutput | None = None

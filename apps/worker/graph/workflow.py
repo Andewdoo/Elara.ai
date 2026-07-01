@@ -804,6 +804,7 @@ def build_workflow(
     segmentation_only: bool = False,
     provenance_only: bool = False,
     scoring_only: bool = False,
+    numerical_only: bool = False,
 ):
     """Compile the controlled graph; planning-only is the Step 8 production handoff."""
     nodes = WorkflowNodes(services)
@@ -871,6 +872,9 @@ def build_workflow(
             graph.add_edge("deterministic_scoring", END)
             return graph.compile()
         _conditional(graph, "deterministic_scoring", "numerical_audit", stop_requested)
+        if numerical_only:
+            graph.add_edge("numerical_audit", END)
+            return graph.compile()
         _conditional(graph, "numerical_audit", "synthesis", synthesis_ready)
         _conditional(graph, "synthesis", "citation_audit", citation_audit_ready)
         graph.add_edge("citation_audit", END)

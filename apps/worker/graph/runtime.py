@@ -47,6 +47,7 @@ from research.search import BraveSearchClient
 from research.url_guard import UrlGuard
 from provenance.dependencies import ProvenancePipeline
 from scoring.service import DeterministicScoringService
+from auditing.numerical import NumericalAuditor
 
 
 _RUN_STATUSES = {
@@ -138,6 +139,11 @@ class SqlWorkflowStateWriter:
                 and state.scores is not None
             ):
                 self._persist_scoring(db, run, state)
+            elif (
+                stage == WorkflowStage.NUMERICAL_AUDIT
+                and WorkflowStage.NUMERICAL_AUDIT in state.completed_stages
+            ):
+                self._persist_calculations(db, run, state)
             elif stage == WorkflowStage.SYNTHESIS and state.report_draft is not None:
                 run.title = state.report_draft.title
                 run.evidence_reviewed_at = state.evidence_reviewed_at
@@ -360,11 +366,7 @@ class SqlWorkflowStateWriter:
                 base_quality=item.base_quality, dependency_multiplier=item.dependency_multiplier, adjusted_weight=item.adjusted_weight,
                 rejection_reason=";".join(item.rejection_reasons) or None, citation_status="rejected" if item.rejection_reasons else "pending",
             ))
-        for item in state.calculations:
-            db.add(Calculation(id=UUID(item.calculation_ref), run_id=run.id,
-                atomic_claim_id=claim_by_ref[item.claim_ref].id if item.claim_ref else None,
-                formula_name=item.formula_name, formula_text=item.formula_text, inputs=item.inputs,
-                result=item.result, units=item.units, decimal_context=item.decimal_context, audit_status=item.audit_status))
+        SqlWorkflowStateWriter._add_calculations(db, run, state, claim_by_ref)
         for item in state.claim_scores:
             row = claim_by_ref[item.claim_ref]
             row.support_score, row.confidence_score = item.evidence_support, item.verdict_confidence
@@ -373,6 +375,26 @@ class SqlWorkflowStateWriter:
         run.evidence_support, run.verdict_confidence = state.scores.evidence_support, state.scores.verdict_confidence
         run.source_independence, run.context_completeness = state.scores.source_independence, state.scores.context_completeness
         run.verdict = state.scores.final_label
+
+    @staticmethod
+    def _persist_calculations(
+        db: Session, run: VerificationRun, state: VerificationState
+    ) -> None:
+        claims = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
+        claim_by_ref = {str(row.gates.get("claim_ref")): row for row in claims}
+        db.execute(delete(Calculation).where(Calculation.run_id == run.id))
+        SqlWorkflowStateWriter._add_calculations(db, run, state, claim_by_ref)
+
+    @staticmethod
+    def _add_calculations(db: Session, run: VerificationRun, state: VerificationState, claim_by_ref) -> None:
+        for item in state.calculations:
+            if item.claim_ref is not None and item.claim_ref not in claim_by_ref:
+                raise ValueError("calculation references an unknown atomic claim")
+            db.add(Calculation(id=UUID(item.calculation_ref), run_id=run.id,
+                atomic_claim_id=claim_by_ref[item.claim_ref].id if item.claim_ref else None,
+                formula_name=item.formula_name, formula_text=item.formula_text, inputs=item.inputs,
+                result=item.result, units=item.units, decimal_context=item.decimal_context,
+                audit_status=item.audit_status))
 
     @staticmethod
     def _persist_claims(db: Session, run: VerificationRun, state: VerificationState) -> None:
@@ -719,13 +741,14 @@ def execute_planning_workflow(
                         ).process,
                         provenance_dependency_analysis=ProvenancePipeline().process,
                         deterministic_scoring=DeterministicScoringService().process,
+                        numerical_audit=NumericalAuditor().process,
                     )
                     if pipeline is not None
                     else WorkflowExtensions()
                 ),
             )
             result = await build_workflow(
-                services, planning_only=not retrieve, scoring_only=retrieve
+                services, planning_only=not retrieve, numerical_only=retrieve
             ).ainvoke(initial)
             return VerificationState.model_validate(result)
         finally:

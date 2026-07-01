@@ -26,6 +26,7 @@ from app.schemas.verifications import (
     VerificationCreateResponse,
     VerificationRunResponse,
     SourceGraphResponse,
+    ReportResponse,
 )
 from app.services.queueing import VerificationDispatcher, get_verification_dispatcher
 from app.services.run_lifecycle import mirror_agent_event, mirror_progress, persist_progress
@@ -45,6 +46,7 @@ from app.services.verifications import (
     request_run_cancellation,
 )
 from app.services.source_graph import build_source_graph
+from app.services.reports import build_report
 
 router = APIRouter(prefix="/v1/verifications", tags=["verifications"])
 logger = logging.getLogger(__name__)
@@ -145,6 +147,19 @@ def get_verification_source_graph(
     except RunNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     return build_source_graph(db, run_id=run.id)
+
+
+@router.get("/{run_id}/report", response_model=ReportResponse)
+def get_verification_report(
+    run_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+) -> ReportResponse:
+    try:
+        run = get_authorized_run(db, viewer_id=authenticated.user.id, run_id=run_id)
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    return build_report(db, run=run)
 
 
 @router.get("/{run_id}/events")

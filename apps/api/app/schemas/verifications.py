@@ -186,6 +186,7 @@ class CalculationResponse(BaseModel):
     inputs: dict[str, Any]
     result: dict[str, Any]
     units: str | None
+    decimal_context: dict[str, Any]
     audit_status: str
 
 
