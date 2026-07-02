@@ -210,5 +210,7 @@ FORMULAS: Mapping[str, str] = {
     "quote_fidelity": "weighted mean(0.35 wording, 0.20 speaker, 0.20 completeness, 0.15 sequence, 0.10 translation when applicable)",
     "context_completeness": "clamp(100 - sum(material penalties), 0, 100)",
     "article_factual_accuracy": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+    "attribution_support": "sum(attribution_claim_support * importance_weight) / sum(importance_weight)",
+    "research_coverage": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
     "final_label": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
 }

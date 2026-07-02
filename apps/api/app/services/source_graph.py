@@ -10,8 +10,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.enums import DependencyRelationship, SourceType
+from app.models.claims import AtomicClaim
+from app.models.evidence import EvidenceItem, ReportCitation
 from app.models.provenance import InformationCluster, SourceDependency
-from app.models.sources import RunSource, Source, SourceSnapshot
+from app.models.sources import RunSource, Source, SourcePassage, SourceSnapshot
 from app.schemas.verifications import SourceGraphEdge, SourceGraphNode, SourceGraphResponse
 
 
@@ -24,6 +26,26 @@ def build_source_graph(db: Session, *, run_id: UUID) -> SourceGraphResponse:
         .order_by(RunSource.selected_rank.asc().nullslast(), Source.first_seen_at, Source.id)
     ).all()
     source_ids = {source.id for _, source, _ in source_rows}
+    evidence_rows = db.execute(
+        select(SourcePassage.source_id, EvidenceItem.atomic_claim_id)
+        .join(EvidenceItem, EvidenceItem.passage_id == SourcePassage.id)
+        .join(AtomicClaim, AtomicClaim.id == EvidenceItem.atomic_claim_id)
+        .where(AtomicClaim.run_id == run_id, SourcePassage.source_id.in_(source_ids))
+    ).all()
+    claim_ids_by_source: dict[UUID, set[str]] = defaultdict(set)
+    for source_id, claim_id in evidence_rows:
+        claim_ids_by_source[source_id].add(str(claim_id))
+    cited_source_ids = set(
+        db.scalars(
+            select(SourcePassage.source_id)
+            .join(ReportCitation, ReportCitation.passage_id == SourcePassage.id)
+            .where(
+                ReportCitation.run_id == run_id,
+                ReportCitation.audit_status == "passed",
+                SourcePassage.source_id.in_(source_ids),
+            )
+        ).all()
+    )
     clusters = db.scalars(
         select(InformationCluster)
         .where(InformationCluster.run_id == run_id)
@@ -82,12 +104,18 @@ def build_source_graph(db: Session, *, run_id: UUID) -> SourceGraphResponse:
                 label=source.title or source.publisher or source.domain,
                 data={
                     "sourceId": str(source.id),
-                    "accessStatus": snapshot.access_status.value if snapshot else "PENDING",
+                    "accessStatus": (
+                        snapshot.access_status.value
+                        if snapshot
+                        else "INACCESSIBLE" if run_source.inaccessible_reason else "PENDING"
+                    ),
                     "role": run_source.role,
                     "clusterId": str(cluster_id) if cluster_id else None,
                     "dependencyMultiplier": float(multipliers[source.id]),
                     "firstKnownAppearance": _first_known(source, snapshot),
                     "contentType": source.content_type,
+                    "atomicClaimIds": sorted(claim_ids_by_source[source.id]),
+                    "evidenceUsed": source.id in cited_source_ids,
                 },
                 position={"x": 320.0, "y": y},
                 metadata={
@@ -116,7 +144,14 @@ def build_source_graph(db: Session, *, run_id: UUID) -> SourceGraphResponse:
                     id=f"snapshot:{snapshot.id}",
                     type="snapshot",
                     label=f"Snapshot {snapshot.retrieved_at.date().isoformat()}",
-                    data={"sourceId": str(source.id), "accessStatus": snapshot.access_status.value},
+                    data={
+                        "sourceId": str(source.id),
+                        "accessStatus": snapshot.access_status.value,
+                        "role": run_source.role,
+                        "clusterId": str(cluster_id) if cluster_id else None,
+                        "atomicClaimIds": sorted(claim_ids_by_source[source.id]),
+                        "evidenceUsed": source.id in cited_source_ids,
+                    },
                     position={"x": 640.0, "y": y},
                     metadata={
                         "snapshotId": str(snapshot.id),

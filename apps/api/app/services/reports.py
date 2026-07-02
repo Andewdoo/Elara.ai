@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from decimal import Decimal, ROUND_HALF_UP
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -10,6 +12,7 @@ from app.models import (
     Calculation,
     EvidenceItem,
     MethodologyVersion,
+    ReportCitation,
     RunSource,
     Source,
     SourcePassage,
@@ -19,6 +22,7 @@ from app.schemas.verifications import (
     AtomicClaimResponse,
     CalculationResponse,
     EvidenceItemResponse,
+    ReportCitationResponse,
     ReportResponse,
     ScoreBundle,
 )
@@ -59,6 +63,24 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
         )
     ).all()
     failed_audits = [row for row in calculations if row.audit_status != "passed"]
+    global_score_records = {
+        row.formula_name: row
+        for row in calculations
+        if row.atomic_claim_id is None and row.result.get("score") is not None
+    }
+
+    def calculated_score(name: str) -> int | None:
+        row = global_score_records.get(name)
+        return (
+            int(Decimal(str(row.result["score"])).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+            if row is not None
+            else None
+        )
+    report_citations = db.scalars(
+        select(ReportCitation)
+        .where(ReportCitation.run_id == run.id)
+        .order_by(ReportCitation.created_at, ReportCitation.id)
+    ).all()
     limitations = [f"Inaccessible source: {reason}" for reason in inaccessible]
     if failed_audits:
         limitations.append(
@@ -69,6 +91,8 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
         verdict=run.verdict,
         scores=ScoreBundle(
             evidence_support=run.evidence_support,
+            attribution_support=calculated_score("attribution_support"),
+            quote_fidelity=calculated_score("quote_fidelity"),
             verdict_confidence=run.verdict_confidence,
             source_independence=run.source_independence,
             context_completeness=run.context_completeness,
@@ -109,6 +133,7 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
         calculations=[
             CalculationResponse(
                 id=row.id,
+                atomic_claim_id=row.atomic_claim_id,
                 formula_name=row.formula_name,
                 formula_text=row.formula_text,
                 inputs=row.inputs,
@@ -120,6 +145,21 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
             for row in calculations
         ],
         methodology_version=methodology.version if methodology else "not-recorded",
+        workflow_version=run.workflow_version,
+        model_versions=run.model_versions,
+        prompt_versions=run.prompt_versions,
+        parser_versions=run.parser_versions,
+        report_sentences=[
+            ReportCitationResponse(
+                id=row.id,
+                report_section=row.report_section,
+                sentence_text=row.sentence_text,
+                passage_id=row.passage_id,
+                audit_status=row.audit_status,
+                audit_note=row.audit_note,
+            )
+            for row in report_citations
+        ],
         evidence_reviewed_at=run.evidence_reviewed_at or run.updated_at,
         limitations=limitations,
     )

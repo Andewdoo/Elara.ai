@@ -83,6 +83,8 @@ export function useRunEvents(runId: string) {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["run", runId] }),
       queryClient.invalidateQueries({ queryKey: ["report", runId] }),
+      queryClient.invalidateQueries({ queryKey: ["sources", runId] }),
+      queryClient.invalidateQueries({ queryKey: ["source-graph", runId] }),
     ]);
   }, [queryClient, runId]);
 
@@ -92,7 +94,11 @@ export function useRunEvents(runId: string) {
     const resultVersion = `${durableRun.run_id}:${durableRun.status}:${durableRun.updated_at}`;
     if (invalidatedTerminalResult.current === resultVersion) return;
     invalidatedTerminalResult.current = resultVersion;
-    void queryClient.invalidateQueries({ queryKey: ["report", runId] });
+    void Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["report", runId] }),
+      queryClient.invalidateQueries({ queryKey: ["sources", runId] }),
+      queryClient.invalidateQueries({ queryKey: ["source-graph", runId] }),
+    ]);
   }, [queryClient, runId, runQuery.data]);
 
   useEffect(() => {

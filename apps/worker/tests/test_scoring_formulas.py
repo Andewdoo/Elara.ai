@@ -120,7 +120,17 @@ def test_state_service_scores_only_accepted_evidence_and_emits_audit_records():
     assert result.scores.final_label == "Supported"
     assert {"evidence_quality", "adjusted_evidence_weight", "evidence_support",
             "verdict_confidence", "source_independence", "article_factual_accuracy",
-            "final_label"} <= {row.formula_name for row in result.calculations}
+            "research_coverage", "context_completeness", "final_label"} <= {
+                row.formula_name for row in result.calculations
+            }
+    coverage = next(
+        row for row in result.calculations if row.formula_name == "research_coverage"
+    )
+    assert coverage.result == {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "0",
+    }
     assert all(row.formula_text and row.decimal_context and row.audit_status for row in result.calculations)
 
 
@@ -191,6 +201,12 @@ def test_unresolved_key_fact_gate_is_applied_by_state_service():
 
     assert result.claim_scores[0].final_label == "Insufficient evidence"
     assert "key_definitions_dates_or_identities_unresolved" in result.claim_scores[0].gates["insufficient_evidence"]
+    attribution = next(
+        row
+        for row in result.calculations
+        if row.formula_name == "attribution_support" and row.claim_ref is None
+    )
+    assert attribution.result == {"score": "100"}
 
 
 def test_scoring_records_are_persisted_with_decimal_audit_metadata():

@@ -34,17 +34,16 @@ test("Firebase browser shell only references approved public Firebase env vars",
   }
 });
 
-test("mocked report includes the required evidence reviewed timestamp text", async () => {
-  const reportSource = await readFile(join(root, "lib", "mock-report.ts"), "utf8");
+test("report workspace includes the required evidence-reviewed timestamp language", async () => {
+  const reportSource = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
 
   assert.match(reportSource, /Evidence reviewed as of/);
   assert.match(reportSource, /New evidence or corrections may change this assessment\./);
-  assert.match(reportSource, /inaccessibleSources/);
+  assert.match(reportSource, /limitations/);
   assert.match(reportSource, /calculations/);
   assert.match(reportSource, /methodology/);
-  assert.match(reportSource, /Attribution Support/);
-  assert.match(reportSource, /Quote Fidelity/);
-  assert.match(reportSource, /type: "snapshot"/);
+  assert.match(reportSource, /Attribution support/);
+  assert.match(reportSource, /Quote fidelity/);
 });
 
 test("report shell includes planned route and workspace surfaces", async () => {

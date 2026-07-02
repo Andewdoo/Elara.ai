@@ -155,6 +155,58 @@ class EvidenceItemResponse(BaseModel):
     page_or_position: str | None
 
 
+class ReportCitationResponse(BaseModel):
+    id: UUID
+    report_section: str
+    sentence_text: str
+    passage_id: UUID
+    audit_status: str
+    audit_note: str | None
+
+
+class SourcePassageResponse(BaseModel):
+    id: UUID
+    text: str
+    heading_path: str | None
+    page_or_position: str | None
+    paragraph_index: int | None
+    speaker: str | None
+    table_ref: str | None
+    extraction_certainty: float
+    metadata: dict[str, Any]
+    citations: list[ReportCitationResponse]
+
+
+class SourceResponse(BaseModel):
+    id: UUID
+    canonical_url: str
+    domain: str
+    title: str | None
+    author: str | None
+    publisher: str | None
+    source_type: str
+    content_type: str | None
+    role: str
+    retrieval_reason: str | None
+    inaccessible_reason: str | None
+    snapshot_id: UUID | None
+    snapshot_version: int | None
+    access_status: str
+    retrieved_at: datetime | None
+    published_at: datetime | None
+    content_hash: str | None
+    parser_name: str | None
+    parser_version: str | None
+    correction_status: str | None
+    snapshot_metadata: dict[str, Any]
+    failure_reason: str | None
+    passages: list[SourcePassageResponse]
+
+
+class SourcesResponse(BaseModel):
+    sources: list[SourceResponse]
+
+
 class SourceGraphNode(BaseModel):
     id: str
     type: str
@@ -181,6 +233,7 @@ class SourceGraphResponse(BaseModel):
 
 class CalculationResponse(BaseModel):
     id: UUID
+    atomic_claim_id: UUID | None
     formula_name: str
     formula_text: str
     inputs: dict[str, Any]
@@ -199,5 +252,10 @@ class ReportResponse(BaseModel):
     source_graph: SourceGraphResponse
     calculations: list[CalculationResponse]
     methodology_version: str
+    workflow_version: str
+    model_versions: dict[str, Any]
+    prompt_versions: dict[str, Any]
+    parser_versions: dict[str, Any]
+    report_sentences: list[ReportCitationResponse]
     evidence_reviewed_at: datetime
     limitations: list[str]

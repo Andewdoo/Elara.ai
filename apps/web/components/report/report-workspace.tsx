@@ -1,433 +1,119 @@
 "use client";
 
-import { AlertTriangle, Calculator, CheckCircle2, Database, FileWarning, GitBranch, Info, ListFilter, MessageSquareWarning, PanelRightClose, PanelRightOpen } from "lucide-react";
+import { Calculator, ExternalLink, FileWarning, Info, PanelRightClose, PanelRightOpen, X } from "lucide-react";
+import { useState } from "react";
 
+import { ScoreCharts } from "@/components/report/score-charts";
+import { SourceGraph } from "@/components/report/source-graph";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScoreCharts } from "@/components/report/score-charts";
-import { SourceGraph } from "@/components/report/source-graph";
-import { mockedReport } from "@/lib/mock-report";
-import type { EvidenceItemRecord, ReportRecord } from "@/lib/report-types";
-import { useReportUiStore, type ReportTab } from "@/stores/report-ui-store";
+import type { EvidenceStance, ReportWorkspaceData, SourceRecord } from "@/lib/report-types";
 import { cn } from "@/lib/utils";
+import { useReportUiStore, type ReportTab } from "@/stores/report-ui-store";
 
 const tabs: Array<{ id: ReportTab; label: string }> = [
-  { id: "overview", label: "Overview" },
-  { id: "claims", label: "Claims" },
-  { id: "evidence", label: "Evidence" },
-  { id: "graph", label: "Graph" },
-  { id: "calculations", label: "Calculations" },
-  { id: "methodology", label: "Methodology" },
+  { id: "overview", label: "Overview" }, { id: "claims", label: "Claims" },
+  { id: "evidence", label: "Evidence" }, { id: "graph", label: "Graph" },
+  { id: "calculations", label: "Calculations" }, { id: "methodology", label: "Methodology" },
 ];
 
-function stanceTone(stance: EvidenceItemRecord["stance"]) {
-  if (stance.includes("SUPPORTS")) return "support";
-  if (stance.includes("CONTRADICTS")) return "danger";
-  return "neutral";
-}
-
-export function ReportWorkspace({ runId, report = mockedReport }: { runId: string; report?: ReportRecord }) {
-  const {
-    activeReportTab,
-    evidenceFilter,
-    selectedClaimId,
-    selectedSourceId,
-    sourceDrawerOpen,
-    selectClaim,
-    selectSource,
-    setActiveReportTab,
-    setEvidenceFilter,
-    setSourceDrawerOpen,
-  } = useReportUiStore();
-
-  const selectedClaim = report.atomicClaims.find((claim) => claim.id === selectedClaimId) ?? report.atomicClaims[0];
-  const selectedSource = report.sources.find((source) => source.id === selectedSourceId) ?? report.sources[0];
-  const selectedSourceEvidence = report.evidenceItems.filter((item) => item.sourceId === selectedSource.id);
-  const filteredEvidence = report.evidenceItems.filter((item) => {
-    if (evidenceFilter === "supporting") return item.stance.includes("SUPPORTS");
-    if (evidenceFilter === "contradicting") return item.stance.includes("CONTRADICTS");
-    if (evidenceFilter === "inaccessible") return false;
-    return true;
+export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
+  const { run, report, sources, sourceGraph } = data;
+  const ui = useReportUiStore();
+  const selectedClaim = report.atomic_claims.find((claim) => claim.id === ui.selectedClaimId) ?? report.atomic_claims[0];
+  const selectedSource = sources.find((source) => source.id === ui.selectedSourceId) ?? sources[0];
+  const selectedPassage = selectedSource?.passages.find((passage) => passage.id === ui.selectedEvidenceId) ?? selectedSource?.passages.find((passage) => passage.citations.length) ?? selectedSource?.passages[0];
+  const evidence = report.evidence.filter((item) => {
+    if (ui.selectedClaimId && item.atomic_claim_id !== ui.selectedClaimId) return false;
+    if (ui.evidenceFilter === "supporting") return item.stance.includes("SUPPORTS");
+    if (ui.evidenceFilter === "contradicting") return item.stance.includes("CONTRADICTS");
+    return ui.evidenceFilter !== "inaccessible";
   });
+  const openEvidence = (passageId: string, sourceUrl: string) => {
+    const source = sources.find((item) => item.canonical_url === sourceUrl || item.passages.some((passage) => passage.id === passageId));
+    if (source) ui.selectSource(source.id);
+    ui.selectEvidence(passageId);
+  };
+  const reviewed = new Date(report.evidence_reviewed_at).toLocaleString();
 
-  return (
-    <div className="grid gap-4">
-      <section className="grid gap-3 rounded-lg border bg-white p-4 shadow-subtle lg:grid-cols-[1fr_auto]">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge tone="support">{report.status}</Badge>
-            <Badge tone="info">{report.researchDepth}</Badge>
-            <span className="text-xs text-muted-foreground">Run {runId}</span>
-          </div>
-          <h1 className="mt-3 text-2xl font-semibold tracking-normal">{report.title}</h1>
-          <p className="mt-2 max-w-4xl text-sm text-muted-foreground">{report.evidenceTimestampText}</p>
-        </div>
-        <div className="grid min-w-60 gap-2 rounded-md border bg-muted/40 p-3">
-          <span className="text-xs font-medium text-muted-foreground">Verdict</span>
-          <span className="text-lg font-semibold">{report.verdict}</span>
-        </div>
-      </section>
+  return <div className="grid gap-4">
+    <header className="grid gap-3 rounded-lg border bg-white p-4 shadow-subtle lg:grid-cols-[1fr_auto]">
+      <div><div className="flex flex-wrap items-center gap-2"><Badge tone={run.status === "COMPLETED" ? "support" : "info"}>{run.status}</Badge><Badge tone="info">{run.research_depth}</Badge><span className="text-xs text-muted-foreground">Run {run.run_id}</span></div><h1 className="mt-3 text-2xl font-semibold">{run.title ?? "Verification report"}</h1><p className="mt-2 text-sm text-muted-foreground">Evidence reviewed as of {reviewed}. New evidence or corrections may change this assessment.</p></div>
+      <div className="grid min-w-60 gap-1 rounded-md border bg-muted/40 p-3"><span className="text-xs text-muted-foreground">Verdict</span><span className="text-lg font-semibold">{report.verdict ?? "Not verified"}</span></div>
+    </header>
 
-      <div className="flex gap-2 overflow-x-auto rounded-lg border bg-white p-2">
-        {tabs.map((tab) => (
-          <Button
-            key={tab.id}
-            size="sm"
-            variant={activeReportTab === tab.id ? "primary" : "ghost"}
-            onClick={() => setActiveReportTab(tab.id)}
-          >
-            {tab.label}
-          </Button>
-        ))}
-        <Button
-          className="ml-auto"
-          size="icon"
-          variant="ghost"
-          aria-label={sourceDrawerOpen ? "Close source drawer" : "Open source drawer"}
-          onClick={() => setSourceDrawerOpen(!sourceDrawerOpen)}
-        >
-          {sourceDrawerOpen ? <PanelRightClose className="h-4 w-4" /> : <PanelRightOpen className="h-4 w-4" />}
-        </Button>
-      </div>
+    <nav className="flex gap-2 overflow-x-auto rounded-lg border bg-white p-2" aria-label="Report sections">
+      {tabs.map((tab) => <Button key={tab.id} size="sm" variant={ui.activeReportTab === tab.id ? "primary" : "ghost"} onClick={() => ui.setActiveReportTab(tab.id)}>{tab.label}</Button>)}
+      <Button className="ml-auto hidden xl:inline-flex" size="icon" variant="ghost" aria-label={ui.sourceDrawerOpen ? "Close source drawer" : "Open source drawer"} onClick={() => ui.setSourceDrawerOpen(!ui.sourceDrawerOpen)}>{ui.sourceDrawerOpen ? <PanelRightClose className="h-4 w-4"/> : <PanelRightOpen className="h-4 w-4"/>}</Button>
+    </nav>
 
-      <div className={cn("grid gap-4", sourceDrawerOpen ? "xl:grid-cols-[260px_1fr_320px]" : "xl:grid-cols-[260px_1fr]")}>
-        <aside className="grid gap-3 self-start">
-          <Card>
-            <CardHeader>
-              <CardTitle>Atomic claims</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-2">
-              {report.atomicClaims.map((claim) => (
-                <button
-                  key={claim.id}
-                  className={cn(
-                    "grid gap-2 rounded-md border bg-white p-3 text-left transition hover:border-primary/50",
-                    selectedClaim.id === claim.id && "border-primary bg-secondary/60",
-                  )}
-                  onClick={() => selectClaim(claim.id)}
-                >
-                  <span className="text-xs font-semibold">{claim.finalLabel}</span>
-                  <span className="text-sm">{claim.claimText}</span>
-                  <span className="text-xs text-muted-foreground">Support {claim.supportScore} - Confidence {claim.confidenceScore}</span>
-                </button>
-              ))}
-            </CardContent>
-          </Card>
-        </aside>
-
-        <section className="grid gap-4">
-          {activeReportTab === "overview" && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Report overview</CardTitle>
-                </CardHeader>
-                <CardContent className="grid gap-4">
-                  <p className="text-sm leading-6">{report.verdictSummary}</p>
-                  <div className="grid gap-3 md:grid-cols-4">
-                    {report.scoreRecords.map((score) => (
-                      <div key={score.key} className="rounded-md border bg-white p-3">
-                        <span className="block text-xs text-muted-foreground">{score.label}</span>
-                        <span className="mt-1 block text-2xl font-semibold">{score.value}</span>
-                        <span className="block text-xs text-muted-foreground">from {score.calculationId}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <FeedbackControls />
-                  <div className="grid gap-2">
-                    <span className="text-sm font-semibold">Limitations</span>
-                    {report.limitations.map((limitation) => (
-                      <div key={limitation} className="flex gap-2 rounded-md bg-muted p-3 text-sm">
-                        <Info className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />
-                        {limitation}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              <ScoreCharts report={report} />
-            </>
-          )}
-
-          {activeReportTab === "claims" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Claim detail</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4">
-                {report.atomicClaims.map((claim) => (
-                  <div key={claim.id} className="grid gap-3 rounded-md border bg-white p-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge tone={claim.finalLabel === "Supported" ? "support" : claim.finalLabel === "Not verified" ? "warning" : "info"}>
-                        {claim.finalLabel}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">Weight {claim.importanceWeight}</span>
-                      <span className="text-xs text-muted-foreground">{claim.claimType}</span>
-                    </div>
-                    <p className="font-medium">{claim.claimText}</p>
-                    <div className="grid gap-2 md:grid-cols-3">
-                      <Meter label="Support" value={claim.supportScore} />
-                      <Meter label="Confidence" value={claim.confidenceScore} />
-                      <Meter label="Context" value={claim.contextCompleteness} />
-                    </div>
-                    {claim.gaps.map((gap) => (
-                      <p key={gap} className="text-sm text-muted-foreground">{gap}</p>
-                    ))}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
-          {activeReportTab === "evidence" && (
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between gap-3">
-                <CardTitle>Evidence</CardTitle>
-                <div className="flex items-center gap-2">
-                  <ListFilter className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                  <select
-                    className="rounded-md border bg-white px-2 py-1 text-xs"
-                    value={evidenceFilter}
-                    onChange={(event) => setEvidenceFilter(event.target.value as typeof evidenceFilter)}
-                  >
-                    <option value="all">All</option>
-                    <option value="supporting">Supporting</option>
-                    <option value="contradicting">Contradicting</option>
-                    <option value="inaccessible">Inaccessible</option>
-                  </select>
-                </div>
-              </CardHeader>
-              <CardContent className="grid gap-3">
-                {evidenceFilter === "inaccessible"
-                  ? report.inaccessibleSources.map((source) => (
-                      <div key={source.id} className="rounded-md border border-amber-200 bg-amber-50 p-3">
-                        <div className="flex items-center gap-2">
-                          <FileWarning className="h-4 w-4 text-amber-700" aria-hidden="true" />
-                          <span className="font-semibold">{source.title}</span>
-                        </div>
-                        <p className="mt-2 text-sm text-amber-900">{source.inaccessibleReason}</p>
-                      </div>
-                    ))
-                  : filteredEvidence.map((item) => {
-                      const source = report.sources.find((sourceRecord) => sourceRecord.id === item.sourceId);
-                      return (
-                        <div key={item.id} className="grid gap-3 rounded-md border bg-white p-4">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <Badge tone={stanceTone(item.stance)}>{item.stance.replaceAll("_", " ")}</Badge>
-                            <span className="text-xs text-muted-foreground">{source?.publisher}</span>
-                            <span className="text-xs text-muted-foreground">{item.passageLocator}</span>
-                          </div>
-                          <blockquote className="border-l-4 border-primary pl-3 text-sm leading-6">{item.excerpt}</blockquote>
-                          <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
-                            <span>Weight {item.adjustedWeight}</span>
-                            <span>Dependency {item.quality.dependencyMultiplier}</span>
-                            <span>Citation {item.citationStatus}</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-              </CardContent>
-            </Card>
-          )}
-
-          {activeReportTab === "graph" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Source dependency graph</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <SourceGraph report={report} onSourceSelect={selectSource} />
-              </CardContent>
-            </Card>
-          )}
-
-          {activeReportTab === "calculations" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Calculation audit</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-3">
-                {report.calculations.map((calculation) => (
-                  <div key={calculation.id} className="grid gap-2 rounded-md border bg-white p-4">
-                    <div className="flex items-center gap-2">
-                      <Calculator className="h-4 w-4 text-primary" aria-hidden="true" />
-                      <span className="font-semibold">{calculation.formulaName}</span>
-                      <Badge tone={calculation.auditStatus === "passed" ? "support" : "warning"}>{calculation.auditStatus}</Badge>
-                    </div>
-                    <code className="rounded-md bg-muted px-2 py-1 text-xs">{calculation.formulaText}</code>
-                    <div className="grid gap-2 text-xs md:grid-cols-3">
-                      <pre className="overflow-auto rounded-md bg-muted p-2">{JSON.stringify(calculation.inputs, null, 2)}</pre>
-                      <pre className="overflow-auto rounded-md bg-muted p-2">{JSON.stringify(calculation.result, null, 2)}</pre>
-                      <pre className="overflow-auto rounded-md bg-muted p-2">{JSON.stringify(calculation.decimalContext, null, 2)}</pre>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
-          {activeReportTab === "methodology" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Methodology and versions</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4">
-                <VersionGrid title="Run versions" values={report.methodology} />
-                <VersionGrid title="Prompts" values={report.methodology.promptVersions} />
-                <VersionGrid title="Models" values={report.methodology.modelVersions} />
-                <VersionGrid title="Parsers" values={report.methodology.parserVersions} />
-              </CardContent>
-            </Card>
-          )}
-        </section>
-
-        {sourceDrawerOpen && (
-          <aside className="grid gap-3 self-start">
-            <Card>
-              <CardHeader>
-                <CardTitle>Source drawer</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-3">
-                <div className="grid gap-3 rounded-md border border-primary/40 bg-secondary/60 p-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-sm font-semibold">{selectedSource.title}</span>
-                    <Badge tone={selectedSource.accessStatus === "FETCHED" ? "support" : "warning"}>{selectedSource.accessStatus}</Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {selectedSource.publisher} - {selectedSource.domain}
-                  </p>
-                  <dl className="grid gap-1 text-xs text-muted-foreground">
-                    <div className="flex justify-between gap-3">
-                      <dt>Retrieved</dt>
-                      <dd>{selectedSource.retrievedAt ? new Date(selectedSource.retrievedAt).toLocaleString() : "Unavailable"}</dd>
-                    </div>
-                    <div className="flex justify-between gap-3">
-                      <dt>Snapshot</dt>
-                      <dd>{selectedSource.snapshotId ?? "Unavailable"}</dd>
-                    </div>
-                    <div className="flex justify-between gap-3">
-                      <dt>Parser</dt>
-                      <dd>{selectedSource.parserName ? `${selectedSource.parserName} ${selectedSource.parserVersion}` : "Not parsed"}</dd>
-                    </div>
-                  </dl>
-                  {selectedSourceEvidence.length > 0 ? (
-                    <div className="grid gap-2">
-                      <span className="text-xs font-semibold">Cited passages</span>
-                      {selectedSourceEvidence.map((item) => (
-                        <blockquote key={item.id} className="rounded-md bg-white p-2 text-xs leading-5">
-                          <span className="block font-medium">{item.passageLocator}</span>
-                          {item.excerpt}
-                        </blockquote>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">{selectedSource.inaccessibleReason ?? "No cited passage selected for this source."}</p>
-                  )}
-                </div>
-                {report.sources.map((source) => (
-                  <button
-                    key={source.id}
-                    className={cn(
-                      "grid gap-2 rounded-md border bg-white p-3 text-left transition hover:border-primary/50",
-                      source.id === selectedSource.id && "border-primary",
-                    )}
-                    onClick={() => selectSource(source.id)}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="text-sm font-semibold">{source.title}</span>
-                      <Badge tone={source.accessStatus === "FETCHED" ? "support" : "warning"}>{source.accessStatus}</Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{source.publisher} - {source.domain}</p>
-                    <p className="text-xs">{source.retrievalReason}</p>
-                    <dl className="grid gap-1 text-xs text-muted-foreground">
-                      <div className="flex justify-between gap-3">
-                        <dt>Snapshot</dt>
-                        <dd>{source.snapshotId ?? "Unavailable"}</dd>
-                      </div>
-                      <div className="flex justify-between gap-3">
-                        <dt>Parser</dt>
-                        <dd>{source.parserName ? `${source.parserName} ${source.parserVersion}` : "Not parsed"}</dd>
-                      </div>
-                    </dl>
-                  </button>
-                ))}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Audit status</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-2 text-sm">
-                <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-700" /> Citation presence checked</span>
-                <span className="flex items-center gap-2"><GitBranch className="h-4 w-4 text-primary" /> Source dependency grouped</span>
-                <span className="flex items-center gap-2"><Database className="h-4 w-4 text-sky-700" /> Snapshot ids retained</span>
-                <span className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-amber-700" /> Inaccessible source preserved</span>
-              </CardContent>
-            </Card>
-          </aside>
-        )}
-      </div>
+    <div className={cn("grid gap-4", ui.sourceDrawerOpen ? "xl:grid-cols-[260px_minmax(0,1fr)_340px]" : "xl:grid-cols-[260px_minmax(0,1fr)]")}>
+      <aside className="hidden self-start xl:block"><ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim}/></aside>
+      <main className="min-w-0 grid gap-4">
+        {ui.activeReportTab === "overview" && <><Card><CardHeader><CardTitle>Report overview</CardTitle></CardHeader><CardContent className="grid gap-4">
+          <div className="grid gap-2">{report.report_sentences.filter((sentence) => sentence.report_section.includes("summary")).map((sentence) => <button key={sentence.id} className="rounded-md border bg-white p-3 text-left text-sm leading-6 hover:border-primary" onClick={() => openEvidence(sentence.passage_id, "")}>{sentence.sentence_text}<span className="ml-2 text-xs text-muted-foreground">citation {sentence.audit_status}</span></button>)}{report.report_sentences.length === 0 && <p className="text-sm text-muted-foreground">No citation-audited summary sentences were stored.</p>}</div>
+          <SpecializedPanels report={report}/>
+          <div><p className="mb-2 text-sm font-semibold">Limitations</p>{report.limitations.length ? report.limitations.map((item) => <p key={item} className="mb-2 flex gap-2 rounded-md bg-muted p-3 text-sm"><Info className="mt-0.5 h-4 w-4 shrink-0 text-primary"/>{item}</p>) : <p className="text-sm text-muted-foreground">No limitations were recorded.</p>}</div>
+          <p className="text-xs text-muted-foreground">Feedback and correction controls are added with the authorized feedback API in step 15.</p>
+        </CardContent></Card><ScoreCharts report={report}/></>}
+        {ui.activeReportTab === "claims" && <ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim} detailed/>}
+        {ui.activeReportTab === "evidence" && <Card><CardHeader><div className="flex items-center justify-between gap-3"><CardTitle>Evidence passages</CardTitle><select className="rounded-md border bg-white px-2 py-1 text-xs" value={ui.evidenceFilter} onChange={(event) => ui.setEvidenceFilter(event.target.value as typeof ui.evidenceFilter)}><option value="all">All</option><option value="supporting">Supporting</option><option value="contradicting">Contradicting</option><option value="inaccessible">Inaccessible</option></select></div></CardHeader><CardContent className="grid gap-3">
+          {ui.evidenceFilter === "inaccessible" ? sources.filter((source) => source.access_status !== "FETCHED").map((source) => <button key={source.id} onClick={() => ui.selectSource(source.id)} className="rounded-md border border-amber-200 bg-amber-50 p-3 text-left"><FileWarning className="inline h-4 w-4 text-amber-700"/> <strong>{source.title ?? source.domain}</strong><p className="mt-1 text-sm">{source.inaccessible_reason ?? source.failure_reason ?? source.access_status}</p></button>) : <EvidenceColumns items={evidence} onOpen={openEvidence}/>}
+        </CardContent></Card>}
+        {ui.activeReportTab === "graph" && <Card><CardHeader><CardTitle>Source dependency graph</CardTitle></CardHeader><CardContent><SourceGraph graph={sourceGraph} claims={report.atomic_claims} onSourceSelect={ui.selectSource}/></CardContent></Card>}
+        {ui.activeReportTab === "calculations" && <Card><CardHeader><CardTitle>Server calculation records</CardTitle></CardHeader><CardContent className="grid gap-3">{report.calculations.map((row) => <article key={row.id} className="grid gap-2 rounded-md border p-4"><div className="flex items-center gap-2"><Calculator className="h-4 w-4 text-primary"/><strong>{row.formula_name}</strong><Badge tone={row.audit_status === "passed" ? "support" : "warning"}>{row.audit_status}</Badge></div><code className="rounded bg-muted p-2 text-xs">{row.formula_text}</code><div className="grid gap-2 md:grid-cols-3"><Json title="Inputs" value={row.inputs}/><Json title="Result" value={row.result}/><Json title="Decimal context" value={row.decimal_context}/></div></article>)}</CardContent></Card>}
+        {ui.activeReportTab === "methodology" && <Card><CardHeader><CardTitle>Methodology and reproducibility</CardTitle></CardHeader><CardContent className="grid gap-3"><Version title="Methodology" value={{ methodology_version: report.methodology_version, workflow_version: report.workflow_version }}/><Version title="Models" value={report.model_versions}/><Version title="Prompts" value={report.prompt_versions}/><Version title="Parsers" value={report.parser_versions}/></CardContent></Card>}
+      </main>
+      {ui.sourceDrawerOpen && <SourceDrawer mobileOpen={Boolean(ui.selectedSourceId)} source={selectedSource} passage={selectedPassage} onClose={() => ui.setSourceDrawerOpen(false)} onPassage={ui.selectEvidence}/>}
     </div>
-  );
+  </div>;
 }
 
-function FeedbackControls() {
-  return (
-    <div className="grid gap-3 rounded-md border bg-white p-3">
-      <div className="flex items-center gap-2">
-        <MessageSquareWarning className="h-4 w-4 text-primary" aria-hidden="true" />
-        <span className="text-sm font-semibold">Feedback and correction controls</span>
-      </div>
-      <div className="grid gap-2 md:grid-cols-[220px_1fr_auto]">
-        <select className="rounded-md border bg-white px-3 py-2 text-sm" defaultValue="correction">
-          <option value="correction">Correction</option>
-          <option value="missed_evidence">Missed evidence</option>
-          <option value="appeal">Appeal</option>
-          <option value="broken_citation">Broken citation</option>
-        </select>
-        <input
-          className="rounded-md border bg-white px-3 py-2 text-sm"
-          placeholder="Describe the issue or source URL"
-          aria-label="Feedback message"
-        />
-        <Button variant="secondary">Queue feedback</Button>
-      </div>
-      <p className="text-xs text-muted-foreground">
-        Mock-only control. The API step will persist feedback with run ownership checks.
-      </p>
-    </div>
-  );
+function ClaimRail({ claims, selectedId, onSelect, detailed = false }: { claims: ReportWorkspaceData["report"]["atomic_claims"]; selectedId?: string; onSelect: (id: string | null) => void; detailed?: boolean }) {
+  const [query, setQuery] = useState("");
+  const [label, setLabel] = useState("all");
+  const labels = [...new Set(claims.map((claim) => claim.final_label).filter((value): value is string => Boolean(value)))];
+  const visible = claims.filter((claim) => (label === "all" || claim.final_label === label) && claim.claim_text.toLowerCase().includes(query.toLowerCase()));
+  return <Card><CardHeader><CardTitle>Atomic claims</CardTitle></CardHeader><CardContent className="grid gap-2"><div className="grid gap-2"><input className="min-w-0 rounded-md border px-2 py-1 text-xs" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Filter claims" aria-label="Filter atomic claims"/><select className="rounded-md border px-2 py-1 text-xs" value={label} onChange={(event) => setLabel(event.target.value)} aria-label="Filter claims by label"><option value="all">All labels</option>{labels.map((value) => <option key={value} value={value}>{value}</option>)}</select></div>{visible.map((claim) => <button key={claim.id} onClick={() => onSelect(claim.id)} className={cn("grid gap-2 rounded-md border bg-white p-3 text-left hover:border-primary", selectedId === claim.id && "border-primary bg-secondary/60", detailed && "p-4")}><div><Badge tone={claim.final_label?.toLowerCase().includes("support") ? "support" : "info"}>{claim.final_label ?? "Not verified"}</Badge><span className="ml-2 text-xs text-muted-foreground">Weight {claim.importance_weight}</span></div><span className="text-sm font-medium">{claim.claim_text}</span><span className="text-xs text-muted-foreground">Support {claim.support_score ?? "-"} - Confidence {claim.confidence_score ?? "-"} - Context {claim.context_completeness ?? "-"}</span>{detailed && [...claim.ambiguities, ...claim.gaps].map((gap) => <span key={gap} className="text-xs text-muted-foreground">{gap}</span>)}</button>)}{visible.length === 0 && <p className="text-xs text-muted-foreground">No claims match these filters.</p>}</CardContent></Card>;
 }
 
-function Meter({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-md bg-muted p-3">
-      <div className="flex items-center justify-between text-xs">
-        <span>{label}</span>
-        <span>{value}</span>
-      </div>
-      <div className="mt-2 h-2 rounded-full bg-white">
-        <div className="h-2 rounded-full bg-primary" style={{ width: `${value}%` }} />
-      </div>
-    </div>
-  );
+function EvidenceColumns({ items, onOpen }: { items: ReportWorkspaceData["report"]["evidence"]; onOpen: (passageId: string, sourceUrl: string) => void }) {
+  const supporting = items.filter((item) => item.stance.includes("SUPPORTS"));
+  const contradicting = items.filter((item) => item.stance.includes("CONTRADICTS"));
+  const neutral = items.filter((item) => !item.stance.includes("SUPPORTS") && !item.stance.includes("CONTRADICTS"));
+  return <div className="grid gap-4 lg:grid-cols-2"><EvidenceGroup title="Supporting evidence" items={supporting} onOpen={onOpen}/><EvidenceGroup title="Contradicting evidence" items={contradicting} onOpen={onOpen}/>{neutral.length > 0 && <div className="lg:col-span-2"><EvidenceGroup title="Neutral evidence" items={neutral} onOpen={onOpen}/></div>}</div>;
 }
 
-function VersionGrid({ title, values }: { title: string; values: Record<string, unknown> }) {
-  return (
-    <div className="grid gap-2 rounded-md border bg-white p-3">
-      <span className="text-sm font-semibold">{title}</span>
-      <dl className="grid gap-2 text-sm md:grid-cols-2">
-        {Object.entries(values).map(([key, value]) =>
-          typeof value === "string" ? (
-            <div key={key} className="flex justify-between gap-3 rounded-md bg-muted px-3 py-2">
-              <dt className="text-muted-foreground">{key}</dt>
-              <dd className="font-medium">{value}</dd>
-            </div>
-          ) : null,
-        )}
-      </dl>
-    </div>
-  );
+function EvidenceGroup({ title, items, onOpen }: { title: string; items: ReportWorkspaceData["report"]["evidence"]; onOpen: (passageId: string, sourceUrl: string) => void }) {
+  return <section className="grid content-start gap-2"><h3 className="text-sm font-semibold">{title}</h3>{items.map((item) => <button key={item.id} onClick={() => onOpen(item.passage_id, item.source_url)} className="grid gap-2 rounded-md border bg-white p-4 text-left hover:border-primary"><div><Badge tone={stanceTone(item.stance)}>{item.stance.replaceAll("_", " ")}</Badge><span className="ml-2 text-xs text-muted-foreground">{item.source_title ?? item.source_url} - {item.page_or_position ?? "stored passage"}</span></div><blockquote className="border-l-4 border-primary pl-3 text-sm leading-6">{item.passage_text}</blockquote><span className="text-xs text-muted-foreground">Adjusted weight {item.adjusted_weight} - Dependency {item.dependency_multiplier} - Citation {item.citation_status}</span></button>)}{items.length === 0 && <p className="rounded-md border border-dashed p-3 text-xs text-muted-foreground">No evidence in this category.</p>}</section>;
 }
+
+function SpecializedPanels({ report }: { report: ReportWorkspaceData["report"] }) {
+  const attribution = report.calculations.find((row) => row.formula_name === "attribution_support" && row.atomic_claim_id === null);
+  const quote = report.calculations.find((row) => row.formula_name === "quote_fidelity" && row.atomic_claim_id === null);
+  const context = report.calculations.find((row) => row.formula_name === "context_completeness" && row.atomic_claim_id === null);
+  if (!attribution && !quote && !context) return null;
+  return <div className="grid gap-3 md:grid-cols-3">{attribution && <ScorePanel title="Attribution support" record={attribution}/>} {quote && <ScorePanel title="Quote fidelity" record={quote}/>} {context && <ScorePanel title="Surrounding context" record={context}/>}</div>;
+}
+
+function ScorePanel({ title, record }: { title: string; record: ReportWorkspaceData["report"]["calculations"][number] }) {
+  return <div className="rounded-md border bg-white p-3"><p className="text-xs text-muted-foreground">{title}</p><p className="mt-1 text-2xl font-semibold">{String(record.result.score ?? "Not scored")}</p><p className="mt-1 text-xs text-muted-foreground">Calculation {record.id}</p></div>;
+}
+
+function SourceDrawer({ source, passage, mobileOpen, onClose, onPassage }: { source?: SourceRecord; passage?: SourceRecord["passages"][number]; mobileOpen: boolean; onClose: () => void; onPassage: (id: string | null) => void }) {
+  if (!source) return <aside className="rounded-lg border bg-white p-4 text-sm text-muted-foreground">No sources were stored for this report.</aside>;
+  return <aside className={cn("fixed inset-0 z-50 overflow-y-auto bg-white p-4 xl:static xl:z-auto xl:max-h-[calc(100vh-10rem)] xl:self-start xl:rounded-lg xl:border", !mobileOpen && "hidden xl:block")}><div className="flex items-start justify-between gap-2"><div><p className="font-semibold">{source.title ?? source.domain}</p><p className="text-xs text-muted-foreground">{source.publisher ?? source.author ?? source.domain}</p></div><Button size="icon" variant="ghost" onClick={onClose} aria-label="Close source drawer"><X className="h-4 w-4"/></Button></div><Badge tone={source.access_status === "FETCHED" ? "support" : "warning"}>{source.access_status}</Badge>
+    <a className="mt-3 flex items-center gap-1 break-all text-xs text-primary" href={source.canonical_url} target="_blank" rel="noreferrer">Open source <ExternalLink className="h-3 w-3"/></a>
+    <dl className="mt-3 grid gap-2 text-xs">{[["Role", source.role], ["Type", source.source_type], ["Published", source.published_at ? new Date(source.published_at).toLocaleString() : "Unavailable"], ["Retrieved", source.retrieved_at ? new Date(source.retrieved_at).toLocaleString() : "Unavailable"], ["Snapshot", source.snapshot_id ? `${source.snapshot_id} v${source.snapshot_version}` : "Unavailable"], ["Parser", source.parser_name ? `${source.parser_name} ${source.parser_version ?? ""}` : "Not parsed"], ["Content hash", source.content_hash ?? "Unavailable"], ["Correction", source.correction_status ?? "None recorded"]].map(([key, value]) => <div key={key} className="grid grid-cols-[90px_1fr] gap-2"><dt className="text-muted-foreground">{key}</dt><dd className="break-all">{value}</dd></div>)}</dl>
+    {Object.keys(source.snapshot_metadata).length > 0 && <details className="mt-3 rounded-md border p-2 text-xs"><summary className="cursor-pointer font-semibold">Snapshot metadata</summary><pre className="mt-2 overflow-auto whitespace-pre-wrap">{JSON.stringify(source.snapshot_metadata, null, 2)}</pre></details>}
+    <p className="mt-3 text-xs">{source.retrieval_reason ?? source.inaccessible_reason ?? source.failure_reason}</p>
+    <div className="mt-4 grid gap-2"><p className="text-sm font-semibold">Exact passage - Cited passages</p>{passage ? <><blockquote className="rounded-md border-l-4 border-primary bg-muted/50 p-3 text-sm leading-6">{passage.text}</blockquote><p className="text-xs text-muted-foreground">{passage.heading_path ?? "No heading"} - {passage.page_or_position ?? `paragraph ${passage.paragraph_index ?? "unrecorded"}`} - extraction {Math.round(passage.extraction_certainty * 100)}%</p>{(passage.speaker || passage.table_ref) && <p className="text-xs text-muted-foreground">Speaker: {passage.speaker ?? "not recorded"} - Table: {passage.table_ref ?? "not recorded"}</p>}{Object.keys(passage.metadata).length > 0 && <details className="rounded-md border p-2 text-xs"><summary className="cursor-pointer font-semibold">Passage metadata</summary><pre className="mt-2 overflow-auto whitespace-pre-wrap">{JSON.stringify(passage.metadata, null, 2)}</pre></details>}{passage.citations.map((citation) => <div key={citation.id} className="rounded-md border p-2 text-xs"><strong>{citation.report_section}</strong> - {citation.audit_status}<p className="mt-1">{citation.sentence_text}</p>{citation.audit_note && <p className="mt-1 text-muted-foreground">{citation.audit_note}</p>}</div>)}</> : <p className="text-xs text-muted-foreground">No stored passage is available.</p>}
+      {source.passages.length > 1 && <select className="rounded-md border p-2 text-xs" value={passage?.id ?? ""} onChange={(event) => onPassage(event.target.value)} aria-label="Select source passage">{source.passages.map((item) => <option key={item.id} value={item.id}>{item.page_or_position ?? item.heading_path ?? item.id}</option>)}</select>}
+    </div>
+  </aside>;
+}
+
+function stanceTone(stance: EvidenceStance) { return stance.includes("SUPPORTS") ? "support" : stance.includes("CONTRADICTS") ? "danger" : "neutral"; }
+function Json({ title, value }: { title: string; value: Record<string, unknown> }) { return <div><p className="mb-1 text-xs font-semibold">{title}</p><pre className="overflow-auto rounded bg-muted p-2 text-xs">{JSON.stringify(value, null, 2)}</pre></div>; }
+function Version({ title, value }: { title: string; value: Record<string, unknown> }) { return <div className="rounded-md border p-3"><p className="mb-2 text-sm font-semibold">{title}</p><dl className="grid gap-2 text-xs md:grid-cols-2">{Object.entries(value).map(([key, item]) => <div key={key} className="rounded bg-muted p-2"><dt className="text-muted-foreground">{key}</dt><dd className="mt-1 break-all font-medium">{String(item)}</dd></div>)}</dl></div>; }

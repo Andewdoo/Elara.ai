@@ -15,7 +15,7 @@ export default function SavedPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm leading-6 text-muted-foreground">
-            Saved reports will remain account-owned records served through FastAPI. This shell renders mocked saved entries without storing sensitive report content in browser storage.
+            Saved reports remain account-owned records served through FastAPI. The list stays empty until the authorized save and history routes arrive in Step 15; sensitive report content is never stored in browser storage.
           </p>
         </CardContent>
       </Card>

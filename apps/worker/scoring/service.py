@@ -5,7 +5,7 @@ from __future__ import annotations
 from decimal import Decimal
 from uuid import uuid4
 
-from agents.schemas import ConfidenceIssue, ContextIssue, EvidenceStance, Importance
+from agents.schemas import ClaimKind, ConfidenceIssue, ContextIssue, EvidenceStance, Importance
 from graph.state import (
     CalculationRecord,
     ClaimScoreRecord,
@@ -318,6 +318,15 @@ class DeterministicScoringService:
             and claim.fact_checkability.value != "not_fact_checkable"
         ]
         factual_accuracy = article_factual_accuracy(factual_claims)
+        attribution_claims = [
+            (exact_support[row.claim_ref], claim.importance_weight)
+            for row in claim_scores
+            for claim in state.claims
+            if row.claim_ref == claim.claim_ref
+            and row.claim_ref in exact_support
+            and claim.claim_kind == ClaimKind.ATTRIBUTION
+        ]
+        attribution_support = article_factual_accuracy(attribution_claims)
         essential = [
             row
             for row in claim_scores
@@ -391,6 +400,93 @@ class DeterministicScoringService:
                 self._record("final_label", None, {"factual_accuracy": str(factual_accuracy) if factual_accuracy is not None else None, "verdict_confidence": str(overall_confidence), "context": str(overall_context), "insufficient_evidence_reasons": list(overall_insufficient.reasons), "strongly_refuted_essential_claim": strong_refutation}, {"label": final}, "label", "gated" if overall_insufficient.triggered or strong_refutation or overall_confidence < 35 else "passed"),
             )
         )
+        calculations.append(
+            self._record(
+                "research_coverage",
+                None,
+                {
+                    "claims": [
+                        {
+                            "claim_ref": claim.claim_ref,
+                            "importance_weight": claim.importance_weight,
+                            "adequate_evidence": row.adequate_evidence,
+                        }
+                        for row, claim in coverage_claims
+                    ],
+                    "confidence_issues": sorted(issue.value for issue in global_issues),
+                },
+                {
+                    "adequate_evidence": str(coverage),
+                    "insufficient_evidence": str(Decimal("100") - coverage),
+                    "inaccessible_source_impact": str(
+                        CONFIDENCE_PENALTIES[ConfidenceIssue.IMPORTANT_SOURCE_INACCESSIBLE]
+                        if ConfidenceIssue.IMPORTANT_SOURCE_INACCESSIBLE in global_issues
+                        else Decimal("0")
+                    ),
+                },
+                "score_0_100",
+            )
+        )
+        calculations.append(
+            self._record(
+                "context_completeness",
+                None,
+                {
+                    "claims": [
+                        {
+                            "claim_ref": row.claim_ref,
+                            "context": str(exact_context[row.claim_ref]),
+                            "importance_weight": next(
+                                claim.importance_weight
+                                for claim in state.claims
+                                if claim.claim_ref == row.claim_ref
+                            ),
+                        }
+                        for row in claim_scores
+                    ]
+                },
+                {"score": str(overall_context)},
+                "score_0_100",
+            )
+        )
+        if quote_score is not None:
+            calculations.append(
+                self._record(
+                    "quote_fidelity",
+                    None,
+                    {
+                        "claims": [
+                            {
+                                "claim_ref": claim_ref,
+                                "score": str(value),
+                                "importance_weight": next(
+                                    claim.importance_weight
+                                    for claim in state.claims
+                                    if claim.claim_ref == claim_ref
+                                ),
+                            }
+                            for claim_ref, value in claim_quote_scores.items()
+                        ]
+                    },
+                    {"score": str(quote_score)},
+                    "score_0_100",
+                )
+            )
+        if attribution_support is not None:
+            calculations.append(
+                self._record(
+                    "attribution_support",
+                    None,
+                    {
+                        "claims": [
+                            {"support": str(support), "importance_weight": weight}
+                            for support, weight in attribution_claims
+                        ]
+                    },
+                    {"score": str(attribution_support)},
+                    "score_0_100",
+                )
+            )
         scores = ScoreBundle(
             evidence_support=rounded_score(factual_accuracy) if factual_accuracy is not None else None,
             article_factual_accuracy=rounded_score(factual_accuracy) if factual_accuracy is not None else None,
