@@ -21,6 +21,12 @@ from app.models.agent_event import AgentEvent
 from app.models.verification_run import VerificationRun
 from app.redis_client import get_redis_client, progress_stream_key, request_cancellation
 from app.schemas.verifications import (
+    DeleteReportResponse,
+    ExportCreateRequest,
+    ExportResponse,
+    FeedbackCreateRequest,
+    FeedbackResponse,
+    SavedReportResponse,
     VerificationCancelResponse,
     VerificationCreateRequest,
     VerificationCreateResponse,
@@ -45,6 +51,18 @@ from app.services.verifications import (
     create_queued_verification,
     get_authorized_run,
     request_run_cancellation,
+)
+from app.services.object_storage import ObjectStorage, get_object_storage
+from app.services.report_actions import (
+    ExportNotFoundError,
+    ReportActionConflictError,
+    create_json_export,
+    delete_report,
+    export_response,
+    feedback_response,
+    get_export_download,
+    set_saved,
+    submit_feedback,
 )
 from app.services.source_graph import build_source_graph
 from app.services.reports import build_report
@@ -80,7 +98,7 @@ def get_request_redis_client(settings: Settings = Depends(get_settings)) -> Redi
     return get_redis_client()
 
 
-def _run_response(run: VerificationRun) -> VerificationRunResponse:
+def _run_response(run: VerificationRun, *, viewer_id: UUID) -> VerificationRunResponse:
     return VerificationRunResponse(
         run_id=run.id,
         status=run.status,
@@ -96,6 +114,8 @@ def _run_response(run: VerificationRun) -> VerificationRunResponse:
         failure_code=run.failure_code,
         failure_message=run.failure_message,
         updated_at=run.updated_at,
+        saved_at=run.saved_at,
+        is_owner=run.user_id == viewer_id,
     )
 
 
@@ -135,7 +155,7 @@ def get_verification(
         run = get_authorized_run(db, viewer_id=authenticated.user.id, run_id=run_id)
     except RunNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
-    return _run_response(run)
+    return _run_response(run, viewer_id=authenticated.user.id)
 
 
 @router.get("/{run_id}/source-graph", response_model=SourceGraphResponse)
@@ -323,3 +343,129 @@ def cancel_verification(
         status=run.status,
         cancellation_requested_at=run.cancellation_requested_at,
     )
+
+
+@router.post("/{run_id}/save", response_model=SavedReportResponse)
+def save_report(
+    run_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+) -> SavedReportResponse:
+    try:
+        run = set_saved(db, owner_id=authenticated.user.id, run_id=run_id, saved=True)
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ReportActionConflictError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    return SavedReportResponse(run_id=run.id, saved_at=run.saved_at)
+
+
+@router.delete("/{run_id}/save", response_model=SavedReportResponse)
+def unsave_report(
+    run_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+) -> SavedReportResponse:
+    try:
+        run = set_saved(db, owner_id=authenticated.user.id, run_id=run_id, saved=False)
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ReportActionConflictError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    return SavedReportResponse(run_id=run.id, saved_at=run.saved_at)
+
+
+@router.post(
+    "/{run_id}/feedback", response_model=FeedbackResponse, status_code=status.HTTP_201_CREATED
+)
+def create_feedback(
+    run_id: UUID,
+    request: FeedbackCreateRequest,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+) -> FeedbackResponse:
+    try:
+        row = submit_feedback(
+            db, viewer_id=authenticated.user.id, run_id=run_id, request=request
+        )
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    return feedback_response(row)
+
+
+@router.post(
+    "/{run_id}/exports", response_model=ExportResponse, status_code=status.HTTP_201_CREATED
+)
+def create_export(
+    run_id: UUID,
+    request: ExportCreateRequest,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+    storage: ObjectStorage = Depends(get_object_storage),
+) -> ExportResponse:
+    try:
+        row = create_json_export(
+            db, owner_id=authenticated.user.id, run_id=run_id, storage=storage
+        )
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ReportActionConflictError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Private export storage failed for run %s", run_id)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Export storage is temporarily unavailable",
+        ) from exc
+    return export_response(row)
+
+
+@router.get("/{run_id}/exports/{export_id}", response_model=ExportResponse)
+def get_export(
+    run_id: UUID,
+    export_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+    storage: ObjectStorage = Depends(get_object_storage),
+) -> ExportResponse:
+    try:
+        return get_export_download(
+            db,
+            viewer_id=authenticated.user.id,
+            run_id=run_id,
+            export_id=export_id,
+            storage=storage,
+            expires_in=settings.export_signed_url_ttl_seconds,
+        )
+    except (RunNotFoundError, ExportNotFoundError) as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Signed export URL creation failed for run %s", run_id)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Export download is temporarily unavailable",
+        ) from exc
+
+
+@router.delete("/{run_id}", response_model=DeleteReportResponse)
+def remove_report(
+    run_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+    storage: ObjectStorage = Depends(get_object_storage),
+) -> DeleteReportResponse:
+    try:
+        delete_report(db, owner_id=authenticated.user.id, run_id=run_id, storage=storage)
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ReportActionConflictError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    except Exception as exc:
+        db.rollback()
+        logger.exception("Report object cleanup failed for run %s", run_id)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Report deletion is temporarily unavailable",
+        ) from exc
+    return DeleteReportResponse(run_id=run_id, deleted=True)

@@ -49,6 +49,7 @@ def enforce_verification_limits(
             .select_from(VerificationRun)
             .where(
                 VerificationRun.user_id == owner.id,
+                VerificationRun.deleted_at.is_(None),
                 VerificationRun.status.in_(ACTIVE_RUN_STATUSES),
             )
         )
@@ -115,6 +116,7 @@ def get_owned_run(db: Session, *, owner_id: UUID, run_id: UUID) -> VerificationR
         select(VerificationRun).where(
             VerificationRun.id == run_id,
             VerificationRun.user_id == owner_id,
+            VerificationRun.deleted_at.is_(None),
         )
     )
     if run is None:
@@ -127,6 +129,7 @@ def get_authorized_run(db: Session, *, viewer_id: UUID, run_id: UUID) -> Verific
     run = db.scalar(
         select(VerificationRun).where(
             VerificationRun.id == run_id,
+            VerificationRun.deleted_at.is_(None),
             or_(VerificationRun.user_id == viewer_id, VerificationRun.visibility == "public"),
         )
     )
@@ -141,7 +144,11 @@ def request_run_cancellation(
 ) -> tuple[VerificationRun, AgentEvent | None]:
     run = db.scalar(
         select(VerificationRun)
-        .where(VerificationRun.id == run_id, VerificationRun.user_id == owner_id)
+        .where(
+            VerificationRun.id == run_id,
+            VerificationRun.user_id == owner_id,
+            VerificationRun.deleted_at.is_(None),
+        )
         .with_for_update()
     )
     if run is None:

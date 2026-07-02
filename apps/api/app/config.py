@@ -32,11 +32,13 @@ class Settings(BaseSettings):
     cors_allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
 
     s3_endpoint_url: str = "http://localhost:9000"
+    s3_public_endpoint_url: str | None = None
     s3_access_key_id: str | None = None
     s3_secret_access_key: str | None = None
     s3_bucket_name: str = "elara-local"
     s3_region: str = "us-east-1"
     s3_force_path_style: bool = True
+    export_signed_url_ttl_seconds: int = Field(default=300, ge=60, le=900)
     sentry_dsn_api: str | None = None
 
     firebase_project_id: str | None = None
@@ -47,7 +49,7 @@ class Settings(BaseSettings):
     firebase_fresh_token_max_age_seconds: int = Field(default=300, ge=60, le=600)
     firebase_session_same_site: Literal["lax", "strict", "none"] = "lax"
 
-    workflow_version: str = "step-10"
+    workflow_version: str = "step-15"
     passage_embedding_dimension: int = Field(default=1536, gt=0)
 
     search_provider: Literal["brave"] = "brave"
@@ -82,6 +84,10 @@ class Settings(BaseSettings):
         if bool(self.s3_access_key_id) != bool(self.s3_secret_access_key):
             raise ValueError("S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY must be configured together")
         return self
+
+    @property
+    def effective_s3_public_endpoint_url(self) -> str:
+        return self.s3_public_endpoint_url or self.s3_endpoint_url
 
     @field_validator("cors_allowed_origins", mode="before")
     @classmethod

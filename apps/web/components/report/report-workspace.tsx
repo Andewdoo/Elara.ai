@@ -4,6 +4,7 @@ import { Calculator, ExternalLink, FileWarning, Info, PanelRightClose, PanelRigh
 import { useState } from "react";
 
 import { ScoreCharts } from "@/components/report/score-charts";
+import { FeedbackControls, ReportHeaderActions } from "@/components/report/report-actions";
 import { SourceGraph } from "@/components/report/source-graph";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,7 @@ export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
   return <div className="grid gap-4">
     <header className="grid gap-3 rounded-lg border bg-white p-4 shadow-subtle lg:grid-cols-[1fr_auto]">
       <div><div className="flex flex-wrap items-center gap-2"><Badge tone={run.status === "COMPLETED" ? "support" : "info"}>{run.status}</Badge><Badge tone="info">{run.research_depth}</Badge><span className="text-xs text-muted-foreground">Run {run.run_id}</span></div><h1 className="mt-3 text-2xl font-semibold">{run.title ?? "Verification report"}</h1><p className="mt-2 text-sm text-muted-foreground">Evidence reviewed as of {reviewed}. New evidence or corrections may change this assessment.</p></div>
-      <div className="grid min-w-60 gap-1 rounded-md border bg-muted/40 p-3"><span className="text-xs text-muted-foreground">Verdict</span><span className="text-lg font-semibold">{report.verdict ?? "Not verified"}</span></div>
+      <div className="grid min-w-60 gap-3"><div className="grid gap-1 rounded-md border bg-muted/40 p-3"><span className="text-xs text-muted-foreground">Verdict</span><span className="text-lg font-semibold">{report.verdict ?? "Not verified"}</span></div>{run.is_owner && <ReportHeaderActions runId={run.run_id} saved={Boolean(run.saved_at)} />}</div>
     </header>
 
     <nav className="flex gap-2 overflow-x-auto rounded-lg border bg-white p-2" aria-label="Report sections">
@@ -55,7 +56,7 @@ export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
           <div className="grid gap-2">{report.report_sentences.filter((sentence) => sentence.report_section.includes("summary")).map((sentence) => <button key={sentence.id} className="rounded-md border bg-white p-3 text-left text-sm leading-6 hover:border-primary" onClick={() => openEvidence(sentence.passage_id, "")}>{sentence.sentence_text}<span className="ml-2 text-xs text-muted-foreground">citation {sentence.audit_status}</span></button>)}{report.report_sentences.length === 0 && <p className="text-sm text-muted-foreground">No citation-audited summary sentences were stored.</p>}</div>
           <SpecializedPanels report={report}/>
           <div><p className="mb-2 text-sm font-semibold">Limitations</p>{report.limitations.length ? report.limitations.map((item) => <p key={item} className="mb-2 flex gap-2 rounded-md bg-muted p-3 text-sm"><Info className="mt-0.5 h-4 w-4 shrink-0 text-primary"/>{item}</p>) : <p className="text-sm text-muted-foreground">No limitations were recorded.</p>}</div>
-          <p className="text-xs text-muted-foreground">Feedback and correction controls are added with the authorized feedback API in step 15.</p>
+          <section aria-label="Feedback and correction controls"><FeedbackControls runId={run.run_id} /></section>
         </CardContent></Card><ScoreCharts report={report}/></>}
         {ui.activeReportTab === "claims" && <ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim} detailed/>}
         {ui.activeReportTab === "evidence" && <Card><CardHeader><div className="flex items-center justify-between gap-3"><CardTitle>Evidence passages</CardTitle><select className="rounded-md border bg-white px-2 py-1 text-xs" value={ui.evidenceFilter} onChange={(event) => ui.setEvidenceFilter(event.target.value as typeof ui.evidenceFilter)}><option value="all">All</option><option value="supporting">Supporting</option><option value="contradicting">Contradicting</option><option value="inaccessible">Inaccessible</option></select></div></CardHeader><CardContent className="grid gap-3">

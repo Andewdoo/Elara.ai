@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, ForeignKey, Index, String, Text
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.base import Base
@@ -36,6 +36,10 @@ class Calculation(Base):
 class UserFeedback(Base):
     __tablename__ = "user_feedback"
     __table_args__ = (
+        CheckConstraint(
+            "category IN ('CORRECTION', 'MISSED_EVIDENCE', 'APPEAL', 'BROKEN_CITATION')",
+            name="ck_user_feedback_category",
+        ),
         Index("ix_user_feedback_status", "status"),
         Index("ix_user_feedback_user_created", "user_id", "created_at"),
     )
@@ -60,6 +64,9 @@ Index("ix_user_feedback_run_created", UserFeedback.run_id, UserFeedback.created_
 
 class Export(Base):
     __tablename__ = "exports"
+    __table_args__ = (
+        CheckConstraint("export_type IN ('JSON')", name="ck_exports_type"),
+    )
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     run_id: Mapped[UUID] = mapped_column(

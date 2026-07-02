@@ -31,6 +31,7 @@ class VerificationRun(Base):
         ),
         Index("ix_verification_runs_status_queued", "status", "queued_at"),
         Index("ix_verification_runs_visibility", "visibility"),
+        Index("ix_verification_runs_owner_saved", "user_id", "saved_at"),
         Index(
             "ix_verification_runs_share_token",
             "share_token_hash",
@@ -70,6 +71,8 @@ class VerificationRun(Base):
     failure_message: Mapped[str | None] = mapped_column(Text)
     cancellation_requested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     evidence_reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    saved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
     share_token_hash: Mapped[str | None] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utc_now)

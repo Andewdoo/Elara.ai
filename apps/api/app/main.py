@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routes import auth_router, verifications_router
+from app.routes import auth_router, history_router, verifications_router
 
 
 def create_app() -> FastAPI:
@@ -16,6 +16,7 @@ def create_app() -> FastAPI:
         allow_headers=["Authorization", "Content-Type", "Last-Event-ID"],
     )
     app.include_router(auth_router)
+    app.include_router(history_router)
     app.include_router(verifications_router)
 
     @app.get("/health", tags=["operations"])

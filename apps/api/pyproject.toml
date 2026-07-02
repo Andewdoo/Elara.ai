@@ -9,6 +9,7 @@ description = "Elara.ai FastAPI authorization and persistence boundary"
 requires-python = ">=3.12"
 dependencies = [
   "alembic>=1.14,<2",
+  "boto3>=1.35,<2",
   "celery[redis]>=5.4,<6",
   "fastapi>=0.115,<1",
   "firebase-admin>=6.6,<8",

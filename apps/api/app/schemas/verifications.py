@@ -5,7 +5,7 @@ from urllib.parse import urlsplit
 from uuid import UUID
 
 from pydantic import AnyHttpUrl, BaseModel, Field, field_validator, model_validator
-from app.models.enums import InputType, ResearchDepth, RunStatus
+from app.models.enums import ExportFormat, FeedbackCategory, InputType, ResearchDepth, RunStatus
 
 
 class VerificationCreateRequest(BaseModel):
@@ -105,6 +105,75 @@ class VerificationRunResponse(BaseModel):
     failure_code: str | None
     failure_message: str | None
     updated_at: datetime
+    saved_at: datetime | None
+    is_owner: bool
+
+
+class HistoryItemResponse(BaseModel):
+    run_id: UUID
+    status: RunStatus
+    input_type: InputType
+    research_depth: ResearchDepth
+    title: str | None
+    submitted_text_preview: str | None
+    verdict: str | None
+    verdict_confidence: int | None
+    evidence_reviewed_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+    saved_at: datetime | None
+
+
+class HistoryResponse(BaseModel):
+    items: list[HistoryItemResponse]
+    total: int
+    page: int
+    page_size: int
+
+
+class SavedReportResponse(BaseModel):
+    run_id: UUID
+    saved_at: datetime | None
+
+
+class FeedbackCreateRequest(BaseModel):
+    category: FeedbackCategory
+    message: str = Field(min_length=3, max_length=10_000)
+    source_url: AnyHttpUrl | None = None
+
+    @field_validator("message", mode="before")
+    @classmethod
+    def normalize_message(cls, value: str) -> str:
+        return value.strip()
+
+
+class FeedbackResponse(BaseModel):
+    feedback_id: UUID
+    run_id: UUID
+    category: FeedbackCategory
+    message: str
+    source_url: str | None
+    status: str
+    created_at: datetime
+
+
+class ExportCreateRequest(BaseModel):
+    format: ExportFormat = ExportFormat.JSON
+
+
+class ExportResponse(BaseModel):
+    export_id: UUID
+    run_id: UUID
+    format: ExportFormat
+    content_hash: str
+    created_at: datetime
+    download_url: str | None = None
+    expires_at: datetime | None = None
+
+
+class DeleteReportResponse(BaseModel):
+    run_id: UUID
+    deleted: bool
 
 
 class ProgressEvent(BaseModel):

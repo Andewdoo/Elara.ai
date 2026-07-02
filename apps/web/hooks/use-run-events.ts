@@ -35,6 +35,8 @@ export type VerificationRun = {
   failure_code: string | null;
   failure_message: string | null;
   updated_at: string;
+  saved_at: string | null;
+  is_owner: boolean;
 };
 
 export type RunProgressEvent = {

@@ -119,7 +119,7 @@ def test_initial_migration_tables_match_metadata_and_has_one_head():
 
     config = Config(str(API_ROOT / "alembic.ini"))
     script = ScriptDirectory.from_config(config)
-    assert script.get_heads() == [revision.revision]
+    assert script.get_heads() == ["20260702_0002"]
 
 
 def test_uuid_keys_and_timezone_aware_timestamps_are_consistent():
@@ -166,3 +166,14 @@ def test_ownership_status_and_graph_indexes_are_explicit():
         for index in table.indexes
     }
     assert expected_indexes <= metadata_indexes
+
+
+def test_step15_constraints_and_columns_are_registered():
+    runs = Base.metadata.tables["verification_runs"]
+    assert {"saved_at", "deleted_at"} <= set(runs.c.keys())
+    constraint_names = {
+        constraint.name
+        for table_name in ("user_feedback", "exports")
+        for constraint in Base.metadata.tables[table_name].constraints
+    }
+    assert {"ck_user_feedback_category", "ck_exports_type"} <= constraint_names

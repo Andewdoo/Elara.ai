@@ -66,3 +66,14 @@ class DependencyRelationship(StrEnum):
     DERIVES_FROM = "DERIVES_FROM"
     USES_SAME_DATA = "USES_SAME_DATA"
     POSSIBLE_DUPLICATE = "POSSIBLE_DUPLICATE"
+
+
+class FeedbackCategory(StrEnum):
+    CORRECTION = "CORRECTION"
+    MISSED_EVIDENCE = "MISSED_EVIDENCE"
+    APPEAL = "APPEAL"
+    BROKEN_CITATION = "BROKEN_CITATION"
+
+
+class ExportFormat(StrEnum):
+    JSON = "JSON"
