@@ -1,0 +1,7 @@
+# Graphify's own integration files are tooling, not Elara architecture.
+.codex/
+.agents/
+.graphify-venv/
+
+# Never ingest generated graph artifacts into the next graph build.
+graphify-out/

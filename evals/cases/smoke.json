@@ -1,0 +1,45 @@
+[
+  {
+    "id": "supported-primary-record",
+    "expected": {
+      "verdict": "supported", "attribution": "confirmed",
+      "evidence_ids": ["passage-1", "passage-2"],
+      "required_passage_ids": ["passage-1"],
+      "relevant_url_ids": ["url-1", "url-2"],
+      "primary_source_ids": ["source-1"],
+      "citation_entailment": {"sentence-1": "entailed"},
+      "extracted_fields": {"amount": "125.0", "unit": "USD", "speaker": "Example official"},
+      "numerical_checks": {"amount": "valid", "unit": "valid", "period": "valid"},
+      "duplicate_clusters": [["source-2", "source-3"]]
+    },
+    "predicted": {
+      "verdict": "supported", "attribution": "confirmed", "confidence": 0.9,
+      "evidence_ids": ["passage-1", "passage-2"],
+      "required_passage_ids": ["passage-1"],
+      "relevant_url_ids": ["url-1", "url-2"],
+      "primary_source_ids": ["source-1"],
+      "citation_entailment": {"sentence-1": "entailed"},
+      "extracted_fields": {"amount": "125.0", "unit": "USD", "speaker": "Example official"},
+      "numerical_checks": {"amount": "valid", "unit": "valid", "period": "valid"},
+      "duplicate_clusters": [["source-2", "source-3"]],
+      "statement_count": 1, "unsupported_statement_count": 0,
+      "latency_seconds": 12.5, "cost_usd": 0.02
+    }
+  },
+  {
+    "id": "insufficient-public-evidence",
+    "expected": {
+      "verdict": "insufficient", "attribution": "unresolved", "evidence_ids": [],
+      "required_passage_ids": [], "relevant_url_ids": [], "primary_source_ids": [],
+      "citation_entailment": {}, "extracted_fields": {}, "numerical_checks": {},
+      "duplicate_clusters": []
+    },
+    "predicted": {
+      "verdict": "insufficient", "attribution": "unresolved", "confidence": 0.8,
+      "evidence_ids": [], "required_passage_ids": [], "relevant_url_ids": [],
+      "primary_source_ids": [], "citation_entailment": {}, "extracted_fields": {},
+      "numerical_checks": {}, "duplicate_clusters": [], "statement_count": 1,
+      "unsupported_statement_count": 0, "latency_seconds": 4.0, "cost_usd": 0.005
+    }
+  }
+]

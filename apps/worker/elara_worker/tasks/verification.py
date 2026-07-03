@@ -1,4 +1,5 @@
 import logging
+import time
 from uuid import UUID
 
 from celery import Task
@@ -6,7 +7,7 @@ from redis import Redis
 from sqlalchemy import exists, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.celery_app import celery_app
+from app.celery_app import VERIFICATION_QUEUES, celery_app
 from app.config import Settings, get_settings
 from app.database.session import get_session_factory
 from app.models.enums import RunStatus
@@ -26,6 +27,14 @@ from app.services.run_lifecycle import (
 )
 from elara_worker.errors import TransientFetchError, TransientProviderError
 from graph.runtime import execute_planning_workflow
+from graph.state import ResearchDepth as GraphResearchDepth, VerificationState
+from observability import (
+    build_run_metrics,
+    emit_metrics,
+    initialize_worker_sentry,
+    queue_length,
+    safe_trace,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -245,8 +254,11 @@ def _mark_failure_safely(
 def verify_run(self: Task, run_id: str) -> None:
     parsed_run_id = UUID(run_id)
     settings = get_settings()
+    initialize_worker_sentry(settings)
     redis_client = get_redis_client()
     factory = get_session_factory()
+    started = time.perf_counter()
+    result: VerificationState | None = None
     try:
         with acquired_lock(run_lock(redis_client, settings=settings, run_id=parsed_run_id)) as acquired:
             if not acquired:
@@ -255,15 +267,32 @@ def verify_run(self: Task, run_id: str) -> None:
             prepare_run(factory, redis_client, settings, parsed_run_id)
             if _cancel_if_requested(factory, redis_client, settings, parsed_run_id):
                 return
-            result = execute_planning_workflow(
-                factory,
-                redis_client,
-                settings,
-                parsed_run_id,
-                record=_record,
-                is_cancelled=_is_cancelled,
-                retrieve=True,
-            )
+            with safe_trace(
+                "verification.run",
+                metadata={
+                    "run_id": str(parsed_run_id),
+                    "workflow_version": settings.workflow_version,
+                    "retry_count": self.request.retries,
+                    "environment": settings.environment,
+                },
+            ) as trace:
+                result = execute_planning_workflow(
+                    factory,
+                    redis_client,
+                    settings,
+                    parsed_run_id,
+                    record=_record,
+                    is_cancelled=_is_cancelled,
+                    retrieve=True,
+                )
+                if result is not None:
+                    trace.add_outputs(
+                        {
+                            "completed_stage_count": len(result.completed_stages),
+                            "recoverable_error_count": len(result.recoverable_errors),
+                            "cancelled": result.cancelled,
+                        }
+                    )
             if result is not None and any(error.retryable for error in result.recoverable_errors):
                 error = next(
                     item for item in reversed(result.recoverable_errors) if item.retryable
@@ -311,3 +340,28 @@ def verify_run(self: Task, run_id: str) -> None:
             message="Verification stopped because the worker encountered an error.",
         )
         raise
+    finally:
+        try:
+            metric_state = result
+            if metric_state is None:
+                durable = _load_run(factory, parsed_run_id)
+                metric_state = VerificationState(
+                    run_id=durable.id,
+                    user_id=durable.user_id,
+                    research_depth=GraphResearchDepth(durable.research_depth.value),
+                    methodology_version="1.0",
+                    workflow_version=durable.workflow_version,
+                    cancelled=durable.status == RunStatus.CANCELLED,
+                )
+            points = build_run_metrics(
+                metric_state,
+                duration_seconds=time.perf_counter() - started,
+                retry_count=self.request.retries,
+                queue_depth=queue_length(redis_client, VERIFICATION_QUEUES),
+                input_cost_per_million=settings.deepseek_input_cost_per_million_tokens,
+                output_cost_per_million=settings.deepseek_output_cost_per_million_tokens,
+                search_cost_per_request=settings.search_cost_per_request,
+            )
+            emit_metrics(redis_client, points)
+        except Exception:
+            logger.warning("Unable to finalize metrics for run %s", parsed_run_id)

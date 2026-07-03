@@ -4,7 +4,7 @@ from tempfile import gettempdir
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -40,6 +40,20 @@ class Settings(BaseSettings):
     s3_force_path_style: bool = True
     export_signed_url_ttl_seconds: int = Field(default=300, ge=60, le=900)
     sentry_dsn_api: str | None = None
+    sentry_dsn_worker: str | None = None
+    sentry_org: str | None = None
+    sentry_project_web: str | None = None
+    sentry_project_api: str | None = None
+    sentry_project_worker: str | None = None
+    sentry_auth_token: SecretStr | None = None
+    sentry_traces_sample_rate: float = Field(default=0.05, ge=0, le=1)
+    langsmith_tracing: bool = False
+    langsmith_api_key: SecretStr | None = None
+    langsmith_project: str = "elara-local"
+    langsmith_endpoint: str | None = None
+    deepseek_input_cost_per_million_tokens: float = Field(default=0, ge=0)
+    deepseek_output_cost_per_million_tokens: float = Field(default=0, ge=0)
+    search_cost_per_request: float = Field(default=0, ge=0)
 
     firebase_project_id: str | None = None
     firebase_client_email: str | None = None
@@ -49,7 +63,7 @@ class Settings(BaseSettings):
     firebase_fresh_token_max_age_seconds: int = Field(default=300, ge=60, le=600)
     firebase_session_same_site: Literal["lax", "strict", "none"] = "lax"
 
-    workflow_version: str = "step-15"
+    workflow_version: str = "step-16"
     passage_embedding_dimension: int = Field(default=1536, gt=0)
 
     search_provider: Literal["brave"] = "brave"
@@ -92,6 +106,7 @@ class Settings(BaseSettings):
     @field_validator("cors_allowed_origins", mode="before")
     @classmethod
     def parse_origins(cls, value: object) -> object:
+        origins: object
         if isinstance(value, str):
             origins = [origin.strip() for origin in value.split(",") if origin.strip()]
         else:
@@ -114,6 +129,24 @@ class Settings(BaseSettings):
     @classmethod
     def restore_private_key_newlines(cls, value: str | None) -> str | None:
         return value.replace("\\n", "\n") if value else value
+
+    @field_validator("langsmith_endpoint")
+    @classmethod
+    def validate_langsmith_endpoint(cls, value: str | None) -> str | None:
+        if not value:
+            return None
+        parsed = urlsplit(value)
+        if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+            raise ValueError("LANGSMITH_ENDPOINT must be an HTTPS service URL without credentials")
+        return value.rstrip("/")
+
+    @model_validator(mode="after")
+    def tracing_credentials_are_server_side_and_complete(self) -> "Settings":
+        if self.langsmith_tracing and (not self.langsmith_api_key or not self.langsmith_project):
+            raise ValueError(
+                "LANGSMITH_API_KEY and LANGSMITH_PROJECT are required when LANGSMITH_TRACING is true"
+            )
+        return self
 
     @property
     def effective_celery_broker_url(self) -> str:

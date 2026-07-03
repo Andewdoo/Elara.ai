@@ -7,7 +7,7 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 from sqlalchemy import create_engine, func, select
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from agents.deepseek_client import (

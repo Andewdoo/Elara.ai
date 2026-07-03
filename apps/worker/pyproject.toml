@@ -12,18 +12,20 @@ dependencies = [
   "boto3>=1.35,<2",
   "httpx>=0.28,<1",
   "langgraph>=1.0,<2",
+  "langsmith>=0.4,<1",
   "pydantic>=2.10,<3",
   "pymupdf>=1.25,<2",
   "redis>=5.2,<6",
+  "sentry-sdk[celery]>=2.22,<3",
   "trafilatura>=2.0,<3",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.3,<9"]
+dev = ["mypy>=1.14,<2", "pytest>=8.3,<9", "ruff>=0.9,<1"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
 
 [tool.setuptools.packages.find]
-include = ["agents*", "auditing*", "elara_worker*", "extraction*", "graph*", "provenance*", "research*", "scoring*"]
+include = ["agents*", "auditing*", "elara_worker*", "extraction*", "graph*", "observability*", "provenance*", "research*", "scoring*"]

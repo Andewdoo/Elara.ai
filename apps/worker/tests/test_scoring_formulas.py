@@ -218,24 +218,29 @@ def test_scoring_records_are_persisted_with_decimal_audit_metadata():
     with factory() as db:
         user = User(auth_provider="firebase", auth_subject="scoring-owner", email="scoring@example.test",
                     plan_tier="free", role="user", usage_limits={})
-        db.add(user); db.flush()
+        db.add(user)
+        db.flush()
         run = VerificationRun(user_id=user.id, input_type=InputType.CLAIM, research_depth="STANDARD",
             status=RunStatus.SCORING, submitted_text="The value rose", normalized_target={}, workflow_version="step-12-test")
-        db.add(run); db.flush()
+        db.add(run)
+        db.flush()
         claim = AtomicClaim(run_id=run.id, claim_text="The value rose", claim_type="factual",
             importance_weight=3, entities=[], locations=[], metrics=[], ambiguities=[], fact_checkable=True,
             gates={"claim_ref": "c1", "importance": "essential", "fact_checkability": "fact_checkable"})
         source = Source(canonical_url="https://records.example/value", domain="records.example",
             source_type=SourceType.PRIMARY, first_seen_at=now, last_seen_at=now)
-        db.add_all([claim, source]); db.flush()
+        db.add_all([claim, source])
+        db.flush()
         snapshot = SourceSnapshot(id=snapshot_id, source_id=source.id, version_number=1,
             retrieved_at=now, access_status=AccessStatus.FETCHED, content_hash="hash")
-        db.add(snapshot); db.flush()
+        db.add(snapshot)
+        db.flush()
         db.add(RunSource(run_id=run.id, source_id=source.id, snapshot_id=snapshot.id,
             role="primary", selected_rank=1))
         db.add(SourcePassage(id=passage_id, snapshot_id=snapshot.id, source_id=source.id,
             text="The value rose.", text_hash="abc", extraction_certainty=Decimal("1"), passage_metadata={}))
-        db.commit(); run_id, user_id = run.id, user.id
+        db.commit()
+        run_id, user_id = run.id, user.id
 
     state = VerificationState(run_id=run_id, user_id=user_id, research_depth=ResearchDepth.STANDARD,
         methodology_version="1.0",

@@ -17,14 +17,17 @@ dependencies = [
   "pydantic-settings>=2.7,<3",
   "pgvector>=0.3,<1",
   "redis>=5.2,<6",
+  "sentry-sdk[fastapi]>=2.22,<3",
   "sqlalchemy>=2.0,<3",
   "uvicorn[standard]>=0.34,<1",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "httpx>=0.28,<1",
+  "httpx2>=2.5,<3",
+  "mypy>=1.14,<2",
   "pytest>=8.3,<9",
+  "ruff>=0.9,<1",
 ]
 
 [tool.pytest.ini_options]

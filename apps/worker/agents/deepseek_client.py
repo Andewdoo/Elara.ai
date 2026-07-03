@@ -17,6 +17,7 @@ import httpx
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from elara_worker.errors import TransientProviderError
+from observability.tracing import safe_trace
 
 
 logger = logging.getLogger(__name__)
@@ -226,14 +227,19 @@ class DeepSeekClient:
             raise ValueError("embedding batches are limited to 128 passages")
         started = time.perf_counter()
         try:
-            response = await self._http.post(
-                f"{self.config.base_url}/embeddings",
-                headers={
-                    "Authorization": f"Bearer {self.config.api_key}",
-                    "Content-Type": "application/json",
-                },
-                json={"model": model, "input": list(texts)},
-            )
+            with safe_trace(
+                "deepseek.embedding",
+                run_type="embedding",
+                metadata={"provider": "deepseek", "model": model, "prompt_version": "embedding-v1"},
+            ):
+                response = await self._http.post(
+                    f"{self.config.base_url}/embeddings",
+                    headers={
+                        "Authorization": f"Bearer {self.config.api_key}",
+                        "Content-Type": "application/json",
+                    },
+                    json={"model": model, "input": list(texts)},
+                )
         except httpx.TimeoutException:
             metadata = self._error_metadata(
                 model, "embedding-v1", 0.0, self._latency_ms(started), retryable=True
@@ -339,14 +345,23 @@ class DeepSeekClient:
 
         started = time.perf_counter()
         try:
-            response = await self._http.post(
-                f"{self.config.base_url}/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {self.config.api_key}",
-                    "Content-Type": "application/json",
+            with safe_trace(
+                "deepseek.structured",
+                run_type="llm",
+                metadata={
+                    "provider": "deepseek",
+                    "model": model,
+                    "prompt_version": prompt_version,
                 },
-                json=payload,
-            )
+            ):
+                response = await self._http.post(
+                    f"{self.config.base_url}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {self.config.api_key}",
+                        "Content-Type": "application/json",
+                    },
+                    json=payload,
+                )
         except httpx.TimeoutException:
             latency_ms = self._latency_ms(started)
             metadata = self._error_metadata(

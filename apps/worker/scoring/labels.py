@@ -31,21 +31,31 @@ class InsufficientEvidence:
 
 def support_label(support: Decimal) -> str:
     value = score(support, "support")
-    if value >= 90: return "Supported"
-    if value >= 75: return "Mostly supported"
-    if value >= 60: return "Leaning supported"
-    if value >= 40: return "Mixed or unresolved"
-    if value >= 26: return "Leaning refuted"
-    if value >= 11: return "Mostly refuted"
+    if value >= 90:
+        return "Supported"
+    if value >= 75:
+        return "Mostly supported"
+    if value >= 60:
+        return "Leaning supported"
+    if value >= 40:
+        return "Mixed or unresolved"
+    if value >= 26:
+        return "Leaning refuted"
+    if value >= 11:
+        return "Mostly refuted"
     return "Refuted"
 
 
 def confidence_label(confidence: Decimal) -> str:
     value = score(confidence, "confidence")
-    if value >= 85: return "Very high"
-    if value >= 70: return "High"
-    if value >= 50: return "Moderate"
-    if value >= 30: return "Low"
+    if value >= 85:
+        return "Very high"
+    if value >= 70:
+        return "High"
+    if value >= 50:
+        return "Moderate"
+    if value >= 30:
+        return "Low"
     return "Very low"
 
 

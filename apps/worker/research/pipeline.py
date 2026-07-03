@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from decimal import Decimal
+import time
 from urllib.parse import urlsplit
 from uuid import uuid4
 
@@ -106,6 +107,7 @@ class RetrievalPipeline:
         for source in state.candidate_sources:
             snapshot_id = str(uuid4())
             retrieved_at = datetime.now(UTC)
+            fetch_started = time.perf_counter()
             try:
                 if self.rate_limiter and not self.rate_limiter.allow(
                     user_id=str(state.user_id), domain=source.domain or "unknown"
@@ -127,6 +129,7 @@ class RetrievalPipeline:
                             "content_length": result.content_length,
                             "origin_fetched_at": result.origin_fetched_at,
                             "cache_hit": result.cache_hit,
+                            "fetch_latency_ms": round((time.perf_counter() - fetch_started) * 1000, 3),
                             "untrusted_evidence": True,
                         },
                     )
@@ -141,7 +144,10 @@ class RetrievalPipeline:
                         access_status=exc.access_status,
                         retrieved_at=retrieved_at,
                         failure_reason=str(exc),
-                        metadata={"untrusted_evidence": True},
+                        metadata={
+                            "untrusted_evidence": True,
+                            "fetch_latency_ms": round((time.perf_counter() - fetch_started) * 1000, 3),
+                        },
                     )
                 )
         return state.model_copy(update={"snapshots": snapshots})

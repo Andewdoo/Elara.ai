@@ -2,11 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
+from app.observability import initialize_api_sentry
 from app.routes import auth_router, history_router, verifications_router
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    initialize_api_sentry(settings)
     app = FastAPI(title=settings.app_name, version="1.0.0")
     app.add_middleware(
         CORSMiddleware,
