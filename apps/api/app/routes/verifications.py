@@ -48,6 +48,7 @@ from app.services.verifications import (
     ActiveRunLimitExceededError,
     ResearchDepthNotAllowedError,
     RunNotFoundError,
+    UploadNotFoundError,
     create_queued_verification,
     get_authorized_run,
     request_run_cancellation,
@@ -66,6 +67,11 @@ from app.services.report_actions import (
 )
 from app.services.source_graph import build_source_graph
 from app.services.reports import build_report
+from app.services.rate_limits import (
+    RateLimitExceededError,
+    RateLimitUnavailableError,
+    enforce_verification_rate_limit,
+)
 from app.services.sources import build_sources
 
 router = APIRouter(prefix="/v1/verifications", tags=["verifications"])
@@ -90,6 +96,15 @@ class TestTransientStore:
 
     def xread(self, _streams: dict[str, str], **_: object) -> list[object]:
         return []
+
+    def incr(self, key: str) -> int:
+        return 1
+
+    def ttl(self, _key: str) -> int:
+        return 3_600
+
+    def expire(self, _key: str, _seconds: int) -> bool:
+        return True
 
 
 def get_request_redis_client(settings: Settings = Depends(get_settings)) -> Redis:
@@ -272,7 +287,8 @@ async def stream_verification_events(
 
 @router.post("", response_model=VerificationCreateResponse, status_code=status.HTTP_202_ACCEPTED)
 def create_verification(
-    request: VerificationCreateRequest,
+    payload: VerificationCreateRequest,
+    request: Request,
     authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
@@ -280,11 +296,31 @@ def create_verification(
     dispatcher: VerificationDispatcher = Depends(get_verification_dispatcher),
 ) -> VerificationCreateResponse:
     try:
-        run = create_queued_verification(db, owner=authenticated.user, request=request, settings=settings)
+        enforce_verification_rate_limit(
+            redis_client,
+            settings=settings,
+            user_id=str(authenticated.user.id),
+            ip_address=request.client.host if request.client else "unknown",
+        )
+    except RateLimitExceededError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=str(exc),
+            headers={"Retry-After": str(exc.retry_after)},
+        ) from exc
+    except RateLimitUnavailableError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Verification admission control is temporarily unavailable",
+        ) from exc
+    try:
+        run = create_queued_verification(db, owner=authenticated.user, request=payload, settings=settings)
     except ResearchDepthNotAllowedError as exc:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
     except ActiveRunLimitExceededError as exc:
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(exc)) from exc
+    except UploadNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     try:
         mirror_agent_event(redis_client, settings=settings, event=run.events[0])
     except Exception:

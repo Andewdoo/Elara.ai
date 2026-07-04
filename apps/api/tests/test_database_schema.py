@@ -56,6 +56,7 @@ def test_all_durable_tables_are_registered_in_metadata():
         "user_feedback",
         "methodology_versions",
         "exports",
+        "uploads",
     }
     assert set(Base.metadata.tables) == expected
 
@@ -106,7 +107,7 @@ def test_initial_migration_tables_match_metadata_and_has_one_head():
         for statement in revision.TABLE_SQL
         if (match := re.match(r"CREATE TABLE (\w+)", statement))
     }
-    assert migrated_tables == set(Base.metadata.tables)
+    assert migrated_tables == set(Base.metadata.tables) - {"uploads"}
     assert revision.down_revision is None
     assert any("vector(__EMBEDDING_DIMENSION__)" in sql for sql in revision.TABLE_SQL)
     assert any("ix_source_snapshots_source_content_hash" in sql for sql in revision.INDEX_SQL)
@@ -119,7 +120,7 @@ def test_initial_migration_tables_match_metadata_and_has_one_head():
 
     config = Config(str(API_ROOT / "alembic.ini"))
     script = ScriptDirectory.from_config(config)
-    assert script.get_heads() == ["20260702_0002"]
+    assert script.get_heads() == ["20260703_0003"]
 
 
 def test_uuid_keys_and_timezone_aware_timestamps_are_consistent():
@@ -177,3 +178,11 @@ def test_step15_constraints_and_columns_are_registered():
         for constraint in Base.metadata.tables[table_name].constraints
     }
     assert {"ck_user_feedback_category", "ck_exports_type"} <= constraint_names
+
+
+def test_step17_upload_ownership_index_and_size_constraint_are_registered():
+    uploads = Base.metadata.tables["uploads"]
+    assert {index.name for index in uploads.indexes} == {"ix_uploads_user_created"}
+    assert "ck_uploads_positive_size" in {
+        constraint.name for constraint in uploads.constraints
+    }

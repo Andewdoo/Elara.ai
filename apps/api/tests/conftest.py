@@ -65,6 +65,14 @@ class FakeRedis:
     def exists(self, key: str) -> int:
         return int(key in self.values)
 
+    def incr(self, key: str) -> int:
+        value = int(self.values.get(key, "0")) + 1
+        self.values[key] = str(value)
+        return value
+
+    def ttl(self, key: str) -> int:
+        return self.expirations.get(key, -1)
+
 
 class RecordingDispatcher:
     def __init__(self) -> None:

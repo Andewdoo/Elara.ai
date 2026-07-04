@@ -39,7 +39,10 @@ jobs:
       - run: pytest evals/tests && python -m evals.harness evals/cases/smoke.json --smoke
       - name: Migration graph check
         working-directory: apps/api
-        run: alembic heads && alembic upgrade head --sql > migration.sql
+        run: |
+          test "$(alembic heads | wc -l)" -eq 1
+          alembic upgrade head --sql > migration-up.sql
+          alembic downgrade head:base --sql > migration-down.sql
   containers:
     runs-on: ubuntu-latest
     needs: [web, python]
@@ -53,7 +56,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -e "apps/api[dev]" -e "apps/worker[dev]"
       - run: python -m evals.harness evals/cases/smoke.json --smoke
-      - name: Security suite scaffold
-        run: test -d apps/worker/tests && test -d apps/api/tests
+      - name: API security regressions
+        run: pytest apps/api/tests/test_security_hardening.py apps/api/tests/test_uploads.py apps/api/tests/test_auth_routes.py apps/api/tests/test_firebase_gateway.py apps/api/tests/test_sse_events.py apps/api/tests/test_verifications.py apps/api/tests/test_queueing_and_redis.py apps/api/tests/test_run_lifecycle.py
+      - name: Worker security and deterministic regressions
+        run: pytest apps/worker/tests/test_url_guard_and_fetcher.py apps/worker/tests/test_search_ranking_extraction.py apps/worker/tests/test_agent_schemas.py apps/worker/tests/test_workflow.py apps/worker/tests/test_verification_task.py apps/worker/tests/test_scoring_formulas.py apps/worker/tests/test_numerical_audit.py apps/worker/tests/test_provenance.py apps/worker/tests/test_retrieval_persistence.py apps/worker/tests/test_deepseek_client.py

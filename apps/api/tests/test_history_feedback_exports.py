@@ -269,3 +269,10 @@ def test_s3_uses_internal_endpoint_for_storage_and_public_endpoint_for_signing(m
         content_type="application/json",
         expires_in=300,
     ) == "https://downloads.example.test/signed"
+    with pytest.raises(ValueError, match="content type"):
+        storage.signed_download_url(
+            key="exports/a.json",
+            filename="report.json",
+            content_type="application/json\r\nX-Unsafe: value",
+            expires_in=300,
+        )

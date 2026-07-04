@@ -97,13 +97,15 @@
   "95": "test_database_schema.py",
   "96": "Elara.ai Implementation Plan",
   "97": "observability.py",
+  "98": "verify-form.tsx",
+  "99": "DeepSeekConfigurationError",
   "100": "metrics.py",
   "101": "5. Phase 4: Frontend Application",
   "102": "get_session_factory",
-  "103": "TestTransientStore",
-  "104": "S3ObjectStorage",
+  "104": "FakeS3Client",
   "105": "2. Phase 1: Infrastructure and Data Persistence",
   "106": "3. Phase 2: API and Asynchronous Boundaries",
+  "107": "20260703_0003_security_hardening.py",
   "108": "4. Phase 3: Verification Worker and LangGraph Workflow",
   "109": "Elara API",
   "110": "package.json",
@@ -143,5 +145,6 @@
   "144": "Elara.ai Verification and Targeted Retrieval Methodology PDF",
   "145": "project-context/AGENTS.md",
   "146": "project-context/IMPLEMENTATION_PLAN.md",
-  "147": "AGENTS.md"
+  "147": "AGENTS.md",
+  "148": "test_bearer_boundary_verifies_identity_and_persists_owner"
 }

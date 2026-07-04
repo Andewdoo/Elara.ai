@@ -34,3 +34,8 @@ Ordinary protected routes require `Authorization: Bearer <Firebase ID token>`. T
 `users.usage_limits` currently recognizes `allowed_research_depths` (a list of `QUICK`, `STANDARD`, and/or `DEEP`) and `max_active_runs` (a non-negative integer). Missing keys impose no limit until plan policy is configured.
 
 The session cookie defaults to `SameSite=Lax`. Set the server-side `FIREBASE_SESSION_SAME_SITE=none` only when the web and API origins are genuinely cross-site; the cookie remains Secure and HttpOnly.
+
+`POST /v1/uploads` accepts only bounded PDF and plain-text multipart uploads. The API
+checks extension, declared type, file signature, executable/archive signatures, binary
+text, and size before writing to a private object key. Upload IDs are owner-scoped and
+single-use when attached to an `UPLOADED_DOCUMENT` verification.

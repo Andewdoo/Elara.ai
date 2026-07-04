@@ -99,6 +99,49 @@ def test_redirect_destination_is_re_resolved_and_private_target_is_blocked(tmp_p
     assert "internal.test" in resolutions
 
 
+def test_dns_is_revalidated_immediately_before_connect_to_block_rebinding(tmp_path):
+    resolutions = iter((["93.184.216.34"], ["10.0.0.8"]))
+    requested = False
+
+    async def resolver(_hostname: str, _port: int):
+        return next(resolutions)
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal requested
+        requested = True
+        return httpx.Response(200, headers={"content-type": "text/html"}, content=b"unsafe", request=request)
+
+    fetcher = SecureFetcher(
+        guard=UrlGuard(resolver=resolver),
+        store=SnapshotFileStore(tmp_path),
+        transport=httpx.MockTransport(handler),
+    )
+    with pytest.raises(FetchError, match="non-public"):
+        run(fetcher.fetch("https://example.test/rebind"))
+    run(fetcher.aclose())
+    assert requested is False
+
+
+def test_chunked_response_is_aborted_when_streamed_bytes_exceed_limit(tmp_path):
+    async def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            headers={"content-type": "text/html"},
+            content=b"x" * 101,
+            request=request,
+        )
+
+    fetcher = SecureFetcher(
+        guard=UrlGuard(resolver=lambda *_: _resolved(["93.184.216.34"])),
+        store=SnapshotFileStore(tmp_path),
+        max_html_bytes=100,
+        transport=httpx.MockTransport(handler),
+    )
+    with pytest.raises(FetchError, match="size limit"):
+        run(fetcher.fetch("https://example.test/chunked"))
+    run(fetcher.aclose())
+
+
 def test_fetcher_rejects_executable_signature_and_writes_safe_html(tmp_path):
     responses = iter(
         [

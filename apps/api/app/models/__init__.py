@@ -17,6 +17,7 @@ from app.models.provenance import InformationCluster, SourceDependency
 from app.models.records import Calculation, Export, UserFeedback
 from app.models.sources import RunSource, Source, SourcePassage, SourceSnapshot
 from app.models.user import User
+from app.models.upload import Upload
 from app.models.verification_run import VerificationRun
 
 __all__ = [
@@ -44,6 +45,7 @@ __all__ = [
     "SourceSnapshot",
     "SourceType",
     "User",
+    "Upload",
     "UserFeedback",
     "VerificationRun",
 ]

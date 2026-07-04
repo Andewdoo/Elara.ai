@@ -10,6 +10,7 @@ from app.models.enums import InputType, RunStatus
 from app.models.types import utc_now
 from app.models.user import User
 from app.models.verification_run import VerificationRun
+from app.models.upload import Upload
 from app.schemas.verifications import VerificationCreateRequest
 
 
@@ -22,6 +23,10 @@ class ResearchDepthNotAllowedError(PermissionError):
 
 
 class ActiveRunLimitExceededError(PermissionError):
+    pass
+
+
+class UploadNotFoundError(LookupError):
     pass
 
 
@@ -76,6 +81,20 @@ def create_queued_verification(
         }.items()
         if value is not None
     }
+    upload = None
+    if request.upload_id is not None:
+        upload = db.scalar(
+            select(Upload)
+            .where(
+                Upload.id == request.upload_id,
+                Upload.user_id == owner.id,
+                Upload.claimed_at.is_(None),
+            )
+            .with_for_update()
+        )
+        if upload is None:
+            raise UploadNotFoundError("Upload not found")
+        upload.claimed_at = now
     run = VerificationRun(
         user_id=owner.id,
         input_type=request.input_type,
@@ -83,6 +102,7 @@ def create_queued_verification(
         status=RunStatus.QUEUED,
         submitted_text=submitted_text,
         submitted_url=str(request.url) if request.url else None,
+        upload_object_path=upload.object_path if upload is not None else None,
         normalized_target=normalized_target,
         workflow_version=settings.workflow_version,
         queued_at=now,

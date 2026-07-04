@@ -84,6 +84,14 @@ class VerificationCreateResponse(BaseModel):
     report_url: str | None = None
 
 
+class UploadResponse(BaseModel):
+    upload_id: UUID
+    filename: str
+    content_type: str
+    size_bytes: int
+    content_hash: str
+
+
 class VerificationCancelResponse(BaseModel):
     run_id: UUID
     status: RunStatus
