@@ -1,7 +1,9 @@
 # Elara.ai Implementation Plan
 
-Version: 1.0  
-Date: June 2026  
+Version: 1.1
+
+Date: July 2026
+
 Primary model provider: DeepSeek API  
 Primary architecture sources:
 - `docs/Elara.ai_Verification_and_Targeted_Retrieval_Methodology.pdf`
@@ -2014,6 +2016,15 @@ Advanced provenance views, additional input types, exports, sharing, corrections
 15. Add feedback, corrections, exports, saved reports, and history.
 16. Add Sentry, worker metrics, provider usage metrics, and evaluation harness.
 17. Add security regression tests and production hardening.
+18. Close the production workflow through synthesis, citation audit, revision, and durable completion.
+19. Restore and enforce every local and CI quality gate.
+20. Add a deterministic full-stack end-to-end verification test.
+21. Finish retrieval hardening, including the isolated Playwright fallback.
+22. Build a human-reviewed evaluation corpus and calibrate the methodology.
+23. Complete product, report, accessibility, and responsive acceptance testing.
+24. Complete the security, privacy, retention, correction, and governance review.
+25. Validate staging infrastructure, observability, migrations, backup, and rollback.
+26. Run the final release audit and approve the first shippable milestone separately from public launch.
 
 ## 11. Non-Negotiable Product Language
 
@@ -2034,3 +2045,181 @@ Evidence reviewed as of [date and time]. New evidence or corrections may change 
 ```
 
 Elara.ai must answer only what the evidence supports. It must show what was found, how it was found, why each source was selected, which sources depend on one another, which evidence was inaccessible, and how the published methodology produced the final label.
+
+## 12. Completion and Production-Readiness Plan
+
+Steps 1-17 establish the planned product surface and its major subsystems. They do not by themselves prove that the first shippable milestone or a public production launch is complete. Completion requires the closure work below, executed in dependency order.
+
+### 12.1 Release Bars
+
+Use two explicit release bars:
+
+1. **First shippable milestone:** the complete verification path works end to end, produces a citation-audited durable report, passes deterministic integration tests, and can be exercised safely in a controlled staging environment.
+2. **Public production launch:** the first milestone is stable, methodology thresholds are calibrated on human-reviewed cases, security/privacy/governance controls are approved, and production operations and rollback have been rehearsed.
+
+Do not describe the project as complete merely because every numbered feature step has a corresponding file or unit test. Completion is based on observable behavior and release evidence.
+
+### 12.2 Step 18 - Production Workflow Closure
+
+The Celery production path must execute the complete controlled workflow:
+
+```text
+QUEUED
+-> VALIDATING
+-> DECOMPOSING
+-> RESEARCHING
+-> EXTRACTING
+-> ANALYZING_PROVENANCE
+-> SCORING
+-> SYNTHESIZING
+-> AUDITING
+-> COMPLETED
+```
+
+Required work:
+
+- Remove production-only graph options that stop execution after numerical audit.
+- Give the runtime entry point a name that reflects full verification rather than planning-only execution.
+- Run synthesis and citation audit after deterministic scoring and numerical audit.
+- Add a bounded citation-revision loop. Unsupported or partially supported sentences must be removed or revised from approved evidence and audited again.
+- Fail with a concise public error when the configured revision limit is exhausted; never publish an unsupported report.
+- Transition to `COMPLETED` only when the typed state passes the deterministic completion gate, the report and citation rows are durable, no recoverable errors remain, and cancellation has not won the race.
+- Emit and mirror a durable `run.completed` event so SSE terminates and the frontend reloads authoritative PostgreSQL state.
+- Make redelivery idempotent: do not duplicate claims, sources, passages, evidence, calculations, citations, or events, and do not rewind a terminal run.
+
+Exit criteria:
+
+- A production-runtime regression test proves the full status sequence reaches `COMPLETED`.
+- Citation failure, cancellation, provider exhaustion, and redelivery tests prove invalid runs cannot reach `COMPLETED`.
+- A completed run can be read through the report API and can create an authorized export.
+
+### 12.3 Step 19 - Quality-Gate Closure
+
+Fix every lint, type, test, migration, build, and container failure. Run the same commands and working directories used by GitHub Actions.
+
+Required gates:
+
+- Ruff over API, worker, and evaluations.
+- Focused mypy checks plus any newly changed typed modules.
+- Complete API, worker, evaluation, and frontend test suites.
+- Frontend lint, TypeScript check, and optimized Next.js build.
+- Alembic single-head check, upgrade SQL generation, and downgrade SQL review.
+- API and worker container builds from a clean checkout.
+- Security and evaluation gate jobs.
+
+No known failure may be reclassified as harmless without a written, reviewed reason. Tests must exercise the production runtime boundary, not only isolated graph assembly.
+
+### 12.4 Step 20 - Deterministic Full-Stack Acceptance Test
+
+Build a provider-independent integration environment using PostgreSQL/pgvector, Redis, S3-compatible storage, FastAPI, Celery, and deterministic DeepSeek and Brave test doubles.
+
+The acceptance test must:
+
+1. Authenticate a user through the API boundary.
+2. Submit a verification and receive a durable queued run.
+3. Dispatch the correct Celery queue.
+4. Observe credentialed SSE progress without URL tokens.
+5. Discover, retrieve, extract, snapshot, and segment controlled sources.
+6. Persist provenance, evidence, calculations, model/prompt metadata, and citation rows.
+7. Reach `COMPLETED` only after citation audit.
+8. Load the report, sources, source graph, and calculations after a simulated browser refresh.
+9. Create and download an authorized private export.
+10. Prove a second user cannot access the run or any related artifact.
+
+This test must run in CI without real provider credentials. Separate staging smoke tests may exercise real providers.
+
+### 12.5 Step 21 - Retrieval Hardening
+
+Replace the explicit Playwright placeholder with an isolated browser fallback while preserving static extraction as the default.
+
+Playwright requirements:
+
+- Run only after static extraction fails and the source is important enough.
+- Apply the same scheme, hostname, DNS, IP, port, and redirect policy to every navigation and subrequest.
+- Use a fresh context without user cookies or provider credentials.
+- Block downloads, popups, unnecessary media, and nonessential third-party requests.
+- Enforce navigation, total-time, response-size, DOM-size, and retry limits.
+- Record fallback reason, parser version, extraction certainty, and inaccessible status.
+
+Also test malformed and hostile HTML, JavaScript-only pages, oversized documents, page-aware PDF citations, paywalls, correction notices, changed snapshots, cache reuse, and distributed fetch locks.
+
+Brave remains the selected search provider. Preserve partial results and use bounded retries on transient failure. Do not add a second provider without an explicit architecture decision.
+
+### 12.6 Step 22 - Evaluation and Methodology Calibration
+
+The two-case smoke fixture validates the harness, not the product. Build an approved, human-reviewed benchmark spanning finance, science, technology, current events, quotations, paraphrases, allegations, numerical claims, misleading context, and insufficient evidence.
+
+Each benchmark case should define:
+
+- atomic claims and importance;
+- required primary sources and acceptable alternatives;
+- supporting and contradicting passages;
+- attribution and quote-fidelity expectations where applicable;
+- expected labels and calculations;
+- citation-entailment judgments;
+- source-dependency clusters;
+- inaccessible-source and ambiguity expectations.
+
+Maintain separate development/calibration, locked validation, adversarial-security, and regression sets. Measure verdict macro-F1, attribution accuracy, evidence precision/recall, passage recall, primary-source recall, citation entailment, numerical accuracy, unsupported-statement rate, source clustering, confidence calibration/Brier score, latency, and cost.
+
+Every formula, weight, threshold, or penalty change creates a new methodology version and reruns the locked validation set. Public launch is blocked until release thresholds are documented, reviewed, and met. Unsupported factual statements must be zero in the release benchmark.
+
+### 12.7 Step 23 - Product and Report Acceptance
+
+Verify desktop, mobile, keyboard, loading, empty, failure, reconnect, retry, and cancellation behavior. Remove remaining production-facing mock surfaces.
+
+Every applicable completed report must expose:
+
+- verdict and distinct score roles;
+- evidence-reviewed timestamp and limitations;
+- inaccessible sources and strongest credible contradiction;
+- supporting and contradicting exact passages;
+- page, section, or transcript positions;
+- attribution separated from factual content;
+- reproducible calculations and audit status;
+- source dependencies;
+- methodology, workflow, prompt, model, parser, retrieval, and source versions;
+- feedback, correction, and authorized export controls.
+
+TanStack Query remains the owner of server state. Browser charts consume server calculation records and never recompute authoritative scores.
+
+### 12.8 Step 24 - Security, Privacy, and Governance Review
+
+Complete a release review for SSRF and DNS rebinding, redirect validation, prompt injection, hostile uploads, resource exhaustion, cross-user access, signed URL expiry, rate limits, cookies, exact-origin CORS, proxy trust, log/trace redaction, secret scanning, dependency vulnerabilities, and private bucket policy.
+
+Document and implement policies for upload retention, snapshot retention, deletion, sharing, corrections, appeals, and high-impact allegations. Prevent automatic publication when stronger review controls are required. Store only the evidence needed for auditability and never silently delete a snapshot referenced by a completed report.
+
+### 12.9 Step 25 - Staging and Operational Readiness
+
+Deploy the complete stack to staging with real Firebase Authentication, PostgreSQL/pgvector, Redis, private object storage, Brave Search, DeepSeek, Sentry, and redacted worker tracing where enabled.
+
+Required validation:
+
+- staging and production smoke checks cannot silently skip because a required URL is unset;
+- migrations run as a controlled release job;
+- backup, restore, application rollback, and migration rollback procedures are rehearsed;
+- API and worker run the same compatible revision;
+- Redis restart and SSE reconnect recover from PostgreSQL truth;
+- queues, retries, dead jobs, signed downloads, bucket permissions, and credential rotation are tested;
+- alerts cover API failures, queue depth, run duration, provider failures, extraction failure, low evidence yield, citation-audit failure, cost, and security events.
+
+Run controlled live staging verifications for every MVP input type without placing private data in logs, traces, or test artifacts.
+
+### 12.10 Step 26 - Final Release Audit
+
+The first shippable milestone is complete only when all of the following are true:
+
+- The full workflow reaches `COMPLETED` through synthesis and citation audit.
+- Citation failures cannot publish a report.
+- All local and CI quality gates pass from a clean checkout.
+- Database migrations and container builds pass.
+- Deterministic full-stack acceptance tests pass.
+- Staging end-to-end tests pass with real services.
+- Security regressions pass.
+- Human-reviewed evaluation meets approved release thresholds before public launch.
+- Privacy, retention, correction, and governance policies are approved.
+- Monitoring and alerts are active.
+- Deployment and rollback have been rehearsed.
+- Documentation and the Graphify knowledge graph are current.
+
+Record the final evidence in a versioned release-readiness report. State separately whether the result is approved for the controlled first milestone, for public production launch, for neither, or for the milestone with explicit public-launch blockers.

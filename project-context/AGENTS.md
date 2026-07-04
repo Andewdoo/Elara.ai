@@ -433,6 +433,41 @@ Follow this order unless the user asks otherwise:
 14. Report workspace, React Flow, and Recharts.
 15. Feedback, exports, saved reports, history.
 16. Monitoring, evaluation, security hardening.
+17. Security regression tests and initial production hardening.
+18. Production workflow closure through citation-audited durable completion.
+19. Local and CI quality-gate closure.
+20. Deterministic full-stack end-to-end acceptance testing.
+21. Isolated Playwright fallback and retrieval hardening.
+22. Human-reviewed evaluation and methodology calibration.
+23. Product, report, accessibility, and responsive acceptance.
+24. Security, privacy, retention, correction, and governance review.
+25. Staging, observability, migration, backup, and rollback validation.
+26. Final release audit.
+
+## Completion Closure Rules
+
+Feature files and unit tests are not sufficient evidence that the project is complete. Follow Steps 18-26 in `IMPLEMENTATION_PLAN.md` after the initial feature sequence.
+
+Required closure rules:
+
+- The production Celery path must execute the complete LangGraph workflow through synthesis and citation audit; test-only graph assembly does not satisfy this requirement.
+- A run may transition to `COMPLETED` only after report artifacts and citation audit records are durable and typed state passes the deterministic completion gate.
+- Citation audit failures require a bounded evidence-grounded revision and re-audit or a safe terminal failure. Unsupported sentences must never be published.
+- `run.completed` must be durable in PostgreSQL and mirrored to Redis; SSE is informative and PostgreSQL remains authoritative.
+- Retries and redelivery must be idempotent and must not duplicate durable artifacts or rewind terminal state.
+- The deterministic full-stack acceptance test must run without real provider credentials. Real-provider checks belong in controlled staging.
+- Brave remains the selected search provider. Do not add a secondary provider without an explicit architecture decision.
+- Public production launch requires human-reviewed methodology calibration, not only synthetic smoke fixtures.
+- Required staging and production smoke checks must fail closed when configuration is missing; they must not silently skip.
+- After code changes, run `.\.graphify-venv\Scripts\graphify.exe update .` from the repository root and include graph freshness in final verification.
+
+Release decisions must distinguish:
+
+- feature implementation complete,
+- first shippable milestone approved,
+- public production launch approved.
+
+Do not use these labels interchangeably.
 
 ## Contributor Checklist
 
@@ -448,3 +483,9 @@ Before finalizing a change, verify:
 - It handles inaccessible sources explicitly.
 - It keeps scoring deterministic.
 - It includes tests or a clear reason tests were not run.
+- It exercises the production runtime boundary when workflow behavior changes.
+- It cannot mark a run complete before citation audit and durable report persistence.
+- It preserves idempotency across retry, redelivery, cancellation, and terminal states.
+- It passes the applicable lint, type, test, migration, build, container, security, and evaluation gates.
+- It updates Graphify after code changes.
+- It states whether the work advances feature completion, the first milestone, or public-launch readiness.

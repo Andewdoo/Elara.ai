@@ -102,6 +102,7 @@
   "100": "metrics.py",
   "101": "5. Phase 4: Frontend Application",
   "102": "get_session_factory",
+  "103": "terminal_database_event",
   "104": "FakeS3Client",
   "105": "2. Phase 1: Infrastructure and Data Persistence",
   "106": "3. Phase 2: API and Asynchronous Boundaries",
@@ -146,5 +147,12 @@
   "145": "project-context/AGENTS.md",
   "146": "project-context/IMPLEMENTATION_PLAN.md",
   "147": "AGENTS.md",
-  "148": "test_bearer_boundary_verifies_identity_and_persists_owner"
+  "148": "test_bearer_boundary_verifies_identity_and_persists_owner",
+  "149": "test_durable_status_transitions_cannot_move_backward",
+  "150": "verify-form.tsx",
+  "151": "transitions.py",
+  "152": "sentry.py",
+  "153": "metrics.py",
+  "154": "DeepSeekConfigurationError",
+  "155": "report-route.tsx"
 }
