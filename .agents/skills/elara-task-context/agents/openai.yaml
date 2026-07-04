@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elara Task Context"
+  short_description: "Load only the Elara context a task needs"
+  default_prompt: "Use $elara-task-context to load the smallest relevant project context before making this change."

@@ -104,7 +104,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_auth_dependencies",
-      "community": 20,
+      "community": 91,
       "norm_label": "dependencies.py"
     },
     {
@@ -114,7 +114,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "apps_api_app_auth_dependencies_authenticateduser",
-      "community": 22,
+      "community": 5,
       "norm_label": "authenticateduser"
     },
     {
@@ -124,7 +124,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "apps_api_app_auth_dependencies_unauthorized",
-      "community": 20,
+      "community": 91,
       "norm_label": "_unauthorized()"
     },
     {
@@ -134,7 +134,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "httpexception",
-      "community": 22,
+      "community": 5,
       "norm_label": "httpexception"
     },
     {
@@ -144,7 +144,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "apps_api_app_auth_dependencies_load_user",
-      "community": 20,
+      "community": 91,
       "norm_label": "_load_user()"
     },
     {
@@ -154,7 +154,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_auth_dependencies_py_session",
-      "community": 20,
+      "community": 91,
       "norm_label": "session"
     },
     {
@@ -164,7 +164,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "apps_api_app_auth_dependencies_get_authenticated_bearer",
-      "community": 20,
+      "community": 91,
       "norm_label": "get_authenticated_bearer()"
     },
     {
@@ -174,7 +174,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "httpauthorizationcredentials",
-      "community": 20,
+      "community": 91,
       "norm_label": "httpauthorizationcredentials"
     },
     {
@@ -184,7 +184,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "apps_api_app_auth_dependencies_get_authenticated_session",
-      "community": 20,
+      "community": 91,
       "norm_label": "get_authenticated_session()"
     },
     {
@@ -194,7 +194,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_auth_dependencies_py_request",
-      "community": 20,
+      "community": 91,
       "norm_label": "request"
     },
     {
@@ -224,7 +224,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "valueerror",
-      "community": 20,
+      "community": 35,
       "norm_label": "valueerror"
     },
     {
@@ -244,7 +244,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "runtimeerror",
-      "community": 13,
+      "community": 1,
       "norm_label": "runtimeerror"
     },
     {
@@ -284,7 +284,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app",
-      "community": 39,
+      "community": 20,
       "norm_label": "app"
     },
     {
@@ -394,7 +394,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_config",
-      "community": 102,
+      "community": 24,
       "norm_label": "config.py"
     },
     {
@@ -544,7 +544,7 @@
       "source_location": "L252",
       "_origin": "ast",
       "id": "apps_api_app_config_get_settings",
-      "community": 102,
+      "community": 24,
       "norm_label": "get_settings()"
     },
     {
@@ -614,7 +614,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_database_session",
-      "community": 97,
+      "community": 24,
       "norm_label": "session.py"
     },
     {
@@ -624,7 +624,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "apps_api_app_database_session_get_engine",
-      "community": 97,
+      "community": 24,
       "norm_label": "get_engine()"
     },
     {
@@ -634,7 +634,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine",
-      "community": 97,
+      "community": 24,
       "norm_label": "engine"
     },
     {
@@ -644,7 +644,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "apps_api_app_database_session_get_session_factory",
-      "community": 97,
+      "community": 24,
       "norm_label": "get_session_factory()"
     },
     {
@@ -654,7 +654,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_database_session_py_sessionmaker",
-      "community": 97,
+      "community": 24,
       "norm_label": "sessionmaker"
     },
     {
@@ -664,7 +664,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_database_session_py_session",
-      "community": 97,
+      "community": 24,
       "norm_label": "session"
     },
     {
@@ -674,7 +674,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "apps_api_app_database_session_get_db",
-      "community": 97,
+      "community": 24,
       "norm_label": "get_db()"
     },
     {
@@ -724,7 +724,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_models_agent_event",
-      "community": 16,
+      "community": 43,
       "norm_label": "agent_event.py"
     },
     {
@@ -734,7 +734,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "apps_api_app_models_agent_event_agentevent",
-      "community": 16,
+      "community": 43,
       "norm_label": "agentevent"
     },
     {
@@ -794,7 +794,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "strenum",
-      "community": 21,
+      "community": 1,
       "norm_label": "strenum"
     },
     {
@@ -964,7 +964,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_models_records",
-      "community": 22,
+      "community": 17,
       "norm_label": "records.py"
     },
     {
@@ -984,7 +984,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "apps_api_app_models_records_userfeedback",
-      "community": 22,
+      "community": 17,
       "norm_label": "userfeedback"
     },
     {
@@ -994,7 +994,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "apps_api_app_models_records_export",
-      "community": 22,
+      "community": 17,
       "norm_label": "export"
     },
     {
@@ -1054,7 +1054,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_models_types",
-      "community": 22,
+      "community": 17,
       "norm_label": "types.py"
     },
     {
@@ -1064,7 +1064,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "apps_api_app_models_types_utc_now",
-      "community": 22,
+      "community": 17,
       "norm_label": "utc_now()"
     },
     {
@@ -1074,7 +1074,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_models_types_py_datetime",
-      "community": 22,
+      "community": 17,
       "norm_label": "datetime"
     },
     {
@@ -1084,7 +1084,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "apps_api_app_models_types_enum_column",
-      "community": 22,
+      "community": 17,
       "norm_label": "enum_column()"
     },
     {
@@ -1094,7 +1094,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "enum",
-      "community": 22,
+      "community": 0,
       "norm_label": "enum"
     },
     {
@@ -1124,7 +1124,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_models_user",
-      "community": 29,
+      "community": 26,
       "norm_label": "user.py"
     },
     {
@@ -1134,7 +1134,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "apps_api_app_models_user_user",
-      "community": 29,
+      "community": 26,
       "norm_label": "user"
     },
     {
@@ -1364,7 +1364,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "apps_api_app_redis_client_get_redis_client",
-      "community": 102,
+      "community": 18,
       "norm_label": "get_redis_client()"
     },
     {
@@ -1474,7 +1474,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_routes_auth",
-      "community": 20,
+      "community": 24,
       "norm_label": "auth.py"
     },
     {
@@ -1514,7 +1514,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_routes_history",
-      "community": 28,
+      "community": 94,
       "norm_label": "history.py"
     },
     {
@@ -1524,7 +1524,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "apps_api_app_routes_history_get_history",
-      "community": 28,
+      "community": 94,
       "norm_label": "get_history()"
     },
     {
@@ -1534,7 +1534,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_history_py_runstatus",
-      "community": 28,
+      "community": 94,
       "norm_label": "runstatus"
     },
     {
@@ -1544,7 +1544,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_history_py_researchdepth",
-      "community": 28,
+      "community": 94,
       "norm_label": "researchdepth"
     },
     {
@@ -1554,7 +1554,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_history_py_datetime",
-      "community": 28,
+      "community": 94,
       "norm_label": "datetime"
     },
     {
@@ -1564,7 +1564,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_history_py_session",
-      "community": 28,
+      "community": 94,
       "norm_label": "session"
     },
     {
@@ -1574,7 +1574,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_history_py_historyresponse",
-      "community": 28,
+      "community": 94,
       "norm_label": "historyresponse"
     },
     {
@@ -1584,7 +1584,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_routes_uploads",
-      "community": 22,
+      "community": 24,
       "norm_label": "uploads.py"
     },
     {
@@ -1594,7 +1594,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "apps_api_app_routes_uploads_create_upload",
-      "community": 22,
+      "community": 35,
       "norm_label": "create_upload()"
     },
     {
@@ -1604,7 +1604,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "uploadfile",
-      "community": 22,
+      "community": 35,
       "norm_label": "uploadfile"
     },
     {
@@ -1614,7 +1614,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_uploads_py_session",
-      "community": 22,
+      "community": 35,
       "norm_label": "session"
     },
     {
@@ -1624,7 +1624,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications",
-      "community": 22,
+      "community": 5,
       "norm_label": "verifications.py"
     },
     {
@@ -1634,7 +1634,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_testtransientstore",
-      "community": 22,
+      "community": 53,
       "norm_label": "testtransientstore"
     },
     {
@@ -1644,7 +1644,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_testtransientstore_init",
-      "community": 22,
+      "community": 53,
       "norm_label": ".__init__()"
     },
     {
@@ -1654,7 +1654,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_testtransientstore_xadd",
-      "community": 22,
+      "community": 53,
       "norm_label": ".xadd()"
     },
     {
@@ -1664,7 +1664,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_testtransientstore_expire",
-      "community": 22,
+      "community": 53,
       "norm_label": ".expire()"
     },
     {
@@ -1674,7 +1674,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_testtransientstore_set",
-      "community": 22,
+      "community": 53,
       "norm_label": ".set()"
     },
     {
@@ -1684,7 +1684,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_testtransientstore_xread",
-      "community": 22,
+      "community": 53,
       "norm_label": ".xread()"
     },
     {
@@ -1694,7 +1694,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_testtransientstore_incr",
-      "community": 22,
+      "community": 53,
       "norm_label": ".incr()"
     },
     {
@@ -1704,7 +1704,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_testtransientstore_ttl",
-      "community": 22,
+      "community": 53,
       "norm_label": ".ttl()"
     },
     {
@@ -1714,7 +1714,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_get_request_redis_client",
-      "community": 22,
+      "community": 53,
       "norm_label": "get_request_redis_client()"
     },
     {
@@ -1724,7 +1724,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_py_redis",
-      "community": 22,
+      "community": 5,
       "norm_label": "redis"
     },
     {
@@ -1734,7 +1734,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_run_response",
-      "community": 22,
+      "community": 5,
       "norm_label": "_run_response()"
     },
     {
@@ -1754,7 +1754,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_py_uuid",
-      "community": 22,
+      "community": 5,
       "norm_label": "uuid"
     },
     {
@@ -1774,7 +1774,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_py_session",
-      "community": 22,
+      "community": 5,
       "norm_label": "session"
     },
     {
@@ -1784,7 +1784,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_get_verification",
-      "community": 22,
+      "community": 5,
       "norm_label": "get_verification()"
     },
     {
@@ -1794,7 +1794,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_get_verification_source_graph",
-      "community": 22,
+      "community": 5,
       "norm_label": "get_verification_source_graph()"
     },
     {
@@ -1804,7 +1804,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_get_verification_sources",
-      "community": 22,
+      "community": 5,
       "norm_label": "get_verification_sources()"
     },
     {
@@ -1814,7 +1814,7 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_get_verification_report",
-      "community": 22,
+      "community": 5,
       "norm_label": "get_verification_report()"
     },
     {
@@ -1824,7 +1824,7 @@
       "source_location": "L216",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_stream_verification_events",
-      "community": 22,
+      "community": 5,
       "norm_label": "stream_verification_events()"
     },
     {
@@ -1834,7 +1834,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_py_request",
-      "community": 22,
+      "community": 5,
       "norm_label": "request"
     },
     {
@@ -1844,7 +1844,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "streamingresponse",
-      "community": 22,
+      "community": 5,
       "norm_label": "streamingresponse"
     },
     {
@@ -1854,7 +1854,7 @@
       "source_location": "L289",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_create_verification",
-      "community": 22,
+      "community": 5,
       "norm_label": "create_verification()"
     },
     {
@@ -1864,7 +1864,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "verificationcreateresponse",
-      "community": 22,
+      "community": 5,
       "norm_label": "verificationcreateresponse"
     },
     {
@@ -1874,7 +1874,7 @@
       "source_location": "L355",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_cancel_verification",
-      "community": 22,
+      "community": 5,
       "norm_label": "cancel_verification()"
     },
     {
@@ -1884,7 +1884,7 @@
       "source_location": "L385",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_save_report",
-      "community": 22,
+      "community": 5,
       "norm_label": "save_report()"
     },
     {
@@ -1894,7 +1894,7 @@
       "source_location": "L400",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_unsave_report",
-      "community": 22,
+      "community": 5,
       "norm_label": "unsave_report()"
     },
     {
@@ -1904,7 +1904,7 @@
       "source_location": "L417",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_create_feedback",
-      "community": 22,
+      "community": 5,
       "norm_label": "create_feedback()"
     },
     {
@@ -1914,7 +1914,7 @@
       "source_location": "L435",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_create_export",
-      "community": 22,
+      "community": 5,
       "norm_label": "create_export()"
     },
     {
@@ -1924,7 +1924,7 @@
       "source_location": "L460",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_get_export",
-      "community": 22,
+      "community": 5,
       "norm_label": "get_export()"
     },
     {
@@ -1934,7 +1934,7 @@
       "source_location": "L488",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_remove_report",
-      "community": 22,
+      "community": 5,
       "norm_label": "remove_report()"
     },
     {
@@ -1944,7 +1944,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "apps_api_app_routes_verifications_rationale_82",
-      "community": 22,
+      "community": 53,
       "norm_label": "small no-network store for api boundary tests."
     },
     {
@@ -2504,7 +2504,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "apps_api_app_services_object_storage_objectstorage",
-      "community": 22,
+      "community": 50,
       "norm_label": "objectstorage"
     },
     {
@@ -2524,7 +2524,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "apps_api_app_services_object_storage_objectstorage_put_private_object",
-      "community": 22,
+      "community": 50,
       "norm_label": ".put_private_object()"
     },
     {
@@ -2534,7 +2534,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "apps_api_app_services_object_storage_objectstorage_signed_download_url",
-      "community": 22,
+      "community": 50,
       "norm_label": ".signed_download_url()"
     },
     {
@@ -2544,7 +2544,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "apps_api_app_services_object_storage_objectstorage_delete_object",
-      "community": 22,
+      "community": 50,
       "norm_label": ".delete_object()"
     },
     {
@@ -2564,7 +2564,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "apps_api_app_services_object_storage_s3objectstorage_init",
-      "community": 50,
+      "community": 24,
       "norm_label": ".__init__()"
     },
     {
@@ -2824,7 +2824,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions",
-      "community": 22,
+      "community": 17,
       "norm_label": "report_actions.py"
     },
     {
@@ -2834,7 +2834,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_reportactionconflicterror",
-      "community": 22,
+      "community": 17,
       "norm_label": "reportactionconflicterror"
     },
     {
@@ -2844,7 +2844,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_exportnotfounderror",
-      "community": 22,
+      "community": 17,
       "norm_label": "exportnotfounderror"
     },
     {
@@ -2864,7 +2864,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_set_saved",
-      "community": 22,
+      "community": 17,
       "norm_label": "set_saved()"
     },
     {
@@ -2874,7 +2874,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_py_session",
-      "community": 22,
+      "community": 17,
       "norm_label": "session"
     },
     {
@@ -2884,7 +2884,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_py_uuid",
-      "community": 22,
+      "community": 17,
       "norm_label": "uuid"
     },
     {
@@ -2894,7 +2894,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_submit_feedback",
-      "community": 22,
+      "community": 17,
       "norm_label": "submit_feedback()"
     },
     {
@@ -2904,7 +2904,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_feedback_response",
-      "community": 22,
+      "community": 17,
       "norm_label": "feedback_response()"
     },
     {
@@ -2914,7 +2914,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_create_json_export",
-      "community": 22,
+      "community": 17,
       "norm_label": "create_json_export()"
     },
     {
@@ -2924,7 +2924,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_get_export_download",
-      "community": 22,
+      "community": 17,
       "norm_label": "get_export_download()"
     },
     {
@@ -2934,7 +2934,7 @@
       "source_location": "L150",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_export_response",
-      "community": 22,
+      "community": 17,
       "norm_label": "export_response()"
     },
     {
@@ -2944,7 +2944,7 @@
       "source_location": "L160",
       "_origin": "ast",
       "id": "apps_api_app_services_report_actions_delete_report",
-      "community": 22,
+      "community": 17,
       "norm_label": "delete_report()"
     },
     {
@@ -3234,7 +3234,7 @@
       "source_location": "L158",
       "_origin": "ast",
       "id": "apps_api_app_services_run_lifecycle_mirror_progress",
-      "community": 6,
+      "community": 23,
       "norm_label": "mirror_progress()"
     },
     {
@@ -3244,7 +3244,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_services_run_lifecycle_py_redis",
-      "community": 6,
+      "community": 23,
       "norm_label": "redis"
     },
     {
@@ -3254,7 +3254,7 @@
       "source_location": "L172",
       "_origin": "ast",
       "id": "apps_api_app_services_run_lifecycle_mirror_agent_event",
-      "community": 6,
+      "community": 23,
       "norm_label": "mirror_agent_event()"
     },
     {
@@ -3354,7 +3354,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_services_sources",
-      "community": 22,
+      "community": 1,
       "norm_label": "sources.py"
     },
     {
@@ -3364,7 +3364,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "apps_api_app_services_sources_build_sources",
-      "community": 22,
+      "community": 1,
       "norm_label": "build_sources()"
     },
     {
@@ -3374,7 +3374,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_services_sources_py_session",
-      "community": 22,
+      "community": 1,
       "norm_label": "session"
     },
     {
@@ -3384,7 +3384,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_services_sources_py_uuid",
-      "community": 22,
+      "community": 1,
       "norm_label": "uuid"
     },
     {
@@ -3394,7 +3394,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "apps_api_app_services_sources_citation",
-      "community": 22,
+      "community": 1,
       "norm_label": "_citation()"
     },
     {
@@ -3404,7 +3404,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "reportcitation",
-      "community": 22,
+      "community": 1,
       "norm_label": "reportcitation"
     },
     {
@@ -3414,7 +3414,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_services_sources_rationale_1",
-      "community": 22,
+      "community": 1,
       "norm_label": "authorized report source projection with exact stored passages and citation audi"
     },
     {
@@ -3424,7 +3424,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_services_uploads",
-      "community": 20,
+      "community": 35,
       "norm_label": "uploads.py"
     },
     {
@@ -3434,7 +3434,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "apps_api_app_services_uploads_uploadvalidationerror",
-      "community": 20,
+      "community": 35,
       "norm_label": "uploadvalidationerror"
     },
     {
@@ -3444,7 +3444,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "apps_api_app_services_uploads_validatedupload",
-      "community": 20,
+      "community": 35,
       "norm_label": "validatedupload"
     },
     {
@@ -3454,7 +3454,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "apps_api_app_services_uploads_validate_upload",
-      "community": 20,
+      "community": 35,
       "norm_label": "validate_upload()"
     },
     {
@@ -3464,7 +3464,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_services_uploads_rationale_1",
-      "community": 20,
+      "community": 35,
       "norm_label": "bounded upload validation; uploaded bytes are never interpreted or executed by t"
     },
     {
@@ -3474,7 +3474,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_app_services_users",
-      "community": 20,
+      "community": 26,
       "norm_label": "users.py"
     },
     {
@@ -3484,7 +3484,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "apps_api_app_services_users_inactiveusererror",
-      "community": 20,
+      "community": 26,
       "norm_label": "inactiveusererror"
     },
     {
@@ -3494,7 +3494,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "apps_api_app_services_users_userprovisioningconflicterror",
-      "community": 20,
+      "community": 26,
       "norm_label": "userprovisioningconflicterror"
     },
     {
@@ -3504,7 +3504,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "apps_api_app_services_users_firebase_email",
-      "community": 20,
+      "community": 26,
       "norm_label": "_firebase_email()"
     },
     {
@@ -3514,7 +3514,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "apps_api_app_services_users_get_or_create_firebase_user",
-      "community": 20,
+      "community": 26,
       "norm_label": "get_or_create_firebase_user()"
     },
     {
@@ -3524,7 +3524,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_app_services_users_py_session",
-      "community": 20,
+      "community": 26,
       "norm_label": "session"
     },
     {
@@ -3644,7 +3644,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "apps_api_app_services_verifications_get_authorized_run",
-      "community": 29,
+      "community": 5,
       "norm_label": "get_authorized_run()"
     },
     {
@@ -3664,7 +3664,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "apps_api_app_services_verifications_rationale_148",
-      "community": 29,
+      "community": 5,
       "norm_label": "authorize an owner or a run explicitly shared to all authenticated users."
     },
     {
@@ -3674,7 +3674,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_migrations_env",
-      "community": 102,
+      "community": 24,
       "norm_label": "env.py"
     },
     {
@@ -3684,7 +3684,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "apps_api_migrations_env_run_migrations_offline",
-      "community": 102,
+      "community": 24,
       "norm_label": "run_migrations_offline()"
     },
     {
@@ -3694,7 +3694,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "apps_api_migrations_env_run_migrations_online",
-      "community": 102,
+      "community": 24,
       "norm_label": "run_migrations_online()"
     },
     {
@@ -4077,7 +4077,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_boundary_tokenverifier",
-      "community": 24,
+      "community": 20,
       "norm_label": "tokenverifier"
     },
     {
@@ -4097,7 +4097,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_boundary_test_bearer_boundary_verifies_identity_and_persists_owner",
-      "community": 24,
+      "community": 26,
       "norm_label": "test_bearer_boundary_verifies_identity_and_persists_owner()"
     },
     {
@@ -4107,7 +4107,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_boundary_py_sessionmaker",
-      "community": 24,
+      "community": 26,
       "norm_label": "sessionmaker"
     },
     {
@@ -4117,7 +4117,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_boundary_py_session",
-      "community": 24,
+      "community": 26,
       "norm_label": "session"
     },
     {
@@ -4127,7 +4127,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_routes",
-      "community": 20,
+      "community": 97,
       "norm_label": "test_auth_routes.py"
     },
     {
@@ -4137,7 +4137,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_routes_fakefirebasegateway",
-      "community": 20,
+      "community": 97,
       "norm_label": "fakefirebasegateway"
     },
     {
@@ -4147,7 +4147,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_routes_fakefirebasegateway_create_session_cookie",
-      "community": 20,
+      "community": 97,
       "norm_label": ".create_session_cookie()"
     },
     {
@@ -4157,7 +4157,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_routes_test_session_exchange_sets_secure_http_only_cookie",
-      "community": 20,
+      "community": 97,
       "norm_label": "test_session_exchange_sets_secure_http_only_cookie()"
     },
     {
@@ -4167,7 +4167,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_routes_py_testclient",
-      "community": 20,
+      "community": 97,
       "norm_label": "testclient"
     },
     {
@@ -4177,7 +4177,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "apps_api_tests_test_auth_routes_test_session_delete_clears_cookie",
-      "community": 20,
+      "community": 97,
       "norm_label": "test_session_delete_clears_cookie()"
     },
     {
@@ -4297,7 +4297,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "apps_api_tests_test_database_schema_test_enum_contracts_match_the_initial_migration",
-      "community": 22,
+      "community": 1,
       "norm_label": "test_enum_contracts_match_the_initial_migration()"
     },
     {
@@ -4557,7 +4557,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_tests_test_queueing_and_redis",
-      "community": 102,
+      "community": 18,
       "norm_label": "test_queueing_and_redis.py"
     },
     {
@@ -4577,7 +4577,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "apps_api_tests_test_queueing_and_redis_test_celery_declares_all_verification_queues_and_safe_delivery_defaults",
-      "community": 102,
+      "community": 18,
       "norm_label": "test_celery_declares_all_verification_queues_and_safe_delivery_defaults()"
     },
     {
@@ -4817,7 +4817,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "apps_api_tests_test_security_hardening_test_upload_validation_rejects_executable_mismatched_and_unsafe_files",
-      "community": 20,
+      "community": 35,
       "norm_label": "test_upload_validation_rejects_executable_mismatched_and_unsafe_files()"
     },
     {
@@ -4827,7 +4827,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "apps_api_tests_test_security_hardening_test_upload_validation_accepts_only_bounded_supported_content",
-      "community": 20,
+      "community": 35,
       "norm_label": "test_upload_validation_accepts_only_bounded_supported_content()"
     },
     {
@@ -4917,7 +4917,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_tests_test_source_graph",
-      "community": 1,
+      "community": 26,
       "norm_label": "test_source_graph.py"
     },
     {
@@ -4957,7 +4957,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "apps_api_tests_test_source_graph_test_source_graph_does_not_reveal_another_users_run",
-      "community": 32,
+      "community": 26,
       "norm_label": "test_source_graph_does_not_reveal_another_users_run()"
     },
     {
@@ -5167,7 +5167,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_api_tests_test_users",
-      "community": 20,
+      "community": 26,
       "norm_label": "test_users.py"
     },
     {
@@ -5177,7 +5177,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "apps_api_tests_test_users_test_firebase_identity_loads_or_creates_one_user",
-      "community": 20,
+      "community": 26,
       "norm_label": "test_firebase_identity_loads_or_creates_one_user()"
     },
     {
@@ -5187,7 +5187,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_tests_test_users_py_sessionmaker",
-      "community": 20,
+      "community": 26,
       "norm_label": "sessionmaker"
     },
     {
@@ -5197,7 +5197,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_api_tests_test_users_py_session",
-      "community": 20,
+      "community": 26,
       "norm_label": "session"
     },
     {
@@ -5207,7 +5207,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "apps_api_tests_test_users_test_soft_deleted_identity_is_not_reprovisioned",
-      "community": 20,
+      "community": 26,
       "norm_label": "test_soft_deleted_identity_is_not_reprovisioned()"
     },
     {
@@ -5457,7 +5457,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_web_app_report_runid_page",
-      "community": 155,
+      "community": 7,
       "norm_label": "page.tsx"
     },
     {
@@ -5467,7 +5467,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "apps_web_app_report_runid_page_reportpage",
-      "community": 155,
+      "community": 7,
       "norm_label": "reportpage()"
     },
     {
@@ -5837,7 +5837,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "apps_web_components_providers_firebase_auth_provider_firebaseauthprovider",
-      "community": 98,
+      "community": 39,
       "norm_label": "firebaseauthprovider()"
     },
     {
@@ -5917,7 +5917,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_web_components_report_report_route",
-      "community": 155,
+      "community": 7,
       "norm_label": "report-route.tsx"
     },
     {
@@ -5927,7 +5927,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "apps_web_components_report_report_route_reportroute",
-      "community": 155,
+      "community": 7,
       "norm_label": "reportroute()"
     },
     {
@@ -6397,7 +6397,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_web_eslint_config",
-      "community": 102,
+      "community": 24,
       "norm_label": "eslint.config.mjs"
     },
     {
@@ -6407,7 +6407,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_web_hooks_use_report_actions",
-      "community": 39,
+      "community": 27,
       "norm_label": "use-report-actions.ts"
     },
     {
@@ -6427,7 +6427,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "apps_web_hooks_use_report_actions_exportrecord",
-      "community": 39,
+      "community": 27,
       "norm_label": "exportrecord"
     },
     {
@@ -6447,7 +6447,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_web_hooks_use_report_data",
-      "community": 39,
+      "community": 7,
       "norm_label": "use-report-data.ts"
     },
     {
@@ -6457,7 +6457,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "apps_web_hooks_use_report_data_usereportdata",
-      "community": 155,
+      "community": 7,
       "norm_label": "usereportdata()"
     },
     {
@@ -6507,7 +6507,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "apps_web_hooks_use_run_events_verificationrun",
-      "community": 33,
+      "community": 7,
       "norm_label": "verificationrun"
     },
     {
@@ -6697,7 +6697,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "apps_web_lib_auth_authenticatedapifetch",
-      "community": 39,
+      "community": 27,
       "norm_label": "authenticatedapifetch()"
     },
     {
@@ -7077,7 +7077,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "apps_web_package_dependencies_firebase",
-      "community": 39,
+      "community": 12,
       "norm_label": "firebase"
     },
     {
@@ -7887,7 +7887,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "apps_worker_agents_deepseek_client_providererrormetadata",
-      "community": 0,
+      "community": 40,
       "norm_label": "providererrormetadata"
     },
     {
@@ -7907,7 +7907,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "apps_worker_agents_deepseek_client_deepseekerror_init",
-      "community": 0,
+      "community": 154,
       "norm_label": ".__init__()"
     },
     {
@@ -7947,7 +7947,7 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "apps_worker_agents_deepseek_client_deepseektimeouterror",
-      "community": 4,
+      "community": 40,
       "norm_label": "deepseektimeouterror"
     },
     {
@@ -8127,7 +8127,7 @@
       "source_location": "L451",
       "_origin": "ast",
       "id": "apps_worker_agents_deepseek_client_deepseekclient_map_http_error",
-      "community": 4,
+      "community": 40,
       "norm_label": "._map_http_error()"
     },
     {
@@ -8137,7 +8137,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_agents_deepseek_client_py_response",
-      "community": 4,
+      "community": 40,
       "norm_label": "response"
     },
     {
@@ -8317,7 +8317,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas",
-      "community": 26,
+      "community": 0,
       "norm_label": "schemas.py"
     },
     {
@@ -8327,7 +8327,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_agentoutput",
-      "community": 26,
+      "community": 0,
       "norm_label": "agentoutput"
     },
     {
@@ -8347,7 +8347,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_claimkind",
-      "community": 26,
+      "community": 1,
       "norm_label": "claimkind"
     },
     {
@@ -8367,7 +8367,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_importance",
-      "community": 26,
+      "community": 1,
       "norm_label": "importance"
     },
     {
@@ -8377,7 +8377,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_evidenceintent",
-      "community": 26,
+      "community": 1,
       "norm_label": "evidenceintent"
     },
     {
@@ -8397,7 +8397,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_contextissue",
-      "community": 26,
+      "community": 0,
       "norm_label": "contextissue"
     },
     {
@@ -8407,7 +8407,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_confidenceissue",
-      "community": 26,
+      "community": 0,
       "norm_label": "confidenceissue"
     },
     {
@@ -8427,7 +8427,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_namedentity",
-      "community": 26,
+      "community": 0,
       "norm_label": "namedentity"
     },
     {
@@ -8437,7 +8437,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_metricreference",
-      "community": 26,
+      "community": 0,
       "norm_label": "metricreference"
     },
     {
@@ -8547,7 +8547,7 @@
       "source_location": "L235",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_quotefidelitycomponentsoutput",
-      "community": 26,
+      "community": 0,
       "norm_label": "quotefidelitycomponentsoutput"
     },
     {
@@ -8577,7 +8577,7 @@
       "source_location": "L265",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_citedreportsentenceoutput",
-      "community": 26,
+      "community": 0,
       "norm_label": "citedreportsentenceoutput"
     },
     {
@@ -8627,7 +8627,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_agents_schemas_rationale_1",
-      "community": 26,
+      "community": 0,
       "norm_label": "structured outputs exchanged by the controlled verification workflow.  these con"
     },
     {
@@ -8697,7 +8697,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "apps_worker_auditing_numerical_auditstatus",
-      "community": 21,
+      "community": 9,
       "norm_label": "auditstatus"
     },
     {
@@ -9447,7 +9447,7 @@
       "source_location": "L150",
       "_origin": "ast",
       "id": "apps_worker_extraction_passages_passageembeddingservice_init",
-      "community": 4,
+      "community": 2,
       "norm_label": ".__init__()"
     },
     {
@@ -9627,7 +9627,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "apps_worker_extraction_service_extractionservice",
-      "community": 5,
+      "community": 11,
       "norm_label": "extractionservice"
     },
     {
@@ -9687,7 +9687,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime",
-      "community": 26,
+      "community": 1,
       "norm_label": "runtime.py"
     },
     {
@@ -9697,7 +9697,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_durableprogresswriter",
-      "community": 26,
+      "community": 1,
       "norm_label": "durableprogresswriter"
     },
     {
@@ -9707,7 +9707,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_durableprogresswriter_init",
-      "community": 26,
+      "community": 1,
       "norm_label": ".__init__()"
     },
     {
@@ -9717,7 +9717,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_durableprogresswriter_publish",
-      "community": 31,
+      "community": 1,
       "norm_label": ".publish()"
     },
     {
@@ -9937,7 +9937,7 @@
       "source_location": "L530",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_execute_planning_workflow",
-      "community": 26,
+      "community": 1,
       "norm_label": "execute_planning_workflow()"
     },
     {
@@ -9947,7 +9947,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_py_redis",
-      "community": 26,
+      "community": 1,
       "norm_label": "redis"
     },
     {
@@ -9957,7 +9957,7 @@
       "source_location": "L773",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_as_utc",
-      "community": 26,
+      "community": 1,
       "norm_label": "_as_utc()"
     },
     {
@@ -9967,7 +9967,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_py_datetime",
-      "community": 26,
+      "community": 1,
       "norm_label": "datetime"
     },
     {
@@ -9977,7 +9977,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_rationale_1",
-      "community": 26,
+      "community": 1,
       "norm_label": "production adapters connecting typed graph nodes to durable run services."
     },
     {
@@ -9997,7 +9997,7 @@
       "source_location": "L542",
       "_origin": "ast",
       "id": "apps_worker_graph_runtime_rationale_542",
-      "community": 26,
+      "community": 1,
       "norm_label": "run step 8 through planning, leaving discovery to the step 9 extension."
     },
     {
@@ -10067,7 +10067,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "apps_worker_graph_state_snapshotrecord_retrieved_at_is_timezone_aware",
-      "community": 17,
+      "community": 31,
       "norm_label": ".retrieved_at_is_timezone_aware()"
     },
     {
@@ -10077,7 +10077,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_graph_state_py_datetime",
-      "community": 17,
+      "community": 31,
       "norm_label": "datetime"
     },
     {
@@ -10227,7 +10227,7 @@
       "source_location": "L329",
       "_origin": "ast",
       "id": "apps_worker_graph_state_verificationstate_workflow_timestamps_are_timezone_aware",
-      "community": 17,
+      "community": 31,
       "norm_label": ".workflow_timestamps_are_timezone_aware()"
     },
     {
@@ -10687,7 +10687,7 @@
       "source_location": "L759",
       "_origin": "ast",
       "id": "apps_worker_graph_workflow_workflownodes_extension",
-      "community": 30,
+      "community": 151,
       "norm_label": ".extension()"
     },
     {
@@ -10697,7 +10697,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "extensionnode",
-      "community": 30,
+      "community": 151,
       "norm_label": "extensionnode"
     },
     {
@@ -10707,7 +10707,7 @@
       "source_location": "L799",
       "_origin": "ast",
       "id": "apps_worker_graph_workflow_build_workflow",
-      "community": 30,
+      "community": 151,
       "norm_label": "build_workflow()"
     },
     {
@@ -10717,7 +10717,7 @@
       "source_location": "L884",
       "_origin": "ast",
       "id": "apps_worker_graph_workflow_conditional",
-      "community": 30,
+      "community": 151,
       "norm_label": "_conditional()"
     },
     {
@@ -10727,7 +10727,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "stategraph",
-      "community": 30,
+      "community": 151,
       "norm_label": "stategraph"
     },
     {
@@ -10827,7 +10827,7 @@
       "source_location": "L809",
       "_origin": "ast",
       "id": "apps_worker_graph_workflow_rationale_809",
-      "community": 30,
+      "community": 151,
       "norm_label": "compile the controlled graph; planning-only is the step 8 production handoff."
     },
     {
@@ -11147,7 +11147,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "apps_worker_provenance_dependencies_sourcedependencyanalyzer",
-      "community": 8,
+      "community": 34,
       "norm_label": "sourcedependencyanalyzer"
     },
     {
@@ -11167,7 +11167,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "apps_worker_provenance_dependencies_provenancepipeline",
-      "community": 8,
+      "community": 34,
       "norm_label": "provenancepipeline"
     },
     {
@@ -11177,7 +11177,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "apps_worker_provenance_dependencies_provenancepipeline_init",
-      "community": 8,
+      "community": 34,
       "norm_label": ".__init__()"
     },
     {
@@ -11187,7 +11187,7 @@
       "source_location": "L204",
       "_origin": "ast",
       "id": "apps_worker_provenance_dependencies_provenancepipeline_process",
-      "community": 8,
+      "community": 34,
       "norm_label": ".process()"
     },
     {
@@ -11347,7 +11347,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "apps_worker_provenance_dependencies_rationale_51",
-      "community": 8,
+      "community": 34,
       "norm_label": "infer auditable edges using only deterministic, inspectable signals."
     },
     {
@@ -11377,7 +11377,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_provenance_graph_export",
-      "community": 8,
+      "community": 34,
       "norm_label": "graph_export.py"
     },
     {
@@ -11387,7 +11387,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "apps_worker_provenance_graph_export_export_source_graph",
-      "community": 8,
+      "community": 34,
       "norm_label": "export_source_graph()"
     },
     {
@@ -11397,7 +11397,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "apps_worker_provenance_graph_export_edge",
-      "community": 8,
+      "community": 34,
       "norm_label": "_edge()"
     },
     {
@@ -11407,7 +11407,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_provenance_graph_export_rationale_1",
-      "community": 8,
+      "community": 34,
       "norm_label": "react flow-compatible export for an in-memory provenance state."
     },
     {
@@ -11430,7 +11430,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_init",
-      "community": 91,
+      "community": 15,
       "norm_label": "__init__.py"
     },
     {
@@ -11440,7 +11440,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_init_rationale_1",
-      "community": 91,
+      "community": 15,
       "norm_label": "server-only targeted discovery and secure retrieval services."
     },
     {
@@ -11450,7 +11450,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_cache",
-      "community": 91,
+      "community": 15,
       "norm_label": "cache.py"
     },
     {
@@ -11460,7 +11460,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "apps_worker_research_cache_cachebackend",
-      "community": 34,
+      "community": 15,
       "norm_label": "cachebackend"
     },
     {
@@ -11470,7 +11470,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "apps_worker_research_cache_cachebackend_get",
-      "community": 34,
+      "community": 15,
       "norm_label": ".get()"
     },
     {
@@ -11480,7 +11480,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "apps_worker_research_cache_cachebackend_setex",
-      "community": 34,
+      "community": 15,
       "norm_label": ".setex()"
     },
     {
@@ -11490,7 +11490,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "apps_worker_research_cache_cachebackend_incr",
-      "community": 34,
+      "community": 15,
       "norm_label": ".incr()"
     },
     {
@@ -11500,7 +11500,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "apps_worker_research_cache_cachebackend_expire",
-      "community": 34,
+      "community": 15,
       "norm_label": ".expire()"
     },
     {
@@ -11510,7 +11510,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalcache",
-      "community": 13,
+      "community": 15,
       "norm_label": "retrievalcache"
     },
     {
@@ -11520,7 +11520,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalcache_init",
-      "community": 34,
+      "community": 15,
       "norm_label": ".__init__()"
     },
     {
@@ -11530,7 +11530,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalcache_digest",
-      "community": 13,
+      "community": 15,
       "norm_label": ".digest()"
     },
     {
@@ -11540,7 +11540,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalcache_key",
-      "community": 13,
+      "community": 15,
       "norm_label": ".key()"
     },
     {
@@ -11550,7 +11550,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalcache_get_json",
-      "community": 34,
+      "community": 15,
       "norm_label": ".get_json()"
     },
     {
@@ -11560,7 +11560,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_cache_py_any",
-      "community": 34,
+      "community": 15,
       "norm_label": "any"
     },
     {
@@ -11570,7 +11570,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalcache_set_json",
-      "community": 34,
+      "community": 15,
       "norm_label": ".set_json()"
     },
     {
@@ -11580,7 +11580,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalratelimiter",
-      "community": 34,
+      "community": 15,
       "norm_label": "retrievalratelimiter"
     },
     {
@@ -11590,7 +11590,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalratelimiter_init",
-      "community": 34,
+      "community": 15,
       "norm_label": ".__init__()"
     },
     {
@@ -11600,7 +11600,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalratelimiter_allow",
-      "community": 34,
+      "community": 15,
       "norm_label": ".allow()"
     },
     {
@@ -11610,7 +11610,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "apps_worker_research_cache_retrievalratelimiter_increment",
-      "community": 34,
+      "community": 15,
       "norm_label": "._increment()"
     },
     {
@@ -11620,7 +11620,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_cache_rationale_1",
-      "community": 91,
+      "community": 15,
       "norm_label": "namespaced redis cache helpers; durable evidence remains in postgresql."
     },
     {
@@ -11630,7 +11630,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher",
-      "community": 91,
+      "community": 15,
       "norm_label": "fetcher.py"
     },
     {
@@ -11640,7 +11640,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_fetcherror",
-      "community": 35,
+      "community": 15,
       "norm_label": "fetcherror"
     },
     {
@@ -11650,7 +11650,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_fetcherror_init",
-      "community": 99,
+      "community": 15,
       "norm_label": ".__init__()"
     },
     {
@@ -11660,7 +11660,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_fetchresult",
-      "community": 53,
+      "community": 15,
       "norm_label": "fetchresult"
     },
     {
@@ -11670,7 +11670,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotstore",
-      "community": 99,
+      "community": 15,
       "norm_label": "snapshotstore"
     },
     {
@@ -11680,7 +11680,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotstore_write",
-      "community": 99,
+      "community": 15,
       "norm_label": ".write()"
     },
     {
@@ -11690,7 +11690,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotstore_read",
-      "community": 99,
+      "community": 15,
       "norm_label": ".read()"
     },
     {
@@ -11700,7 +11700,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotstore_exists",
-      "community": 99,
+      "community": 15,
       "norm_label": ".exists()"
     },
     {
@@ -11720,7 +11720,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotfilestore_init",
-      "community": 35,
+      "community": 15,
       "norm_label": ".__init__()"
     },
     {
@@ -11730,7 +11730,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_py_path",
-      "community": 35,
+      "community": 15,
       "norm_label": "path"
     },
     {
@@ -11740,7 +11740,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotfilestore_write",
-      "community": 35,
+      "community": 15,
       "norm_label": ".write()"
     },
     {
@@ -11750,7 +11750,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotfilestore_path_for",
-      "community": 35,
+      "community": 15,
       "norm_label": ".path_for()"
     },
     {
@@ -11760,7 +11760,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotfilestore_read",
-      "community": 35,
+      "community": 15,
       "norm_label": ".read()"
     },
     {
@@ -11770,7 +11770,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_snapshotfilestore_exists",
-      "community": 35,
+      "community": 15,
       "norm_label": ".exists()"
     },
     {
@@ -11780,7 +11780,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_s3snapshotstore",
-      "community": 35,
+      "community": 15,
       "norm_label": "s3snapshotstore"
     },
     {
@@ -11790,7 +11790,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_s3snapshotstore_init",
-      "community": 35,
+      "community": 15,
       "norm_label": ".__init__()"
     },
     {
@@ -11800,7 +11800,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_s3snapshotstore_write",
-      "community": 35,
+      "community": 15,
       "norm_label": ".write()"
     },
     {
@@ -11810,7 +11810,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_s3snapshotstore_read",
-      "community": 35,
+      "community": 15,
       "norm_label": ".read()"
     },
     {
@@ -11820,7 +11820,7 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_s3snapshotstore_exists",
-      "community": 35,
+      "community": 15,
       "norm_label": ".exists()"
     },
     {
@@ -11830,7 +11830,7 @@
       "source_location": "L155",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_s3snapshotstore_key",
-      "community": 35,
+      "community": 15,
       "norm_label": "._key()"
     },
     {
@@ -11840,7 +11840,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_securefetcher",
-      "community": 53,
+      "community": 15,
       "norm_label": "securefetcher"
     },
     {
@@ -11850,7 +11850,7 @@
       "source_location": "L172",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_securefetcher_init",
-      "community": 99,
+      "community": 15,
       "norm_label": ".__init__()"
     },
     {
@@ -11860,7 +11860,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "asyncbasetransport",
-      "community": 99,
+      "community": 15,
       "norm_label": "asyncbasetransport"
     },
     {
@@ -11870,7 +11870,7 @@
       "source_location": "L204",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_securefetcher_fetch",
-      "community": 53,
+      "community": 15,
       "norm_label": ".fetch()"
     },
     {
@@ -11880,7 +11880,7 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_securefetcher_request_pinned",
-      "community": 53,
+      "community": 15,
       "norm_label": "._request_pinned()"
     },
     {
@@ -11890,7 +11890,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_py_response",
-      "community": 53,
+      "community": 15,
       "norm_label": "response"
     },
     {
@@ -11900,7 +11900,7 @@
       "source_location": "L282",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_securefetcher_consume",
-      "community": 53,
+      "community": 15,
       "norm_label": "._consume()"
     },
     {
@@ -11910,7 +11910,7 @@
       "source_location": "L345",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_securefetcher_aclose",
-      "community": 53,
+      "community": 15,
       "norm_label": ".aclose()"
     },
     {
@@ -11920,7 +11920,7 @@
       "source_location": "L348",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_securefetcher_read_content",
-      "community": 53,
+      "community": 15,
       "norm_label": ".read_content()"
     },
     {
@@ -11930,7 +11930,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_rationale_1",
-      "community": 91,
+      "community": 15,
       "norm_label": "bounded httpx fetcher with dns pinning and redirect revalidation."
     },
     {
@@ -11940,7 +11940,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "apps_worker_research_fetcher_rationale_96",
-      "community": 35,
+      "community": 15,
       "norm_label": "private s3-compatible snapshot storage backed by safe local staging."
     },
     {
@@ -11950,7 +11950,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval",
-      "community": 1,
+      "community": 13,
       "norm_label": "passage_retrieval.py"
     },
     {
@@ -11960,7 +11960,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_passagesearchresult",
-      "community": 1,
+      "community": 13,
       "norm_label": "passagesearchresult"
     },
     {
@@ -11980,7 +11980,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_passageretriever",
-      "community": 1,
+      "community": 13,
       "norm_label": "passageretriever"
     },
     {
@@ -11990,7 +11990,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_passageretriever_search",
-      "community": 1,
+      "community": 13,
       "norm_label": ".search()"
     },
     {
@@ -12000,7 +12000,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_py_session",
-      "community": 1,
+      "community": 13,
       "norm_label": "session"
     },
     {
@@ -12010,7 +12010,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_py_uuid",
-      "community": 1,
+      "community": 13,
       "norm_label": "uuid"
     },
     {
@@ -12020,7 +12020,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_py_any",
-      "community": 1,
+      "community": 13,
       "norm_label": "any"
     },
     {
@@ -12030,7 +12030,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_passageretriever_base_query",
-      "community": 1,
+      "community": 13,
       "norm_label": "._base_query()"
     },
     {
@@ -12040,7 +12040,7 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_passageretriever_postgresql_lexical_query",
-      "community": 1,
+      "community": 13,
       "norm_label": "._postgresql_lexical_query()"
     },
     {
@@ -12050,7 +12050,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_hybridpassagesearchservice",
-      "community": 1,
+      "community": 13,
       "norm_label": "hybridpassagesearchservice"
     },
     {
@@ -12060,7 +12060,7 @@
       "source_location": "L155",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_hybridpassagesearchservice_init",
-      "community": 1,
+      "community": 13,
       "norm_label": ".__init__()"
     },
     {
@@ -12070,7 +12070,7 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_hybridpassagesearchservice_search",
-      "community": 1,
+      "community": 13,
       "norm_label": ".search()"
     },
     {
@@ -12080,7 +12080,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_lexical_score",
-      "community": 1,
+      "community": 13,
       "norm_label": "lexical_score()"
     },
     {
@@ -12090,7 +12090,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_py_decimal",
-      "community": 1,
+      "community": 13,
       "norm_label": "decimal"
     },
     {
@@ -12100,7 +12100,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_exact_match_score",
-      "community": 1,
+      "community": 13,
       "norm_label": "exact_match_score()"
     },
     {
@@ -12110,7 +12110,7 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_metadata_fit",
-      "community": 1,
+      "community": 13,
       "norm_label": "_metadata_fit()"
     },
     {
@@ -12120,7 +12120,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourcepassage",
-      "community": 1,
+      "community": 13,
       "norm_label": "sourcepassage"
     },
     {
@@ -12130,7 +12130,7 @@
       "source_location": "L253",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_source_role_score",
-      "community": 1,
+      "community": 13,
       "norm_label": "_source_role_score()"
     },
     {
@@ -12140,7 +12140,7 @@
       "source_location": "L265",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_terms",
-      "community": 1,
+      "community": 13,
       "norm_label": "_terms()"
     },
     {
@@ -12150,7 +12150,7 @@
       "source_location": "L274",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_cosine_similarity",
-      "community": 1,
+      "community": 13,
       "norm_label": "_cosine_similarity()"
     },
     {
@@ -12160,7 +12160,7 @@
       "source_location": "L286",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_unit",
-      "community": 1,
+      "community": 13,
       "norm_label": "_unit()"
     },
     {
@@ -12170,7 +12170,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_rationale_1",
-      "community": 1,
+      "community": 13,
       "norm_label": "traceable hybrid passage retrieval; scores rank evidence and never decide truth."
     },
     {
@@ -12180,7 +12180,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_rationale_47",
-      "community": 1,
+      "community": 13,
       "norm_label": "combine deterministic signals; downstream evidence checks remain authoritative."
     },
     {
@@ -12190,7 +12190,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "apps_worker_research_passage_retrieval_rationale_153",
-      "community": 1,
+      "community": 13,
       "norm_label": "generate a query vector through deepseek when available, then rank safely."
     },
     {
@@ -12200,7 +12200,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_pipeline",
-      "community": 91,
+      "community": 15,
       "norm_label": "pipeline.py"
     },
     {
@@ -12220,7 +12220,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "apps_worker_research_pipeline_retrievalpipeline_init",
-      "community": 34,
+      "community": 15,
       "norm_label": ".__init__()"
     },
     {
@@ -12230,7 +12230,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "apps_worker_research_pipeline_retrievalpipeline_discover",
-      "community": 5,
+      "community": 11,
       "norm_label": ".discover()"
     },
     {
@@ -12270,7 +12270,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_pipeline_rationale_1",
-      "community": 91,
+      "community": 15,
       "norm_label": "typed step 9 langgraph extensions for discovery, fetching, and extraction."
     },
     {
@@ -12280,7 +12280,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_ranking",
-      "community": 5,
+      "community": 11,
       "norm_label": "ranking.py"
     },
     {
@@ -12290,7 +12290,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "apps_worker_research_ranking_rankingsignals",
-      "community": 5,
+      "community": 11,
       "norm_label": "rankingsignals"
     },
     {
@@ -12300,7 +12300,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "apps_worker_research_ranking_priority_score",
-      "community": 5,
+      "community": 11,
       "norm_label": "priority_score()"
     },
     {
@@ -12310,7 +12310,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_ranking_py_decimal",
-      "community": 5,
+      "community": 11,
       "norm_label": "decimal"
     },
     {
@@ -12320,7 +12320,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "apps_worker_research_ranking_lexical_overlap",
-      "community": 5,
+      "community": 11,
       "norm_label": "lexical_overlap()"
     },
     {
@@ -12330,7 +12330,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "apps_worker_research_ranking_select_diverse",
-      "community": 5,
+      "community": 11,
       "norm_label": "select_diverse()"
     },
     {
@@ -12340,7 +12340,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "apps_worker_research_ranking_terms",
-      "community": 5,
+      "community": 11,
       "norm_label": "_terms()"
     },
     {
@@ -12350,7 +12350,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "apps_worker_research_ranking_cluster_key",
-      "community": 5,
+      "community": 11,
       "norm_label": "_cluster_key()"
     },
     {
@@ -12360,7 +12360,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_ranking_rationale_1",
-      "community": 5,
+      "community": 11,
       "norm_label": "deterministic usefulness ranking; never a credibility or truth score."
     },
     {
@@ -12370,7 +12370,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_search",
-      "community": 13,
+      "community": 1,
       "norm_label": "search.py"
     },
     {
@@ -12380,7 +12380,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "apps_worker_research_search_searchconfigurationerror",
-      "community": 13,
+      "community": 1,
       "norm_label": "searchconfigurationerror"
     },
     {
@@ -12390,7 +12390,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "apps_worker_research_search_searchprovidererror",
-      "community": 13,
+      "community": 1,
       "norm_label": "searchprovidererror"
     },
     {
@@ -12400,7 +12400,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "apps_worker_research_search_searchprovidererror_init",
-      "community": 13,
+      "community": 1,
       "norm_label": ".__init__()"
     },
     {
@@ -12410,7 +12410,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "apps_worker_research_search_searchresult",
-      "community": 13,
+      "community": 1,
       "norm_label": "searchresult"
     },
     {
@@ -12420,7 +12420,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "apps_worker_research_search_bravesearchclient",
-      "community": 13,
+      "community": 1,
       "norm_label": "bravesearchclient"
     },
     {
@@ -12430,7 +12430,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "apps_worker_research_search_bravesearchclient_init",
-      "community": 13,
+      "community": 1,
       "norm_label": ".__init__()"
     },
     {
@@ -12440,7 +12440,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apps_worker_research_search_py_asyncclient",
-      "community": 13,
+      "community": 1,
       "norm_label": "asyncclient"
     },
     {
@@ -12450,7 +12450,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "apps_worker_research_search_bravesearchclient_search",
-      "community": 13,
+      "community": 1,
       "norm_label": ".search()"
     },
     {
@@ -12460,7 +12460,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "apps_worker_research_search_bravesearchclient_aclose",
-      "community": 13,
+      "community": 1,
       "norm_label": ".aclose()"
     },
     {
@@ -12470,7 +12470,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "apps_worker_research_search_optional_text",
-      "community": 13,
+      "community": 1,
       "norm_label": "_optional_text()"
     },
     {
@@ -12480,7 +12480,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_search_rationale_1",
-      "community": 13,
+      "community": 1,
       "norm_label": "brave search api client. this module is worker-only by construction."
     },
     {
@@ -12490,7 +12490,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_url_guard",
-      "community": 94,
+      "community": 15,
       "norm_label": "url_guard.py"
     },
     {
@@ -12500,7 +12500,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "apps_worker_research_url_guard_unsafeurlerror",
-      "community": 94,
+      "community": 15,
       "norm_label": "unsafeurlerror"
     },
     {
@@ -12510,7 +12510,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "apps_worker_research_url_guard_guardedurl",
-      "community": 53,
+      "community": 15,
       "norm_label": "guardedurl"
     },
     {
@@ -12520,7 +12520,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "apps_worker_research_url_guard_canonicalize_url",
-      "community": 94,
+      "community": 15,
       "norm_label": "canonicalize_url()"
     },
     {
@@ -12530,7 +12530,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "apps_worker_research_url_guard_is_public_address",
-      "community": 94,
+      "community": 15,
       "norm_label": "is_public_address()"
     },
     {
@@ -12560,7 +12560,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "apps_worker_research_url_guard_urlguard_validate",
-      "community": 94,
+      "community": 15,
       "norm_label": ".validate()"
     },
     {
@@ -12570,7 +12570,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "apps_worker_research_url_guard_urlguard_resolve",
-      "community": 94,
+      "community": 15,
       "norm_label": "._resolve()"
     },
     {
@@ -12580,7 +12580,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_research_url_guard_rationale_1",
-      "community": 94,
+      "community": 15,
       "norm_label": "deterministic url canonicalization and ssrf defenses."
     },
     {
@@ -13000,7 +13000,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_scoring_service",
-      "community": 26,
+      "community": 3,
       "norm_label": "service.py"
     },
     {
@@ -13010,7 +13010,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "apps_worker_scoring_service_deterministicscoringservice",
-      "community": 26,
+      "community": 3,
       "norm_label": "deterministicscoringservice"
     },
     {
@@ -13050,7 +13050,7 @@
       "source_location": "L504",
       "_origin": "ast",
       "id": "apps_worker_scoring_service_deterministicscoringservice_primary_expected",
-      "community": 26,
+      "community": 3,
       "norm_label": "._primary_expected()"
     },
     {
@@ -13060,7 +13060,7 @@
       "source_location": "L509",
       "_origin": "ast",
       "id": "apps_worker_scoring_service_deterministicscoringservice_has_inaccessible_source",
-      "community": 26,
+      "community": 3,
       "norm_label": "._has_inaccessible_source()"
     },
     {
@@ -13070,7 +13070,7 @@
       "source_location": "L515",
       "_origin": "ast",
       "id": "apps_worker_scoring_service_deterministicscoringservice_one_origin",
-      "community": 26,
+      "community": 3,
       "norm_label": "._one_origin()"
     },
     {
@@ -13110,7 +13110,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_scoring_service_rationale_1",
-      "community": 26,
+      "community": 3,
       "norm_label": "typed state adapter for deterministic formulas and methodology gates."
     },
     {
@@ -13450,7 +13450,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "apps_worker_tests_test_passages_and_retrieval_test_html_extraction_captures_heading_transcript_and_labeled_table_rows",
-      "community": 2,
+      "community": 11,
       "norm_label": "test_html_extraction_captures_heading_transcript_and_labeled_table_rows()"
     },
     {
@@ -13490,7 +13490,7 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "apps_worker_tests_test_passages_and_retrieval_test_pgvector_cosine_operator_is_used_for_vector_candidate_search",
-      "community": 1,
+      "community": 13,
       "norm_label": "test_pgvector_cosine_operator_is_used_for_vector_candidate_search()"
     },
     {
@@ -13530,7 +13530,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_tests_test_provenance",
-      "community": 8,
+      "community": 34,
       "norm_label": "test_provenance.py"
     },
     {
@@ -13540,7 +13540,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "apps_worker_tests_test_provenance_state",
-      "community": 8,
+      "community": 34,
       "norm_label": "_state()"
     },
     {
@@ -13550,7 +13550,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "apps_worker_tests_test_provenance_test_detects_dependency_signals_clusters_and_methodology_multipliers",
-      "community": 8,
+      "community": 34,
       "norm_label": "test_detects_dependency_signals_clusters_and_methodology_multipliers()"
     },
     {
@@ -13560,7 +13560,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "apps_worker_tests_test_provenance_test_graph_export_is_react_flow_compatible_and_contains_detection_metadata",
-      "community": 8,
+      "community": 34,
       "norm_label": "test_graph_export_is_react_flow_compatible_and_contains_detection_metadata()"
     },
     {
@@ -13570,7 +13570,7 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "apps_worker_tests_test_provenance_test_fuzzy_shared_features_are_detected_without_treating_dates_as_shared_data",
-      "community": 0,
+      "community": 34,
       "norm_label": "test_fuzzy_shared_features_are_detected_without_treating_dates_as_shared_data()"
     },
     {
@@ -13580,7 +13580,7 @@
       "source_location": "L216",
       "_origin": "ast",
       "id": "apps_worker_tests_test_provenance_test_common_years_and_small_section_numbers_do_not_create_data_dependency",
-      "community": 0,
+      "community": 34,
       "norm_label": "test_common_years_and_small_section_numbers_do_not_create_data_dependency()"
     },
     {
@@ -13590,7 +13590,7 @@
       "source_location": "L265",
       "_origin": "ast",
       "id": "apps_worker_tests_test_provenance_test_provenance_clusters_and_edges_are_persisted_idempotently",
-      "community": 8,
+      "community": 34,
       "norm_label": "test_provenance_clusters_and_edges_are_persisted_idempotently()"
     },
     {
@@ -13600,7 +13600,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_tests_test_retrieval_persistence",
-      "community": 26,
+      "community": 1,
       "norm_label": "test_retrieval_persistence.py"
     },
     {
@@ -13620,7 +13620,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_tests_test_scoring_formulas",
-      "community": 3,
+      "community": 0,
       "norm_label": "test_scoring_formulas.py"
     },
     {
@@ -13720,7 +13720,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "apps_worker_tests_test_scoring_formulas_test_scoring_records_are_persisted_with_decimal_audit_metadata",
-      "community": 0,
+      "community": 1,
       "norm_label": "test_scoring_records_are_persisted_with_decimal_audit_metadata()"
     },
     {
@@ -13730,7 +13730,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "apps_worker_tests_test_search_ranking_extraction",
-      "community": 5,
+      "community": 11,
       "norm_label": "test_search_ranking_extraction.py"
     },
     {
@@ -13740,7 +13740,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "apps_worker_tests_test_search_ranking_extraction_run",
-      "community": 5,
+      "community": 11,
       "norm_label": "run()"
     },
     {
@@ -13750,7 +13750,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "apps_worker_tests_test_search_ranking_extraction_test_brave_search_uses_only_server_key_and_expected_endpoint",
-      "community": 5,
+      "community": 11,
       "norm_label": "test_brave_search_uses_only_server_key_and_expected_endpoint()"
     },
     {
@@ -13760,7 +13760,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "apps_worker_tests_test_search_ranking_extraction_test_brave_search_requires_key_but_no_engine_id",
-      "community": 13,
+      "community": 1,
       "norm_label": "test_brave_search_requires_key_but_no_engine_id()"
     },
     {
@@ -13770,7 +13770,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "apps_worker_tests_test_search_ranking_extraction_test_priority_formula_is_exact_and_deterministic",
-      "community": 5,
+      "community": 11,
       "norm_label": "test_priority_formula_is_exact_and_deterministic()"
     },
     {
@@ -13780,7 +13780,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "apps_worker_tests_test_search_ranking_extraction_test_selection_reserves_research_paths_and_deduplicates_result_clusters",
-      "community": 5,
+      "community": 11,
       "norm_label": "test_selection_reserves_research_paths_and_deduplicates_result_clusters()"
     },
     {
@@ -13790,7 +13790,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "apps_worker_tests_test_search_ranking_extraction_test_html_extraction_uses_static_parser_and_preserves_untrusted_text",
-      "community": 5,
+      "community": 11,
       "norm_label": "test_html_extraction_uses_static_parser_and_preserves_untrusted_text()"
     },
     {
@@ -13800,7 +13800,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "apps_worker_tests_test_search_ranking_extraction_test_pymupdf_extraction_is_page_aware",
-      "community": 5,
+      "community": 11,
       "norm_label": "test_pymupdf_extraction_is_page_aware()"
     },
     {
@@ -13850,7 +13850,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "apps_worker_tests_test_url_guard_and_fetcher_test_canonicalization_removes_fragment_tracking_and_credentials_are_forbidden",
-      "community": 94,
+      "community": 15,
       "norm_label": "test_canonicalization_removes_fragment_tracking_and_credentials_are_forbidden()"
     },
     {
@@ -13970,7 +13970,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "apps_worker_tests_test_url_guard_and_fetcher_fakes3client",
-      "community": 100,
+      "community": 15,
       "norm_label": "fakes3client"
     },
     {
@@ -13980,7 +13980,7 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "apps_worker_tests_test_url_guard_and_fetcher_fakes3client_init",
-      "community": 100,
+      "community": 15,
       "norm_label": ".__init__()"
     },
     {
@@ -13990,7 +13990,7 @@
       "source_location": "L237",
       "_origin": "ast",
       "id": "apps_worker_tests_test_url_guard_and_fetcher_fakes3client_upload_file",
-      "community": 100,
+      "community": 15,
       "norm_label": ".upload_file()"
     },
     {
@@ -14000,7 +14000,7 @@
       "source_location": "L241",
       "_origin": "ast",
       "id": "apps_worker_tests_test_url_guard_and_fetcher_fakes3client_head_object",
-      "community": 100,
+      "community": 15,
       "norm_label": ".head_object()"
     },
     {
@@ -14010,7 +14010,7 @@
       "source_location": "L246",
       "_origin": "ast",
       "id": "apps_worker_tests_test_url_guard_and_fetcher_fakes3client_download_file",
-      "community": 100,
+      "community": 15,
       "norm_label": ".download_file()"
     },
     {
@@ -14210,7 +14210,7 @@
       "source_location": "L267",
       "_origin": "ast",
       "id": "apps_worker_tests_test_verification_task_test_resume_backfills_a_durable_event_missing_from_redis",
-      "community": 18,
+      "community": 16,
       "norm_label": "test_resume_backfills_a_durable_event_missing_from_redis()"
     },
     {
@@ -14330,7 +14330,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "apps_worker_tests_test_workflow_failingmodel_generate_structured",
-      "community": 0,
+      "community": 40,
       "norm_label": ".generate_structured()"
     },
     {
@@ -15014,14 +15014,34 @@
       "norm_label": "agents.md"
     },
     {
-      "label": "graphify",
+      "label": "Always-Enforced Boundaries",
       "file_type": "document",
       "source_file": "AGENTS.md",
-      "source_location": "L10",
+      "source_location": "L5",
       "_origin": "ast",
-      "id": "agents_graphify",
+      "id": "agents_always_enforced_boundaries",
       "community": 111,
-      "norm_label": "graphify"
+      "norm_label": "always-enforced boundaries"
+    },
+    {
+      "label": "Context Routing",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "agents_context_routing",
+      "community": 111,
+      "norm_label": "context routing"
+    },
+    {
+      "label": "Change Workflow",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "agents_change_workflow",
+      "community": 111,
+      "norm_label": "change workflow"
     },
     {
       "label": "ONEDRIVE_MIGRATION_HANDOFF.md",
@@ -15144,6 +15164,26 @@
       "norm_label": "suggested prompt for the new thread"
     },
     {
+      "label": "AGENTS.md",
+      "file_type": "document",
+      "source_file": "apps/api/AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "apps_api_agents",
+      "community": 99,
+      "norm_label": "agents.md"
+    },
+    {
+      "label": "API Guidance",
+      "file_type": "document",
+      "source_file": "apps/api/AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "apps_api_agents_api_guidance",
+      "community": 99,
+      "norm_label": "api guidance"
+    },
+    {
       "label": "README.md",
       "file_type": "document",
       "source_file": "apps/api/README.md",
@@ -15184,6 +15224,26 @@
       "norm_label": "local checks"
     },
     {
+      "label": "AGENTS.md",
+      "file_type": "document",
+      "source_file": "apps/web/AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "apps_web_agents",
+      "community": 100,
+      "norm_label": "agents.md"
+    },
+    {
+      "label": "Web Guidance",
+      "file_type": "document",
+      "source_file": "apps/web/AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "apps_web_agents_web_guidance",
+      "community": 100,
+      "norm_label": "web guidance"
+    },
+    {
       "label": "README.md",
       "file_type": "document",
       "source_file": "apps/web/README.md",
@@ -15202,6 +15262,26 @@
       "id": "apps_web_readme_elara_web_app",
       "community": 116,
       "norm_label": "elara web app"
+    },
+    {
+      "label": "AGENTS.md",
+      "file_type": "document",
+      "source_file": "apps/worker/AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "apps_worker_agents",
+      "community": 155,
+      "norm_label": "agents.md"
+    },
+    {
+      "label": "Worker Guidance",
+      "file_type": "document",
+      "source_file": "apps/worker/AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "apps_worker_agents_worker_guidance",
+      "community": 155,
+      "norm_label": "worker guidance"
     },
     {
       "label": "README.md",
@@ -15597,7 +15677,7 @@
       "label": "0. Architectural Guardrails",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L10",
+      "source_location": "L12",
       "_origin": "ast",
       "id": "project_context_implementation_plan_0_architectural_guardrails",
       "community": 96,
@@ -15607,7 +15687,7 @@
       "label": "1. Repository Structure",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L47",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "project_context_implementation_plan_1_repository_structure",
       "community": 96,
@@ -15617,7 +15697,7 @@
       "label": "2. Phase 1: Infrastructure and Data Persistence",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L99",
+      "source_location": "L101",
       "_origin": "ast",
       "id": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
       "community": 105,
@@ -15627,7 +15707,7 @@
       "label": "2.1 Local Development Infrastructure",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L101",
+      "source_location": "L103",
       "_origin": "ast",
       "id": "project_context_implementation_plan_2_1_local_development_infrastructure",
       "community": 105,
@@ -15637,7 +15717,7 @@
       "label": "2.2 PostgreSQL and Alembic Foundation",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L144",
+      "source_location": "L146",
       "_origin": "ast",
       "id": "project_context_implementation_plan_2_2_postgresql_and_alembic_foundation",
       "community": 105,
@@ -15647,7 +15727,7 @@
       "label": "2.3 Core Enums",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L157",
+      "source_location": "L159",
       "_origin": "ast",
       "id": "project_context_implementation_plan_2_3_core_enums",
       "community": 105,
@@ -15657,7 +15737,7 @@
       "label": "2.4 SQLAlchemy Data Model",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L221",
+      "source_location": "L223",
       "_origin": "ast",
       "id": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "community": 45,
@@ -15667,7 +15747,7 @@
       "label": "users",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L223",
+      "source_location": "L225",
       "_origin": "ast",
       "id": "project_context_implementation_plan_users",
       "community": 45,
@@ -15677,7 +15757,7 @@
       "label": "verification_runs",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L247",
+      "source_location": "L249",
       "_origin": "ast",
       "id": "project_context_implementation_plan_verification_runs",
       "community": 45,
@@ -15687,7 +15767,7 @@
       "label": "atomic_claims",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L293",
+      "source_location": "L295",
       "_origin": "ast",
       "id": "project_context_implementation_plan_atomic_claims",
       "community": 45,
@@ -15697,7 +15777,7 @@
       "label": "search_queries",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L326",
+      "source_location": "L328",
       "_origin": "ast",
       "id": "project_context_implementation_plan_search_queries",
       "community": 45,
@@ -15707,7 +15787,7 @@
       "label": "sources",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L348",
+      "source_location": "L350",
       "_origin": "ast",
       "id": "project_context_implementation_plan_sources",
       "community": 45,
@@ -15717,7 +15797,7 @@
       "label": "source_snapshots",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L372",
+      "source_location": "L374",
       "_origin": "ast",
       "id": "project_context_implementation_plan_source_snapshots",
       "community": 45,
@@ -15727,7 +15807,7 @@
       "label": "run_sources",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L406",
+      "source_location": "L408",
       "_origin": "ast",
       "id": "project_context_implementation_plan_run_sources",
       "community": 45,
@@ -15737,7 +15817,7 @@
       "label": "source_passages",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L426",
+      "source_location": "L428",
       "_origin": "ast",
       "id": "project_context_implementation_plan_source_passages",
       "community": 45,
@@ -15747,7 +15827,7 @@
       "label": "evidence_items",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L461",
+      "source_location": "L463",
       "_origin": "ast",
       "id": "project_context_implementation_plan_evidence_items",
       "community": 45,
@@ -15757,7 +15837,7 @@
       "label": "information_clusters",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L491",
+      "source_location": "L493",
       "_origin": "ast",
       "id": "project_context_implementation_plan_information_clusters",
       "community": 45,
@@ -15767,7 +15847,7 @@
       "label": "source_dependencies",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L508",
+      "source_location": "L510",
       "_origin": "ast",
       "id": "project_context_implementation_plan_source_dependencies",
       "community": 45,
@@ -15777,7 +15857,7 @@
       "label": "calculations",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L531",
+      "source_location": "L533",
       "_origin": "ast",
       "id": "project_context_implementation_plan_calculations",
       "community": 45,
@@ -15787,7 +15867,7 @@
       "label": "agent_events",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L554",
+      "source_location": "L556",
       "_origin": "ast",
       "id": "project_context_implementation_plan_agent_events",
       "community": 45,
@@ -15797,7 +15877,7 @@
       "label": "report_citations",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L574",
+      "source_location": "L576",
       "_origin": "ast",
       "id": "project_context_implementation_plan_report_citations",
       "community": 45,
@@ -15807,7 +15887,7 @@
       "label": "user_feedback",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L595",
+      "source_location": "L597",
       "_origin": "ast",
       "id": "project_context_implementation_plan_user_feedback",
       "community": 45,
@@ -15817,7 +15897,7 @@
       "label": "methodology_versions",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L616",
+      "source_location": "L618",
       "_origin": "ast",
       "id": "project_context_implementation_plan_methodology_versions",
       "community": 45,
@@ -15827,7 +15907,7 @@
       "label": "exports",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L629",
+      "source_location": "L631",
       "_origin": "ast",
       "id": "project_context_implementation_plan_exports",
       "community": 45,
@@ -15837,7 +15917,7 @@
       "label": "2.5 pgvector Setup",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L646",
+      "source_location": "L648",
       "_origin": "ast",
       "id": "project_context_implementation_plan_2_5_pgvector_setup",
       "community": 105,
@@ -15847,7 +15927,7 @@
       "label": "2.6 Redis Setup",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L667",
+      "source_location": "L669",
       "_origin": "ast",
       "id": "project_context_implementation_plan_2_6_redis_setup",
       "community": 105,
@@ -15857,7 +15937,7 @@
       "label": "2.7 S3-Compatible Object Storage",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L720",
+      "source_location": "L722",
       "_origin": "ast",
       "id": "project_context_implementation_plan_2_7_s3_compatible_object_storage",
       "community": 105,
@@ -15867,7 +15947,7 @@
       "label": "3. Phase 2: API and Asynchronous Boundaries",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L752",
+      "source_location": "L754",
       "_origin": "ast",
       "id": "project_context_implementation_plan_3_phase_2_api_and_asynchronous_boundaries",
       "community": 106,
@@ -15877,7 +15957,7 @@
       "label": "3.1 FastAPI Route Groups",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L754",
+      "source_location": "L756",
       "_origin": "ast",
       "id": "project_context_implementation_plan_3_1_fastapi_route_groups",
       "community": 106,
@@ -15887,7 +15967,7 @@
       "label": "3.2 Pydantic Request and Response Schemas",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L804",
+      "source_location": "L806",
       "_origin": "ast",
       "id": "project_context_implementation_plan_3_2_pydantic_request_and_response_schemas",
       "community": 106,
@@ -15897,7 +15977,7 @@
       "label": "3.3 Creating a Verification Run",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L967",
+      "source_location": "L969",
       "_origin": "ast",
       "id": "project_context_implementation_plan_3_3_creating_a_verification_run",
       "community": 106,
@@ -15907,7 +15987,7 @@
       "label": "3.4 Celery Integration",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L983",
+      "source_location": "L985",
       "_origin": "ast",
       "id": "project_context_implementation_plan_3_4_celery_integration",
       "community": 106,
@@ -15917,7 +15997,7 @@
       "label": "3.5 Server-Sent Events",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1016",
+      "source_location": "L1018",
       "_origin": "ast",
       "id": "project_context_implementation_plan_3_5_server_sent_events",
       "community": 106,
@@ -15927,7 +16007,7 @@
       "label": "4. Phase 3: Verification Worker and LangGraph Workflow",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1053",
+      "source_location": "L1055",
       "_origin": "ast",
       "id": "project_context_implementation_plan_4_phase_3_verification_worker_and_langgraph_workflow",
       "community": 108,
@@ -15937,7 +16017,7 @@
       "label": "4.1 Worker Package Layout",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1055",
+      "source_location": "L1057",
       "_origin": "ast",
       "id": "project_context_implementation_plan_4_1_worker_package_layout",
       "community": 108,
@@ -15947,7 +16027,7 @@
       "label": "4.2 DeepSeek Client",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1103",
+      "source_location": "L1105",
       "_origin": "ast",
       "id": "project_context_implementation_plan_4_2_deepseek_client",
       "community": 108,
@@ -15957,7 +16037,7 @@
       "label": "4.3 LangGraph State",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1128",
+      "source_location": "L1130",
       "_origin": "ast",
       "id": "project_context_implementation_plan_4_3_langgraph_state",
       "community": 108,
@@ -15967,7 +16047,7 @@
       "label": "4.4 LangGraph Nodes",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1203",
+      "source_location": "L1205",
       "_origin": "ast",
       "id": "project_context_implementation_plan_4_4_langgraph_nodes",
       "community": 84,
@@ -15977,7 +16057,7 @@
       "label": "Intake",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1205",
+      "source_location": "L1207",
       "_origin": "ast",
       "id": "project_context_implementation_plan_intake",
       "community": 84,
@@ -15987,7 +16067,7 @@
       "label": "Decomposition",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1226",
+      "source_location": "L1228",
       "_origin": "ast",
       "id": "project_context_implementation_plan_decomposition",
       "community": 84,
@@ -15997,7 +16077,7 @@
       "label": "Planner",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1248",
+      "source_location": "L1250",
       "_origin": "ast",
       "id": "project_context_implementation_plan_planner",
       "community": 84,
@@ -16007,7 +16087,7 @@
       "label": "Discovery and Source Selection",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1294",
+      "source_location": "L1296",
       "_origin": "ast",
       "id": "project_context_implementation_plan_discovery_and_source_selection",
       "community": 84,
@@ -16017,7 +16097,7 @@
       "label": "Secure Retrieval",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1323",
+      "source_location": "L1325",
       "_origin": "ast",
       "id": "project_context_implementation_plan_secure_retrieval",
       "community": 84,
@@ -16027,7 +16107,7 @@
       "label": "Extraction",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1355",
+      "source_location": "L1357",
       "_origin": "ast",
       "id": "project_context_implementation_plan_extraction",
       "community": 84,
@@ -16037,7 +16117,7 @@
       "label": "Passage Segmentation and Embedding",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1400",
+      "source_location": "L1402",
       "_origin": "ast",
       "id": "project_context_implementation_plan_passage_segmentation_and_embedding",
       "community": 84,
@@ -16047,7 +16127,7 @@
       "label": "Provenance and Source Dependency Analysis",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1421",
+      "source_location": "L1423",
       "_origin": "ast",
       "id": "project_context_implementation_plan_provenance_and_source_dependency_analysis",
       "community": 84,
@@ -16057,7 +16137,7 @@
       "label": "Evidence Classification",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1449",
+      "source_location": "L1451",
       "_origin": "ast",
       "id": "project_context_implementation_plan_evidence_classification",
       "community": 84,
@@ -16067,7 +16147,7 @@
       "label": "Scoring",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1480",
+      "source_location": "L1482",
       "_origin": "ast",
       "id": "project_context_implementation_plan_scoring",
       "community": 84,
@@ -16077,7 +16157,7 @@
       "label": "Numerical Audit",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1568",
+      "source_location": "L1570",
       "_origin": "ast",
       "id": "project_context_implementation_plan_numerical_audit",
       "community": 84,
@@ -16087,7 +16167,7 @@
       "label": "Synthesis",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1584",
+      "source_location": "L1586",
       "_origin": "ast",
       "id": "project_context_implementation_plan_synthesis",
       "community": 84,
@@ -16097,7 +16177,7 @@
       "label": "Citation Audit",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1605",
+      "source_location": "L1607",
       "_origin": "ast",
       "id": "project_context_implementation_plan_citation_audit",
       "community": 84,
@@ -16107,7 +16187,7 @@
       "label": "4.5 Prompt-Injection Boundary",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1626",
+      "source_location": "L1628",
       "_origin": "ast",
       "id": "project_context_implementation_plan_4_5_prompt_injection_boundary",
       "community": 108,
@@ -16117,7 +16197,7 @@
       "label": "5. Phase 4: Frontend Application",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1639",
+      "source_location": "L1641",
       "_origin": "ast",
       "id": "project_context_implementation_plan_5_phase_4_frontend_application",
       "community": 101,
@@ -16127,7 +16207,7 @@
       "label": "5.1 Next.js App Router Structure",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1641",
+      "source_location": "L1643",
       "_origin": "ast",
       "id": "project_context_implementation_plan_5_1_next_js_app_router_structure",
       "community": 101,
@@ -16137,7 +16217,7 @@
       "label": "5.2 Frontend State Strategy",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1672",
+      "source_location": "L1674",
       "_origin": "ast",
       "id": "project_context_implementation_plan_5_2_frontend_state_strategy",
       "community": 101,
@@ -16147,7 +16227,7 @@
       "label": "5.3 Forms and Validation",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1712",
+      "source_location": "L1714",
       "_origin": "ast",
       "id": "project_context_implementation_plan_5_3_forms_and_validation",
       "community": 101,
@@ -16157,7 +16237,7 @@
       "label": "5.4 Real-Time UI",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1736",
+      "source_location": "L1738",
       "_origin": "ast",
       "id": "project_context_implementation_plan_5_4_real_time_ui",
       "community": 101,
@@ -16167,7 +16247,7 @@
       "label": "5.5 Report Workspace",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1760",
+      "source_location": "L1762",
       "_origin": "ast",
       "id": "project_context_implementation_plan_5_5_report_workspace",
       "community": 101,
@@ -16177,7 +16257,7 @@
       "label": "5.6 React Flow Source Graph",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1785",
+      "source_location": "L1787",
       "_origin": "ast",
       "id": "project_context_implementation_plan_5_6_react_flow_source_graph",
       "community": 101,
@@ -16187,7 +16267,7 @@
       "label": "5.7 Recharts Visualizations",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1820",
+      "source_location": "L1822",
       "_origin": "ast",
       "id": "project_context_implementation_plan_5_7_recharts_visualizations",
       "community": 101,
@@ -16197,7 +16277,7 @@
       "label": "6. Security and Credential Management",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1852",
+      "source_location": "L1854",
       "_origin": "ast",
       "id": "project_context_implementation_plan_6_security_and_credential_management",
       "community": 96,
@@ -16207,7 +16287,7 @@
       "label": "7. Evaluation and Observability",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1891",
+      "source_location": "L1893",
       "_origin": "ast",
       "id": "project_context_implementation_plan_7_evaluation_and_observability",
       "community": 96,
@@ -16217,7 +16297,7 @@
       "label": "8. CI/CD and Deployment",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1937",
+      "source_location": "L1939",
       "_origin": "ast",
       "id": "project_context_implementation_plan_8_ci_cd_and_deployment",
       "community": 96,
@@ -16227,7 +16307,7 @@
       "label": "9. First Shippable Milestone",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1981",
+      "source_location": "L1983",
       "_origin": "ast",
       "id": "project_context_implementation_plan_9_first_shippable_milestone",
       "community": 96,
@@ -16237,7 +16317,7 @@
       "label": "10. Implementation Order",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1998",
+      "source_location": "L2000",
       "_origin": "ast",
       "id": "project_context_implementation_plan_10_implementation_order",
       "community": 96,
@@ -16247,7 +16327,7 @@
       "label": "11. Non-Negotiable Product Language",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2027",
+      "source_location": "L2029",
       "_origin": "ast",
       "id": "project_context_implementation_plan_11_non_negotiable_product_language",
       "community": 96,
@@ -16257,7 +16337,7 @@
       "label": "12. Completion and Production-Readiness Plan",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2047",
+      "source_location": "L2049",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "community": 148,
@@ -16267,7 +16347,7 @@
       "label": "12.1 Release Bars",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2051",
+      "source_location": "L2053",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_1_release_bars",
       "community": 148,
@@ -16277,7 +16357,7 @@
       "label": "12.2 Step 18 - Production Workflow Closure",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2060",
+      "source_location": "L2062",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_2_step_18_production_workflow_closure",
       "community": 148,
@@ -16287,7 +16367,7 @@
       "label": "12.3 Step 19 - Quality-Gate Closure",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2094",
+      "source_location": "L2096",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_3_step_19_quality_gate_closure",
       "community": 148,
@@ -16297,7 +16377,7 @@
       "label": "12.4 Step 20 - Deterministic Full-Stack Acceptance Test",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2110",
+      "source_location": "L2112",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_4_step_20_deterministic_full_stack_acceptance_test",
       "community": 148,
@@ -16307,7 +16387,7 @@
       "label": "12.5 Step 21 - Retrieval Hardening",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2129",
+      "source_location": "L2131",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_5_step_21_retrieval_hardening",
       "community": 148,
@@ -16317,7 +16397,7 @@
       "label": "12.6 Step 22 - Evaluation and Methodology Calibration",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2146",
+      "source_location": "L2148",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_6_step_22_evaluation_and_methodology_calibration",
       "community": 148,
@@ -16327,7 +16407,7 @@
       "label": "12.7 Step 23 - Product and Report Acceptance",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2165",
+      "source_location": "L2167",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_7_step_23_product_and_report_acceptance",
       "community": 148,
@@ -16337,7 +16417,7 @@
       "label": "12.8 Step 24 - Security, Privacy, and Governance Review",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2184",
+      "source_location": "L2186",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_8_step_24_security_privacy_and_governance_review",
       "community": 148,
@@ -16347,7 +16427,7 @@
       "label": "12.9 Step 25 - Staging and Operational Readiness",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2190",
+      "source_location": "L2192",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_9_step_25_staging_and_operational_readiness",
       "community": 148,
@@ -16357,7 +16437,7 @@
       "label": "12.10 Step 26 - Final Release Audit",
       "file_type": "document",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2206",
+      "source_location": "L2208",
       "_origin": "ast",
       "id": "project_context_implementation_plan_12_10_step_26_final_release_audit",
       "community": 148,
@@ -17832,6 +17912,17 @@
       "weight": 1.0,
       "source": "apps_api_app_auth_firebase",
       "target": "apps_api_app_auth_firebase_get_firebase_gateway",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/package.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "import",
+      "source": "apps_web_package_dependencies_firebase",
+      "target": "apps_api_app_auth_firebase",
       "confidence_score": 1.0
     },
     {
@@ -37967,17 +38058,6 @@
       "weight": 1.0,
       "source": "apps_web_lib_firebase",
       "target": "apps_web_lib_firebase_publicfirebaseconfig",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/package.json",
-      "source_location": "L20",
-      "weight": 1.0,
-      "context": "import",
-      "source": "apps_web_package_dependencies_firebase",
-      "target": "apps_web_lib_firebase",
       "confidence_score": 1.0
     },
     {
@@ -63749,10 +63829,30 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "AGENTS.md",
-      "source_location": "L10",
+      "source_location": "L5",
       "weight": 1.0,
       "source": "agents_agents_md",
-      "target": "agents_graphify",
+      "target": "agents_always_enforced_boundaries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "AGENTS.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "agents_agents_md",
+      "target": "agents_change_workflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "AGENTS.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "agents_agents_md",
+      "target": "agents_context_routing",
       "confidence_score": 1.0
     },
     {
@@ -63868,6 +63968,16 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "apps/api/AGENTS.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "apps_api_agents",
+      "target": "apps_api_agents_api_guidance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "apps/api/README.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -63898,11 +64008,31 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "apps/web/AGENTS.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "apps_web_agents",
+      "target": "apps_web_agents_web_guidance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "apps/web/README.md",
       "source_location": "L1",
       "weight": 1.0,
       "source": "apps_web_readme",
       "target": "apps_web_readme_elara_web_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/worker/AGENTS.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "apps_worker_agents",
+      "target": "apps_worker_agents_worker_guidance",
       "confidence_score": 1.0
     },
     {
@@ -64219,7 +64349,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L10",
+      "source_location": "L12",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_0_architectural_guardrails",
@@ -64229,7 +64359,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1998",
+      "source_location": "L2000",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_10_implementation_order",
@@ -64239,7 +64369,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2027",
+      "source_location": "L2029",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_11_non_negotiable_product_language",
@@ -64249,7 +64379,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2047",
+      "source_location": "L2049",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
@@ -64259,7 +64389,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L47",
+      "source_location": "L49",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_1_repository_structure",
@@ -64269,7 +64399,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L99",
+      "source_location": "L101",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
@@ -64279,7 +64409,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L752",
+      "source_location": "L754",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_3_phase_2_api_and_asynchronous_boundaries",
@@ -64289,7 +64419,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1053",
+      "source_location": "L1055",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_4_phase_3_verification_worker_and_langgraph_workflow",
@@ -64299,7 +64429,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1639",
+      "source_location": "L1641",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_5_phase_4_frontend_application",
@@ -64309,7 +64439,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1852",
+      "source_location": "L1854",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_6_security_and_credential_management",
@@ -64319,7 +64449,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1891",
+      "source_location": "L1893",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_7_evaluation_and_observability",
@@ -64329,7 +64459,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1937",
+      "source_location": "L1939",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_8_ci_cd_and_deployment",
@@ -64339,7 +64469,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1981",
+      "source_location": "L1983",
       "weight": 1.0,
       "source": "project_context_implementation_plan_elara_ai_implementation_plan",
       "target": "project_context_implementation_plan_9_first_shippable_milestone",
@@ -64349,7 +64479,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L101",
+      "source_location": "L103",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
       "target": "project_context_implementation_plan_2_1_local_development_infrastructure",
@@ -64359,7 +64489,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L144",
+      "source_location": "L146",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
       "target": "project_context_implementation_plan_2_2_postgresql_and_alembic_foundation",
@@ -64369,7 +64499,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L157",
+      "source_location": "L159",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
       "target": "project_context_implementation_plan_2_3_core_enums",
@@ -64379,7 +64509,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L221",
+      "source_location": "L223",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
       "target": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
@@ -64389,7 +64519,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L646",
+      "source_location": "L648",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
       "target": "project_context_implementation_plan_2_5_pgvector_setup",
@@ -64399,7 +64529,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L667",
+      "source_location": "L669",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
       "target": "project_context_implementation_plan_2_6_redis_setup",
@@ -64409,7 +64539,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L720",
+      "source_location": "L722",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_phase_1_infrastructure_and_data_persistence",
       "target": "project_context_implementation_plan_2_7_s3_compatible_object_storage",
@@ -64419,7 +64549,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L554",
+      "source_location": "L556",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_agent_events",
@@ -64429,7 +64559,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L293",
+      "source_location": "L295",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_atomic_claims",
@@ -64439,7 +64569,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L531",
+      "source_location": "L533",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_calculations",
@@ -64449,7 +64579,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L461",
+      "source_location": "L463",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_evidence_items",
@@ -64459,7 +64589,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L629",
+      "source_location": "L631",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_exports",
@@ -64469,7 +64599,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L491",
+      "source_location": "L493",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_information_clusters",
@@ -64479,7 +64609,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L616",
+      "source_location": "L618",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_methodology_versions",
@@ -64489,7 +64619,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L574",
+      "source_location": "L576",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_report_citations",
@@ -64499,7 +64629,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L406",
+      "source_location": "L408",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_run_sources",
@@ -64509,7 +64639,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L326",
+      "source_location": "L328",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_search_queries",
@@ -64519,7 +64649,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L508",
+      "source_location": "L510",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_source_dependencies",
@@ -64529,7 +64659,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L426",
+      "source_location": "L428",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_source_passages",
@@ -64539,7 +64669,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L372",
+      "source_location": "L374",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_source_snapshots",
@@ -64549,7 +64679,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L348",
+      "source_location": "L350",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_sources",
@@ -64559,7 +64689,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L595",
+      "source_location": "L597",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_user_feedback",
@@ -64569,7 +64699,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L223",
+      "source_location": "L225",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_users",
@@ -64579,7 +64709,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L247",
+      "source_location": "L249",
       "weight": 1.0,
       "source": "project_context_implementation_plan_2_4_sqlalchemy_data_model",
       "target": "project_context_implementation_plan_verification_runs",
@@ -64589,7 +64719,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L754",
+      "source_location": "L756",
       "weight": 1.0,
       "source": "project_context_implementation_plan_3_phase_2_api_and_asynchronous_boundaries",
       "target": "project_context_implementation_plan_3_1_fastapi_route_groups",
@@ -64599,7 +64729,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L804",
+      "source_location": "L806",
       "weight": 1.0,
       "source": "project_context_implementation_plan_3_phase_2_api_and_asynchronous_boundaries",
       "target": "project_context_implementation_plan_3_2_pydantic_request_and_response_schemas",
@@ -64609,7 +64739,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L967",
+      "source_location": "L969",
       "weight": 1.0,
       "source": "project_context_implementation_plan_3_phase_2_api_and_asynchronous_boundaries",
       "target": "project_context_implementation_plan_3_3_creating_a_verification_run",
@@ -64619,7 +64749,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L983",
+      "source_location": "L985",
       "weight": 1.0,
       "source": "project_context_implementation_plan_3_phase_2_api_and_asynchronous_boundaries",
       "target": "project_context_implementation_plan_3_4_celery_integration",
@@ -64629,7 +64759,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1016",
+      "source_location": "L1018",
       "weight": 1.0,
       "source": "project_context_implementation_plan_3_phase_2_api_and_asynchronous_boundaries",
       "target": "project_context_implementation_plan_3_5_server_sent_events",
@@ -64639,7 +64769,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1055",
+      "source_location": "L1057",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_phase_3_verification_worker_and_langgraph_workflow",
       "target": "project_context_implementation_plan_4_1_worker_package_layout",
@@ -64649,7 +64779,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1103",
+      "source_location": "L1105",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_phase_3_verification_worker_and_langgraph_workflow",
       "target": "project_context_implementation_plan_4_2_deepseek_client",
@@ -64659,7 +64789,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1128",
+      "source_location": "L1130",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_phase_3_verification_worker_and_langgraph_workflow",
       "target": "project_context_implementation_plan_4_3_langgraph_state",
@@ -64669,7 +64799,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1203",
+      "source_location": "L1205",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_phase_3_verification_worker_and_langgraph_workflow",
       "target": "project_context_implementation_plan_4_4_langgraph_nodes",
@@ -64679,7 +64809,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1626",
+      "source_location": "L1628",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_phase_3_verification_worker_and_langgraph_workflow",
       "target": "project_context_implementation_plan_4_5_prompt_injection_boundary",
@@ -64689,7 +64819,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1605",
+      "source_location": "L1607",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_citation_audit",
@@ -64699,7 +64829,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1226",
+      "source_location": "L1228",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_decomposition",
@@ -64709,7 +64839,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1294",
+      "source_location": "L1296",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_discovery_and_source_selection",
@@ -64719,7 +64849,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1449",
+      "source_location": "L1451",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_evidence_classification",
@@ -64729,7 +64859,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1355",
+      "source_location": "L1357",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_extraction",
@@ -64739,7 +64869,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1205",
+      "source_location": "L1207",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_intake",
@@ -64749,7 +64879,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1568",
+      "source_location": "L1570",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_numerical_audit",
@@ -64759,7 +64889,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1400",
+      "source_location": "L1402",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_passage_segmentation_and_embedding",
@@ -64769,7 +64899,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1248",
+      "source_location": "L1250",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_planner",
@@ -64779,7 +64909,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1421",
+      "source_location": "L1423",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_provenance_and_source_dependency_analysis",
@@ -64789,7 +64919,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1480",
+      "source_location": "L1482",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_scoring",
@@ -64799,7 +64929,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1323",
+      "source_location": "L1325",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_secure_retrieval",
@@ -64809,7 +64939,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1584",
+      "source_location": "L1586",
       "weight": 1.0,
       "source": "project_context_implementation_plan_4_4_langgraph_nodes",
       "target": "project_context_implementation_plan_synthesis",
@@ -64819,7 +64949,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1641",
+      "source_location": "L1643",
       "weight": 1.0,
       "source": "project_context_implementation_plan_5_phase_4_frontend_application",
       "target": "project_context_implementation_plan_5_1_next_js_app_router_structure",
@@ -64829,7 +64959,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1672",
+      "source_location": "L1674",
       "weight": 1.0,
       "source": "project_context_implementation_plan_5_phase_4_frontend_application",
       "target": "project_context_implementation_plan_5_2_frontend_state_strategy",
@@ -64839,7 +64969,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1712",
+      "source_location": "L1714",
       "weight": 1.0,
       "source": "project_context_implementation_plan_5_phase_4_frontend_application",
       "target": "project_context_implementation_plan_5_3_forms_and_validation",
@@ -64849,7 +64979,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1736",
+      "source_location": "L1738",
       "weight": 1.0,
       "source": "project_context_implementation_plan_5_phase_4_frontend_application",
       "target": "project_context_implementation_plan_5_4_real_time_ui",
@@ -64859,7 +64989,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1760",
+      "source_location": "L1762",
       "weight": 1.0,
       "source": "project_context_implementation_plan_5_phase_4_frontend_application",
       "target": "project_context_implementation_plan_5_5_report_workspace",
@@ -64869,7 +64999,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1785",
+      "source_location": "L1787",
       "weight": 1.0,
       "source": "project_context_implementation_plan_5_phase_4_frontend_application",
       "target": "project_context_implementation_plan_5_6_react_flow_source_graph",
@@ -64879,7 +65009,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L1820",
+      "source_location": "L1822",
       "weight": 1.0,
       "source": "project_context_implementation_plan_5_phase_4_frontend_application",
       "target": "project_context_implementation_plan_5_7_recharts_visualizations",
@@ -64889,7 +65019,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2206",
+      "source_location": "L2208",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_10_step_26_final_release_audit",
@@ -64899,7 +65029,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2051",
+      "source_location": "L2053",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_1_release_bars",
@@ -64909,7 +65039,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2060",
+      "source_location": "L2062",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_2_step_18_production_workflow_closure",
@@ -64919,7 +65049,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2094",
+      "source_location": "L2096",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_3_step_19_quality_gate_closure",
@@ -64929,7 +65059,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2110",
+      "source_location": "L2112",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_4_step_20_deterministic_full_stack_acceptance_test",
@@ -64939,7 +65069,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2129",
+      "source_location": "L2131",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_5_step_21_retrieval_hardening",
@@ -64949,7 +65079,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2146",
+      "source_location": "L2148",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_6_step_22_evaluation_and_methodology_calibration",
@@ -64959,7 +65089,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2165",
+      "source_location": "L2167",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_7_step_23_product_and_report_acceptance",
@@ -64969,7 +65099,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2184",
+      "source_location": "L2186",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_8_step_24_security_privacy_and_governance_review",
@@ -64979,7 +65109,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
-      "source_location": "L2190",
+      "source_location": "L2192",
       "weight": 1.0,
       "source": "project_context_implementation_plan_12_completion_and_production_readiness_plan",
       "target": "project_context_implementation_plan_12_9_step_25_staging_and_operational_readiness",
@@ -65129,5 +65259,5 @@
       "source_file": "project-context/AGENTS.md"
     }
   ],
-  "built_at_commit": "8a68c52702b4270beb574c63dab9c6ab083582d3"
+  "built_at_commit": "901d608189e3995618900b610e16cbe3cdd8c0e9"
 }

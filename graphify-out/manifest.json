@@ -940,8 +940,8 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1783052829.4353747,
-    "ast_hash": "6e30095259bdb5f6d048ee75ef7200b5",
+    "mtime": 1783185595.1217434,
+    "ast_hash": "5d773f1468e14f7fe8a35f1240781e80",
     "semantic_hash": ""
   },
   "ONEDRIVE_MIGRATION_HANDOFF.md": {
@@ -1000,8 +1000,8 @@
     "semantic_hash": ""
   },
   "project-context/IMPLEMENTATION_PLAN.md": {
-    "mtime": 1783141210.083565,
-    "ast_hash": "e24aa9ae9f31afeb491063fb3e5d0e0a",
+    "mtime": 1783141270.9262512,
+    "ast_hash": "e419d54e3cb034ae437c154b064de90e",
     "semantic_hash": ""
   },
   "docs/Elara.ai_Verification_and_Targeted_Retrieval_Methodology.pdf": {
@@ -1057,6 +1057,21 @@
   "infrastructure/DEPLOYMENT.md": {
     "mtime": 1783138934.7644646,
     "ast_hash": "e94d3dd36ed0972dc5f9b65ba9613c27",
+    "semantic_hash": ""
+  },
+  "apps/api/AGENTS.md": {
+    "mtime": 1783185613.7928462,
+    "ast_hash": "9d745012d7bae39e482f28b6076fb1b9",
+    "semantic_hash": ""
+  },
+  "apps/web/AGENTS.md": {
+    "mtime": 1783185615.233778,
+    "ast_hash": "5d0c740f82a342d237074693c6f59ed7",
+    "semantic_hash": ""
+  },
+  "apps/worker/AGENTS.md": {
+    "mtime": 1783185616.6607883,
+    "ast_hash": "9538e54810ffff51603c08bd56e81bc8",
     "semantic_hash": ""
   }
 }
