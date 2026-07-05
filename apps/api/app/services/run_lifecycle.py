@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.config import Settings
 from app.models.agent_event import AgentEvent
 from app.models.enums import RunStatus
+from app.models.evidence import ReportCitation
 from app.models.types import utc_now
 from app.models.verification_run import VerificationRun
 from app.redis_client import publish_progress_event
@@ -150,6 +151,64 @@ def persist_progress(
         stage=stage,
         event_type=event_type,
         message=message,
+        payload=event.payload,
+        created_at=now,
+    )
+
+
+def persist_completed_run(
+    db: Session,
+    *,
+    run_id: UUID,
+    expected_citation_count: int,
+) -> DurableProgressEvent:
+    """Atomically enforce durable report artifacts and win the completion race."""
+    now = utc_now()
+    run = _load_locked_run(db, run_id)
+    if run.status in TERMINAL_STATUSES:
+        raise TerminalRunTransitionError(f"Run is already terminal with status {run.status}")
+    if run.cancellation_requested_at is not None:
+        raise TerminalRunTransitionError("Cancellation was requested before completion")
+    citations = db.scalars(
+        select(ReportCitation).where(ReportCitation.run_id == run_id)
+    ).all()
+    artifacts_ready = bool(
+        run.title
+        and run.verdict
+        and run.evidence_reviewed_at
+        and expected_citation_count > 0
+        and len(citations) == expected_citation_count
+        and all(row.audit_status == "passed" for row in citations)
+    )
+    if not artifacts_ready:
+        raise InvalidRunTransitionError(
+            "Citation-audited report artifacts must be durable before completion"
+        )
+    _validate_transition(run.status, RunStatus.COMPLETED)
+    run.status = RunStatus.COMPLETED
+    run.completed_at = now
+    run.updated_at = now
+    event = AgentEvent(
+        run_id=run_id,
+        sequence=_next_sequence(db, run_id),
+        stage=RunStatus.COMPLETED,
+        event_type="run.completed",
+        public_message="Verification completed with a citation-audited report.",
+        payload={"completed_steps": 13, "total_steps": 13},
+        created_at=now,
+    )
+    db.add(event)
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    return DurableProgressEvent(
+        run_id=run_id,
+        sequence=event.sequence,
+        stage=RunStatus.COMPLETED,
+        event_type=event.event_type,
+        message=event.public_message,
         payload=event.payload,
         created_at=now,
     )

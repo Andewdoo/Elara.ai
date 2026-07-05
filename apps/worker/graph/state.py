@@ -81,6 +81,7 @@ class WorkflowStage(StrEnum):
     SCORING = "deterministic_scoring"
     NUMERICAL_AUDIT = "numerical_audit"
     SYNTHESIS = "synthesis"
+    CITATION_REVISION = "citation_revision"
     CITATION_AUDIT = "citation_audit"
 
 
@@ -313,6 +314,7 @@ class VerificationState(StateModel):
     scores: ScoreBundle | None = None
     report_draft: SynthesisOutput | None = None
     citation_audit: CitationAuditOutput | None = None
+    citation_revision_count: int = Field(default=0, ge=0)
     evidence_reviewed_at: datetime | None = None
     recoverable_errors: list[RecoverableError] = Field(default_factory=list)
     model_calls: dict[str, CallMetadata] = Field(default_factory=dict)

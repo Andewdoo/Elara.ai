@@ -19,14 +19,17 @@ from app.redis_client import (
     run_lock,
 )
 from app.services.run_lifecycle import (
+    RUN_STATUS_ORDER,
     TERMINAL_STATUSES,
+    InvalidRunTransitionError,
     TerminalRunTransitionError,
     cancellation_requested,
     mirror_agent_event,
     persist_progress,
+    persist_completed_run,
 )
 from elara_worker.errors import TransientFetchError, TransientProviderError
-from graph.runtime import execute_planning_workflow
+from graph.runtime import execute_verification_workflow
 from graph.state import ResearchDepth as GraphResearchDepth, VerificationState
 from observability import (
     build_run_metrics,
@@ -108,6 +111,15 @@ def _record(
     payload: dict[str, object] | None = None,
     failure_code: str | None = None,
 ) -> None:
+    if _has_durable_event(factory, run_id, event_type):
+        _backfill_progress(factory, redis_client, settings, run_id)
+        return
+    current = _load_run(factory, run_id)
+    if (
+        stage not in {RunStatus.FAILED, RunStatus.CANCELLED}
+        and RUN_STATUS_ORDER.get(stage, 0) < RUN_STATUS_ORDER.get(current.status, 0)
+    ):
+        return
     with factory() as db:
         persist_progress(
             db,
@@ -267,6 +279,8 @@ def verify_run(self: Task, run_id: str) -> None:
             prepare_run(factory, redis_client, settings, parsed_run_id)
             if _cancel_if_requested(factory, redis_client, settings, parsed_run_id):
                 return
+            if _load_run(factory, parsed_run_id).status in TERMINAL_STATUSES:
+                return
             with safe_trace(
                 "verification.run",
                 metadata={
@@ -276,7 +290,7 @@ def verify_run(self: Task, run_id: str) -> None:
                     "environment": settings.environment,
                 },
             ) as trace:
-                result = execute_planning_workflow(
+                result = execute_verification_workflow(
                     factory,
                     redis_client,
                     settings,
@@ -310,9 +324,30 @@ def verify_run(self: Task, run_id: str) -> None:
                     code=error.code,
                     message=error.public_message,
                 )
+            elif result is not None and result.ready_for_completion:
+                if result.citation_audit is None:
+                    raise RuntimeError("completion gate accepted a missing citation audit")
+                expected_citations = len(result.citation_audit.sentence_audits)
+                with factory() as db:
+                    persist_completed_run(
+                        db,
+                        run_id=parsed_run_id,
+                        expected_citation_count=expected_citations,
+                    )
+                _backfill_progress(factory, redis_client, settings, parsed_run_id)
+            elif result is not None and not result.cancelled:
+                _mark_failure_safely(
+                    factory,
+                    redis_client,
+                    settings,
+                    parsed_run_id,
+                    code="COMPLETION_GATE_REJECTED",
+                    message="Verification stopped before a citation-audited report was ready.",
+                )
     except TerminalRunTransitionError:
         # Cancellation can win the race after the pre-stage check. The durable
         # terminal status is authoritative and is a successful no-op here.
+        _cancel_if_requested(factory, redis_client, settings, parsed_run_id)
         return
     except (TransientProviderError, TransientFetchError) as exc:
         if self.request.retries >= 2:
@@ -330,6 +365,15 @@ def verify_run(self: Task, run_id: str) -> None:
                 message="A temporary research service remained unavailable after retries.",
             )
         raise
+    except InvalidRunTransitionError:
+        _mark_failure_safely(
+            factory,
+            redis_client,
+            settings,
+            parsed_run_id,
+            code="COMPLETION_GATE_REJECTED",
+            message="Verification stopped before durable citation-audited artifacts were ready.",
+        )
     except Exception:
         _mark_failure_safely(
             factory,

@@ -19,6 +19,7 @@ from agents.deepseek_client import (
 from agents.schemas import (
     CitationAuditOutput,
     DecompositionOutput,
+    EvidenceClassificationItemOutput,
     InputKind,
     IntakeClassificationOutput,
     PlanningOutput,
@@ -40,6 +41,8 @@ from app.models import (
     User,
     VerificationRun,
 )
+from app.services.reports import build_report
+from app.services.run_lifecycle import persist_completed_run
 from graph.state import (
     CandidateSource,
     PassageRecord,
@@ -50,7 +53,11 @@ from graph.state import (
     WorkflowStage,
 )
 from graph.workflow import WorkflowExtensions, WorkflowNodes, WorkflowServices, build_workflow
-from graph.runtime import SqlWorkflowStateWriter, execute_planning_workflow
+from graph.runtime import (
+    SqlWorkflowStateWriter,
+    execute_planning_workflow,
+    execute_verification_workflow,
+)
 
 
 class FakeModel:
@@ -649,6 +656,164 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     assert result.ready_for_completion is True
 
 
+def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Initial report",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing proves the broader claim.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    )
+    audit = CitationAuditOutput.model_validate(
+        {
+            "sentence_audits": [
+                {
+                    "sentence_ref": "summary-1",
+                    "passage_id": "passage-1",
+                    "entailment": "partial",
+                    "support_explanation": "Only the reported value is supported.",
+                    "suggested_revision": "The filing reports a value of 20.",
+                }
+            ],
+            "needs_revision": True,
+        }
+    )
+    value = state().model_copy(
+        update={
+            "snapshots": [
+                SnapshotRecord(
+                    snapshot_id="snapshot-1",
+                    source_ref="source-1",
+                    access_status="FETCHED",
+                    retrieved_at=datetime(2026, 7, 4, tzinfo=UTC),
+                )
+            ],
+            "passages": [
+                PassageRecord(
+                    passage_id="passage-1",
+                    source_ref="source-1",
+                    snapshot_id="snapshot-1",
+                    text="The filing reports a value of 20.",
+                    text_hash="hash-1",
+                    extraction_certainty=Decimal("1"),
+                )
+            ],
+            "evidence": [
+                EvidenceClassificationItemOutput.model_validate({
+                    "claim_ref": "claim-1",
+                    "passage_id": "passage-1",
+                    "stance": "strongly_supports",
+                    "quality": {
+                        "relevance": 1,
+                        "directness": 1,
+                        "claim_specific_authority": 1,
+                        "transparency": 1,
+                        "temporal_fit": 1,
+                        "extraction_certainty": 1,
+                    },
+                    "entity_match": True,
+                    "time_period_match": True,
+                })
+            ],
+            "scores": ScoreBundle(
+                evidence_support=100,
+                verdict_confidence=90,
+                source_independence=80,
+                context_completeness=90,
+                final_label="supported",
+                methodology_version="1.0",
+            ),
+            "report_draft": report,
+            "citation_audit": audit,
+            "completed_stages": [WorkflowStage.CITATION_AUDIT],
+        }
+    )
+    revision_model = FakeModel(
+        [
+            {
+                "title": "Revised report",
+                "summary_sentences": [
+                    {
+                        "sentence_ref": "summary-1-revised",
+                        "text": "The filing reports a value of 20.",
+                        "passage_ids": ["passage-1"],
+                    }
+                ],
+            }
+        ]
+    )
+    revised = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=revision_model, submitted_input="unused")
+        ).citation_revision(value)
+    )
+    assert revised.citation_revision_count == 1
+    assert revised.citation_audit is None
+    assert WorkflowStage.CITATION_AUDIT not in revised.completed_stages
+
+    audited = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel(
+                    [
+                        {
+                            "sentence_audits": [
+                                {
+                                    "sentence_ref": "summary-1-revised",
+                                    "passage_id": "passage-1",
+                                    "entailment": "entailed",
+                                    "support_explanation": "The wording matches the passage.",
+                                }
+                            ],
+                            "needs_revision": False,
+                        }
+                    ]
+                ),
+                submitted_input="unused",
+            )
+        ).citation_audit(revised)
+    )
+    assert audited.ready_for_completion is True
+
+
+def test_citation_revision_limit_exhaustion_fails_closed():
+    value = state().model_copy(
+        update={
+            "report_draft": SynthesisOutput.model_validate(
+                {
+                    "title": "Unsupported report",
+                    "summary_sentences": [
+                        {
+                            "sentence_ref": "summary-1",
+                            "text": "Unsupported statement.",
+                            "passage_ids": ["passage-1"],
+                        }
+                    ],
+                }
+            ),
+            "citation_audit": CitationAuditOutput.model_validate(
+                {"needs_revision": True}
+            ),
+        }
+    )
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([]),
+                submitted_input="unused",
+                citation_revision_limit=0,
+            )
+        ).citation_revision(value)
+    )
+    assert result.recoverable_errors[-1].code == "CITATION_REVISION_EXHAUSTED"
+    assert result.ready_for_completion is False
+
+
 def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
     engine = create_engine(
         "sqlite+pysqlite://",
@@ -775,6 +940,179 @@ def test_runtime_executes_and_persists_planning_handoff():
         assert durable_run.normalized_target["input_kind"] == "claim"
         assert db.scalar(select(func.count()).select_from(AtomicClaim)) == 1
         assert db.scalar(select(func.count()).select_from(SearchQuery)) == 2
+
+
+def test_production_runtime_executes_full_graph_and_persists_report_before_completion():
+    engine = create_engine(
+        "sqlite+pysqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(engine)
+    factory = sessionmaker(bind=engine, expire_on_commit=False)
+    with factory() as db:
+        owner = User(
+            auth_provider="firebase",
+            auth_subject="full-runtime-owner",
+            email="full-runtime@example.test",
+            plan_tier="free",
+            role="user",
+            usage_limits={},
+        )
+        db.add(owner)
+        db.flush()
+        run = VerificationRun(
+            user_id=owner.id,
+            input_type=InputType.CLAIM,
+            research_depth="STANDARD",
+            status=RunStatus.VALIDATING,
+            submitted_text="Company X reported a value of 20.",
+            normalized_target={},
+            workflow_version="step-18-runtime-test",
+        )
+        db.add(run)
+        db.commit()
+        run_id = run.id
+
+    snapshot_id = str(uuid4())
+    passage_id = str(uuid4())
+
+    async def discovery(value: VerificationState) -> VerificationState:
+        return value.model_copy(
+            update={
+                "candidate_sources": [
+                    CandidateSource(
+                        source_ref="source-1",
+                        url="https://example.test/full-runtime",
+                        canonical_url="https://example.test/full-runtime",
+                        domain="example.test",
+                        selection_reason="Controlled primary source",
+                    )
+                ]
+            }
+        )
+
+    async def retrieval(value: VerificationState) -> VerificationState:
+        return value.model_copy(
+            update={
+                "snapshots": [
+                    SnapshotRecord(
+                        snapshot_id=snapshot_id,
+                        source_ref="source-1",
+                        access_status="FETCHED",
+                        retrieved_at=datetime(2026, 7, 4, tzinfo=UTC),
+                    )
+                ]
+            }
+        )
+
+    async def segmentation(value: VerificationState) -> VerificationState:
+        return value.model_copy(
+            update={
+                "passages": [
+                    PassageRecord(
+                        passage_id=passage_id,
+                        source_ref="source-1",
+                        snapshot_id=snapshot_id,
+                        text="Company X reported a value of 20.",
+                        text_hash="full-runtime-passage",
+                        extraction_certainty=Decimal("1"),
+                    )
+                ]
+            }
+        )
+
+    async def unchanged(value: VerificationState) -> VerificationState:
+        return value
+
+    async def scoring(value: VerificationState) -> VerificationState:
+        return value.model_copy(
+            update={
+                "scores": ScoreBundle(
+                    evidence_support=100,
+                    verdict_confidence=90,
+                    source_independence=80,
+                    context_completeness=90,
+                    final_label="supported",
+                    methodology_version="1.0",
+                )
+            }
+        )
+
+    evidence = {
+        "classifications": [
+            {
+                "claim_ref": "claim-1",
+                "passage_id": passage_id,
+                "stance": "strongly_supports",
+                "quality": {
+                    "relevance": 1,
+                    "directness": 1,
+                    "claim_specific_authority": 1,
+                    "transparency": 1,
+                    "temporal_fit": 1,
+                    "extraction_certainty": 1,
+                },
+                "explicit_support": "The reported value is 20.",
+                "entity_match": True,
+                "time_period_match": True,
+                "quotation_or_number_located": True,
+            }
+        ]
+    }
+    synthesis = {
+        "title": "Company X value assessment",
+        "summary_sentences": [
+            {
+                "sentence_ref": "summary-1",
+                "text": "Company X reported a value of 20.",
+                "passage_ids": [passage_id],
+            }
+        ],
+    }
+    audit = {
+        "sentence_audits": [
+            {
+                "sentence_ref": "summary-1",
+                "passage_id": passage_id,
+                "entailment": "entailed",
+                "support_explanation": "The passage directly matches the sentence.",
+            }
+        ],
+        "needs_revision": False,
+    }
+    public_events: list[dict[str, object]] = []
+    result = execute_verification_workflow(
+        factory,
+        object(),
+        Settings(environment="test"),
+        run_id,
+        record=lambda *_args, **kwargs: public_events.append(kwargs),
+        is_cancelled=lambda *_args: False,
+        model=FakeModel([INTAKE, DECOMPOSITION, PLAN, evidence, synthesis, audit]),
+        workflow_extensions=WorkflowExtensions(
+            discovery_source_selection=discovery,
+            secure_retrieval=retrieval,
+            extraction=unchanged,
+            passage_segmentation_embedding=segmentation,
+            provenance_dependency_analysis=unchanged,
+            deterministic_scoring=scoring,
+            numerical_audit=unchanged,
+        ),
+    )
+
+    assert result is not None and result.ready_for_completion
+    assert [stage for stage in result.completed_stages] == list(WorkflowStage)[:12] + [
+        WorkflowStage.CITATION_AUDIT
+    ]
+    with factory() as db:
+        run = db.get(VerificationRun, run_id)
+        assert run is not None and run.title == "Company X value assessment"
+        assert db.scalar(select(func.count()).select_from(ReportCitation)) == 1
+        persist_completed_run(db, run_id=run_id, expected_citation_count=1)
+        report = build_report(db, run=run)
+    assert report.report_sentences[0].sentence_text == "Company X reported a value of 20."
+    assert public_events[-1]["event_type"] == "workflow.citation_audit.completed"
 
 
 def test_runtime_resumes_retryable_retrieval_from_extracting_status():
@@ -971,4 +1309,4 @@ def test_sql_state_writer_persists_citation_audit_rows():
         citation = db.scalar(select(ReportCitation))
     assert citation is not None
     assert citation.passage_id == passage_id
-    assert citation.audit_status == "entailed"
+    assert citation.audit_status == "passed"

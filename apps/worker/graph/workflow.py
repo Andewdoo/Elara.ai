@@ -53,11 +53,19 @@ PROMPT_VERSIONS = {
     WorkflowStage.PLANNER: PLANNER_PROMPT_VERSION,
     WorkflowStage.EVIDENCE_CLASSIFICATION: EVIDENCE_PROMPT_VERSION,
     WorkflowStage.SYNTHESIS: SYNTHESIS_PROMPT_VERSION,
+    WorkflowStage.CITATION_REVISION: SYNTHESIS_PROMPT_VERSION,
     WorkflowStage.CITATION_AUDIT: CITATION_AUDIT_PROMPT_VERSION,
 }
 
-_STAGE_NUMBERS = {stage: index for index, stage in enumerate(WorkflowStage, start=1)}
-_TOTAL_STAGES = len(WorkflowStage)
+_STAGE_NUMBERS: dict[WorkflowStage, int] = {
+    stage: index
+    for index, stage in enumerate(
+        [item for item in WorkflowStage if item != WorkflowStage.CITATION_REVISION],
+        start=1,
+    )
+}
+_STAGE_NUMBERS[WorkflowStage.CITATION_REVISION] = _STAGE_NUMBERS[WorkflowStage.CITATION_AUDIT]
+_TOTAL_STAGES = len(WorkflowStage) - 1
 
 
 class StructuredModelClient(Protocol):
@@ -133,6 +141,7 @@ class WorkflowServices:
     cancellation: CancellationChecker = field(default_factory=NullCancellationChecker)
     state_writer: StateWriter = field(default_factory=NullStateWriter)
     extensions: WorkflowExtensions = field(default_factory=WorkflowExtensions)
+    citation_revision_limit: int = 2
 
 class WorkflowNodes:
     def __init__(self, services: WorkflowServices) -> None:
@@ -756,6 +765,119 @@ class WorkflowNodes:
             },
         )
 
+    async def citation_revision(self, state: VerificationState) -> VerificationState:
+        if cancelled := await self._begin(state, WorkflowStage.CITATION_REVISION):
+            return cancelled
+        if state.report_draft is None or state.citation_audit is None:
+            return await self._failure(
+                state,
+                WorkflowStage.CITATION_REVISION,
+                code="CITATION_REVISION_INPUT_REQUIRED",
+                message="Citation revision requires an audited report draft.",
+            )
+        if not state.citation_audit.needs_revision:
+            return state
+        if state.citation_revision_count >= self.services.citation_revision_limit:
+            return await self._failure(
+                state,
+                WorkflowStage.CITATION_REVISION,
+                code="CITATION_REVISION_EXHAUSTED",
+                message="The report could not be fully supported after bounded citation revision.",
+            )
+
+        approved_ids = _approved_passage_ids(state)
+        approved_passages = [
+            passage for passage in state.passages if passage.passage_id in approved_ids
+        ]
+        response = await self._call(
+            state,
+            WorkflowStage.CITATION_REVISION,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        f"{SYNTHESIS_PROMPT}\nRevise the supplied report after citation audit. "
+                        "Remove unsupported factual sentences. Rewrite partially supported sentences "
+                        "only when the approved passages fully support the narrower wording. Use only "
+                        "the supplied approved passage IDs and preserve no unsupported factual detail."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": _json(
+                        {
+                            "report": state.report_draft,
+                            "citation_audit": state.citation_audit,
+                            "approved_passages": approved_passages,
+                            "deterministic_scores": state.scores,
+                        }
+                    ),
+                },
+            ],
+            output_schema=SynthesisOutput,
+            max_tokens=8000,
+        )
+        if isinstance(response, VerificationState):
+            return response
+        cited = {pid for sentence in _sentences(response.output) for pid in sentence.passage_ids}
+        if not cited.issubset(approved_ids):
+            return await self._failure(
+                state,
+                WorkflowStage.CITATION_REVISION,
+                code="UNAPPROVED_REVISION_CITATION",
+                message="The revised report cited evidence that was not approved.",
+            )
+        has_contradiction = any(
+            item.passage_id in approved_ids and "contradicts" in item.stance.value
+            for item in state.evidence
+        )
+        if has_contradiction and response.output.strongest_credible_contradiction is None:
+            return await self._failure(
+                state,
+                WorkflowStage.CITATION_REVISION,
+                code="CONTRADICTION_OMITTED",
+                message="The revised report omitted the strongest credible contradiction.",
+            )
+        prior = state.report_draft
+        revised = response.output.model_copy(
+            update={
+                "evidence_reviewed_at": prior.evidence_reviewed_at,
+                "evidence_timestamp": prior.evidence_timestamp,
+                "methodology_version": prior.methodology_version,
+                "workflow_version": prior.workflow_version,
+                "model_versions": {
+                    **prior.model_versions,
+                    WorkflowStage.CITATION_REVISION.value: response.metadata.model,
+                },
+                "prompt_versions": {
+                    **prior.prompt_versions,
+                    WorkflowStage.CITATION_REVISION.value: response.metadata.prompt_version,
+                },
+                "parser_versions": prior.parser_versions,
+                "inaccessible_source_notes": prior.inaccessible_source_notes,
+            }
+        )
+        completed = [
+            stage for stage in state.completed_stages if stage != WorkflowStage.CITATION_AUDIT
+        ]
+        updated = state.model_copy(
+            update={
+                "report_draft": revised,
+                "citation_audit": None,
+                "citation_revision_count": state.citation_revision_count + 1,
+                "completed_stages": completed,
+                "model_calls": {
+                    **state.model_calls,
+                    WorkflowStage.CITATION_REVISION.value: response.metadata,
+                },
+            }
+        ).complete(WorkflowStage.CITATION_REVISION)
+        return await self._finish(
+            updated,
+            WorkflowStage.CITATION_REVISION,
+            payload={"revision_count": updated.citation_revision_count},
+        )
+
     def extension(self, stage: WorkflowStage, implementation: ExtensionNode | None) -> ExtensionNode:
         async def run(state: VerificationState) -> VerificationState:
             if stage in state.completed_stages:
@@ -840,6 +962,7 @@ def build_workflow(
     )
     graph.add_node("synthesis", nodes.synthesis)
     graph.add_node("citation_audit", nodes.citation_audit)
+    graph.add_node("citation_revision", nodes.citation_revision)
 
     graph.add_edge(START, "intake")
     _conditional(graph, "intake", "decomposition", stop_requested)
@@ -877,7 +1000,12 @@ def build_workflow(
             return graph.compile()
         _conditional(graph, "numerical_audit", "synthesis", synthesis_ready)
         _conditional(graph, "synthesis", "citation_audit", citation_audit_ready)
-        graph.add_edge("citation_audit", END)
+        graph.add_conditional_edges(
+            "citation_audit",
+            _citation_revision_route,
+            {"complete": END, "revise": "citation_revision", "stop": END},
+        )
+        _conditional(graph, "citation_revision", "citation_audit", stop_requested)
     return graph.compile()
 
 
@@ -888,6 +1016,12 @@ def _conditional(
     route: Callable[[VerificationState], str],
 ) -> None:
     graph.add_conditional_edges(source, route, {"continue": target, "stop": END})
+
+
+def _citation_revision_route(state: VerificationState) -> str:
+    if state.cancelled or state.recoverable_errors or state.citation_audit is None:
+        return "stop"
+    return "revise" if state.citation_audit.needs_revision else "complete"
 
 
 def _stage_progress(stage: WorkflowStage, *, completed: bool) -> dict[str, object]:
@@ -954,7 +1088,7 @@ def _sentences(report: SynthesisOutput):
 
 def _guard_citation_audit(
     report: SynthesisOutput,
-    passage_map: dict[str, object],
+    passage_map: Mapping[str, object],
     audit: CitationAuditOutput,
 ) -> CitationAuditOutput | None:
     sentences = {sentence.sentence_ref: sentence for sentence in _sentences(report)}

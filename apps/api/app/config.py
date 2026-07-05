@@ -68,7 +68,8 @@ class Settings(BaseSettings):
     verification_rate_limit_window_seconds: int = Field(default=3_600, ge=60, le=86_400)
     upload_max_bytes: int = Field(default=25_000_000, ge=100_000, le=100_000_000)
 
-    workflow_version: str = "step-17"
+    workflow_version: str = "step-18"
+    citation_revision_limit: int = Field(default=2, ge=0, le=5)
     passage_embedding_dimension: int = Field(default=1536, gt=0)
 
     search_provider: Literal["brave"] = "brave"

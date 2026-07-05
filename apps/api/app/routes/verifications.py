@@ -87,9 +87,6 @@ class TestTransientStore:
     def xadd(self, _key: str, _fields: dict[str, str], **_: object) -> str:
         return "0-0"
 
-    def expire(self, _key: str, _ttl: int) -> bool:
-        return True
-
     def set(self, key: str, _value: str, **_: object) -> bool:
         self.values.add(key)
         return True

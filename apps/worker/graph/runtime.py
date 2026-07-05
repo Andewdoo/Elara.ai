@@ -19,6 +19,7 @@ from agents.schemas import (
     AtomicClaimOutput,
     ClaimKind,
     EvidenceIntent,
+    Entailment,
     FactCheckability,
     Importance,
     InputKind,
@@ -28,7 +29,6 @@ from agents.schemas import (
 )
 from app.config import Settings
 from app.models.claims import AtomicClaim, SearchQuery
-from app.models.agent_event import AgentEvent
 from app.models.enums import AccessStatus, DependencyRelationship, EvidenceStance, InputType, RunStatus, SourceType
 from app.models.evidence import EvidenceItem, ReportCitation
 from app.models.records import Calculation
@@ -63,6 +63,7 @@ _RUN_STATUSES = {
     WorkflowStage.SCORING: RunStatus.SCORING,
     WorkflowStage.NUMERICAL_AUDIT: RunStatus.SCORING,
     WorkflowStage.SYNTHESIS: RunStatus.SYNTHESIZING,
+    WorkflowStage.CITATION_REVISION: RunStatus.AUDITING,
     WorkflowStage.CITATION_AUDIT: RunStatus.AUDITING,
 }
 
@@ -145,6 +146,9 @@ class SqlWorkflowStateWriter:
             ):
                 self._persist_calculations(db, run, state)
             elif stage == WorkflowStage.SYNTHESIS and state.report_draft is not None:
+                run.title = state.report_draft.title
+                run.evidence_reviewed_at = state.evidence_reviewed_at
+            elif stage == WorkflowStage.CITATION_REVISION and state.report_draft is not None:
                 run.title = state.report_draft.title
                 run.evidence_reviewed_at = state.evidence_reviewed_at
             elif stage == WorkflowStage.CITATION_AUDIT and state.citation_audit is not None:
@@ -509,25 +513,39 @@ class SqlWorkflowStateWriter:
             ]
         }
         db.execute(delete(ReportCitation).where(ReportCitation.run_id == run.id))
+        claim_ids = select(AtomicClaim.id).where(AtomicClaim.run_id == run.id)
+        evidence_rows = db.scalars(
+            select(EvidenceItem).where(EvidenceItem.atomic_claim_id.in_(claim_ids))
+        ).all()
+        for row in evidence_rows:
+            if row.citation_status != "rejected":
+                row.citation_status = "pending"
+        accepted_passages: set[UUID] = set()
         for audit in state.citation_audit.sentence_audits:
             try:
                 passage_id = UUID(audit.passage_id)
             except ValueError:
                 raise ValueError("citation passage IDs must be durable UUIDs") from None
             sentence = sentences[audit.sentence_ref]
+            passed = audit.entailment == Entailment.ENTAILED
+            if passed:
+                accepted_passages.add(passage_id)
             db.add(
                 ReportCitation(
                     run_id=run.id,
                     report_section="report",
                     sentence_text=sentence.text,
                     passage_id=passage_id,
-                    audit_status=audit.entailment.value,
+                    audit_status="passed" if passed else audit.entailment.value,
                     audit_note=audit.support_explanation,
                 )
             )
+        for row in evidence_rows:
+            if row.passage_id in accepted_passages and row.citation_status != "rejected":
+                row.citation_status = "accepted"
 
 
-def execute_planning_workflow(
+def execute_verification_workflow(
     factory: sessionmaker[Session],
     redis_client: Redis,
     settings: Settings,
@@ -536,35 +554,17 @@ def execute_planning_workflow(
     record,
     is_cancelled,
     model: DeepSeekClient | None = None,
-    retrieve: bool = False,
+    retrieve: bool = True,
     retrieval_pipeline: RetrievalPipeline | None = None,
+    workflow_extensions: WorkflowExtensions | None = None,
 ) -> VerificationState | None:
-    """Run Step 8 through planning, leaving discovery to the Step 9 extension."""
+    """Run the complete production verification workflow."""
     with factory() as db:
         run = db.get(VerificationRun, run_id)
         if run is None:
             raise LookupError(f"Verification run {run_id} does not exist")
-        if run.status not in {
-            RunStatus.VALIDATING,
-            RunStatus.DECOMPOSING,
-            RunStatus.RESEARCHING,
-            RunStatus.EXTRACTING,
-        }:
+        if run.status in {RunStatus.COMPLETED, RunStatus.FAILED, RunStatus.CANCELLED, RunStatus.QUEUED}:
             return None
-        if run.status == RunStatus.EXTRACTING:
-            extraction_completed = db.scalar(
-                select(
-                    func.count(AgentEvent.id)
-                ).where(
-                    AgentEvent.run_id == run.id,
-                    AgentEvent.event_type == "workflow.extraction.completed",
-                )
-            )
-            durable_sources = db.scalar(
-                select(func.count()).select_from(RunSource).where(RunSource.run_id == run.id)
-            )
-            if extraction_completed or durable_sources:
-                return None
         submitted_input = run.submitted_text or run.submitted_url
         if not submitted_input:
             return None
@@ -654,7 +654,7 @@ def execute_planning_workflow(
         pipeline = retrieval_pipeline
         owns_pipeline = False
         try:
-            if retrieve and pipeline is None:
+            if retrieve and pipeline is None and workflow_extensions is None:
                 cache = RetrievalCache(redis_client)
                 search = BraveSearchClient(
                     provider=settings.search_provider,
@@ -727,7 +727,8 @@ def execute_planning_workflow(
                     lambda checked_run_id: is_cancelled(factory, redis_client, checked_run_id)
                 ),
                 state_writer=SqlWorkflowStateWriter(factory),
-                extensions=(
+                citation_revision_limit=settings.citation_revision_limit,
+                extensions=workflow_extensions or (
                     WorkflowExtensions(
                         discovery_source_selection=pipeline.discover,
                         secure_retrieval=pipeline.retrieve,
@@ -743,13 +744,10 @@ def execute_planning_workflow(
                         deterministic_scoring=DeterministicScoringService().process,
                         numerical_audit=NumericalAuditor().process,
                     )
-                    if pipeline is not None
-                    else WorkflowExtensions()
+                    if pipeline is not None else WorkflowExtensions()
                 ),
             )
-            result = await build_workflow(
-                services, planning_only=not retrieve, numerical_only=retrieve
-            ).ainvoke(initial)
+            result = await build_workflow(services, planning_only=not retrieve).ainvoke(initial)
             return VerificationState.model_validate(result)
         finally:
             if pipeline is not None and owns_pipeline:
@@ -758,6 +756,12 @@ def execute_planning_workflow(
                 await client.aclose()
 
     return asyncio.run(invoke())
+
+
+def execute_planning_workflow(*args, **kwargs) -> VerificationState | None:
+    """Compatibility wrapper for callers that intentionally stop after planning."""
+    kwargs.setdefault("retrieve", False)
+    return execute_verification_workflow(*args, **kwargs)
 
 
 _INPUT_KINDS = {
@@ -778,5 +782,6 @@ __all__ = [
     "DurableProgressWriter",
     "RunCancellationChecker",
     "SqlWorkflowStateWriter",
+    "execute_verification_workflow",
     "execute_planning_workflow",
 ]
