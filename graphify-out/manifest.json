@@ -15,9 +15,9 @@
     "semantic_hash": "ee92380d99ac552aa39b753a780b1f18"
   },
   "apps/api/app/auth/firebase.py": {
-    "mtime": 1782523758.64363,
-    "ast_hash": "ca32d633e7e0ec2fcf96d68b38ebc6a6",
-    "semantic_hash": "ca32d633e7e0ec2fcf96d68b38ebc6a6"
+    "mtime": 1783216065.3969696,
+    "ast_hash": "6b7a9c4c34dddff8bfcbdf395ffbcda7",
+    "semantic_hash": ""
   },
   "apps/api/app/celery_app.py": {
     "mtime": 1782606930.6636713,
@@ -25,8 +25,8 @@
     "semantic_hash": "e08efa64fe9afcdb430d69b96122f73d"
   },
   "apps/api/app/config.py": {
-    "mtime": 1783186673.4982958,
-    "ast_hash": "2d1bc8aecc50bb538a8ec8c832ba22ec",
+    "mtime": 1783216064.035295,
+    "ast_hash": "2a0adec03bb91e6c4bd346389d0e7953",
     "semantic_hash": ""
   },
   "apps/api/app/database/__init__.py": {
@@ -135,8 +135,8 @@
     "semantic_hash": "0e8ab1c005e56e2b13970bed8200945b"
   },
   "apps/api/app/routes/verifications.py": {
-    "mtime": 1783186674.8782728,
-    "ast_hash": "62f9f4a82571cc52b3c3b1ae030e0d67",
+    "mtime": 1783218301.6994214,
+    "ast_hash": "34ae1805d547500ae97891af1ae44dc2",
     "semantic_hash": ""
   },
   "apps/api/app/schemas/__init__.py": {
@@ -170,9 +170,9 @@
     "semantic_hash": ""
   },
   "apps/api/app/services/queueing.py": {
-    "mtime": 1782608230.783802,
-    "ast_hash": "d502ee1192b4972549ba46f8d0723045",
-    "semantic_hash": "d502ee1192b4972549ba46f8d0723045"
+    "mtime": 1783217651.35611,
+    "ast_hash": "dec32ae194bbe01376d8c6862f5e75fb",
+    "semantic_hash": ""
   },
   "apps/api/app/services/report_actions.py": {
     "mtime": 1783025139.4799426,
@@ -250,9 +250,9 @@
     "semantic_hash": "d1821e44c0c4ddda965524f6a9d4132c"
   },
   "apps/api/tests/test_config.py": {
-    "mtime": 1782765208.8718805,
-    "ast_hash": "41bc89ca5cc9648681e20406859ed9b8",
-    "semantic_hash": "41bc89ca5cc9648681e20406859ed9b8"
+    "mtime": 1783216406.0691729,
+    "ast_hash": "559e3af309fbdc9f70c74bdd903553c0",
+    "semantic_hash": ""
   },
   "apps/api/tests/test_database_schema.py": {
     "mtime": 1783097734.621122,
@@ -260,9 +260,9 @@
     "semantic_hash": ""
   },
   "apps/api/tests/test_firebase_gateway.py": {
-    "mtime": 1782523793.6132026,
-    "ast_hash": "4cfd1cfa49148a652dc71909f40a7e42",
-    "semantic_hash": "4cfd1cfa49148a652dc71909f40a7e42"
+    "mtime": 1783216407.32845,
+    "ast_hash": "02dd474930a350863add9b7559c43235",
+    "semantic_hash": ""
   },
   "apps/api/tests/test_history_feedback_exports.py": {
     "mtime": 1783138933.353165,
@@ -275,9 +275,9 @@
     "semantic_hash": "d59bb3b3e16ee9396bd704eaead04c30"
   },
   "apps/api/tests/test_reports.py": {
-    "mtime": 1782919800.2844055,
-    "ast_hash": "750494d8dc5a0523659bb3bf045dc892",
-    "semantic_hash": "750494d8dc5a0523659bb3bf045dc892"
+    "mtime": 1783218303.1091857,
+    "ast_hash": "9da8a54b2f74370951c084587f4a54dd",
+    "semantic_hash": ""
   },
   "apps/api/tests/test_run_lifecycle.py": {
     "mtime": 1782609541.243535,
@@ -620,8 +620,8 @@
     "semantic_hash": "92630fe74cea74b84685e40de3f87f6b"
   },
   "apps/worker/elara_worker/tasks/verification.py": {
-    "mtime": 1783187714.999811,
-    "ast_hash": "f41bb767779eb0de8028f31a0b873e93",
+    "mtime": 1783216160.331206,
+    "ast_hash": "39b6ac6d7adfb0695b1f79b5daa78419",
     "semantic_hash": ""
   },
   "apps/worker/extraction/__init__.py": {
@@ -705,8 +705,8 @@
     "semantic_hash": "b63c784d0a0ebd83a2eeeba0c6b3cd6c"
   },
   "apps/worker/pyproject.toml": {
-    "mtime": 1783055648.772872,
-    "ast_hash": "5b857c8707982f328ee8bbaa59d26674",
+    "mtime": 1783216152.3818295,
+    "ast_hash": "847051d9098315066e1c26cdec865a83",
     "semantic_hash": ""
   },
   "apps/worker/research/__init__.py": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1783097619.3915918,
-    "ast_hash": "2bcc1fde6de2eeab2f7d7209cc8b21a0",
+    "mtime": 1783216266.78522,
+    "ast_hash": "16650a70c67aa0e4f2092beb740a4547",
     "semantic_hash": ""
   },
   ".github/workflows/deployment-gates.yml": {
@@ -1072,6 +1072,31 @@
   "apps/worker/AGENTS.md": {
     "mtime": 1783185616.6607883,
     "ast_hash": "9538e54810ffff51603c08bd56e81bc8",
+    "semantic_hash": ""
+  },
+  "acceptance/test_full_stack.py": {
+    "mtime": 1783218044.8728738,
+    "ast_hash": "5f05356b837f2bdc6c53c3c37a4896ae",
+    "semantic_hash": ""
+  },
+  "apps/worker/acceptance/__init__.py": {
+    "mtime": 1783216149.7712696,
+    "ast_hash": "ab7337179b27b91996ce054afdfa37e1",
+    "semantic_hash": ""
+  },
+  "apps/worker/acceptance/doubles.py": {
+    "mtime": 1783218036.6108253,
+    "ast_hash": "f490ef33b3721225d9f16106b11f68b1",
+    "semantic_hash": ""
+  },
+  "apps/worker/tests/test_acceptance_doubles.py": {
+    "mtime": 1783216768.5662744,
+    "ast_hash": "c761a4c57d2dac081ebb1dfeeef57c7d",
+    "semantic_hash": ""
+  },
+  "docker-compose.acceptance.yml": {
+    "mtime": 1783217570.620103,
+    "ast_hash": "586af89aef6d817552ef80bb79bfeabc",
     "semantic_hash": ""
   }
 }

@@ -105,7 +105,7 @@ class TestTransientStore:
 
 
 def get_request_redis_client(settings: Settings = Depends(get_settings)) -> Redis:
-    if settings.environment == "test":
+    if settings.environment == "test" and not settings.acceptance_test_mode:
         return TestTransientStore()  # type: ignore[return-value]
     return get_redis_client()
 
@@ -206,6 +206,11 @@ def get_verification_report(
         run = get_authorized_run(db, viewer_id=authenticated.user.id, run_id=run_id)
     except RunNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    if run.status != RunStatus.COMPLETED:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Report is unavailable until durable citation-audited completion",
+        )
     return build_report(db, run=run)
 
 

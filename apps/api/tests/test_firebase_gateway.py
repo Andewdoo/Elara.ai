@@ -4,7 +4,11 @@ from time import time
 import pytest
 
 from app.auth import firebase as firebase_module
-from app.auth.firebase import FirebaseAuthenticationError, FirebaseGateway
+from app.auth.firebase import (
+    DeterministicFirebaseGateway,
+    FirebaseAuthenticationError,
+    FirebaseGateway,
+)
 from app.config import Settings
 from app.schemas.auth import FirebasePrincipal
 
@@ -58,3 +62,17 @@ def test_gateway_rejects_stale_id_token_for_session_exchange(monkeypatch):
 
     with pytest.raises(FirebaseAuthenticationError, match="fresh Firebase ID token"):
         gateway.create_session_cookie("stale-token", principal)
+
+
+def test_deterministic_gateway_preserves_identity_across_session_exchange():
+    gateway = DeterministicFirebaseGateway()
+    token = "elara-acceptance:owner:owner@example.test"
+
+    principal = gateway.verify_id_token(token)
+    cookie = gateway.create_session_cookie(token, principal)
+    session_principal = gateway.verify_session_cookie(cookie)
+
+    assert principal.uid == session_principal.uid == "owner"
+    assert principal.email == session_principal.email == "owner@example.test"
+    with pytest.raises(FirebaseAuthenticationError):
+        gateway.verify_id_token("real-provider-token")

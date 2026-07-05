@@ -290,6 +290,19 @@ def verify_run(self: Task, run_id: str) -> None:
                     "environment": settings.environment,
                 },
             ) as trace:
+                workflow_kwargs = {}
+                if settings.acceptance_test_mode:
+                    from acceptance.doubles import build_acceptance_adapters
+
+                    durable_run = _load_run(factory, parsed_run_id)
+                    model, retrieval_pipeline = build_acceptance_adapters(
+                        settings,
+                        durable_run.submitted_text or durable_run.submitted_url or "",
+                    )
+                    workflow_kwargs = {
+                        "model": model,
+                        "retrieval_pipeline": retrieval_pipeline,
+                    }
                 result = execute_verification_workflow(
                     factory,
                     redis_client,
@@ -298,6 +311,7 @@ def verify_run(self: Task, run_id: str) -> None:
                     record=_record,
                     is_cancelled=_is_cancelled,
                     retrieve=True,
+                    **workflow_kwargs,
                 )
                 if result is not None:
                     trace.add_outputs(

@@ -19,6 +19,7 @@ class Settings(BaseSettings):
 
     app_name: str = "Elara API"
     environment: Literal["development", "test", "staging", "production"] = "development"
+    acceptance_test_mode: bool = False
     database_url: str = "postgresql+psycopg://elara:elara-local-password@localhost:5432/elara"
     redis_url: str = "redis://localhost:6379/0"
     celery_broker_url: str | None = None
@@ -98,6 +99,12 @@ class Settings(BaseSettings):
         if not ports or any(port < 1 or port > 65535 for port in ports):
             raise ValueError("FETCH_ALLOWED_PORTS contains an invalid port")
         return ports
+
+    @model_validator(mode="after")
+    def acceptance_mode_is_test_only(self) -> "Settings":
+        if self.acceptance_test_mode and self.environment != "test":
+            raise ValueError("ACCEPTANCE_TEST_MODE may only be enabled with ENVIRONMENT=test")
+        return self
 
     @model_validator(mode="after")
     def object_storage_credentials_are_paired(self) -> "Settings":

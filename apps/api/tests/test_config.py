@@ -60,3 +60,10 @@ def test_credentialed_cors_requires_exact_origins(monkeypatch, origin: str):
 def test_object_storage_credentials_must_be_paired():
     with pytest.raises(ValidationError, match="configured together"):
         Settings(environment="test", s3_access_key_id="access", s3_secret_access_key=None)
+
+
+def test_acceptance_mode_is_fail_closed_outside_test():
+    with pytest.raises(ValidationError, match="only be enabled"):
+        Settings(environment="development", acceptance_test_mode=True)
+
+    assert Settings(environment="test", acceptance_test_mode=True).acceptance_test_mode

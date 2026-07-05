@@ -19,6 +19,43 @@ class FirebaseConfigurationError(RuntimeError):
     pass
 
 
+class DeterministicFirebaseGateway:
+    """Credential-free Firebase boundary double for the container acceptance stack."""
+
+    session_ttl_seconds = 3_600
+    _token_prefix = "elara-acceptance:"
+    _session_prefix = "elara-acceptance-session:"
+
+    @staticmethod
+    def _principal_from_value(value: str, prefix: str) -> FirebasePrincipal:
+        if not value.startswith(prefix):
+            raise FirebaseAuthenticationError("Invalid deterministic acceptance credential")
+        parts = value.removeprefix(prefix).split(":", maxsplit=1)
+        if len(parts) != 2 or not all(parts):
+            raise FirebaseAuthenticationError("Invalid deterministic acceptance credential")
+        uid, email = parts
+        return FirebasePrincipal(
+            uid=uid,
+            email=email,
+            name=f"Acceptance {uid}",
+            email_verified=True,
+            auth_time=int(time()),
+            issued_at=int(time()),
+        )
+
+    def verify_id_token(self, token: str) -> FirebasePrincipal:
+        return self._principal_from_value(token, self._token_prefix)
+
+    def verify_session_cookie(self, cookie: str) -> FirebasePrincipal:
+        return self._principal_from_value(cookie, self._session_prefix)
+
+    def create_session_cookie(self, id_token: str, principal: FirebasePrincipal) -> str:
+        verified = self.verify_id_token(id_token)
+        if verified.uid != principal.uid or verified.email != principal.email:
+            raise FirebaseAuthenticationError("Acceptance identity changed during session exchange")
+        return f"{self._session_prefix}{verified.uid}:{verified.email}"
+
+
 _firebase_app_lock = Lock()
 
 
@@ -104,5 +141,8 @@ class FirebaseGateway:
 
 
 @lru_cache
-def get_firebase_gateway() -> FirebaseGateway:
-    return FirebaseGateway(get_settings())
+def get_firebase_gateway() -> FirebaseGateway | DeterministicFirebaseGateway:
+    settings = get_settings()
+    if settings.acceptance_test_mode:
+        return DeterministicFirebaseGateway()
+    return FirebaseGateway(settings)

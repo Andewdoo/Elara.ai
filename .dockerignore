@@ -19,12 +19,14 @@ coverage/
 
 # Python dependencies and build output
 .venv/
+.graphify-venv/
 venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+graphify-out/
 
 # Local tooling and operating-system files
 .turbo/
@@ -38,4 +40,3 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-

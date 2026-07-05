@@ -46,6 +46,6 @@ class NoopVerificationDispatcher:
 def get_verification_dispatcher(
     settings: Settings = Depends(get_settings),
 ) -> VerificationDispatcher:
-    if settings.environment == "test":
+    if settings.environment == "test" and not settings.acceptance_test_mode:
         return NoopVerificationDispatcher()
     return CeleryVerificationDispatcher(celery_app)

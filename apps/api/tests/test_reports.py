@@ -30,7 +30,7 @@ def test_report_exposes_calculation_inputs_decimal_context_and_audit_status(
             user_id=owner.id,
             input_type=InputType.CLAIM,
             research_depth=ResearchDepth.STANDARD,
-            status=RunStatus.SCORING,
+            status=RunStatus.COMPLETED,
             submitted_text="Two of five cases passed.",
             normalized_target={},
             workflow_version="step-13-test",
@@ -93,3 +93,15 @@ def test_report_exposes_calculation_inputs_decimal_context_and_audit_status(
 def test_report_route_preserves_cross_user_non_disclosure(client):
     response = client.get(f"/v1/verifications/{uuid4()}/report")
     assert response.status_code == 404
+
+
+def test_report_route_rejects_non_completed_drafts(client):
+    created = client.post(
+        "/v1/verifications",
+        json={"input_type": "CLAIM", "research_depth": "QUICK", "text": "A draft claim"},
+    )
+
+    response = client.get(f"/v1/verifications/{created.json()['run_id']}/report")
+
+    assert response.status_code == 409
+    assert "citation-audited completion" in response.json()["detail"]
