@@ -37,11 +37,14 @@ class RetrievalPipeline:
     async def discover(self, state: VerificationState) -> VerificationState:
         by_url: dict[str, CandidateSource] = {}
         result_counts: dict[str, int] = {}
+        last_provider_error: SearchProviderError | None = None
         for query in sorted(state.queries, key=lambda item: -item.priority):
             try:
                 results = await self.search.search(query.query, count=10)
-            except SearchProviderError:
-                raise
+            except SearchProviderError as exc:
+                last_provider_error = exc
+                result_counts[f"{query.objective_ref}:{query.query}"] = 0
+                continue
             result_counts[f"{query.objective_ref}:{query.query}"] = len(results)
             for result in results:
                 try:
@@ -95,6 +98,8 @@ class RetrievalPipeline:
                             "evidence_intents": evidence_intents,
                         }
                     )
+        if not by_url and last_provider_error is not None:
+            raise last_provider_error
         selected = select_diverse(list(by_url.values()), limit=_LIMITS[state.research_depth.value])
         # Keep source refs stable after ranking/deduplication.
         selected = [item.model_copy(update={"source_ref": f"source-{index}"}) for index, item in enumerate(selected, 1)]
@@ -174,22 +179,45 @@ class RetrievalPipeline:
                     for objective_ref in source.objective_refs
                     if objective_ref in objectives and objectives[objective_ref] in claims
                 )
-                document = await self.extractor.extract(
+                outcome = await self.extractor.extract_with_outcome(
                     content,
                     content_type=snapshot.content_type or "",
-                    url=source.canonical_url or source.url,
+                    url=str(snapshot.metadata.get("final_url") or source.canonical_url or source.url),
                     expected_terms=expected_terms,
+                    allow_browser_fallback=_browser_fallback_is_justified(source),
                 )
             except Exception:
                 # Parser and storage errors caused by untrusted source bytes are
                 # source-level failures, not permission to abort the whole run.
-                document = None
+                outcome = None
+            document = outcome.document if outcome is not None else None
             if document is None:
+                failure_reason = (
+                    outcome.failure_reason
+                    if outcome is not None and outcome.failure_reason
+                    else "No safe extractor produced sufficient readable content."
+                )
+                inaccessible_status = (
+                    outcome.inaccessible_status
+                    if outcome is not None and outcome.inaccessible_status
+                    else "INACCESSIBLE"
+                )
+                extraction_metadata = {
+                    "fallback_attempted": bool(outcome and outcome.fallback_attempted),
+                    "fallback_reason": outcome.fallback_reason if outcome else None,
+                    "extraction_certainty": None,
+                    "inaccessible_status": inaccessible_status,
+                    "parser_name": outcome.parser_name if outcome else None,
+                    "parser_version": outcome.parser_version if outcome else None,
+                }
                 snapshots.append(
                     snapshot.model_copy(
                         update={
-                            "access_status": "INACCESSIBLE",
-                            "failure_reason": "No safe extractor produced sufficient readable content.",
+                            "access_status": inaccessible_status,
+                            "failure_reason": failure_reason,
+                            "parser_name": outcome.parser_name if outcome else None,
+                            "parser_version": outcome.parser_version if outcome else None,
+                            "metadata": {**snapshot.metadata, "extraction": extraction_metadata},
                         }
                     )
                 )
@@ -215,6 +243,14 @@ class RetrievalPipeline:
                                 "correction_notices": list(document.correction_notices),
                                 "outbound_links": list(document.outbound_links),
                                 "page_positions": list(document.page_positions),
+                                "fallback_attempted": bool(outcome and outcome.fallback_attempted),
+                                "fallback_reason": outcome.fallback_reason if outcome else None,
+                                "extraction_certainty": document.metadata.get(
+                                    "extraction_certainty", document.quality
+                                ),
+                                "inaccessible_status": None,
+                                "parser_name": document.parser_name,
+                                "parser_version": document.parser_version,
                             },
                         },
                     }
@@ -267,5 +303,12 @@ class RetrievalPipeline:
         await self.search.aclose()
         await self.fetcher.aclose()
 
+
+def _browser_fallback_is_justified(source: CandidateSource) -> bool:
+    return bool(
+        source.priority >= Decimal("0.7500")
+        or source.source_type in {"PRIMARY", "OFFICIAL_SELF_REPORT"}
+        or {"primary", "correction"}.intersection(source.evidence_intents)
+    )
 
 __all__ = ["RetrievalPipeline"]

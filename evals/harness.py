@@ -28,6 +28,24 @@ def _accuracy(cases: list[dict[str, Any]], key: str) -> float:
     return _mean(float(case["predicted"].get(key) == case["expected"][key]) for case in relevant)
 
 
+def _field_accuracy(cases: list[dict[str, Any]], key: str) -> float:
+    """Score either a scalar annotation or a field-level annotation mapping."""
+    mapping_cases = [case for case in cases if isinstance(case["expected"].get(key), dict)]
+    scalar_cases = [case for case in cases if key in case["expected"] and case not in mapping_cases]
+    checks: list[float] = []
+    for case in mapping_cases:
+        expected = case["expected"][key]
+        predicted = case["predicted"].get(key, {})
+        checks.extend(
+            float(predicted.get(field) == expected.get(field))
+            for field in set(expected) | set(predicted)
+        )
+    checks.extend(
+        float(case["predicted"].get(key) == case["expected"][key]) for case in scalar_cases
+    )
+    return _mean(checks) if checks else 1.0
+
+
 def _mapping_accuracy(cases: list[dict[str, Any]], key: str) -> float:
     checks: list[float] = []
     for case in cases:
@@ -87,6 +105,28 @@ def _cluster_f1(cases: list[dict[str, Any]]) -> float:
     return 2 * tp / (2 * tp + fp + fn) if 2 * tp + fp + fn else 1.0
 
 
+def _brier_score(case: dict[str, Any]) -> float:
+    """Use multiclass verdict probabilities when available, with legacy fallback."""
+    expected_label = case["expected"].get("verdict")
+    probabilities = case["predicted"].get("verdict_probabilities")
+    if isinstance(probabilities, dict):
+        return _mean(
+            (float(probabilities.get(label, 0.0)) - float(label == expected_label)) ** 2
+            for label in LABELS
+        )
+    correct = float(case["predicted"].get("verdict") == expected_label)
+    confidence = float(case["predicted"].get("confidence", 0.0))
+    return (confidence - correct) ** 2
+
+
+def _percentile_95(values: Iterable[float]) -> float:
+    items = sorted(values)
+    if not items:
+        return 0.0
+    index = max(0, (95 * len(items) + 99) // 100 - 1)
+    return items[index]
+
+
 def evaluate(cases: list[dict[str, Any]]) -> EvaluationResult:
     evidence_precision, evidence_recall = _set_scores(cases, "evidence_ids")
     _, passage_recall = _set_scores(cases, "required_passage_ids")
@@ -100,13 +140,15 @@ def evaluate(cases: list[dict[str, Any]]) -> EvaluationResult:
         for case in cases
     ]
     calibration = _mean(abs(confidence - correct) for correct, confidence in correctness_and_confidence)
-    brier_score = _mean((confidence - correct) ** 2 for correct, confidence in correctness_and_confidence)
+    brier_score = _mean(_brier_score(case) for case in cases)
     statements = sum(int(case["predicted"].get("statement_count", 0)) for case in cases)
     unsupported = sum(int(case["predicted"].get("unsupported_statement_count", 0)) for case in cases)
+    latencies = [float(case["predicted"].get("latency_seconds", 0)) for case in cases]
+    costs = [float(case["predicted"].get("cost_usd", 0)) for case in cases]
     metrics = {
         "verdict_accuracy": _accuracy(cases, "verdict"),
         "verdict_macro_f1": _macro_f1(cases),
-        "attribution_accuracy": _accuracy(cases, "attribution"),
+        "attribution_accuracy": _field_accuracy(cases, "attribution"),
         "evidence_precision": evidence_precision,
         "evidence_recall": evidence_recall,
         "passage_recall": passage_recall,
@@ -120,12 +162,10 @@ def evaluate(cases: list[dict[str, Any]]) -> EvaluationResult:
         "confidence_calibration_error": calibration,
         "confidence_brier_score": brier_score,
         "unsupported_statement_rate": unsupported / statements if statements else 0.0,
-        "mean_latency_seconds": _mean(
-            float(case["predicted"].get("latency_seconds", 0)) for case in cases
-        ),
-        "mean_cost_per_verification_usd": _mean(
-            float(case["predicted"].get("cost_usd", 0)) for case in cases
-        ),
+        "mean_latency_seconds": _mean(latencies),
+        "p95_latency_seconds": _percentile_95(latencies),
+        "mean_cost_per_verification_usd": _mean(costs),
+        "total_cost_usd": sum(costs),
     }
     return EvaluationResult({key: round(value, 6) for key, value in metrics.items()}, len(cases))
 

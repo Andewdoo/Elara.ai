@@ -12,7 +12,7 @@ def test_sources_exposes_exact_passage_snapshot_and_citation_details(client, ses
         source = Source(canonical_url="https://records.example/filing", domain="records.example", title="Filed record", publisher="Records office", source_type="PRIMARY", content_type="text/html", first_seen_at=now, last_seen_at=now)
         db.add(source)
         db.flush()
-        snapshot = SourceSnapshot(source_id=source.id, version_number=2, retrieved_at=now, access_status=AccessStatus.FETCHED, content_hash="sha256:record", parser_name="trafilatura", parser_version="2.0", snapshot_metadata={"language": "en"})
+        snapshot = SourceSnapshot(source_id=source.id, version_number=2, retrieved_at=now, access_status=AccessStatus.FETCHED, content_hash="sha256:record", parser_name="trafilatura", parser_version="2.0", correction_status="NOTICE_DETECTED", snapshot_metadata={"language": "en"})
         db.add(snapshot)
         db.flush()
         db.add(RunSource(run_id=run_id, source_id=source.id, snapshot_id=snapshot.id, role="PRIMARY", retrieval_reason="Original filing", selected_rank=1))
@@ -35,6 +35,12 @@ def test_sources_exposes_exact_passage_snapshot_and_citation_details(client, ses
     assert item["retrieved_at"].startswith("2026-07-01T15:00:00")
     assert item["passages"][0]["text"] == "Revenue was 40 million dollars."
     assert item["passages"][0]["citations"][0]["audit_status"] == "passed"
+    assert item["correction_history"] == [{
+        "snapshot_id": item["snapshot_id"],
+        "snapshot_version": 2,
+        "status": "NOTICE_DETECTED",
+        "retrieved_at": item["retrieved_at"],
+    }]
     graph = client.get(f"/v1/verifications/{run_id}/source-graph").json()
     source_node = next(node for node in graph["nodes"] if node["type"] == "source")
     assert source_node["data"]["atomicClaimIds"] == [str(claim.id)]

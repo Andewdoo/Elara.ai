@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_version": "step22a-regression-0.1.0",
+  "dataset_split": "regression",
+  "review_status": "pending_human_approval",
+  "human_approval": false,
+  "cases": [
+    {
+      "id": "regression-inaccessible-primary-source",
+      "dataset_split": "regression",
+      "domain": "insufficient_evidence",
+      "input": {"submitted_text": "A claim relies on a named primary record that cannot be accessed or independently reproduced by the cutoff.", "as_of": "2026-06-30T00:00:00Z"},
+      "review": {"review_status": "pending_human_approval", "notes": "Candidate regression for safe handling, not a pre-approved verdict."},
+      "atomic_claims": {"review_status": "pending_human_approval", "candidates": [{"id": "claim-1", "text": "The inaccessible primary record establishes the submitted claim.", "importance": "high"}]},
+      "primary_sources": {"review_status": "pending_human_approval", "candidates": [{"id": "source-1", "kind": "primary_record", "locator": "reviewer-selected inaccessible URL"}]},
+      "acceptable_passages": {"review_status": "pending_human_approval", "candidates": []},
+      "evidence_expectations": {"review_status": "pending_human_approval", "support": [], "contradiction": [], "notes": "Do not substitute circular secondary reports as independent confirmation."},
+      "attribution_expectations": {"review_status": "pending_human_approval", "candidates": [{"claim_id": "claim-1", "attributed_to": null}]},
+      "expected_labels": {"review_status": "pending_human_approval", "candidates": [{"claim_id": "claim-1", "value": null}]},
+      "expected_calculations": {"review_status": "pending_human_approval", "candidates": []},
+      "citation_entailment": {"review_status": "pending_human_approval", "candidates": []},
+      "dependency_clusters": {"review_status": "pending_human_approval", "candidates": []},
+      "ambiguities": {"review_status": "pending_human_approval", "candidates": ["Temporary outage versus permanently unavailable record."]},
+      "inaccessible_sources": {"review_status": "pending_human_approval", "candidates": [{"source_id": "source-1", "reason": null, "attempts_required": null}]}
+    }
+  ]
+}

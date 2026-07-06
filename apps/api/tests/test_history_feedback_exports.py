@@ -96,6 +96,9 @@ def test_feedback_categories_are_typed_and_persist_submitter(client, session_fac
     )
     assert response.status_code == 201
     assert response.json()["category"] == "BROKEN_CITATION"
+    history = client.get(f"/v1/verifications/{run_id}/feedback")
+    assert history.status_code == 200
+    assert history.json()["items"][0]["status"] == "open"
     with session_factory() as db:
         row = db.scalar(select(UserFeedback))
         assert row is not None and row.user_id == owner.id
@@ -126,6 +129,9 @@ def test_json_export_is_private_hashed_and_signed_only_on_authorized_read(
     assert content_type == "application/json"
     assert json.loads(payload)["run_id"] == str(run_id)
     assert body["content_hash"] == hashlib.sha256(payload).hexdigest()
+    history = client.get(f"/v1/verifications/{run_id}/exports")
+    assert history.status_code == 200
+    assert history.json()["items"][0]["export_id"] == body["export_id"]
 
     download = client.get(
         f"/v1/verifications/{run_id}/exports/{body['export_id']}"
@@ -205,6 +211,8 @@ def test_new_routes_preserve_owner_and_share_authorization(client, session_facto
     feedback = {"category": "APPEAL", "message": "Please review this assessment."}
     assert client.get("/v1/history").json()["total"] == 0
     assert client.post(f"/v1/verifications/{run_id}/feedback", json=feedback).status_code == 404
+    assert client.get(f"/v1/verifications/{run_id}/feedback").status_code == 404
+    assert client.get(f"/v1/verifications/{run_id}/exports").status_code == 404
     assert client.get(f"/v1/verifications/{run_id}/exports/{export_id}").status_code == 404
     assert client.post(f"/v1/verifications/{run_id}/save").status_code == 404
     assert client.post(

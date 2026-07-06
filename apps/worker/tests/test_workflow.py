@@ -1205,7 +1205,7 @@ def test_runtime_resumes_retryable_retrieval_from_extracting_status():
     assert result.recoverable_errors[-1].details == {"failure_kind": "fetch"}
 
 
-def test_sql_state_writer_persists_citation_audit_rows():
+def test_sql_state_writer_persists_every_report_sentence_role():
     engine = create_engine(
         "sqlite+pysqlite://",
         connect_args={"check_same_thread": False},
@@ -1274,6 +1274,9 @@ def test_sql_state_writer_persists_citation_audit_rows():
                     "passage_ids": [str(passage_id)],
                 }
             ],
+            "factual_sentences": [{"sentence_ref": "fact-1", "text": "The filing records the value.", "passage_ids": [str(passage_id)]}],
+            "attribution_findings": [{"sentence_ref": "attribution-1", "text": "The filing attributes the value to the agency.", "passage_ids": [str(passage_id)]}],
+            "strongest_credible_contradiction": {"sentence_ref": "contradiction-1", "text": "A cited record reports a different value.", "passage_ids": [str(passage_id)]},
         }
     )
     audit = CitationAuditOutput.model_validate(
@@ -1284,7 +1287,10 @@ def test_sql_state_writer_persists_citation_audit_rows():
                     "passage_id": str(passage_id),
                     "entailment": "entailed",
                     "support_explanation": "The passage directly supports the sentence.",
-                }
+                },
+                {"sentence_ref": "fact-1", "passage_id": str(passage_id), "entailment": "entailed", "support_explanation": "The passage supports the factual finding."},
+                {"sentence_ref": "attribution-1", "passage_id": str(passage_id), "entailment": "entailed", "support_explanation": "The passage supports the attribution."},
+                {"sentence_ref": "contradiction-1", "passage_id": str(passage_id), "entailment": "entailed", "support_explanation": "The passage supports the contradiction."},
             ],
             "needs_revision": False,
         }
@@ -1306,7 +1312,9 @@ def test_sql_state_writer_persists_citation_audit_rows():
     )
 
     with factory() as db:
-        citation = db.scalar(select(ReportCitation))
-    assert citation is not None
-    assert citation.passage_id == passage_id
-    assert citation.audit_status == "passed"
+        citations = db.scalars(select(ReportCitation)).all()
+    assert {citation.report_section for citation in citations} == {
+        "summary", "factual_finding", "attribution", "strongest_contradiction"
+    }
+    assert {citation.passage_id for citation in citations} == {passage_id}
+    assert {citation.audit_status for citation in citations} == {"passed"}

@@ -16,7 +16,7 @@ export default function VerifyPage() {
             <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />
             Browser validation is a convenience layer. FastAPI will authenticate, authorize, validate, persist the run, and enqueue worker jobs.
           </p>
-          <p>No model, search, database, Redis, object-storage, Firebase Admin, Sentry auth, or LangSmith credentials are exposed to this browser shell.</p>
+          <p>No model, search, database, Redis, object-storage, Firebase Admin, Sentry auth, or tracing credentials are exposed to the browser.</p>
         </CardContent>
       </Card>
     </div>

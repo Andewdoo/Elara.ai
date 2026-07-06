@@ -175,11 +175,24 @@ export function useRunEvents(runId: string) {
     onSuccess: () => refreshDurableResult(),
   });
 
+  const retryMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Sign in to retry this verification.");
+      const response = await authenticatedApiFetch(user, `/v1/verifications/${runId}/retry`, {
+        method: "POST",
+      });
+      if (!response.ok) throw new Error(await apiErrorMessage(response));
+      return response.json() as Promise<{ run_id: string }>;
+    },
+  });
+
   return {
     runQuery,
     latestEvent,
     connectionState: isTerminal(runQuery.data?.status) ? "closed" : connectionState,
     pollingFallback,
     cancelMutation,
+    retryMutation,
+    refreshDurableResult,
   };
 }

@@ -15,7 +15,7 @@ export default function HomePage() {
         <div className="grid gap-4">
           <div className="rounded-lg border bg-white p-5 shadow-subtle">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge tone="info">App shell</Badge>
+              <Badge tone="info">Evidence workspace</Badge>
               <Badge tone="support">API-backed reports</Badge>
             </div>
             <h1 className="mt-4 text-3xl font-semibold tracking-normal">Verification workspace</h1>
@@ -36,7 +36,7 @@ export default function HomePage() {
         <div className="grid gap-4">
           <Card>
             <CardHeader>
-              <CardTitle>Current report snapshot</CardTitle>
+            <CardTitle>Report guarantees</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3">
               <div className="rounded-md border bg-muted/40 p-3"><span className="text-xs text-muted-foreground">Report source</span><p className="mt-1 text-lg font-semibold">PostgreSQL via FastAPI</p></div>

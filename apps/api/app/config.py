@@ -85,6 +85,14 @@ class Settings(BaseSettings):
     fetch_network_retries: int = Field(default=1, ge=0, le=2)
     fetch_max_html_bytes: int = Field(default=5_000_000, ge=100_000, le=25_000_000)
     fetch_max_pdf_bytes: int = Field(default=25_000_000, ge=100_000, le=100_000_000)
+    playwright_navigation_timeout_seconds: float = Field(default=12.0, gt=0, le=30)
+    playwright_total_timeout_seconds: float = Field(default=20.0, gt=0, le=45)
+    playwright_max_response_bytes: int = Field(default=5_000_000, ge=100_000, le=10_000_000)
+    playwright_max_total_response_bytes: int = Field(default=8_000_000, ge=100_000, le=25_000_000)
+    playwright_max_dom_bytes: int = Field(default=5_000_000, ge=100_000, le=10_000_000)
+    playwright_max_dom_nodes: int = Field(default=50_000, ge=1_000, le=100_000)
+    playwright_max_retries: int = Field(default=1, ge=0, le=1)
+    playwright_settle_time_ms: int = Field(default=500, ge=0, le=2_000)
     fetch_allowed_ports: str = "80,443"
     fetch_storage_dir: Path = Field(
         default_factory=lambda: Path(gettempdir()) / "elara-fetched-sources"
@@ -104,6 +112,18 @@ class Settings(BaseSettings):
     def acceptance_mode_is_test_only(self) -> "Settings":
         if self.acceptance_test_mode and self.environment != "test":
             raise ValueError("ACCEPTANCE_TEST_MODE may only be enabled with ENVIRONMENT=test")
+        return self
+
+    @model_validator(mode="after")
+    def playwright_limits_are_consistent(self) -> "Settings":
+        if self.playwright_navigation_timeout_seconds > self.playwright_total_timeout_seconds:
+            raise ValueError(
+                "PLAYWRIGHT_NAVIGATION_TIMEOUT_SECONDS cannot exceed PLAYWRIGHT_TOTAL_TIMEOUT_SECONDS"
+            )
+        if self.playwright_max_response_bytes > self.playwright_max_total_response_bytes:
+            raise ValueError(
+                "PLAYWRIGHT_MAX_RESPONSE_BYTES cannot exceed PLAYWRIGHT_MAX_TOTAL_RESPONSE_BYTES"
+            )
         return self
 
     @model_validator(mode="after")

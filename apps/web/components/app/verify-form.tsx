@@ -66,8 +66,7 @@ export function VerifyForm() {
     defaultValues: {
       inputType: "CLAIM",
       researchDepth: "STANDARD",
-      target:
-        "Citywide transit ridership rose 35 percent last month because the fare-free pilot brought riders back.",
+      target: "",
     },
   });
 
@@ -132,22 +131,25 @@ export function VerifyForm() {
               </Select>
             </label>
           </div>
-          <label className="grid gap-1 text-sm font-medium">
+          <label className="grid gap-1 text-sm font-medium" htmlFor="verification-target">
             Target
             <Textarea
               {...register("target")}
+              id="verification-target"
               placeholder={inputType === "ARTICLE_URL" ? "https://example.com/article" : "Paste the exact claim, quote, article text, or document note."}
+              aria-invalid={Boolean(errors.target)}
+              aria-describedby={errors.target ? "verification-target-error" : undefined}
             />
-            {errors.target && <span className="text-xs text-destructive">{errors.target.message}</span>}
+            {errors.target && <span id="verification-target-error" className="text-xs text-destructive">{errors.target.message}</span>}
           </label>
-          <label className="grid gap-1 text-sm font-medium">
+          <label className="grid gap-1 text-sm font-medium" htmlFor="verification-speaker">
             Speaker or source context
-            <Input {...register("speaker")} placeholder="Optional unless verifying a quote" />
-            {errors.speaker && <span className="text-xs text-destructive">{errors.speaker.message}</span>}
+            <Input id="verification-speaker" {...register("speaker")} placeholder="Optional unless verifying a quote" aria-invalid={Boolean(errors.speaker)} aria-describedby={errors.speaker ? "verification-speaker-error" : undefined}/>
+            {errors.speaker && <span id="verification-speaker-error" className="text-xs text-destructive">{errors.speaker.message}</span>}
           </label>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground">
-              FastAPI performs final validation and durably queues the run. Research begins in a later worker step.
+              FastAPI performs final validation and durably queues the verification.
             </p>
             {apiError && <p className="text-xs text-destructive" role="alert">{apiError}</p>}
             <Button type="submit" disabled={isSubmitting}>

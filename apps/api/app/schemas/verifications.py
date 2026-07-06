@@ -165,6 +165,10 @@ class FeedbackResponse(BaseModel):
     created_at: datetime
 
 
+class FeedbackListResponse(BaseModel):
+    items: list[FeedbackResponse]
+
+
 class ExportCreateRequest(BaseModel):
     format: ExportFormat = ExportFormat.JSON
 
@@ -177,6 +181,10 @@ class ExportResponse(BaseModel):
     created_at: datetime
     download_url: str | None = None
     expires_at: datetime | None = None
+
+
+class ExportListResponse(BaseModel):
+    items: list[ExportResponse]
 
 
 class DeleteReportResponse(BaseModel):
@@ -275,6 +283,7 @@ class SourceResponse(BaseModel):
     parser_name: str | None
     parser_version: str | None
     correction_status: str | None
+    correction_history: list[dict[str, Any]]
     snapshot_metadata: dict[str, Any]
     failure_reason: str | None
     passages: list[SourcePassageResponse]
@@ -333,6 +342,9 @@ class ReportResponse(BaseModel):
     model_versions: dict[str, Any]
     prompt_versions: dict[str, Any]
     parser_versions: dict[str, Any]
+    retrieval_versions: dict[str, Any]
+    score_roles: dict[str, str]
     report_sentences: list[ReportCitationResponse]
     evidence_reviewed_at: datetime
+    generated_at: datetime
     limitations: list[str]

@@ -24,6 +24,29 @@ def build_sources(db: Session, *, run_id: UUID) -> SourcesResponse:
         .order_by(RunSource.selected_rank.asc().nullslast(), Source.id)
     ).all()
     snapshot_ids = [snapshot.id for _, _, snapshot in rows if snapshot is not None]
+    source_ids = [source.id for _, source, _ in rows]
+    correction_snapshots = (
+        db.scalars(
+            select(SourceSnapshot)
+            .where(
+                SourceSnapshot.source_id.in_(source_ids),
+                SourceSnapshot.correction_status.is_not(None),
+            )
+            .order_by(SourceSnapshot.retrieved_at.desc(), SourceSnapshot.version_number.desc())
+        ).all()
+        if source_ids
+        else []
+    )
+    corrections_by_source = defaultdict(list)
+    for correction in correction_snapshots:
+        corrections_by_source[correction.source_id].append(
+            {
+                "snapshot_id": str(correction.id),
+                "snapshot_version": correction.version_number,
+                "status": correction.correction_status,
+                "retrieved_at": correction.retrieved_at.isoformat(),
+            }
+        )
     passages = (
         db.scalars(
             select(SourcePassage)
@@ -89,6 +112,7 @@ def build_sources(db: Session, *, run_id: UUID) -> SourcesResponse:
                 parser_name=snapshot.parser_name if snapshot else None,
                 parser_version=snapshot.parser_version if snapshot else None,
                 correction_status=snapshot.correction_status if snapshot else None,
+                correction_history=corrections_by_source[source.id],
                 snapshot_metadata=snapshot.snapshot_metadata if snapshot else {},
                 failure_reason=snapshot.failure_reason if snapshot else None,
                 passages=passages_by_snapshot[snapshot.id] if snapshot else [],

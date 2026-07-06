@@ -90,6 +90,48 @@ def test_report_exposes_calculation_inputs_decimal_context_and_audit_status(
     assert calculation["result"]["value"] == "40.0"
 
 
+def test_report_contract_exposes_reproducibility_roles_and_generation_time(
+    client, session_factory, owner
+):
+    now = datetime(2026, 7, 1, 12, tzinfo=UTC)
+    with session_factory() as db:
+        methodology = MethodologyVersion(
+            version="1.1",
+            scoring_config={},
+            retrieval_config={"implementation": "targeted-retrieval", "version": "2026.07"},
+            released_at=now,
+            active=True,
+        )
+        db.add(methodology)
+        db.flush()
+        run = VerificationRun(
+            user_id=owner.id,
+            input_type=InputType.CLAIM,
+            research_depth=ResearchDepth.QUICK,
+            status=RunStatus.COMPLETED,
+            submitted_text="A completed claim",
+            normalized_target={},
+            workflow_version="step-23-test",
+            methodology_version_id=methodology.id,
+            completed_at=now,
+            evidence_reviewed_at=now,
+            model_versions={"synthesis": "deepseek-chat"},
+            prompt_versions={"synthesis": "v1"},
+            parser_versions={"html": "v2"},
+        )
+        db.add(run)
+        db.commit()
+        run_id = run.id
+
+    body = client.get(f"/v1/verifications/{run_id}/report").json()
+    assert body["generated_at"] == now.isoformat().replace("+00:00", "Z")
+    assert body["retrieval_versions"]["version"] == "2026.07"
+    assert set(body["score_roles"]) == {
+        "evidence_support", "attribution_support", "quote_fidelity",
+        "verdict_confidence", "source_independence", "context_completeness",
+    }
+
+
 def test_report_route_preserves_cross_user_non_disclosure(client):
     response = client.get(f"/v1/verifications/{uuid4()}/report")
     assert response.status_code == 404

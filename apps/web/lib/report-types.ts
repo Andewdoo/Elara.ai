@@ -62,6 +62,7 @@ export type SourceRecord = {
   parser_name: string | null;
   parser_version: string | null;
   correction_status: string | null;
+  correction_history: Array<{ snapshot_id: string; snapshot_version: number; status: string; retrieved_at: string }>;
   snapshot_metadata: Record<string, unknown>;
   failure_reason: string | null;
   passages: SourcePassage[];
@@ -124,8 +125,11 @@ export type ReportRecord = {
   model_versions: Record<string, unknown>;
   prompt_versions: Record<string, unknown>;
   parser_versions: Record<string, unknown>;
+  retrieval_versions: Record<string, unknown>;
+  score_roles: Record<string, string>;
   report_sentences: ReportCitation[];
   evidence_reviewed_at: string;
+  generated_at: string;
   limitations: string[];
 };
 

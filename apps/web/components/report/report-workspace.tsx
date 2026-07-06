@@ -1,7 +1,7 @@
 "use client";
 
 import { Calculator, ExternalLink, FileWarning, Info, PanelRightClose, PanelRightOpen, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { ScoreCharts } from "@/components/report/score-charts";
 import { FeedbackControls, ReportHeaderActions } from "@/components/report/report-actions";
@@ -37,38 +37,63 @@ export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
     ui.selectEvidence(passageId);
   };
   const reviewed = new Date(report.evidence_reviewed_at).toLocaleString();
+  const generated = new Date(report.generated_at).toLocaleString();
+  const summarySentences = report.report_sentences.filter((sentence) => sentence.report_section === "summary");
+  const factualSentences = report.report_sentences.filter((sentence) => sentence.report_section === "factual_finding");
+  const attributionSentences = report.report_sentences.filter((sentence) => sentence.report_section === "attribution");
+  const contradictionSentences = report.report_sentences.filter((sentence) => sentence.report_section === "strongest_contradiction");
+  const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    if (!direction && !["Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (index + direction + tabs.length) % tabs.length;
+    ui.setActiveReportTab(tabs[nextIndex].id);
+    document.getElementById(`report-tab-${tabs[nextIndex].id}`)?.focus();
+  };
 
   return <div className="grid gap-4">
     <header className="grid gap-3 rounded-lg border bg-white p-4 shadow-subtle lg:grid-cols-[1fr_auto]">
-      <div><div className="flex flex-wrap items-center gap-2"><Badge tone={run.status === "COMPLETED" ? "support" : "info"}>{run.status}</Badge><Badge tone="info">{run.research_depth}</Badge><span className="text-xs text-muted-foreground">Run {run.run_id}</span></div><h1 className="mt-3 text-2xl font-semibold">{run.title ?? "Verification report"}</h1><p className="mt-2 text-sm text-muted-foreground">Evidence reviewed as of {reviewed}. New evidence or corrections may change this assessment.</p></div>
+      <div><div className="flex flex-wrap items-center gap-2"><Badge tone={run.status === "COMPLETED" ? "support" : "info"}>{run.status}</Badge><Badge tone="info">{run.research_depth}</Badge><span className="text-xs text-muted-foreground">Run {run.run_id}</span></div><h1 className="mt-3 text-2xl font-semibold">{run.title ?? "Verification report"}</h1><p className="mt-2 text-sm text-muted-foreground">Evidence reviewed as of {reviewed}. Report generated {generated}. New evidence or corrections may change this assessment.</p></div>
       <div className="grid min-w-60 gap-3"><div className="grid gap-1 rounded-md border bg-muted/40 p-3"><span className="text-xs text-muted-foreground">Verdict</span><span className="text-lg font-semibold">{report.verdict ?? "Not verified"}</span></div>{run.is_owner && <ReportHeaderActions runId={run.run_id} saved={Boolean(run.saved_at)} />}</div>
     </header>
 
-    <nav className="flex gap-2 overflow-x-auto rounded-lg border bg-white p-2" aria-label="Report sections">
-      {tabs.map((tab) => <Button key={tab.id} size="sm" variant={ui.activeReportTab === tab.id ? "primary" : "ghost"} onClick={() => ui.setActiveReportTab(tab.id)}>{tab.label}</Button>)}
+    <nav role="tablist" className="flex gap-2 overflow-x-auto rounded-lg border bg-white p-2" aria-label="Report sections">
+      {tabs.map((tab, index) => <Button role="tab" id={`report-tab-${tab.id}`} aria-selected={ui.activeReportTab === tab.id} aria-controls={`report-panel-${tab.id}`} tabIndex={ui.activeReportTab === tab.id ? 0 : -1} key={tab.id} size="sm" variant={ui.activeReportTab === tab.id ? "primary" : "ghost"} onKeyDown={(event) => onTabKeyDown(event, index)} onClick={() => ui.setActiveReportTab(tab.id)}>{tab.label}</Button>)}
       <Button className="ml-auto hidden xl:inline-flex" size="icon" variant="ghost" aria-label={ui.sourceDrawerOpen ? "Close source drawer" : "Open source drawer"} onClick={() => ui.setSourceDrawerOpen(!ui.sourceDrawerOpen)}>{ui.sourceDrawerOpen ? <PanelRightClose className="h-4 w-4"/> : <PanelRightOpen className="h-4 w-4"/>}</Button>
     </nav>
 
     <div className={cn("grid gap-4", ui.sourceDrawerOpen ? "xl:grid-cols-[260px_minmax(0,1fr)_340px]" : "xl:grid-cols-[260px_minmax(0,1fr)]")}>
       <aside className="hidden self-start xl:block"><ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim}/></aside>
-      <main className="min-w-0 grid gap-4">
+      <main role="tabpanel" id={`report-panel-${ui.activeReportTab}`} aria-labelledby={`report-tab-${ui.activeReportTab}`} tabIndex={0} className="min-w-0 grid gap-4">
         {ui.activeReportTab === "overview" && <><Card><CardHeader><CardTitle>Report overview</CardTitle></CardHeader><CardContent className="grid gap-4">
-          <div className="grid gap-2">{report.report_sentences.filter((sentence) => sentence.report_section.includes("summary")).map((sentence) => <button key={sentence.id} className="rounded-md border bg-white p-3 text-left text-sm leading-6 hover:border-primary" onClick={() => openEvidence(sentence.passage_id, "")}>{sentence.sentence_text}<span className="ml-2 text-xs text-muted-foreground">citation {sentence.audit_status}</span></button>)}{report.report_sentences.length === 0 && <p className="text-sm text-muted-foreground">No citation-audited summary sentences were stored.</p>}</div>
+          <SentenceSection title="Summary" sentences={summarySentences} empty="No citation-audited summary sentences were stored." onOpen={openEvidence}/>
+          <SentenceSection title="Factual findings" sentences={factualSentences} empty="No separate factual findings were stored." onOpen={openEvidence}/>
+          <SentenceSection title="Attribution findings" sentences={attributionSentences} empty="No attribution finding applies to this report." onOpen={openEvidence}/>
+          <SentenceSection title="Strongest credible contradiction" sentences={contradictionSentences} empty="No credible contradiction was identified in the reviewed evidence." onOpen={openEvidence}/>
           <SpecializedPanels report={report}/>
           <div><p className="mb-2 text-sm font-semibold">Limitations</p>{report.limitations.length ? report.limitations.map((item) => <p key={item} className="mb-2 flex gap-2 rounded-md bg-muted p-3 text-sm"><Info className="mt-0.5 h-4 w-4 shrink-0 text-primary"/>{item}</p>) : <p className="text-sm text-muted-foreground">No limitations were recorded.</p>}</div>
           <section aria-label="Feedback and correction controls"><FeedbackControls runId={run.run_id} /></section>
         </CardContent></Card><ScoreCharts report={report}/></>}
         {ui.activeReportTab === "claims" && <ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim} detailed/>}
         {ui.activeReportTab === "evidence" && <Card><CardHeader><div className="flex items-center justify-between gap-3"><CardTitle>Evidence passages</CardTitle><select className="rounded-md border bg-white px-2 py-1 text-xs" value={ui.evidenceFilter} onChange={(event) => ui.setEvidenceFilter(event.target.value as typeof ui.evidenceFilter)}><option value="all">All</option><option value="supporting">Supporting</option><option value="contradicting">Contradicting</option><option value="inaccessible">Inaccessible</option></select></div></CardHeader><CardContent className="grid gap-3">
-          {ui.evidenceFilter === "inaccessible" ? sources.filter((source) => source.access_status !== "FETCHED").map((source) => <button key={source.id} onClick={() => ui.selectSource(source.id)} className="rounded-md border border-amber-200 bg-amber-50 p-3 text-left"><FileWarning className="inline h-4 w-4 text-amber-700"/> <strong>{source.title ?? source.domain}</strong><p className="mt-1 text-sm">{source.inaccessible_reason ?? source.failure_reason ?? source.access_status}</p></button>) : <EvidenceColumns items={evidence} onOpen={openEvidence}/>}
+          {ui.evidenceFilter === "inaccessible" ? <InaccessibleSources sources={sources} onSelect={ui.selectSource}/> : <EvidenceColumns items={evidence} onOpen={openEvidence}/>}
         </CardContent></Card>}
         {ui.activeReportTab === "graph" && <Card><CardHeader><CardTitle>Source dependency graph</CardTitle></CardHeader><CardContent><SourceGraph graph={sourceGraph} claims={report.atomic_claims} onSourceSelect={ui.selectSource}/></CardContent></Card>}
-        {ui.activeReportTab === "calculations" && <Card><CardHeader><CardTitle>Server calculation records</CardTitle></CardHeader><CardContent className="grid gap-3">{report.calculations.map((row) => <article key={row.id} className="grid gap-2 rounded-md border p-4"><div className="flex items-center gap-2"><Calculator className="h-4 w-4 text-primary"/><strong>{row.formula_name}</strong><Badge tone={row.audit_status === "passed" ? "support" : "warning"}>{row.audit_status}</Badge></div><code className="rounded bg-muted p-2 text-xs">{row.formula_text}</code><div className="grid gap-2 md:grid-cols-3"><Json title="Inputs" value={row.inputs}/><Json title="Result" value={row.result}/><Json title="Decimal context" value={row.decimal_context}/></div></article>)}</CardContent></Card>}
-        {ui.activeReportTab === "methodology" && <Card><CardHeader><CardTitle>Methodology and reproducibility</CardTitle></CardHeader><CardContent className="grid gap-3"><Version title="Methodology" value={{ methodology_version: report.methodology_version, workflow_version: report.workflow_version }}/><Version title="Models" value={report.model_versions}/><Version title="Prompts" value={report.prompt_versions}/><Version title="Parsers" value={report.parser_versions}/></CardContent></Card>}
+        {ui.activeReportTab === "calculations" && <Card><CardHeader><CardTitle>Server calculation records</CardTitle></CardHeader><CardContent className="grid gap-3">{report.calculations.map((row) => <article key={row.id} className="grid gap-2 rounded-md border p-4"><div className="flex items-center gap-2"><Calculator className="h-4 w-4 text-primary"/><strong>{row.formula_name}</strong><Badge tone={row.audit_status === "passed" ? "support" : "warning"}>{row.audit_status}</Badge></div><code className="rounded bg-muted p-2 text-xs">{row.formula_text}</code><div className="grid gap-2 md:grid-cols-3"><Json title="Inputs" value={row.inputs}/><Json title="Result" value={row.result}/><Json title="Decimal context" value={row.decimal_context}/></div></article>)}{report.calculations.length === 0 && <p className="text-sm text-muted-foreground">No server calculation records apply to this report.</p>}</CardContent></Card>}
+        {ui.activeReportTab === "methodology" && <Card><CardHeader><CardTitle>Methodology and reproducibility</CardTitle></CardHeader><CardContent className="grid gap-3"><Version title="Methodology" value={{ methodology_version: report.methodology_version, workflow_version: report.workflow_version }}/><Version title="Retrieval" value={report.retrieval_versions}/><Version title="Models" value={report.model_versions}/><Version title="Prompts" value={report.prompt_versions}/><Version title="Parsers" value={report.parser_versions}/><Version title="Score roles" value={report.score_roles}/></CardContent></Card>}
       </main>
       {ui.sourceDrawerOpen && <SourceDrawer mobileOpen={Boolean(ui.selectedSourceId)} source={selectedSource} passage={selectedPassage} onClose={() => ui.setSourceDrawerOpen(false)} onPassage={ui.selectEvidence}/>}
     </div>
   </div>;
+}
+
+function SentenceSection({ title, sentences, empty, onOpen }: { title: string; sentences: ReportWorkspaceData["report"]["report_sentences"]; empty: string; onOpen: (passageId: string, sourceUrl: string) => void }) {
+  return <section className="grid gap-2"><h3 className="text-sm font-semibold">{title}</h3>{sentences.map((sentence) => <button key={sentence.id} className="rounded-md border bg-white p-3 text-left text-sm leading-6 hover:border-primary" onClick={() => onOpen(sentence.passage_id, "")}>{sentence.sentence_text}<span className="ml-2 text-xs text-muted-foreground">citation {sentence.audit_status}</span></button>)}{sentences.length === 0 && <p className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">{empty}</p>}</section>;
+}
+
+function InaccessibleSources({ sources, onSelect }: { sources: SourceRecord[]; onSelect: (id: string | null) => void }) {
+  const inaccessible = sources.filter((source) => source.access_status !== "FETCHED");
+  return <>{inaccessible.map((source) => <button key={source.id} onClick={() => onSelect(source.id)} className="rounded-md border border-amber-200 bg-amber-50 p-3 text-left"><FileWarning className="inline h-4 w-4 text-amber-700" aria-hidden="true"/> <strong>{source.title ?? source.domain}</strong><p className="mt-1 text-sm">{source.inaccessible_reason ?? source.failure_reason ?? source.access_status}</p></button>)}{inaccessible.length === 0 && <p className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">No inaccessible sources were recorded.</p>}</>;
 }
 
 function ClaimRail({ claims, selectedId, onSelect, detailed = false }: { claims: ReportWorkspaceData["report"]["atomic_claims"]; selectedId?: string; onSelect: (id: string | null) => void; detailed?: boolean }) {
@@ -103,12 +128,33 @@ function ScorePanel({ title, record }: { title: string; record: ReportWorkspaceD
 }
 
 function SourceDrawer({ source, passage, mobileOpen, onClose, onPassage }: { source?: SourceRecord; passage?: SourceRecord["passages"][number]; mobileOpen: boolean; onClose: () => void; onPassage: (id: string | null) => void }) {
+  const drawerRef = useRef<HTMLElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!mobileOpen || !drawerRef.current) return;
+    previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const drawer = drawerRef.current;
+    const focusable = () => [...drawer.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])')];
+    focusable()[0]?.focus();
+    const onKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); onClose(); return; }
+      if (event.key !== "Tab") return;
+      const items = focusable();
+      if (!items.length) return;
+      const first = items[0]; const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    drawer.addEventListener("keydown", onKeyDown);
+    return () => { drawer.removeEventListener("keydown", onKeyDown); previousFocusRef.current?.focus(); };
+  }, [mobileOpen, onClose]);
   if (!source) return <aside className="rounded-lg border bg-white p-4 text-sm text-muted-foreground">No sources were stored for this report.</aside>;
-  return <aside className={cn("fixed inset-0 z-50 overflow-y-auto bg-white p-4 xl:static xl:z-auto xl:max-h-[calc(100vh-10rem)] xl:self-start xl:rounded-lg xl:border", !mobileOpen && "hidden xl:block")}><div className="flex items-start justify-between gap-2"><div><p className="font-semibold">{source.title ?? source.domain}</p><p className="text-xs text-muted-foreground">{source.publisher ?? source.author ?? source.domain}</p></div><Button size="icon" variant="ghost" onClick={onClose} aria-label="Close source drawer"><X className="h-4 w-4"/></Button></div><Badge tone={source.access_status === "FETCHED" ? "support" : "warning"}>{source.access_status}</Badge>
+  return <aside ref={drawerRef} role="dialog" aria-modal={mobileOpen} aria-labelledby="source-drawer-title" className={cn("fixed inset-0 z-50 overflow-y-auto bg-white p-4 xl:static xl:z-auto xl:max-h-[calc(100vh-10rem)] xl:self-start xl:rounded-lg xl:border", !mobileOpen && "hidden xl:block")}><div className="flex items-start justify-between gap-2"><div><p id="source-drawer-title" className="font-semibold">{source.title ?? source.domain}</p><p className="text-xs text-muted-foreground">{source.publisher ?? source.author ?? source.domain}</p></div><Button size="icon" variant="ghost" onClick={onClose} aria-label="Close source drawer"><X className="h-4 w-4" aria-hidden="true"/></Button></div><Badge tone={source.access_status === "FETCHED" ? "support" : "warning"}>{source.access_status}</Badge>
     <a className="mt-3 flex items-center gap-1 break-all text-xs text-primary" href={source.canonical_url} target="_blank" rel="noreferrer">Open source <ExternalLink className="h-3 w-3"/></a>
     <dl className="mt-3 grid gap-2 text-xs">{[["Role", source.role], ["Type", source.source_type], ["Published", source.published_at ? new Date(source.published_at).toLocaleString() : "Unavailable"], ["Retrieved", source.retrieved_at ? new Date(source.retrieved_at).toLocaleString() : "Unavailable"], ["Snapshot", source.snapshot_id ? `${source.snapshot_id} v${source.snapshot_version}` : "Unavailable"], ["Parser", source.parser_name ? `${source.parser_name} ${source.parser_version ?? ""}` : "Not parsed"], ["Content hash", source.content_hash ?? "Unavailable"], ["Correction", source.correction_status ?? "None recorded"]].map(([key, value]) => <div key={key} className="grid grid-cols-[90px_1fr] gap-2"><dt className="text-muted-foreground">{key}</dt><dd className="break-all">{value}</dd></div>)}</dl>
     {Object.keys(source.snapshot_metadata).length > 0 && <details className="mt-3 rounded-md border p-2 text-xs"><summary className="cursor-pointer font-semibold">Snapshot metadata</summary><pre className="mt-2 overflow-auto whitespace-pre-wrap">{JSON.stringify(source.snapshot_metadata, null, 2)}</pre></details>}
     <p className="mt-3 text-xs">{source.retrieval_reason ?? source.inaccessible_reason ?? source.failure_reason}</p>
+    <div className="mt-3 text-xs"><p className="font-semibold">Correction history</p>{source.correction_history.length ? source.correction_history.map((item) => <p key={item.snapshot_id} className="mt-1 rounded border p-2">Snapshot v{item.snapshot_version}: {item.status} · {new Date(item.retrieved_at).toLocaleString()}</p>) : <p className="mt-1 text-muted-foreground">No correction notices were recorded.</p>}</div>
     <div className="mt-4 grid gap-2"><p className="text-sm font-semibold">Exact passage - Cited passages</p>{passage ? <><blockquote className="rounded-md border-l-4 border-primary bg-muted/50 p-3 text-sm leading-6">{passage.text}</blockquote><p className="text-xs text-muted-foreground">{passage.heading_path ?? "No heading"} - {passage.page_or_position ?? `paragraph ${passage.paragraph_index ?? "unrecorded"}`} - extraction {Math.round(passage.extraction_certainty * 100)}%</p>{(passage.speaker || passage.table_ref) && <p className="text-xs text-muted-foreground">Speaker: {passage.speaker ?? "not recorded"} - Table: {passage.table_ref ?? "not recorded"}</p>}{Object.keys(passage.metadata).length > 0 && <details className="rounded-md border p-2 text-xs"><summary className="cursor-pointer font-semibold">Passage metadata</summary><pre className="mt-2 overflow-auto whitespace-pre-wrap">{JSON.stringify(passage.metadata, null, 2)}</pre></details>}{passage.citations.map((citation) => <div key={citation.id} className="rounded-md border p-2 text-xs"><strong>{citation.report_section}</strong> - {citation.audit_status}<p className="mt-1">{citation.sentence_text}</p>{citation.audit_note && <p className="mt-1 text-muted-foreground">{citation.audit_note}</p>}</div>)}</> : <p className="text-xs text-muted-foreground">No stored passage is available.</p>}
       {source.passages.length > 1 && <select className="rounded-md border p-2 text-xs" value={passage?.id ?? ""} onChange={(event) => onPassage(event.target.value)} aria-label="Select source passage">{source.passages.map((item) => <option key={item.id} value={item.id}>{item.page_or_position ?? item.heading_path ?? item.id}</option>)}</select>}
     </div>
@@ -117,4 +163,4 @@ function SourceDrawer({ source, passage, mobileOpen, onClose, onPassage }: { sou
 
 function stanceTone(stance: EvidenceStance) { return stance.includes("SUPPORTS") ? "support" : stance.includes("CONTRADICTS") ? "danger" : "neutral"; }
 function Json({ title, value }: { title: string; value: Record<string, unknown> }) { return <div><p className="mb-1 text-xs font-semibold">{title}</p><pre className="overflow-auto rounded bg-muted p-2 text-xs">{JSON.stringify(value, null, 2)}</pre></div>; }
-function Version({ title, value }: { title: string; value: Record<string, unknown> }) { return <div className="rounded-md border p-3"><p className="mb-2 text-sm font-semibold">{title}</p><dl className="grid gap-2 text-xs md:grid-cols-2">{Object.entries(value).map(([key, item]) => <div key={key} className="rounded bg-muted p-2"><dt className="text-muted-foreground">{key}</dt><dd className="mt-1 break-all font-medium">{String(item)}</dd></div>)}</dl></div>; }
+function Version({ title, value }: { title: string; value: Record<string, unknown> }) { const entries = Object.entries(value); return <div className="rounded-md border p-3"><p className="mb-2 text-sm font-semibold">{title}</p>{entries.length ? <dl className="grid gap-2 text-xs md:grid-cols-2">{entries.map(([key, item]) => <div key={key} className="rounded bg-muted p-2"><dt className="text-muted-foreground">{key}</dt><dd className="mt-1 break-all font-medium">{typeof item === "object" ? JSON.stringify(item) : String(item)}</dd></div>)}</dl> : <p className="text-xs text-muted-foreground">No {title.toLowerCase()} version metadata was recorded.</p>}</div>; }

@@ -2,15 +2,23 @@ from __future__ import annotations
 
 import asyncio
 from decimal import Decimal
+from uuid import uuid4
 
 import fitz
 import httpx
 import pytest
 
+from agents.schemas import EvidenceIntent, SearchQueryOutput
 from extraction.service import ExtractionService
-from graph.state import CandidateSource
+from graph.state import CandidateSource, ResearchDepth, VerificationState
+from research.pipeline import RetrievalPipeline
 from research.ranking import RankingSignals, priority_score, select_diverse
-from research.search import BraveSearchClient, SearchConfigurationError
+from research.search import (
+    BraveSearchClient,
+    SearchConfigurationError,
+    SearchProviderError,
+    SearchResult,
+)
 
 
 def run(value):
@@ -47,6 +55,74 @@ def test_brave_search_requires_key_but_no_engine_id():
         BraveSearchClient(provider="brave", api_key=None, base_url="https://example.test")
     with pytest.raises(SearchConfigurationError, match="HTTPS"):
         BraveSearchClient(provider="brave", api_key="secret", base_url="http://search.internal")
+
+
+def test_brave_search_retries_transient_errors_once_then_preserves_results():
+    requests = 0
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal requests
+        requests += 1
+        if requests == 1:
+            return httpx.Response(503, request=request)
+        return httpx.Response(
+            200,
+            json={"web": {"results": [{"url": "https://example.test/recovered"}]}},
+            request=request,
+        )
+
+    client = BraveSearchClient(
+        provider="brave",
+        api_key="server-secret",
+        base_url="https://api.search.brave.com/res/v1",
+        client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
+    )
+    results = run(client.search("bounded retry"))
+    run(client.aclose())
+
+    assert requests == 2
+    assert [result.url for result in results] == ["https://example.test/recovered"]
+
+
+def test_discovery_preserves_partial_brave_results_when_later_query_fails():
+    class PartialSearch:
+        async def search(self, query: str, *, count: int = 10):
+            del count
+            if query == "failing query":
+                raise SearchProviderError("temporary Brave failure", retryable=True)
+            return [SearchResult("https://example.test/evidence", "Evidence", "Direct record", 1)]
+
+        async def aclose(self):
+            return None
+
+    state = VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.0",
+        queries=[
+            SearchQueryOutput(
+                query="successful query",
+                objective_ref="objective-1",
+                intent=EvidenceIntent.PRIMARY,
+                priority=1,
+            ),
+            SearchQueryOutput(
+                query="failing query",
+                objective_ref="objective-2",
+                intent=EvidenceIntent.CONTRADICTION,
+                priority=0.5,
+            ),
+        ],
+    )
+    pipeline = RetrievalPipeline(search=PartialSearch(), fetcher=object())  # type: ignore[arg-type]
+
+    result = run(pipeline.discover(state))
+
+    assert [source.canonical_url for source in result.candidate_sources] == [
+        "https://example.test/evidence"
+    ]
+    assert result.query_result_counts["objective-2:failing query"] == 0
 
 
 def test_priority_formula_is_exact_and_deterministic():
@@ -136,4 +212,46 @@ def test_pymupdf_extraction_is_page_aware():
     assert result is not None
     assert result.parser_name == "pymupdf"
     assert result.page_positions == ("page 1",)
+    assert result.blocks
+    assert {block.page_or_position for block in result.blocks} == {"page 1"}
     assert "Official filing evidence" in result.body
+
+
+def test_malformed_pdf_fails_closed_without_browser_fallback():
+    outcome = run(
+        ExtractionService().extract_with_outcome(
+            b"%PDF-1.7\nmalformed and truncated",
+            content_type="application/pdf",
+            url="https://example.test/broken.pdf",
+            allow_browser_fallback=True,
+        )
+    )
+
+    assert outcome.document is None
+    assert outcome.fallback_attempted is False
+    assert outcome.inaccessible_status == "UNSUPPORTED"
+
+
+def test_paywall_and_correction_notice_are_classified_deterministically():
+    paywall = run(
+        ExtractionService().extract_with_outcome(
+            b"<html><body><main>Subscribe to continue reading this subscriber-only report.</main></body></html>",
+            content_type="text/html",
+            url="https://example.test/paywall",
+            allow_browser_fallback=True,
+        )
+    )
+    corrected_body = "Correction: the original total was revised from 41 to 42. " * 8
+    corrected = run(
+        ExtractionService().extract(
+            f"<html><body><article><p>{corrected_body}</p></article></body></html>".encode(),
+            content_type="text/html",
+            url="https://example.test/correction",
+        )
+    )
+
+    assert paywall.document is None
+    assert paywall.inaccessible_status == "PAYWALLED"
+    assert paywall.fallback_attempted is False
+    assert corrected is not None
+    assert corrected.correction_notices == (corrected_body.strip(),)

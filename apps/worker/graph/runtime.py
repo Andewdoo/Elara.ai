@@ -39,6 +39,7 @@ from app.models.verification_run import VerificationRun
 from graph.state import ResearchDepth, VerificationState, WorkflowStage
 from graph.workflow import WorkflowExtensions, WorkflowServices, build_workflow
 from extraction.service import ExtractionService
+from extraction.playwright import PlaywrightExtractor, PlaywrightLimits
 from extraction.passages import PassageEmbeddingService, PassagePipeline, PassageSegmenter
 from research.cache import RetrievalCache, RetrievalRateLimiter
 from research.fetcher import S3SnapshotStore, SecureFetcher, SnapshotFileStore
@@ -214,6 +215,11 @@ class SqlWorkflowStateWriter:
                     parser_name=snapshot.parser_name,
                     parser_version=snapshot.parser_version,
                     extraction_quality=snapshot.extraction_quality,
+                    correction_status=(
+                        "NOTICE_DETECTED"
+                        if document is not None and document.correction_notices
+                        else None
+                    ),
                     snapshot_metadata=snapshot.metadata,
                     failure_reason=snapshot.failure_reason,
                 )
@@ -499,18 +505,21 @@ class SqlWorkflowStateWriter:
     ) -> None:
         if state.report_draft is None or state.citation_audit is None:
             return
+        sentence_groups = (
+            ("summary", state.report_draft.summary_sentences),
+            ("factual_finding", state.report_draft.factual_sentences),
+            ("attribution", state.report_draft.attribution_findings),
+            (
+                "strongest_contradiction",
+                [state.report_draft.strongest_credible_contradiction]
+                if state.report_draft.strongest_credible_contradiction is not None
+                else [],
+            ),
+        )
         sentences = {
-            sentence.sentence_ref: sentence
-            for sentence in [
-                *state.report_draft.summary_sentences,
-                *state.report_draft.factual_sentences,
-                *state.report_draft.attribution_findings,
-                *(
-                    [state.report_draft.strongest_credible_contradiction]
-                    if state.report_draft.strongest_credible_contradiction is not None
-                    else []
-                ),
-            ]
+            sentence.sentence_ref: (section, sentence)
+            for section, group in sentence_groups
+            for sentence in group
         }
         db.execute(delete(ReportCitation).where(ReportCitation.run_id == run.id))
         claim_ids = select(AtomicClaim.id).where(AtomicClaim.run_id == run.id)
@@ -526,14 +535,14 @@ class SqlWorkflowStateWriter:
                 passage_id = UUID(audit.passage_id)
             except ValueError:
                 raise ValueError("citation passage IDs must be durable UUIDs") from None
-            sentence = sentences[audit.sentence_ref]
+            report_section, sentence = sentences[audit.sentence_ref]
             passed = audit.entailment == Entailment.ENTAILED
             if passed:
                 accepted_passages.add(passage_id)
             db.add(
                 ReportCitation(
                     run_id=run.id,
-                    report_section="report",
+                    report_section=report_section,
                     sentence_text=sentence.text,
                     passage_id=passage_id,
                     audit_status="passed" if passed else audit.entailment.value,
@@ -655,7 +664,10 @@ def execute_verification_workflow(
         owns_pipeline = False
         try:
             if retrieve and pipeline is None and workflow_extensions is None:
-                cache = RetrievalCache(redis_client)
+                cache = RetrievalCache(
+                    redis_client,
+                    lock_ttl_seconds=settings.redis_lock_ttl_seconds,
+                )
                 search = BraveSearchClient(
                     provider=settings.search_provider,
                     api_key=settings.search_api_key,
@@ -707,7 +719,26 @@ def execute_verification_workflow(
                 pipeline = RetrievalPipeline(
                     search=search,
                     fetcher=fetcher,
-                    extractor=ExtractionService(),
+                    extractor=ExtractionService(
+                        playwright_extractor=PlaywrightExtractor(
+                            guard=fetcher.guard,
+                            limits=PlaywrightLimits(
+                                navigation_timeout_seconds=(
+                                    settings.playwright_navigation_timeout_seconds
+                                ),
+                                total_timeout_seconds=settings.playwright_total_timeout_seconds,
+                                max_response_bytes=settings.playwright_max_response_bytes,
+                                max_total_response_bytes=(
+                                    settings.playwright_max_total_response_bytes
+                                ),
+                                max_dom_bytes=settings.playwright_max_dom_bytes,
+                                max_dom_nodes=settings.playwright_max_dom_nodes,
+                                max_redirects=settings.fetch_max_redirects,
+                                max_retries=settings.playwright_max_retries,
+                                settle_time_ms=settings.playwright_settle_time_ms,
+                            ),
+                        )
+                    ),
                     rate_limiter=RetrievalRateLimiter(redis_client),
                 )
                 owns_pipeline = True

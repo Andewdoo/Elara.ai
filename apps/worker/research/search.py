@@ -40,6 +40,7 @@ class BraveSearchClient:
         base_url: str,
         cache: RetrievalCache | None = None,
         cache_ttl_seconds: int = 3_600,
+        max_retries: int = 1,
         client: httpx.AsyncClient | None = None,
     ) -> None:
         if provider.casefold() != "brave":
@@ -60,6 +61,9 @@ class BraveSearchClient:
         self._endpoint = f"{base_url.rstrip('/')}/web/search"
         self._cache = cache
         self._cache_ttl = cache_ttl_seconds
+        if not 0 <= max_retries <= 2:
+            raise SearchConfigurationError("Brave Search retries must be between zero and two")
+        self._max_retries = max_retries
         self._client = client or httpx.AsyncClient(
             timeout=httpx.Timeout(10.0, connect=5.0), follow_redirects=False, trust_env=False
         )
@@ -71,22 +75,33 @@ class BraveSearchClient:
         cached = self._cache.get_json(cache_key) if self._cache and cache_key else None
         if isinstance(cached, list):
             return [SearchResult(**item) for item in cached]
-        try:
-            response = await self._client.get(
-                self._endpoint,
-                params={"q": query, "count": count, "safesearch": "moderate"},
-                headers={
-                    "Accept": "application/json",
-                    "Accept-Encoding": "gzip",
-                    "X-Subscription-Token": self._api_key,
-                },
-            )
-        except httpx.TimeoutException as exc:
-            raise SearchProviderError("Brave Search timed out", retryable=True) from exc
-        except httpx.NetworkError as exc:
-            raise SearchProviderError("Brave Search was unavailable", retryable=True) from exc
-        if response.status_code in {408, 429} or response.status_code >= 500:
-            raise SearchProviderError("Brave Search returned a transient error", retryable=True)
+        response: httpx.Response | None = None
+        for attempt in range(self._max_retries + 1):
+            try:
+                response = await self._client.get(
+                    self._endpoint,
+                    params={"q": query, "count": count, "safesearch": "moderate"},
+                    headers={
+                        "Accept": "application/json",
+                        "Accept-Encoding": "gzip",
+                        "X-Subscription-Token": self._api_key,
+                    },
+                )
+            except (httpx.TimeoutException, httpx.NetworkError) as exc:
+                if attempt < self._max_retries:
+                    continue
+                message = (
+                    "Brave Search timed out"
+                    if isinstance(exc, httpx.TimeoutException)
+                    else "Brave Search was unavailable"
+                )
+                raise SearchProviderError(message, retryable=True) from exc
+            if response.status_code in {408, 429} or response.status_code >= 500:
+                if attempt < self._max_retries:
+                    continue
+                raise SearchProviderError("Brave Search returned a transient error", retryable=True)
+            break
+        assert response is not None
         if response.status_code >= 400:
             raise SearchProviderError("Brave Search rejected the request")
         if len(response.content) > 2_000_000:

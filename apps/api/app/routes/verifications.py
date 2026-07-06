@@ -23,9 +23,11 @@ from app.redis_client import get_redis_client, progress_stream_key, request_canc
 from app.schemas.verifications import (
     DeleteReportResponse,
     ExportCreateRequest,
+    ExportListResponse,
     ExportResponse,
     FeedbackCreateRequest,
     FeedbackResponse,
+    FeedbackListResponse,
     SavedReportResponse,
     VerificationCancelResponse,
     VerificationCreateRequest,
@@ -50,6 +52,7 @@ from app.services.verifications import (
     RunNotFoundError,
     UploadNotFoundError,
     create_queued_verification,
+    create_retry_verification,
     get_authorized_run,
     request_run_cancellation,
 )
@@ -61,6 +64,8 @@ from app.services.report_actions import (
     delete_report,
     export_response,
     feedback_response,
+    list_exports,
+    list_feedback,
     get_export_download,
     set_saved,
     submit_feedback,
@@ -383,6 +388,53 @@ def cancel_verification(
     )
 
 
+@router.post("/{run_id}/retry", response_model=VerificationCreateResponse, status_code=status.HTTP_202_ACCEPTED)
+def retry_verification(
+    run_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+    redis_client: Redis = Depends(get_request_redis_client),
+    dispatcher: VerificationDispatcher = Depends(get_verification_dispatcher),
+) -> VerificationCreateResponse:
+    try:
+        run = create_retry_verification(
+            db, owner=authenticated.user, run_id=run_id, settings=settings
+        )
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ActiveRunLimitExceededError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    except ResearchDepthNotAllowedError as exc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    try:
+        mirror_agent_event(redis_client, settings=settings, event=run.events[0])
+    except Exception:
+        logger.warning("Unable to mirror retry progress for run %s", run.id)
+    try:
+        dispatcher.enqueue(run.id, run.research_depth)
+    except Exception as exc:
+        persist_progress(
+            db,
+            run_id=run.id,
+            stage=RunStatus.FAILED,
+            event_type="run.failed",
+            message="Verification could not be queued. Please try again.",
+            failure_code="QUEUE_UNAVAILABLE",
+        )
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Verification queue is unavailable",
+        ) from exc
+    return VerificationCreateResponse(
+        run_id=run.id,
+        status=run.status,
+        events_url=f"/v1/verifications/{run.id}/events",
+    )
+
+
 @router.post("/{run_id}/save", response_model=SavedReportResponse)
 def save_report(
     run_id: UUID,
@@ -431,6 +483,20 @@ def create_feedback(
     return feedback_response(row)
 
 
+@router.get("/{run_id}/feedback", response_model=FeedbackListResponse)
+def get_feedback_history(
+    run_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+) -> FeedbackListResponse:
+    try:
+        return FeedbackListResponse(
+            items=list_feedback(db, viewer_id=authenticated.user.id, run_id=run_id)
+        )
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
 @router.post(
     "/{run_id}/exports", response_model=ExportResponse, status_code=status.HTTP_201_CREATED
 )
@@ -456,6 +522,20 @@ def create_export(
             detail="Export storage is temporarily unavailable",
         ) from exc
     return export_response(row)
+
+
+@router.get("/{run_id}/exports", response_model=ExportListResponse)
+def get_export_history(
+    run_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+) -> ExportListResponse:
+    try:
+        return ExportListResponse(
+            items=list_exports(db, owner_id=authenticated.user.id, run_id=run_id)
+        )
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
 
 @router.get("/{run_id}/exports/{export_id}", response_model=ExportResponse)

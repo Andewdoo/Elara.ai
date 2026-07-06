@@ -206,6 +206,83 @@ def test_tampered_fetch_cache_cannot_read_paths_outside_managed_storage(tmp_path
     assert result.cache_hit is False
 
 
+def test_fetch_cache_reuses_verified_snapshot_without_second_origin_request(tmp_path):
+    backend = MemoryCache()
+    requests = 0
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal requests
+        requests += 1
+        return httpx.Response(
+            200,
+            headers={"content-type": "text/html"},
+            content=b"<html><body>cached evidence</body></html>",
+            request=request,
+        )
+
+    fetcher = SecureFetcher(
+        guard=UrlGuard(resolver=lambda *_: _resolved(["93.184.216.34"])),
+        store=SnapshotFileStore(tmp_path),
+        cache=RetrievalCache(backend),
+        transport=httpx.MockTransport(handler),
+    )
+    first = run(fetcher.fetch("https://example.test/cache"))
+    second = run(fetcher.fetch("https://example.test/cache"))
+    run(fetcher.aclose())
+
+    assert requests == 1
+    assert first.cache_hit is False
+    assert second.cache_hit is True
+    assert second.content_hash == first.content_hash
+
+
+def test_fetcher_bounds_transient_http_retries(tmp_path):
+    requests = 0
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal requests
+        requests += 1
+        return httpx.Response(503, request=request)
+
+    fetcher = SecureFetcher(
+        guard=UrlGuard(resolver=lambda *_: _resolved(["93.184.216.34"])),
+        store=SnapshotFileStore(tmp_path),
+        network_retries=1,
+        transport=httpx.MockTransport(handler),
+    )
+    with pytest.raises(FetchError, match="transient HTTP") as error:
+        run(fetcher.fetch("https://example.test/transient"))
+    run(fetcher.aclose())
+
+    assert requests == 2
+    assert error.value.retryable is True
+
+
+def test_distributed_fetch_lock_prevents_duplicate_origin_request(tmp_path):
+    backend = LockingMemoryCache(acquired=False)
+    requested = False
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal requested
+        requested = True
+        return httpx.Response(200, content=b"must not run", request=request)
+
+    fetcher = SecureFetcher(
+        guard=UrlGuard(resolver=lambda *_: _resolved(["93.184.216.34"])),
+        store=SnapshotFileStore(tmp_path),
+        cache=RetrievalCache(backend),
+        transport=httpx.MockTransport(handler),
+    )
+    with pytest.raises(FetchError, match="already in progress") as error:
+        run(fetcher.fetch("https://example.test/locked"))
+    run(fetcher.aclose())
+
+    assert requested is False
+    assert error.value.retryable is True
+    assert backend.last_lock is not None
+    assert backend.last_lock.acquire_calls == 1
+
+
 def test_s3_store_returns_private_object_key_and_verifies_download_hash(tmp_path):
     client = FakeS3Client()
     staging = SnapshotFileStore(tmp_path / "staging")
@@ -228,6 +305,34 @@ class MemoryCache:
 
     def setex(self, key, _ttl, value):
         self.values[key] = value
+
+
+class FakeLock:
+    def __init__(self, acquired: bool):
+        self.acquired = acquired
+        self.acquire_calls = 0
+        self.release_calls = 0
+
+    def acquire(self, *, blocking: bool):
+        assert blocking is False
+        self.acquire_calls += 1
+        return self.acquired
+
+    def release(self):
+        self.release_calls += 1
+
+
+class LockingMemoryCache(MemoryCache):
+    def __init__(self, *, acquired: bool):
+        super().__init__()
+        self.acquired = acquired
+        self.last_lock: FakeLock | None = None
+
+    def lock(self, _key, **kwargs):
+        assert kwargs["blocking_timeout"] == 0
+        assert kwargs["thread_local"] is False
+        self.last_lock = FakeLock(self.acquired)
+        return self.last_lock
 
 
 class FakeS3Client:

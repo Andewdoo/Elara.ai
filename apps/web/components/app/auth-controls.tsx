@@ -55,9 +55,9 @@ export function AuthControls() {
       </summary>
       <div className="absolute right-0 top-10 z-50 w-72 rounded-md border bg-white p-3 shadow-lg">
         <form className="grid gap-2" onSubmit={submit}>
-          <Input name="email" type="email" autoComplete="email" placeholder="Email" required />
-          <Input name="password" type="password" autoComplete="current-password" placeholder="Password" required />
-          {error && <p className="text-xs text-destructive" role="alert">{error}</p>}
+          <label className="grid gap-1 text-xs font-medium" htmlFor="auth-email">Email<Input id="auth-email" name="email" type="email" autoComplete="email" required aria-invalid={Boolean(error)} aria-describedby={error ? "auth-error" : undefined}/></label>
+          <label className="grid gap-1 text-xs font-medium" htmlFor="auth-password">Password<Input id="auth-password" name="password" type="password" autoComplete="current-password" required aria-invalid={Boolean(error)} aria-describedby={error ? "auth-error" : undefined}/></label>
+          {error && <p id="auth-error" className="text-xs text-destructive" role="alert">{error}</p>}
           <Button type="submit" size="sm" disabled={pending}>Sign in with email</Button>
           <Button type="button" size="sm" variant="secondary" disabled={pending} onClick={() => run(signInWithGoogle)}>
             Sign in with Google

@@ -195,3 +195,39 @@ def test_active_run_cancellation_is_idempotent(
         "run.validating",
         "run.cancellation_requested",
     ]
+
+
+def test_retry_creates_a_fresh_durable_attempt(client, session_factory, dispatcher):
+    created = client.post(
+        "/v1/verifications",
+        json={"input_type": "CLAIM", "research_depth": "QUICK", "text": "A retryable claim"},
+    ).json()
+    original_id = UUID(created["run_id"])
+    with session_factory() as db:
+        run = db.get(VerificationRun, original_id)
+        assert run is not None
+        run.status = RunStatus.FAILED
+        run.failure_code = "PROVIDER_UNAVAILABLE"
+        db.commit()
+
+    response = client.post(f"/v1/verifications/{original_id}/retry")
+
+    assert response.status_code == 202
+    retried_id = UUID(response.json()["run_id"])
+    assert retried_id != original_id
+    with session_factory() as db:
+        original = db.get(VerificationRun, original_id)
+        retried = db.get(VerificationRun, retried_id)
+        event = db.scalar(select(AgentEvent).where(AgentEvent.run_id == retried_id))
+        assert original is not None and original.status == RunStatus.FAILED
+        assert retried is not None and retried.status == RunStatus.QUEUED
+        assert retried.normalized_target["retried_from_run_id"] == str(original_id)
+        assert event is not None and event.event_type == "run.retried"
+    assert dispatcher.calls[-1][0] == retried_id
+
+
+def test_retry_rejects_active_and_completed_runs(client):
+    active = client.post(
+        "/v1/verifications", json={"input_type": "CLAIM", "text": "An active claim"}
+    ).json()
+    assert client.post(f"/v1/verifications/{active['run_id']}/retry").status_code == 409

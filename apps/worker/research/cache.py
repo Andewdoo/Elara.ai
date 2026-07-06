@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Iterator
+from contextlib import contextmanager
 from typing import Any, Protocol
 
-from redis.exceptions import RedisError
+from redis.exceptions import LockError, RedisError
 
 
 class CacheBackend(Protocol):
@@ -17,9 +19,16 @@ class CacheBackend(Protocol):
 
 
 class RetrievalCache:
-    def __init__(self, backend: CacheBackend | None, *, namespace: str = "elara:retrieval") -> None:
+    def __init__(
+        self,
+        backend: CacheBackend | None,
+        *,
+        namespace: str = "elara:retrieval",
+        lock_ttl_seconds: int = 30,
+    ) -> None:
         self._backend = backend
         self._namespace = namespace
+        self._lock_ttl_seconds = lock_ttl_seconds
 
     @staticmethod
     def digest(*parts: str) -> str:
@@ -53,6 +62,35 @@ class RetrievalCache:
             )
         except (OSError, RedisError):
             return
+
+    @contextmanager
+    def fetch_lock(self, canonical_url: str) -> Iterator[bool]:
+        """Coordinate origin fetches without making Redis durable truth."""
+        lock_factory = getattr(self._backend, "lock", None)
+        if lock_factory is None:
+            yield True
+            return
+        try:
+            lock = lock_factory(
+                self.key("fetch-lock", canonical_url),
+                timeout=self._lock_ttl_seconds,
+                blocking_timeout=0,
+                thread_local=False,
+            )
+            acquired = bool(lock.acquire(blocking=False))
+        except (OSError, RedisError):
+            # Redis is transient coordination. A cache outage must not erase the
+            # bounded origin-fetch path or masquerade as durable evidence.
+            yield True
+            return
+        try:
+            yield acquired
+        finally:
+            if acquired:
+                try:
+                    lock.release()
+                except (LockError, OSError, RedisError):
+                    pass
 
 
 class RetrievalRateLimiter:

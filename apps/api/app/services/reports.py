@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from decimal import Decimal, ROUND_HALF_UP
 
 from sqlalchemy import select
@@ -27,6 +28,28 @@ from app.schemas.verifications import (
     ScoreBundle,
 )
 from app.services.source_graph import build_source_graph
+
+
+SCORE_ROLES = {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured.",
+}
+
+
+def _as_utc(value: datetime) -> datetime:
+    return value.replace(tzinfo=UTC) if value.tzinfo is None else value.astimezone(UTC)
+
+
+def _retrieval_versions(methodology: MethodologyVersion | None) -> dict[str, object]:
+    config = methodology.retrieval_config if methodology else {}
+    return {
+        "implementation": config.get("implementation", "not-recorded"),
+        "version": config.get("version", "not-recorded"),
+    }
 
 
 def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
@@ -149,6 +172,8 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
         model_versions=run.model_versions,
         prompt_versions=run.prompt_versions,
         parser_versions=run.parser_versions,
+        retrieval_versions=_retrieval_versions(methodology),
+        score_roles=SCORE_ROLES,
         report_sentences=[
             ReportCitationResponse(
                 id=row.id,
@@ -160,7 +185,8 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
             )
             for row in report_citations
         ],
-        evidence_reviewed_at=run.evidence_reviewed_at or run.updated_at,
+        evidence_reviewed_at=_as_utc(run.evidence_reviewed_at or run.updated_at),
+        generated_at=_as_utc(run.completed_at or run.updated_at),
         limitations=limitations,
     )
 

@@ -6,7 +6,7 @@ Keep the existing Elara stack, security boundaries, deterministic scoring, durab
 
 Keep command output concise. After source or guidance changes, update Graphify. Report changed files, checks run, blockers, feature completion, milestone approval, and public-launch approval separately.
 
-For Steps 21-26, run only one named phase at a time and use a fresh thread for each phase. Do not combine phases or automatically request a second full gap review; the read-only audit phases already provide the handoff for their implementation phases. Use medium reasoning, keep Fast mode off, and avoid running two heavy phases in the same rolling five-hour window.
+For Steps 21-26, run only one named phase at a time and use a fresh thread for each phase. Do not combine phases or automatically request a second full gap review; the read-only audit phases already provide the handoff for their implementation phases. Use high reasoning, keep Fast mode off.
 
 dev server startup: npm run --workspace @elara/web dev -- --port 3000
 
@@ -89,3 +89,5 @@ Phase 26A: Begin the final release audit as a read-only evidence inventory. For 
 Phase 26B: Execute only the missing or stale gates identified by Step 26A. Use the existing prepared environment. Do not reinstall dependencies or repeat already-current passing gates. Run each required lint, type, test, migration, build, container, security, evaluation, deterministic acceptance, and staging gate at most once unless a genuine product defect is fixed. If a gate fails because of environment setup, record the blocker and stop that gate. If code changes are necessary, apply the smallest fix, run its focused regression, update Graphify, and mark broader affected evidence stale rather than automatically rerunning everything.
 
 Phase 26C: Produce the final versioned release-readiness report from the Step 26A inventory and Step 26B results. Include commands, results, environment, versions, benchmark outcomes, security evidence, operational evidence, known limitations, approvals, and explicit blockers. Verify monitoring, alerts, policies, staging, deployment, backup, restore, and rollback evidence without rerunning green gates. State separately and unambiguously whether the controlled first shippable milestone is approved and whether public production launch is approved. Do not call the project complete when either decision still has blockers.
+
+22B incomplete, Steps 23 → 26B → Step 22B → Step 26C → production release.

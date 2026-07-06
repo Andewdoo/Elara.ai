@@ -70,6 +70,26 @@ def feedback_response(row: UserFeedback) -> FeedbackResponse:
     )
 
 
+def list_feedback(db: Session, *, viewer_id: UUID, run_id: UUID) -> list[FeedbackResponse]:
+    run = get_authorized_run(db, viewer_id=viewer_id, run_id=run_id)
+    rows = db.scalars(
+        select(UserFeedback)
+        .where(UserFeedback.run_id == run.id, UserFeedback.user_id == viewer_id)
+        .order_by(UserFeedback.created_at.desc(), UserFeedback.id)
+    ).all()
+    return [feedback_response(row) for row in rows]
+
+
+def list_exports(db: Session, *, owner_id: UUID, run_id: UUID) -> list[ExportResponse]:
+    run = get_owned_run(db, owner_id=owner_id, run_id=run_id)
+    rows = db.scalars(
+        select(Export)
+        .where(Export.run_id == run.id)
+        .order_by(Export.created_at.desc(), Export.id)
+    ).all()
+    return [export_response(row) for row in rows]
+
+
 def create_json_export(
     db: Session,
     *,

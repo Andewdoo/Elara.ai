@@ -7,5 +7,6 @@ RUN pip install --no-cache-dir /srv/api
 
 COPY apps/worker /srv/worker
 RUN pip install --no-cache-dir /srv/worker
+RUN python -m playwright install --with-deps chromium
 
 CMD ["python", "-m", "celery", "-A", "app.celery_app:celery_app", "worker", "--loglevel=info", "--queues=verification.quick,verification.standard,verification.deep"]

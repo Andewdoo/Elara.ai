@@ -15,7 +15,7 @@ export default function MethodologyPage() {
       <section className="rounded-lg border bg-white p-5">
         <div className="flex items-center gap-2 text-sm font-medium text-primary">
           <BookOpenText className="h-4 w-4" aria-hidden="true" />
-          Methodology version 1.0 shell
+          Evidence review methodology
         </div>
         <h1 className="mt-3 text-2xl font-semibold tracking-normal">Evidence-management methodology</h1>
         <p className="mt-2 max-w-4xl text-sm leading-6 text-muted-foreground">

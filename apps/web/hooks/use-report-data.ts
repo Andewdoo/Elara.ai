@@ -17,8 +17,9 @@ export function useReportData(runId: string) {
   };
   const enabled = Boolean(user && runId);
   const run = useQuery({ queryKey: ["run", runId], enabled, queryFn: () => request<VerificationRun>(`/v1/verifications/${runId}`) });
-  const report = useQuery({ queryKey: ["report", runId], enabled, queryFn: () => request<ReportRecord>(`/v1/verifications/${runId}/report`) });
-  const sources = useQuery({ queryKey: ["sources", runId], enabled, queryFn: () => request<{ sources: SourceRecord[] }>(`/v1/verifications/${runId}/sources`) });
-  const sourceGraph = useQuery({ queryKey: ["source-graph", runId], enabled, queryFn: () => request<SourceGraphRecord>(`/v1/verifications/${runId}/source-graph`) });
+  const completed = run.data?.status === "COMPLETED";
+  const report = useQuery({ queryKey: ["report", runId], enabled: enabled && completed, queryFn: () => request<ReportRecord>(`/v1/verifications/${runId}/report`) });
+  const sources = useQuery({ queryKey: ["sources", runId], enabled: enabled && completed, queryFn: () => request<{ sources: SourceRecord[] }>(`/v1/verifications/${runId}/sources`) });
+  const sourceGraph = useQuery({ queryKey: ["source-graph", runId], enabled: enabled && completed, queryFn: () => request<SourceGraphRecord>(`/v1/verifications/${runId}/source-graph`) });
   return { run, report, sources, sourceGraph, authLoading, authenticated: Boolean(user) };
 }

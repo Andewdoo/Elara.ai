@@ -1,13 +1,13 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { apiErrorMessage, authenticatedApiFetch } from "@/lib/auth";
 
 export type FeedbackCategory = "CORRECTION" | "MISSED_EVIDENCE" | "APPEAL" | "BROKEN_CITATION";
 
-type ExportRecord = {
+export type ExportRecord = {
   export_id: string;
   run_id: string;
   format: "JSON";
@@ -15,6 +15,11 @@ type ExportRecord = {
   created_at: string;
   download_url: string | null;
   expires_at: string | null;
+};
+
+export type FeedbackRecord = {
+  feedback_id: string; run_id: string; category: FeedbackCategory; message: string;
+  source_url: string | null; status: string; created_at: string;
 };
 
 export function useReportActions(runId: string) {
@@ -48,6 +53,20 @@ export function useReportActions(runId: string) {
       });
       return request<ExportRecord>(`/v1/verifications/${runId}/exports/${created.export_id}`, { method: "GET" });
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["exports", runId] }),
   });
-  return { save, feedback, exportJson };
+  const feedbackHistory = useQuery({
+    queryKey: ["feedback", runId],
+    enabled: Boolean(user),
+    queryFn: () => request<{ items: FeedbackRecord[] }>(`/v1/verifications/${runId}/feedback`, { method: "GET" }),
+  });
+  const exportHistory = useQuery({
+    queryKey: ["exports", runId],
+    enabled: Boolean(user),
+    queryFn: () => request<{ items: ExportRecord[] }>(`/v1/verifications/${runId}/exports`, { method: "GET" }),
+  });
+  const reopenExport = useMutation({
+    mutationFn: (exportId: string) => request<ExportRecord>(`/v1/verifications/${runId}/exports/${exportId}`, { method: "GET" }),
+  });
+  return { save, feedback, exportJson, feedbackHistory, exportHistory, reopenExport };
 }

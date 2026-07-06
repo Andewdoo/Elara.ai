@@ -203,3 +203,57 @@ def request_run_cancellation(
     db.commit()
     db.refresh(run)
     return run, event
+
+
+def create_retry_verification(
+    db: Session,
+    *,
+    owner: User,
+    run_id: UUID,
+    settings: Settings,
+) -> VerificationRun:
+    previous = get_owned_run(db, owner_id=owner.id, run_id=run_id)
+    if previous.status not in {RunStatus.FAILED, RunStatus.CANCELLED}:
+        raise ValueError("Only failed or cancelled verifications can be retried")
+    enforce_verification_limits(
+        db,
+        owner=owner,
+        request=VerificationCreateRequest(
+            input_type=InputType.CLAIM,
+            research_depth=previous.research_depth,
+            text="retry-limit-check",
+        ),
+    )
+    now = utc_now()
+    target = dict(previous.normalized_target)
+    target["retried_from_run_id"] = str(previous.id)
+    run = VerificationRun(
+        user_id=owner.id,
+        input_type=previous.input_type,
+        research_depth=previous.research_depth,
+        status=RunStatus.QUEUED,
+        submitted_text=previous.submitted_text,
+        submitted_url=previous.submitted_url,
+        upload_object_path=previous.upload_object_path,
+        normalized_target=target,
+        workflow_version=settings.workflow_version,
+        queued_at=now,
+        created_at=now,
+        updated_at=now,
+    )
+    db.add(run)
+    db.flush()
+    db.add(
+        AgentEvent(
+            run_id=run.id,
+            sequence=1,
+            stage=RunStatus.QUEUED,
+            event_type="run.retried",
+            public_message="Verification queued as a new attempt.",
+            payload={"retried_from_run_id": str(previous.id)},
+            created_at=now,
+        )
+    )
+    db.commit()
+    db.refresh(run)
+    return run

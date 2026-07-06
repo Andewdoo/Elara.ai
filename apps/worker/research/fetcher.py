@@ -207,17 +207,36 @@ class SecureFetcher:
         except UnsafeUrlError as exc:
             raise FetchError(str(exc), access_status="INACCESSIBLE") from exc
         cache_key = self.cache.key("fetch", initial.canonical_url) if self.cache else None
+        cached_result = self._cached_result(cache_key)
+        if cached_result is not None:
+            return cached_result
+        if self.cache is not None:
+            with self.cache.fetch_lock(initial.canonical_url) as acquired:
+                cached_result = self._cached_result(cache_key)
+                if cached_result is not None:
+                    return cached_result
+                if not acquired:
+                    raise FetchError("source fetch is already in progress", retryable=True)
+                return await self._fetch_uncached(initial, cache_key)
+        return await self._fetch_uncached(initial, cache_key)
+
+    def _cached_result(self, cache_key: str | None) -> FetchResult | None:
         cached = self.cache.get_json(cache_key) if self.cache and cache_key else None
         if isinstance(cached, dict):
             try:
-                cached["redirect_chain"] = tuple(cached.get("redirect_chain", ()))
-                cached_result = FetchResult(**cached)
+                values = {**cached, "redirect_chain": tuple(cached.get("redirect_chain", ()))}
+                cached_result = FetchResult(**values)
             except (TypeError, ValueError):
                 cached_result = None
             if cached_result is not None and self.store.exists(
                 cached_result.storage_path, expected_hash=cached_result.content_hash
             ):
                 return replace(cached_result, cache_hit=True)
+        return None
+
+    async def _fetch_uncached(
+        self, initial: GuardedUrl, cache_key: str | None
+    ) -> FetchResult:
         current = initial.canonical_url
         chain: list[str] = []
         try:
@@ -229,6 +248,15 @@ class SecureFetcher:
                         guarded = await self.guard.validate(current)
                         try:
                             response = await self._request_pinned(guarded)
+                            if response.status_code in {408, 429} or response.status_code >= 500:
+                                await response.aclose()
+                                if attempt >= self.network_retries:
+                                    raise FetchError(
+                                        "source returned a transient HTTP error",
+                                        access_status="FAILED",
+                                        retryable=True,
+                                    )
+                                continue
                             break
                         except (httpx.TimeoutException, httpx.NetworkError):
                             if attempt >= self.network_retries:
@@ -249,9 +277,15 @@ class SecureFetcher:
                         self.cache.set_json(cache_key, asdict(result), ttl_seconds=self.cache_ttl_seconds)
                     return result
         except TimeoutError as exc:
-            raise FetchError("fetch exceeded the total request deadline", access_status="FAILED") from exc
+            raise FetchError(
+                "fetch exceeded the total request deadline",
+                access_status="FAILED",
+                retryable=True,
+            ) from exc
         except (httpx.TimeoutException, httpx.NetworkError) as exc:
-            raise FetchError("source network request failed", access_status="FAILED") from exc
+            raise FetchError(
+                "source network request failed", access_status="FAILED", retryable=True
+            ) from exc
         except UnsafeUrlError as exc:
             raise FetchError(str(exc), access_status="INACCESSIBLE") from exc
         raise FetchError("redirect handling failed")

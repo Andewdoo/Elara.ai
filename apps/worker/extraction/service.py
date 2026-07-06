@@ -1,14 +1,28 @@
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import dataclass, replace
 
 from extraction.html import extract_with_beautiful_soup, extract_with_trafilatura
 from extraction.models import ExtractedDocument
 from extraction.pdf import extract_pdf
-from extraction.playwright import extract_with_playwright_placeholder
+from extraction.playwright import PlaywrightExtractionError, PlaywrightExtractor
+
+
+@dataclass(frozen=True, slots=True)
+class ExtractionOutcome:
+    document: ExtractedDocument | None
+    fallback_attempted: bool = False
+    fallback_reason: str | None = None
+    failure_reason: str | None = None
+    inaccessible_status: str | None = None
+    parser_name: str | None = None
+    parser_version: str | None = None
 
 
 class ExtractionService:
+    def __init__(self, *, playwright_extractor: PlaywrightExtractor | None = None) -> None:
+        self.playwright_extractor = playwright_extractor
+
     async def extract(
         self,
         content: bytes,
@@ -16,11 +30,37 @@ class ExtractionService:
         content_type: str,
         url: str,
         expected_terms: tuple[str, ...] = (),
+        allow_browser_fallback: bool = False,
     ) -> ExtractedDocument | None:
+        outcome = await self.extract_with_outcome(
+            content,
+            content_type=content_type,
+            url=url,
+            expected_terms=expected_terms,
+            allow_browser_fallback=allow_browser_fallback,
+        )
+        return outcome.document
+
+    async def extract_with_outcome(
+        self,
+        content: bytes,
+        *,
+        content_type: str,
+        url: str,
+        expected_terms: tuple[str, ...] = (),
+        allow_browser_fallback: bool = False,
+    ) -> ExtractionOutcome:
         # PDFs are routed to the page-aware parser after signature/type validation.
         if content_type == "application/pdf":
-            result = extract_pdf(content)
-            return _assess(result, expected_terms) if result is not None else None
+            try:
+                result = extract_pdf(content)
+            except (RuntimeError, TypeError, ValueError):
+                result = None
+            return ExtractionOutcome(
+                _with_certainty(_assess(result, expected_terms)) if result is not None else None,
+                failure_reason=("PDF parsing failed safely." if result is None else None),
+                inaccessible_status=("UNSUPPORTED" if result is None else None),
+            )
         result = extract_with_trafilatura(content, url=url)
         if result is not None:
             structure = extract_with_beautiful_soup(content, url=url)
@@ -40,14 +80,60 @@ class ExtractionService:
                     blocks=structure.blocks,
                     metadata={**structure.metadata, **result.metadata, "structure_parser": "beautifulsoup4"},
                 )
-            return _assess(result, expected_terms)
+            return ExtractionOutcome(_with_certainty(_assess(result, expected_terms)))
         result = extract_with_beautiful_soup(content, url=url)
         if result is not None:
-            return _assess(result, expected_terms)
-        result = await extract_with_playwright_placeholder(url=url)
-        if result is not None:
-            return _assess(result, expected_terms)
-        return None
+            return ExtractionOutcome(_with_certainty(_assess(result, expected_terms)))
+        barrier_status = _access_barrier_status(content)
+        if barrier_status is not None:
+            return ExtractionOutcome(
+                None,
+                failure_reason=(
+                    "Source content is behind an access barrier."
+                    if barrier_status == "PAYWALLED"
+                    else "Source denied automated access."
+                ),
+                inaccessible_status=barrier_status,
+            )
+        fallback_reason = "static_extraction_failed_for_important_source"
+        if not allow_browser_fallback:
+            return ExtractionOutcome(
+                None,
+                failure_reason="Static extraction failed and browser fallback was not justified.",
+                inaccessible_status="INACCESSIBLE",
+            )
+        if self.playwright_extractor is None:
+            return ExtractionOutcome(
+                None,
+                fallback_attempted=True,
+                fallback_reason=fallback_reason,
+                failure_reason="Browser fallback is unavailable.",
+                inaccessible_status="INACCESSIBLE",
+                parser_name="playwright",
+                parser_version="unknown",
+            )
+        try:
+            result = await self.playwright_extractor.extract(
+                url=url,
+                fallback_reason=fallback_reason,
+            )
+        except PlaywrightExtractionError as exc:
+            return ExtractionOutcome(
+                None,
+                fallback_attempted=True,
+                fallback_reason=fallback_reason,
+                failure_reason=str(exc),
+                inaccessible_status=exc.access_status,
+                parser_name="playwright",
+                parser_version=self.playwright_extractor.parser_version,
+            )
+        return ExtractionOutcome(
+            _with_certainty(_assess(result, expected_terms)),
+            fallback_attempted=True,
+            fallback_reason=fallback_reason,
+            parser_name=result.parser_name,
+            parser_version=result.parser_version,
+        )
 
 
 def _assess(document: ExtractedDocument, expected_terms: tuple[str, ...]) -> ExtractedDocument:
@@ -80,6 +166,13 @@ def _assess(document: ExtractedDocument, expected_terms: tuple[str, ...]) -> Ext
     return replace(document, quality=quality, metadata={**document.metadata, "quality_checks": checks})
 
 
+def _with_certainty(document: ExtractedDocument) -> ExtractedDocument:
+    return replace(
+        document,
+        metadata={**document.metadata, "extraction_certainty": document.quality},
+    )
+
+
 def _terms(value: str) -> set[str]:
     return {
         "".join(character for character in token.casefold() if character.isalnum())
@@ -88,4 +181,16 @@ def _terms(value: str) -> set[str]:
     } - {""}
 
 
-__all__ = ["ExtractionService"]
+def _access_barrier_status(content: bytes) -> str | None:
+    sample = content[:100_000].decode("utf-8", errors="ignore").casefold()
+    if any(
+        term in sample
+        for term in ("subscribe to continue", "subscriber-only", "subscription required")
+    ):
+        return "PAYWALLED"
+    if any(term in sample for term in ("access denied", "verify you are human", "captcha")):
+        return "BOT_BLOCKED"
+    return None
+
+
+__all__ = ["ExtractionOutcome", "ExtractionService"]

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "methodology_version": "step22a-framework-1.0.0",
+  "human_approval": false,
+  "note": "Candidate release thresholds only. Values must be supplied and approved in Step 22B.",
+  "thresholds": {
+    "verdict_macro_f1": {"value": null, "review_status": "pending_human_approval"},
+    "attribution_accuracy": {"value": null, "review_status": "pending_human_approval"},
+    "evidence_precision": {"value": null, "review_status": "pending_human_approval"},
+    "evidence_recall": {"value": null, "review_status": "pending_human_approval"},
+    "passage_recall": {"value": null, "review_status": "pending_human_approval"},
+    "primary_source_recall": {"value": null, "review_status": "pending_human_approval"},
+    "citation_entailment": {"value": null, "review_status": "pending_human_approval"},
+    "extraction_fidelity": {"value": null, "review_status": "pending_human_approval"},
+    "numerical_accuracy": {"value": null, "review_status": "pending_human_approval"},
+    "source_clustering_accuracy": {"value": null, "review_status": "pending_human_approval"},
+    "unsupported_statement_rate": {"value": null, "review_status": "pending_human_approval"},
+    "confidence_brier_score": {"value": null, "review_status": "pending_human_approval"},
+    "mean_latency_seconds": {"value": null, "review_status": "pending_human_approval"},
+    "p95_latency_seconds": {"value": null, "review_status": "pending_human_approval"},
+    "mean_cost_per_verification_usd": {"value": null, "review_status": "pending_human_approval"},
+    "total_cost_usd": {"value": null, "review_status": "pending_human_approval"}
+  }
+}

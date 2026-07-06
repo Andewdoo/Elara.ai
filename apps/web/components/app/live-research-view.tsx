@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   CheckCircle2,
   Clock3,
   Loader2,
   Radio,
+  RefreshCw,
   Search,
   XCircle,
 } from "lucide-react";
@@ -39,7 +41,8 @@ function elapsedLabel(from: string | undefined, now: number) {
 }
 
 export function LiveResearchView({ runId }: { runId: string }) {
-  const { runQuery, latestEvent, connectionState, pollingFallback, cancelMutation } =
+  const router = useRouter();
+  const { runQuery, latestEvent, connectionState, pollingFallback, cancelMutation, retryMutation, refreshDurableResult } =
     useRunEvents(runId);
   const [now, setNow] = useState(() => Date.now());
 
@@ -79,7 +82,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
     return <div className="flex min-h-64 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   }
   if (runQuery.error) {
-    return <Card><CardContent className="p-6 text-sm text-destructive" role="alert">{runQuery.error.message}</CardContent></Card>;
+    return <Card><CardContent className="grid gap-3 p-6 text-sm text-destructive" role="alert"><span>{runQuery.error.message}</span><Button className="w-fit" variant="secondary" onClick={() => void runQuery.refetch()}><RefreshCw className="h-4 w-4" aria-hidden="true"/>Retry loading</Button></CardContent></Card>;
   }
 
   return (
@@ -88,14 +91,14 @@ export function LiveResearchView({ runId }: { runId: string }) {
         <CardHeader>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <CardTitle>Live research view</CardTitle>
-            <span className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span role="status" aria-live="polite" className="flex items-center gap-2 text-xs text-muted-foreground">
               <Radio className={connectionState === "connected" ? "h-3.5 w-3.5 text-emerald-600" : "h-3.5 w-3.5 text-amber-600"} />
               {pollingFallback ? "Polling PostgreSQL" : connectionState}
             </span>
           </div>
         </CardHeader>
         <CardContent className="grid gap-5">
-          <div className="rounded-md border bg-white p-5">
+          <div role="status" aria-live="polite" className="rounded-md border bg-white p-5">
             <div className="flex items-start gap-3">
               {status === "COMPLETED" ? (
                 <CheckCircle2 className="mt-0.5 h-5 w-5 text-emerald-700" />
@@ -118,7 +121,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
               <span>{completedSteps} of {totalSteps} steps</span>
               <span>{Math.round((completedSteps / totalSteps) * 100)}%</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-muted">
+            <div role="progressbar" aria-label="Verification progress" aria-valuemin={0} aria-valuemax={totalSteps} aria-valuenow={completedSteps} aria-valuetext={`${completedSteps} of ${totalSteps} steps`} className="h-2 overflow-hidden rounded-full bg-muted">
               <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(completedSteps / totalSteps) * 100}%` }} />
             </div>
           </div>
@@ -132,6 +135,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
           <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
             <span className="text-xs text-muted-foreground">Run {runId}</span>
             <div className="flex gap-2">
+              <Button variant="secondary" onClick={() => void refreshDurableResult()}><RefreshCw className="h-4 w-4" aria-hidden="true"/>Refresh</Button>
               {!terminal && (
                 <Button
                   variant="destructive"
@@ -142,9 +146,11 @@ export function LiveResearchView({ runId }: { runId: string }) {
                 </Button>
               )}
               {status === "COMPLETED" && <Button asChild><Link href={`/report/${runId}`}>Open report</Link></Button>}
+              {(status === "FAILED" || status === "CANCELLED") && <Button disabled={retryMutation.isPending} onClick={async () => { const result = await retryMutation.mutateAsync(); router.push(`/verify/${result.run_id}`); }}>{retryMutation.isPending ? "Retrying" : "Retry verification"}</Button>}
             </div>
           </div>
           {cancelMutation.error && <p className="text-xs text-destructive" role="alert">{cancelMutation.error.message}</p>}
+          {retryMutation.error && <p className="text-xs text-destructive" role="alert">{retryMutation.error.message}</p>}
         </CardContent>
       </Card>
 
@@ -172,7 +178,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
         )}
         <Card>
           <CardHeader><CardTitle>Latest public event</CardTitle></CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
+          <CardContent role="status" aria-live="polite" className="text-sm text-muted-foreground">
             {latestMessage ?? "No stream event received yet. Private reasoning is never published here."}
           </CardContent>
         </Card>

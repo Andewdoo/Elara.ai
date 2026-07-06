@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elara.local/schemas/evaluation-case-1.0.0.json",
+  "title": "Elara candidate evaluation case",
+  "type": "object",
+  "required": [
+    "id", "dataset_split", "domain", "input", "review", "atomic_claims",
+    "primary_sources", "acceptable_passages", "evidence_expectations",
+    "attribution_expectations", "expected_labels", "expected_calculations",
+    "citation_entailment", "dependency_clusters", "ambiguities",
+    "inaccessible_sources"
+  ],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "dataset_split": {
+      "enum": ["development_calibration", "locked_validation", "adversarial_security", "regression"]
+    },
+    "domain": {
+      "enum": [
+        "finance", "science", "technology", "current_events", "quotations",
+        "paraphrases", "allegations", "numerical_claims", "misleading_context",
+        "insufficient_evidence"
+      ]
+    },
+    "input": {
+      "type": "object",
+      "required": ["submitted_text", "as_of"],
+      "properties": {
+        "submitted_text": {"type": "string", "minLength": 1},
+        "as_of": {"type": "string", "format": "date-time"}
+      }
+    },
+    "review": {"$ref": "#/$defs/pendingAnnotation"},
+    "atomic_claims": {"$ref": "#/$defs/pendingAnnotation"},
+    "primary_sources": {"$ref": "#/$defs/pendingAnnotation"},
+    "acceptable_passages": {"$ref": "#/$defs/pendingAnnotation"},
+    "evidence_expectations": {"$ref": "#/$defs/pendingAnnotation"},
+    "attribution_expectations": {"$ref": "#/$defs/pendingAnnotation"},
+    "expected_labels": {"$ref": "#/$defs/pendingAnnotation"},
+    "expected_calculations": {"$ref": "#/$defs/pendingAnnotation"},
+    "citation_entailment": {"$ref": "#/$defs/pendingAnnotation"},
+    "dependency_clusters": {"$ref": "#/$defs/pendingAnnotation"},
+    "ambiguities": {"$ref": "#/$defs/pendingAnnotation"},
+    "inaccessible_sources": {"$ref": "#/$defs/pendingAnnotation"}
+  },
+  "$defs": {
+    "pendingAnnotation": {
+      "type": "object",
+      "required": ["review_status"],
+      "properties": {
+        "review_status": {"const": "pending_human_approval"}
+      }
+    }
+  },
+  "additionalProperties": false
+}
