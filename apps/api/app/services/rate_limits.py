@@ -55,8 +55,33 @@ def enforce_verification_rate_limit(
             raise RateLimitUnavailableError("Verification rate limiter is unavailable") from exc
 
 
+def enforce_action_rate_limit(
+    client: Redis, *, settings: Settings, user_id: str, action: str
+) -> None:
+    if not action.replace("_", "").isalnum():
+        raise ValueError("Invalid rate-limit action")
+    limit = _Limit(
+        f"elara:rate:{action}:user:{user_id}", settings.sensitive_action_user_rate_limit
+    )
+    try:
+        count = int(client.incr(limit.key))
+        if count == 1:
+            client.expire(limit.key, settings.verification_rate_limit_window_seconds)
+        if count > limit.maximum:
+            ttl = int(client.ttl(limit.key))
+            raise RateLimitExceededError(
+                ttl if ttl > 0 else settings.verification_rate_limit_window_seconds
+            )
+    except RateLimitExceededError:
+        raise
+    except (RedisError, OSError, ValueError, TypeError) as exc:
+        if settings.environment in {"staging", "production"}:
+            raise RateLimitUnavailableError("Action rate limiter is unavailable") from exc
+
+
 __all__ = [
     "RateLimitExceededError",
     "RateLimitUnavailableError",
+    "enforce_action_rate_limit",
     "enforce_verification_rate_limit",
 ]

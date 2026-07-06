@@ -1,0 +1,8 @@
+title = "Elara secret scanning policy"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Only deterministic fake values in dedicated tests may be allowlisted."
+paths = ['''apps/api/tests/fixtures/secret-scanner-safe-fixture\.txt''']

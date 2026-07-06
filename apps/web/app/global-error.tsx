@@ -5,7 +5,10 @@ import { useEffect } from "react";
 
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    Sentry.withScope((scope) => {
+      if (error.digest) scope.setTag("next_error_digest", error.digest);
+      Sentry.captureMessage("Client view failed without recording exception content", "error");
+    });
   }, [error]);
 
   return (

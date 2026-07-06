@@ -104,6 +104,7 @@ class S3SnapshotStore:
         prefix: str = "source-snapshots",
         create_bucket_if_missing: bool = False,
         region: str = "us-east-1",
+        server_side_encryption: str = "AES256",
     ) -> None:
         self.client = client
         self.bucket = bucket
@@ -111,11 +112,16 @@ class S3SnapshotStore:
         self.prefix = prefix.strip("/")
         self.create_bucket_if_missing = create_bucket_if_missing
         self.region = region
+        self.server_side_encryption = server_side_encryption
 
     def write(self, content: bytes, *, content_hash: str, suffix: str) -> str:
         local_path = self.staging.write(content, content_hash=content_hash, suffix=suffix)
         key = self._key(content_hash, suffix)
-        extra_args = {"ContentType": "application/pdf" if suffix == ".pdf" else "text/html"}
+        extra_args = {
+            "ContentType": "application/pdf" if suffix == ".pdf" else "text/html",
+            "ServerSideEncryption": self.server_side_encryption,
+            "CacheControl": "private, no-store",
+        }
         try:
             self.client.upload_file(local_path, self.bucket, key, ExtraArgs=extra_args)
         except Exception:

@@ -33,6 +33,7 @@ def test_run_metrics_cover_required_operational_signals_without_content():
 def test_observability_filters_sensitive_fields_and_trace_metadata():
     assert before_send({"extra": {"source_content": "private", "run_id": "safe"}}, {})["extra"] == {"source_content": "[Filtered]", "run_id": "safe"}
     assert _metadata({"provider": "deepseek", "model": "deepseek-chat", "prompt": "secret"}) == {"provider": "deepseek", "model": "deepseek-chat"}
+    assert before_send({"exception": {"values": [{"value": "private evidence"}]}}, {})["exception"] == "[Filtered]"
 
 
 def test_trace_outputs_allow_only_aggregate_fields():

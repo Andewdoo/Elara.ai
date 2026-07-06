@@ -5,6 +5,7 @@ from app.config import get_settings
 from app.observability import initialize_api_sentry
 from app.routes import auth_router, history_router, uploads_router, verifications_router
 from app.security import SecurityHeadersMiddleware
+from app.services.object_storage import get_object_storage
 
 
 def create_app() -> FastAPI:
@@ -26,6 +27,11 @@ def create_app() -> FastAPI:
     app.include_router(history_router)
     app.include_router(uploads_router)
     app.include_router(verifications_router)
+
+    @app.on_event("startup")
+    def verify_private_storage_policy() -> None:
+        if settings.environment in {"staging", "production"}:
+            get_object_storage().assert_private_bucket()
 
     @app.get("/health", tags=["operations"])
     def health() -> dict[str, str]:

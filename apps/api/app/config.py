@@ -67,7 +67,13 @@ class Settings(BaseSettings):
     verification_user_rate_limit: int = Field(default=10, ge=1, le=1_000)
     verification_ip_rate_limit: int = Field(default=30, ge=1, le=10_000)
     verification_rate_limit_window_seconds: int = Field(default=3_600, ge=60, le=86_400)
+    sensitive_action_user_rate_limit: int = Field(default=60, ge=1, le=1_000)
     upload_max_bytes: int = Field(default=25_000_000, ge=100_000, le=100_000_000)
+    unclaimed_upload_retention_hours: int = Field(default=24, ge=1, le=168)
+    orphan_snapshot_retention_days: int = Field(default=30, ge=7, le=365)
+    s3_server_side_encryption: Literal["AES256", "aws:kms"] = "AES256"
+    celery_task_soft_time_limit_seconds: int = Field(default=900, ge=60, le=3600)
+    celery_task_time_limit_seconds: int = Field(default=960, ge=90, le=3900)
 
     workflow_version: str = "step-18"
     citation_revision_limit: int = Field(default=2, ge=0, le=5)
@@ -250,6 +256,8 @@ class Settings(BaseSettings):
             raise ValueError(f"Production server credentials are missing or placeholders: {', '.join(missing)}")
         if not self.firebase_session_cookie_name.startswith("__Host-"):
             raise ValueError("Production Firebase session cookies must use the __Host- prefix")
+        if self.celery_task_soft_time_limit_seconds >= self.celery_task_time_limit_seconds:
+            raise ValueError("Celery soft time limit must be below the hard time limit")
         return self
 
     @property

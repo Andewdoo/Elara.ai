@@ -14,7 +14,7 @@ from app.models.claims import AtomicClaim, SearchQuery
 from app.models.evidence import EvidenceItem, ReportCitation
 from app.models.methodology import MethodologyVersion
 from app.models.provenance import InformationCluster, SourceDependency
-from app.models.records import Calculation, Export, UserFeedback
+from app.models.records import Calculation, Export, GovernanceDecision, ReportShare, UserFeedback
 from app.models.sources import RunSource, Source, SourcePassage, SourceSnapshot
 from app.models.user import User
 from app.models.upload import Upload
@@ -31,10 +31,12 @@ __all__ = [
     "ExportFormat",
     "Export",
     "InformationCluster",
+    "GovernanceDecision",
     "FeedbackCategory",
     "InputType",
     "MethodologyVersion",
     "ReportCitation",
+    "ReportShare",
     "ResearchDepth",
     "RunSource",
     "RunStatus",

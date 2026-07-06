@@ -16,6 +16,8 @@ class ObjectStorage(Protocol):
 
     def delete_object(self, *, key: str) -> None: ...
 
+    def assert_private_bucket(self) -> None: ...
+
 
 class S3ObjectStorage:
     def __init__(self) -> None:
@@ -24,6 +26,7 @@ class S3ObjectStorage:
 
         settings = get_settings()
         self.bucket = settings.s3_bucket_name
+        self.encryption = settings.s3_server_side_encryption
         client_options = {
             "aws_access_key_id": settings.s3_access_key_id,
             "aws_secret_access_key": settings.s3_secret_access_key,
@@ -48,7 +51,21 @@ class S3ObjectStorage:
             Body=body,
             ContentType=content_type,
             CacheControl="private, no-store",
+            ServerSideEncryption=self.encryption,
         )
+
+    def assert_private_bucket(self) -> None:
+        public = self.client.get_public_access_block(Bucket=self.bucket)["PublicAccessBlockConfiguration"]
+        required = {"BlockPublicAcls", "IgnorePublicAcls", "BlockPublicPolicy", "RestrictPublicBuckets"}
+        if not all(public.get(key) is True for key in required):
+            raise RuntimeError("Object-storage public access block is incomplete")
+        status = self.client.get_bucket_policy_status(Bucket=self.bucket).get("PolicyStatus", {})
+        if status.get("IsPublic") is not False:
+            raise RuntimeError("Object-storage bucket policy is public or unverifiable")
+        rules = self.client.get_bucket_encryption(Bucket=self.bucket)["ServerSideEncryptionConfiguration"]["Rules"]
+        algorithms = {rule.get("ApplyServerSideEncryptionByDefault", {}).get("SSEAlgorithm") for rule in rules}
+        if self.encryption not in algorithms:
+            raise RuntimeError("Object-storage default encryption does not match policy")
 
     def signed_download_url(
         self, *, key: str, filename: str, content_type: str, expires_in: int

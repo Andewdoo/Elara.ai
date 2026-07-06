@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -11,6 +11,7 @@ from app.models.types import utc_now
 from app.models.user import User
 from app.models.verification_run import VerificationRun
 from app.models.upload import Upload
+from app.models.records import ReportShare
 from app.schemas.verifications import VerificationCreateRequest
 
 
@@ -47,7 +48,8 @@ def enforce_verification_limits(
         if request.research_depth.value not in normalized_depths:
             raise ResearchDepthNotAllowedError("Research depth is not available for this account")
 
-    max_active_runs = owner.usage_limits.get("max_active_runs")
+    # Empty account metadata must not mean unlimited expensive worker admission.
+    max_active_runs = owner.usage_limits.get("max_active_runs", 3)
     if isinstance(max_active_runs, int) and not isinstance(max_active_runs, bool) and max_active_runs >= 0:
         active_count = db.scalar(
             select(func.count())
@@ -144,13 +146,32 @@ def get_owned_run(db: Session, *, owner_id: UUID, run_id: UUID) -> VerificationR
     return run
 
 
-def get_authorized_run(db: Session, *, viewer_id: UUID, run_id: UUID) -> VerificationRun:
-    """Authorize an owner or a run explicitly shared to all authenticated users."""
+def get_authorized_run(
+    db: Session, *, viewer_id: UUID, run_id: UUID, required_scope: str = "report"
+) -> VerificationRun:
+    """Authorize the owner or a live, recipient-specific share with sufficient scope."""
+    allowed_scopes = {
+        "report": {"report", "report_sources", "report_sources_exports"},
+        "sources": {"report_sources", "report_sources_exports"},
+        "exports": {"report_sources_exports"},
+    }
+    if required_scope not in allowed_scopes:
+        raise ValueError("Unknown share scope")
+    now = utc_now()
     run = db.scalar(
-        select(VerificationRun).where(
+        select(VerificationRun).outerjoin(
+            ReportShare,
+            and_(
+                ReportShare.run_id == VerificationRun.id,
+                ReportShare.recipient_user_id == viewer_id,
+                ReportShare.revoked_at.is_(None),
+                ReportShare.expires_at > now,
+                ReportShare.scope.in_(allowed_scopes[required_scope]),
+            ),
+        ).where(
             VerificationRun.id == run_id,
             VerificationRun.deleted_at.is_(None),
-            or_(VerificationRun.user_id == viewer_id, VerificationRun.visibility == "public"),
+            or_(VerificationRun.user_id == viewer_id, ReportShare.id.is_not(None)),
         )
     )
     if run is None:

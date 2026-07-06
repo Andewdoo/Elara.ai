@@ -57,6 +57,8 @@ def test_all_durable_tables_are_registered_in_metadata():
         "methodology_versions",
         "exports",
         "uploads",
+        "report_shares",
+        "governance_decisions",
     }
     assert set(Base.metadata.tables) == expected
 
@@ -107,7 +109,7 @@ def test_initial_migration_tables_match_metadata_and_has_one_head():
         for statement in revision.TABLE_SQL
         if (match := re.match(r"CREATE TABLE (\w+)", statement))
     }
-    assert migrated_tables == set(Base.metadata.tables) - {"uploads"}
+    assert migrated_tables == set(Base.metadata.tables) - {"uploads", "report_shares", "governance_decisions"}
     assert revision.down_revision is None
     assert any("vector(__EMBEDDING_DIMENSION__)" in sql for sql in revision.TABLE_SQL)
     assert any("ix_source_snapshots_source_content_hash" in sql for sql in revision.INDEX_SQL)
@@ -120,7 +122,7 @@ def test_initial_migration_tables_match_metadata_and_has_one_head():
 
     config = Config(str(API_ROOT / "alembic.ini"))
     script = ScriptDirectory.from_config(config)
-    assert script.get_heads() == ["20260703_0003"]
+    assert script.get_heads() == ["20260706_0004"]
 
 
 def test_uuid_keys_and_timezone_aware_timestamps_are_consistent():

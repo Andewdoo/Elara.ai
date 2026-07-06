@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from dataclasses import dataclass
 from importlib.metadata import version
 import re
 from statistics import median
+from time import monotonic
 
 import fitz
 
@@ -13,14 +15,31 @@ from extraction.models import ExtractedBlock, ExtractedDocument
 _SPEAKER = re.compile(r"^(?P<speaker>[A-Z][\w .'-]{0,79}):\s+(?P<text>.+)$")
 
 
-def extract_pdf(content: bytes) -> ExtractedDocument | None:
+@dataclass(frozen=True, slots=True)
+class PdfExtractionLimits:
+    max_pages: int = 250
+    max_text_chars: int = 5_000_000
+    max_objects: int = 200_000
+    max_tables: int = 500
+    deadline_seconds: float = 20.0
+
+
+class _PdfLimitExceeded(RuntimeError):
+    pass
+
+
+def extract_pdf(content: bytes, *, limits: PdfExtractionLimits | None = None) -> ExtractedDocument | None:
     if not content.startswith(b"%PDF-"):
         return None
+    limits = limits or PdfExtractionLimits()
+    deadline = monotonic() + limits.deadline_seconds
     try:
         document = fitz.open(stream=content, filetype="pdf")
     except (fitz.FileDataError, RuntimeError):
         return None
     try:
+        if document.page_count > limits.max_pages:
+            return None
         pages: list[str] = []
         positions: list[str] = []
         links: list[str] = []
@@ -30,9 +49,16 @@ def extract_pdf(content: bytes) -> ExtractedDocument | None:
         heading_path: list[str] = []
         paragraph_index = 0
         table_index = 0
+        object_count = 0
+        text_chars = 0
         for number, page in enumerate(document, start=1):
+            if monotonic() > deadline:
+                raise _PdfLimitExceeded
             text = page.get_text("text", sort=True).strip()
             if text:
+                text_chars += len(text)
+                if text_chars > limits.max_text_chars:
+                    raise _PdfLimitExceeded
                 pages.append(text)
                 positions.append(f"page {number}")
             page_dict = page.get_text("dict", sort=True)
@@ -43,6 +69,7 @@ def extract_pdf(content: bytes) -> ExtractedDocument | None:
                 for span in line.get("spans", [])
                 if str(span.get("text", "")).strip()
             ]
+            object_count += len(spans)
             sizes = [float(span.get("size", 0)) for span in spans if span.get("size")]
             heading_threshold = max(12.0, (median(sizes) + 1.5) if sizes else 12.0)
             page_headings = {
@@ -52,6 +79,9 @@ def extract_pdf(content: bytes) -> ExtractedDocument | None:
             }
             headings.extend(page_headings)
             for raw_block in page.get_text("blocks", sort=True):
+                object_count += 1
+                if object_count > limits.max_objects or monotonic() > deadline:
+                    raise _PdfLimitExceeded
                 block_text = "\n".join(
                     line.strip() for line in str(raw_block[4]).splitlines() if line.strip()
                 )
@@ -83,14 +113,19 @@ def extract_pdf(content: bytes) -> ExtractedDocument | None:
             try:
                 found_tables = page.find_tables()
                 for table in found_tables.tables:
+                    table_index += 1
+                    if table_index > limits.max_tables or monotonic() > deadline:
+                        raise _PdfLimitExceeded
                     rows = table.extract()
+                    object_count += len(rows)
+                    if object_count > limits.max_objects:
+                        raise _PdfLimitExceeded
                     rendered = "\n".join(
                         " | ".join("" if value is None else str(value).strip() for value in row)
                         for row in rows
                     ).strip()
                     if rendered:
                         tables.append(f"page {number}\n{rendered}")
-                    table_index += 1
                     headers = ["" if value is None else str(value).strip() for value in rows[0]] if rows else []
                     for row_index, row in enumerate(rows, start=1):
                         values = ["" if value is None else str(value).strip() for value in row]
@@ -115,9 +150,13 @@ def extract_pdf(content: bytes) -> ExtractedDocument | None:
                         )
             except (AttributeError, RuntimeError, ValueError):
                 pass
+            page_links = page.get_links()
+            object_count += len(page_links)
+            if object_count > limits.max_objects:
+                raise _PdfLimitExceeded
             links.extend(
                 str(item["uri"])
-                for item in page.get_links()
+                for item in page_links
                 if item.get("uri") and str(item["uri"]).startswith(("http://", "https://"))
             )
         body = "\n\n".join(pages)
@@ -141,6 +180,8 @@ def extract_pdf(content: bytes) -> ExtractedDocument | None:
             quality=round(min(1.0, 0.5 + len(body) / 10_000), 4),
             metadata={"page_count": document.page_count, "untrusted_evidence": True},
         )
+    except _PdfLimitExceeded:
+        return None
     finally:
         document.close()
 
@@ -158,4 +199,4 @@ def _pdf_date(value: str | None) -> datetime | None:
         return None
 
 
-__all__ = ["extract_pdf"]
+__all__ = ["PdfExtractionLimits", "extract_pdf"]

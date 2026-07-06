@@ -217,6 +217,16 @@ def test_pymupdf_extraction_is_page_aware():
     assert "Official filing evidence" in result.body
 
 
+def test_pymupdf_extraction_rejects_page_budget_before_expansion():
+    from extraction.pdf import PdfExtractionLimits, extract_pdf
+
+    document = fitz.open()
+    document.new_page().insert_text((72, 72), "bounded evidence " * 8)
+    content = document.tobytes()
+    document.close()
+    assert extract_pdf(content, limits=PdfExtractionLimits(max_pages=0)) is None
+
+
 def test_malformed_pdf_fails_closed_without_browser_fallback():
     outcome = run(
         ExtractionService().extract_with_outcome(

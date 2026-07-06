@@ -294,6 +294,8 @@ def test_s3_store_returns_private_object_key_and_verifies_download_hash(tmp_path
     assert "://" not in key
     assert store.exists(key, expected_hash=digest)
     assert store.read(key, expected_hash=digest) == content
+    assert client.last_extra_args["ServerSideEncryption"] == "AES256"
+    assert client.last_extra_args["CacheControl"] == "private, no-store"
 
 
 class MemoryCache:
@@ -338,9 +340,10 @@ class LockingMemoryCache(MemoryCache):
 class FakeS3Client:
     def __init__(self):
         self.objects: dict[tuple[str, str], bytes] = {}
+        self.last_extra_args = {}
 
     def upload_file(self, path, bucket, key, ExtraArgs=None):
-        del ExtraArgs
+        self.last_extra_args = ExtraArgs or {}
         self.objects[(bucket, key)] = Path(path).read_bytes()
 
     def head_object(self, *, Bucket, Key):

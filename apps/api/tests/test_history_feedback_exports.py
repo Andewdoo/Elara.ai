@@ -177,6 +177,15 @@ def test_active_report_cannot_be_saved_exported_or_deleted(client, session_facto
     assert client.delete(f"/v1/verifications/{run_id}").status_code == 409
 
 
+def test_legal_hold_blocks_report_deletion(client, session_factory, owner):
+    run_id = create_run(session_factory, owner)
+    with session_factory() as db:
+        run = db.get(VerificationRun, run_id)
+        run.legal_hold_until = datetime(2099, 1, 1, tzinfo=UTC)
+        db.commit()
+    assert client.delete(f"/v1/verifications/{run_id}").status_code == 409
+
+
 def test_new_routes_preserve_owner_and_share_authorization(client, session_factory, owner):
     run_id = create_run(session_factory, owner)
     storage = FakeStorage()
@@ -225,12 +234,37 @@ def test_new_routes_preserve_owner_and_share_authorization(client, session_facto
         assert run is not None
         run.visibility = "public"
         db.commit()
+    assert client.get(f"/v1/verifications/{run_id}").status_code == 404
+
+    client.app.dependency_overrides[get_authenticated_bearer] = lambda: AuthenticatedUser(
+        principal=FirebasePrincipal(uid=owner.auth_subject, email=owner.email, auth_time=1_900_000_000, issued_at=1_900_000_000),
+        user=owner, id_token="owner-token",
+    )
+    share = client.post(
+        f"/v1/verifications/{run_id}/shares",
+        json={"recipient_user_id": str(other.id), "scope": "report_sources_exports", "expires_in_hours": 24},
+    )
+    assert share.status_code == 201
+    client.app.dependency_overrides[get_authenticated_bearer] = lambda: AuthenticatedUser(
+        principal=FirebasePrincipal(uid=other.auth_subject, email=other.email, auth_time=1_900_000_000, issued_at=1_900_000_000),
+        user=other, id_token="other-token",
+    )
     shared_run = client.get(f"/v1/verifications/{run_id}")
     assert shared_run.status_code == 200 and shared_run.json()["is_owner"] is False
     assert client.post(f"/v1/verifications/{run_id}/feedback", json=feedback).status_code == 201
     assert client.get(f"/v1/verifications/{run_id}/exports/{export_id}").status_code == 200
     assert client.post(f"/v1/verifications/{run_id}/save").status_code == 404
     assert client.delete(f"/v1/verifications/{run_id}").status_code == 404
+    client.app.dependency_overrides[get_authenticated_bearer] = lambda: AuthenticatedUser(
+        principal=FirebasePrincipal(uid=owner.auth_subject, email=owner.email, auth_time=1_900_000_000, issued_at=1_900_000_000),
+        user=owner, id_token="owner-token",
+    )
+    assert client.delete(f"/v1/verifications/{run_id}/shares/{share.json()['share_id']}").status_code == 204
+    client.app.dependency_overrides[get_authenticated_bearer] = lambda: AuthenticatedUser(
+        principal=FirebasePrincipal(uid=other.auth_subject, email=other.email, auth_time=1_900_000_000, issued_at=1_900_000_000),
+        user=other, id_token="other-token",
+    )
+    assert client.get(f"/v1/verifications/{run_id}").status_code == 404
 
 
 def test_failed_database_commit_removes_uploaded_export(session_factory, owner, monkeypatch):
@@ -244,12 +278,45 @@ def test_failed_database_commit_removes_uploaded_export(session_factory, owner, 
     assert len(storage.deleted) == 1
 
 
+def test_delete_cleanup_failure_leaves_durable_retryable_request(client, session_factory, owner):
+    run_id = create_run(session_factory, owner)
+    storage = FakeStorage()
+    client.app.dependency_overrides[get_object_storage] = lambda: storage
+    client.post(f"/v1/verifications/{run_id}/exports", json={"format": "JSON"})
+    original_delete = storage.delete_object
+    storage.delete_object = lambda **_: (_ for _ in ()).throw(RuntimeError("storage unavailable"))
+    assert client.delete(f"/v1/verifications/{run_id}").status_code == 503
+    with session_factory() as db:
+        run = db.get(VerificationRun, run_id)
+        assert run.deleted_at is None and run.deletion_status == "processing"
+    storage.delete_object = original_delete
+    assert client.delete(f"/v1/verifications/{run_id}").status_code == 200
+
+
 def test_s3_uses_internal_endpoint_for_storage_and_public_endpoint_for_signing(monkeypatch):
     endpoints: list[str] = []
+    writes: list[dict[str, object]] = []
 
     class FakeClient:
         def generate_presigned_url(self, *_args, **_kwargs):
             return "https://downloads.example.test/signed"
+
+        def put_object(self, **kwargs):
+            writes.append(kwargs)
+
+        def get_public_access_block(self, **_kwargs):
+            return {"PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": True, "IgnorePublicAcls": True,
+                "BlockPublicPolicy": True, "RestrictPublicBuckets": True,
+            }}
+
+        def get_bucket_policy_status(self, **_kwargs):
+            return {"PolicyStatus": {"IsPublic": False}}
+
+        def get_bucket_encryption(self, **_kwargs):
+            return {"ServerSideEncryptionConfiguration": {"Rules": [{
+                "ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}
+            }]}}
 
     def fake_client(_service: str, *, endpoint_url: str, **_kwargs):
         endpoints.append(endpoint_url)
@@ -277,6 +344,10 @@ def test_s3_uses_internal_endpoint_for_storage_and_public_endpoint_for_signing(m
         content_type="application/json",
         expires_in=300,
     ) == "https://downloads.example.test/signed"
+    storage.assert_private_bucket()
+    storage.put_private_object(key="uploads/a/source.txt", body=b"private", content_type="text/plain")
+    assert writes[0]["ServerSideEncryption"] == "AES256"
+    assert writes[0]["CacheControl"] == "private, no-store"
     with pytest.raises(ValueError, match="content type"):
         storage.signed_download_url(
             key="exports/a.json",

@@ -698,6 +698,7 @@ def execute_verification_workflow(
                         staging=staging,
                         create_bucket_if_missing=settings.environment in {"development", "test"},
                         region=settings.s3_region,
+                        server_side_encryption=settings.s3_server_side_encryption,
                     )
                 elif settings.environment in {"staging", "production"}:
                     raise RuntimeError("S3 snapshot credentials are required outside local development")

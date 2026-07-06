@@ -252,7 +252,7 @@ def _mark_failure_safely(
                 failure_code=code,
             )
     except Exception:
-        logger.exception("Unable to persist failure state for run %s", run_id)
+        logger.error("Unable to persist failure state for run %s", run_id, exc_info=False)
 
 
 @celery_app.task(
@@ -279,7 +279,10 @@ def verify_run(self: Task, run_id: str) -> None:
             prepare_run(factory, redis_client, settings, parsed_run_id)
             if _cancel_if_requested(factory, redis_client, settings, parsed_run_id):
                 return
-            if _load_run(factory, parsed_run_id).status in TERMINAL_STATUSES:
+            durable_before_work = _load_run(factory, parsed_run_id)
+            if durable_before_work.status in TERMINAL_STATUSES or durable_before_work.publication_state in {
+                "review_required", "approved", "rejected", "revision_required"
+            }:
                 return
             with safe_trace(
                 "verification.run",

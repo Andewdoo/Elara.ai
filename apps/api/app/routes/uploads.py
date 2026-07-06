@@ -1,16 +1,20 @@
 import logging
+from datetime import timedelta
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
+from redis import Redis
 
 from app.auth.dependencies import AuthenticatedUser, get_authenticated_bearer
 from app.config import Settings, get_settings
 from app.database.session import get_db
 from app.models import Upload
+from app.models.types import utc_now
 from app.schemas.verifications import UploadResponse
 from app.services.object_storage import ObjectStorage, get_object_storage
 from app.services.uploads import UploadValidationError, validate_upload
+from app.routes.verifications import get_request_redis_client, _enforce_action_or_raise
 
 
 router = APIRouter(prefix="/v1/uploads", tags=["uploads"])
@@ -24,7 +28,9 @@ async def create_upload(
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
     storage: ObjectStorage = Depends(get_object_storage),
+    redis_client: Redis = Depends(get_request_redis_client),
 ) -> UploadResponse:
+    _enforce_action_or_raise(redis_client, settings, authenticated.user.id, "upload")
     body = bytearray()
     while chunk := await file.read(64 * 1024):
         body.extend(chunk)
@@ -66,6 +72,7 @@ async def create_upload(
         content_type=validated.content_type,
         size_bytes=len(validated.body),
         content_hash=validated.content_hash,
+        expires_at=utc_now() + timedelta(hours=settings.unclaimed_upload_retention_hours),
     )
     try:
         db.add(row)

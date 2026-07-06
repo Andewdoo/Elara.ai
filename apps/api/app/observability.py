@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+import re
 from typing import Any
 
 try:
@@ -29,18 +30,24 @@ _SENSITIVE_KEYS = {
     "token",
     "upload",
 }
+_CONTENT_KEYS = {"breadcrumbs", "exception", "logentry", "message", "query_string", "stacktrace", "url", "value"}
+_SECRET_VALUE = re.compile(r"(?i)(bearer\s+\S+|password\s*[=:]|api[_-]?key\s*[=:]|-----BEGIN [A-Z ]+PRIVATE KEY-----|[?&](?:token|key|secret)=)")
+_SAFE_STRING_KEYS = {"environment", "event_id", "level", "logger", "release", "run_id", "status", "transaction", "type"}
 
 
 def _scrub(value: Any, *, key: str = "") -> Any:
     normalized = key.casefold()
     if any(part in normalized for part in _SENSITIVE_KEYS):
         return "[Filtered]"
+    if normalized in _CONTENT_KEYS:
+        return "[Filtered]"
     if isinstance(value, dict):
         return {str(item_key): _scrub(item, key=str(item_key)) for item_key, item in value.items()}
     if isinstance(value, (list, tuple)):
         return [_scrub(item, key=key) for item in value[:50]]
-    if isinstance(value, str) and len(value) > 500:
-        return value[:500] + "...[truncated]"
+    if isinstance(value, str):
+        if _SECRET_VALUE.search(value) or (len(value) > 100 and normalized not in _SAFE_STRING_KEYS):
+            return "[Filtered]"
     return value
 
 

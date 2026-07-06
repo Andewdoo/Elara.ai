@@ -1,6 +1,6 @@
 ###
 
-Work in C:\Users\aliua\Elara.ai and follow the applicable root and nested AGENTS.md instructions. Query the existing Graphify graph first with a 1000-token budget, then use elara-task-context to load only the named implementation step and directly relevant guidance. Do not read the full implementation plan or project PDFs unless this task is Step 26.
+Work in C:\Users\aliua\Elara.ai and follow the applicable root and nested AGENTS.md instructions. Query the existing Graphify graph first with a 1500-token budget, then use elara-task-context to load only the named implementation step and directly relevant guidance. Do not read the full implementation plan or project PDFs unless this task is Step 26.
 
 Keep the existing Elara stack, security boundaries, deterministic scoring, durable PostgreSQL truth, private credentials, and evidence-provenance requirements defined by AGENTS.md. Reuse installed dependencies and existing services. Run focused checks first; do not reinstall dependencies, rebuild all containers, or run repository-wide gates unless the phase explicitly requires it. If the environment or an external service blocks progress, report it once and stop rather than repeatedly retrying.
 

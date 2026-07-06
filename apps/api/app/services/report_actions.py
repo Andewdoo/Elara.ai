@@ -129,7 +129,7 @@ def create_json_export(
             try:
                 storage.delete_object(key=row.object_path)
             except Exception:
-                logger.exception("Failed to clean up uncommitted export object %s", row.id)
+                logger.error("Failed to clean up uncommitted export object %s", row.id, exc_info=False)
         raise
     db.refresh(row)
     return row
@@ -144,7 +144,7 @@ def get_export_download(
     storage: ObjectStorage,
     expires_in: int,
 ) -> ExportResponse:
-    run = get_authorized_run(db, viewer_id=viewer_id, run_id=run_id)
+    run = get_authorized_run(db, viewer_id=viewer_id, run_id=run_id, required_scope="exports")
     row = db.scalar(
         select(Export).where(Export.id == export_id, Export.run_id == run.id)
     )
@@ -183,10 +183,19 @@ def delete_report(
     run = get_owned_run(db, owner_id=owner_id, run_id=run_id)
     if run.status not in {RunStatus.COMPLETED, RunStatus.FAILED, RunStatus.CANCELLED}:
         raise ReportActionConflictError("Active verifications must be cancelled before deletion")
+    now = utc_now()
+    if run.legal_hold_until is not None and run.legal_hold_until > now:
+        raise ReportActionConflictError("Report is subject to a legal or audit hold")
+    run.deletion_requested_at = run.deletion_requested_at or now
+    run.deletion_status = "processing"
+    db.commit()
     exports = db.scalars(select(Export).where(Export.run_id == run.id)).all()
     for row in exports:
         storage.delete_object(key=row.object_path)
         db.delete(row)
     run.saved_at = None
-    run.deleted_at = utc_now()
+    run.deleted_at = now
+    run.deletion_status = "completed"
+    run.visibility = "private"
+    run.share_token_hash = None
     db.commit()

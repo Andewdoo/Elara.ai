@@ -11,6 +11,7 @@ from app.config import Settings
 from app.models.agent_event import AgentEvent
 from app.models.enums import RunStatus
 from app.models.evidence import ReportCitation
+from app.models.claims import AtomicClaim
 from app.models.types import utc_now
 from app.models.verification_run import VerificationRun
 from app.redis_client import publish_progress_event
@@ -167,6 +168,8 @@ def persist_completed_run(
     run = _load_locked_run(db, run_id)
     if run.status in TERMINAL_STATUSES:
         raise TerminalRunTransitionError(f"Run is already terminal with status {run.status}")
+    if run.publication_state in {"review_required", "rejected", "revision_required"}:
+        raise TerminalRunTransitionError("Publication governance decision is already durable")
     if run.cancellation_requested_at is not None:
         raise TerminalRunTransitionError("Cancellation was requested before completion")
     citations = db.scalars(
@@ -184,7 +187,37 @@ def persist_completed_run(
         raise InvalidRunTransitionError(
             "Citation-audited report artifacts must be durable before completion"
         )
+    allegation_count = int(
+        db.scalar(
+            select(func.count()).select_from(AtomicClaim).where(
+                AtomicClaim.run_id == run_id,
+                func.lower(AtomicClaim.claim_type) == "allegation",
+            )
+        )
+        or 0
+    )
+    if allegation_count:
+        run.publication_state = "review_required"
+        run.publication_review_reason = "allegation_claim_present"
+        run.updated_at = now
+        event = AgentEvent(
+            run_id=run_id,
+            sequence=_next_sequence(db, run_id),
+            stage=RunStatus.AUDITING,
+            event_type="publication.review_required",
+            public_message="The citation-audited report is held for stronger review.",
+            payload={"completed_steps": 13, "total_steps": 13},
+            created_at=now,
+        )
+        db.add(event)
+        db.commit()
+        return DurableProgressEvent(
+            run_id=run_id, sequence=event.sequence, stage=event.stage,
+            event_type=event.event_type, message=event.public_message,
+            payload=event.payload, created_at=now,
+        )
     _validate_transition(run.status, RunStatus.COMPLETED)
+    run.publication_state = "published"
     run.status = RunStatus.COMPLETED
     run.completed_at = now
     run.updated_at = now

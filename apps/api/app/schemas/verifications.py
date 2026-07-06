@@ -1,6 +1,6 @@
 import ipaddress
 from datetime import datetime
-from typing import Any, Self
+from typing import Any, Literal, Self
 from urllib.parse import urlsplit
 from uuid import UUID
 
@@ -115,6 +115,8 @@ class VerificationRunResponse(BaseModel):
     updated_at: datetime
     saved_at: datetime | None
     is_owner: bool
+    publication_state: str
+    publication_review_reason: str | None
 
 
 class HistoryItemResponse(BaseModel):
@@ -190,6 +192,38 @@ class ExportListResponse(BaseModel):
 class DeleteReportResponse(BaseModel):
     run_id: UUID
     deleted: bool
+
+
+class ShareCreateRequest(BaseModel):
+    recipient_user_id: UUID
+    scope: Literal["report", "report_sources", "report_sources_exports"] = "report"
+    expires_in_hours: int = Field(default=24, ge=1, le=168)
+
+
+class ShareResponse(BaseModel):
+    share_id: UUID
+    run_id: UUID
+    recipient_user_id: UUID
+    scope: str
+    expires_at: datetime
+    revoked_at: datetime | None
+
+
+class PublicationReviewRequest(BaseModel):
+    decision: Literal["approved", "rejected", "revision_required"]
+    rationale: str = Field(min_length=3, max_length=2_000)
+
+
+class FeedbackDecisionRequest(BaseModel):
+    decision: Literal["accepted", "rejected", "needs_information", "escalated"]
+    rationale: str = Field(min_length=3, max_length=2_000)
+    revised_run_id: UUID | None = None
+
+
+class GovernanceDecisionResponse(BaseModel):
+    decision_id: UUID
+    decision: str
+    created_at: datetime
 
 
 class ProgressEvent(BaseModel):
