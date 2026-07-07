@@ -53,6 +53,37 @@ export interface LiteLexicalMatchRequest {
   reviewedAt?: string;
 }
 
+export interface LiteRunInsert {
+  id: string;
+  submitted_text: string;
+  input_kind?: string | null;
+  corpus_version: string;
+  answer_status: "answered" | "insufficient_evidence" | "unsupported_request" | "audit_failed" | "error";
+  generated_answer?: string | null;
+  generated_answer_metadata?: Record<string, unknown>;
+  model_provider: "deepseek";
+  model_name?: string | null;
+  prompt_versions?: Record<string, unknown>;
+  workflow_version?: string | null;
+  retrieval_metadata?: Record<string, unknown>;
+  citation_audit_status: "pending" | "passed" | "failed" | "revised" | "not_applicable";
+  non_sensitive_telemetry?: Record<string, unknown>;
+  completed_at?: string | null;
+}
+
+export interface LiteRunCitationInsert {
+  run_id: string;
+  chunk_id: string;
+  answer_sentence_index: number;
+  chunk_sentence_indexes?: number[];
+  support_status: "support" | "contradiction" | "background" | "irrelevant" | "unsupported" | "uncertain";
+  audit_status: "pending" | "passed" | "failed" | "revised" | "not_applicable";
+  cited_text?: string | null;
+  chunk_content_hash_snapshot: string;
+  source_citation_label_snapshot: string;
+  metadata?: Record<string, unknown>;
+}
+
 interface LiteSupabaseRpcErrorBody {
   code?: string;
   message?: string;
@@ -267,6 +298,20 @@ export class LiteSupabaseClient {
     return response.map((row) => mapLexicalChunkRow(row, request.corpusVersion, reviewedAt));
   }
 
+  async insertLiteRun(row: LiteRunInsert, options: LiteSupabaseRpcOptions = {}): Promise<void> {
+    await this.restPost("lite_runs", row, options);
+  }
+
+  async insertLiteRunCitations(
+    rows: readonly LiteRunCitationInsert[],
+    options: LiteSupabaseRpcOptions = {},
+  ): Promise<void> {
+    if (rows.length === 0) {
+      return;
+    }
+    await this.restPost("lite_run_citations", rows, options);
+  }
+
   private headers(method: "GET" | "POST"): HeadersInit {
     const profileHeader = method === "GET" ? "Accept-Profile" : "Content-Profile";
     return {
@@ -346,6 +391,68 @@ export class LiteSupabaseClient {
       }
       this.logger.warn("Lite Supabase REST transport failed", {
         resource: "lite_chunks",
+        error: redactForLiteLog(error),
+      });
+      throw new LiteSupabaseError("Lite Supabase transport failed", {
+        code: "supabase_transport_error",
+        retryable: true,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  private async restPost<T>(
+    resource: "lite_runs" | "lite_run_citations",
+    body: object | readonly object[],
+    options: LiteSupabaseRpcOptions = {},
+  ): Promise<T | undefined> {
+    const started = Date.now();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), options.timeoutMs ?? 10_000);
+    const signal = options.signal ?? controller.signal;
+
+    try {
+      const response = await this.fetchImpl(`${this.config.url}/rest/v1/${resource}`, {
+        method: "POST",
+        headers: {
+          ...this.headers("POST"),
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify(body),
+        signal,
+      });
+      const latencyMs = Date.now() - started;
+      if (!response.ok) {
+        throw await this.mapResponseError(response, latencyMs, `rest_post_${resource}`);
+      }
+      this.logger.info("Lite Supabase REST write completed", {
+        resource,
+        schema: this.config.schema,
+        latency_ms: latencyMs,
+      });
+      if (response.status === 204) {
+        return undefined;
+      }
+      return (await response.json()) as T;
+    } catch (error) {
+      if (error instanceof LiteSupabaseError) {
+        this.logger.warn("Lite Supabase REST write failed", {
+          resource,
+          status: error.status,
+          code: error.code,
+          retryable: error.retryable,
+        });
+        throw error;
+      }
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new LiteSupabaseError("Lite Supabase request timed out", {
+          code: "supabase_timeout",
+          retryable: true,
+        });
+      }
+      this.logger.warn("Lite Supabase REST write transport failed", {
+        resource,
         error: redactForLiteLog(error),
       });
       throw new LiteSupabaseError("Lite Supabase transport failed", {

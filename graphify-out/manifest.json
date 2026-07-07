@@ -335,9 +335,9 @@
     "semantic_hash": "98c427ddb464292fff6ce4ce9646f6ba"
   },
   "apps/web/app/page.tsx": {
-    "mtime": 1783306582.2143097,
-    "ast_hash": "592b0d86250596a6ab78364b9aa828b8",
-    "semantic_hash": "592b0d86250596a6ab78364b9aa828b8"
+    "mtime": 1783444830.2294407,
+    "ast_hash": "a905a49318685e70643b24d5e915a2b4",
+    "semantic_hash": ""
   },
   "apps/web/app/report/[runId]/page.tsx": {
     "mtime": 1782440035.5816002,
@@ -1255,8 +1255,8 @@
     "semantic_hash": ""
   },
   "apps/web/lib/lite/supabase.ts": {
-    "mtime": 1783399296.1900163,
-    "ast_hash": "cc5fcfaac112313d74f41b40b1d86cdb",
+    "mtime": 1783444464.0754254,
+    "ast_hash": "bb7789bde0650ab649a58b5cbc433a8a",
     "semantic_hash": ""
   },
   "apps/web/tests/step4-lite-server-helpers.test.mjs": {
@@ -1295,8 +1295,8 @@
     "semantic_hash": ""
   },
   "apps/web/app/api/lite/answer/route.ts": {
-    "mtime": 1783400170.1627488,
-    "ast_hash": "68b931512d0b4205dd5329fce9ad9a13",
+    "mtime": 1783444319.6197078,
+    "ast_hash": "5bf240266c35a9b6091b32f7bb8a1fb9",
     "semantic_hash": ""
   },
   "apps/web/lib/lite/pipeline.ts": {
@@ -1337,6 +1337,26 @@
   "apps/web/tests/step7-lite-rag-pipeline.test.mjs": {
     "mtime": 1783400257.648175,
     "ast_hash": "4482cee1c60ea640b480d3f96c957ad9",
+    "semantic_hash": ""
+  },
+  "apps/web/lib/lite/run-persistence.ts": {
+    "mtime": 1783444316.8751721,
+    "ast_hash": "a63b5aa2aec65f5dda87ffd1099877ac",
+    "semantic_hash": ""
+  },
+  "apps/web/tests/step8-lite-api-route.test.mjs": {
+    "mtime": 1783444541.849918,
+    "ast_hash": "121009395aba13ade433cfa7b15367e4",
+    "semantic_hash": ""
+  },
+  "apps/web/components/lite/lite-workspace.tsx": {
+    "mtime": 1783444932.798327,
+    "ast_hash": "6c60df785f01d0d5bf32292d5a157169",
+    "semantic_hash": ""
+  },
+  "apps/web/tests/step9-lite-default-page.test.mjs": {
+    "mtime": 1783444831.8370762,
+    "ast_hash": "6c5359b9e72fbdfa023f271f05c6ed9a",
     "semantic_hash": ""
   }
 }
