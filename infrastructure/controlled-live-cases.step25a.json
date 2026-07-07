@@ -1,0 +1,42 @@
+{
+  "version": "step-25a",
+  "log_policy": "Use synthetic or approved public inputs only. Do not place private data, bearer tokens, signed URLs, prompts, source passages, uploads, or provider credentials in logs, traces, screenshots, or artifacts.",
+  "cases": [
+    {
+      "id": "claim_quick",
+      "input_type": "CLAIM",
+      "research_depth": "QUICK",
+      "objective": "Complete one citation-audited claim verification through report retrieval and SSE reconnect."
+    },
+    {
+      "id": "article_url_standard",
+      "input_type": "ARTICLE_URL",
+      "research_depth": "STANDARD",
+      "objective": "Verify public URL intake, retrieval safety, source snapshots, and inaccessible-source handling when applicable."
+    },
+    {
+      "id": "article_text_standard",
+      "input_type": "ARTICLE_TEXT",
+      "research_depth": "STANDARD",
+      "objective": "Verify pasted article text classification, decomposition, report synthesis, and durable provenance."
+    },
+    {
+      "id": "quote_standard",
+      "input_type": "QUOTE",
+      "research_depth": "STANDARD",
+      "objective": "Verify attribution and quote-fidelity handling without treating the result as a speaker credibility score."
+    },
+    {
+      "id": "paraphrase_standard",
+      "input_type": "PARAPHRASE",
+      "research_depth": "STANDARD",
+      "objective": "Verify paraphrase meaning comparison, evidence classification, deterministic scoring, and citation audit."
+    },
+    {
+      "id": "uploaded_document_standard",
+      "input_type": "UPLOADED_DOCUMENT",
+      "research_depth": "STANDARD",
+      "objective": "Verify private upload storage, document extraction, signed export download, and private bucket permissions."
+    }
+  ]
+}

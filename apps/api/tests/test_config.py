@@ -8,12 +8,14 @@ def test_server_environment_names_and_private_key_newlines(monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://server/db")
     monkeypatch.setenv("CORS_ALLOWED_ORIGINS", "https://app.example.com,https://preview.example.com")
     monkeypatch.setenv("FIREBASE_PRIVATE_KEY", "first\\nsecond")
+    monkeypatch.setenv("ELARA_RELEASE_REVISION", "1234567890123456789012345678901234567890")
 
     settings = Settings()
 
     assert settings.database_url == "postgresql+psycopg://server/db"
     assert settings.cors_allowed_origins == ["https://app.example.com", "https://preview.example.com"]
     assert settings.firebase_private_key == "first\nsecond"
+    assert settings.release_revision == "1234567890123456789012345678901234567890"
 
 
 def test_firebase_admin_certificate_metadata_is_constructed_server_side():

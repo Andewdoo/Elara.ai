@@ -12,4 +12,4 @@ cookie, secret ownership, migration, and smoke-check runbook.
 - Use distinct Sentry projects and DSNs for web, API, and worker. `SENTRY_AUTH_TOKEN` is needed only by the web build for source-map upload.
 - Keep LangSmith variables on the worker. Traces contain stable ids and aggregate metadata, never prompts, source passages, uploads, or credentials.
 - Configure GitHub `staging` and `production` environments with required reviewers for the deployment-gates workflow.
-- Set the optional `STAGING_API_BASE_URL` and `PRODUCTION_API_BASE_URL` environment variables to enable post-gate health checks against deployed API URLs.
+- Set environment variables `STAGING_API_BASE_URL`, `STAGING_WEB_APP_URL`, `PRODUCTION_API_BASE_URL`, and `PRODUCTION_WEB_APP_URL`. The deployment-gates workflow fails closed when any required smoke URL is missing or non-HTTPS.

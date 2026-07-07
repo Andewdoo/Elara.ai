@@ -24,7 +24,8 @@ Create two services from the same GitHub revision:
 - API: build `infrastructure/docker/api.Dockerfile`; expose HTTPS through the host.
 - Worker: build `infrastructure/docker/worker.Dockerfile`; do not expose a public port.
 
-Set `ENVIRONMENT=production`, an HTTPS `WEB_APP_URL`, and comma-separated exact HTTPS
+Set `ENVIRONMENT=production`, an HTTPS `WEB_APP_URL`, a non-secret
+`ELARA_RELEASE_REVISION` that identifies the deployed Git revision, and comma-separated exact HTTPS
 `CORS_ALLOWED_ORIGINS`. Configure Firebase Admin, DeepSeek and Brave keys, PostgreSQL,
 Redis, private S3-compatible storage, API/worker Sentry values, and worker-only
 LangSmith-compatible tracing in the host secret manager. Never put tokens in SSE
@@ -45,10 +46,17 @@ a completed report.
 1. Build and test the exact Git commit, including security regressions and container builds.
 2. Back up the production database and verify `alembic heads` reports exactly one head.
 3. Run `alembic upgrade head` as a one-off release job with no web traffic routed to it.
-4. Verify the migration job completed, then deploy API and worker from the same commit.
+4. Verify the migration job completed, then deploy API and worker from the same commit
+   with the same `ELARA_RELEASE_REVISION`.
 5. Check `/health`, authentication, queue admission, one SSE reconnect, worker progress,
    and a private signed export. Roll back application traffic before using a migration
    downgrade; review destructive downgrade SQL manually.
+
+The deployment-gates workflow requires `STAGING_API_BASE_URL`, `STAGING_WEB_APP_URL`,
+`PRODUCTION_API_BASE_URL`, and `PRODUCTION_WEB_APP_URL` in the matching GitHub
+environments. Missing or non-HTTPS smoke URLs fail the gate instead of skipping the
+check. See [STAGING_OPERATIONS.md](STAGING_OPERATIONS.md) for the Step 25A staging
+readiness runbook, alert definitions, and controlled live-case checklist.
 
 Use isolated Preview/staging/production databases, Redis instances, buckets, Firebase
 projects or tenants, Sentry environments, and credentials. Rotate a credential if it

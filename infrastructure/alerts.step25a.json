@@ -1,0 +1,63 @@
+{
+  "version": "step-25a",
+  "routing": {
+    "staging": "configured in the external alerting provider during Phase 25B",
+    "production": "configured in the external alerting provider after staging rehearsal"
+  },
+  "alerts": [
+    {
+      "id": "api_failure_rate",
+      "description": "API 5xx rate or health-check failures exceed the approved threshold.",
+      "signal": "FastAPI request failures and /health availability",
+      "source": "Sentry API project and container host metrics"
+    },
+    {
+      "id": "queue_depth",
+      "description": "Verification queue depth remains above the approved per-depth threshold.",
+      "signal": "verification.quick, verification.standard, and verification.deep queue length",
+      "source": "Redis queue metrics and worker MetricPoint queue_length"
+    },
+    {
+      "id": "run_duration",
+      "description": "Verification run duration exceeds the approved threshold for its research depth.",
+      "signal": "worker MetricPoint run_duration",
+      "source": "Redis metrics stream and worker logs"
+    },
+    {
+      "id": "provider_failure",
+      "description": "DeepSeek or Brave provider failures exceed the approved retry-adjusted threshold.",
+      "signal": "PROVIDER_UNAVAILABLE, provider errors, DeepSeek request failures, and search failures",
+      "source": "worker Sentry project and durable run failure codes"
+    },
+    {
+      "id": "extraction_failure",
+      "description": "Source extraction or unsupported-content failure rate exceeds the approved threshold.",
+      "signal": "extraction_success and source_accessibility_failure_rate",
+      "source": "worker MetricPoint values and durable source snapshot statuses"
+    },
+    {
+      "id": "low_evidence_yield",
+      "description": "Accepted evidence per fetched source drops below the approved threshold.",
+      "signal": "worker MetricPoint evidence_yield",
+      "source": "Redis metrics stream and durable evidence counts"
+    },
+    {
+      "id": "citation_audit_failure",
+      "description": "Citation audit failures or revision exhaustion exceed the approved threshold.",
+      "signal": "citation_audit_failure_rate and CITATION_REVISION_EXHAUSTED",
+      "source": "worker MetricPoint values and durable report citation audit statuses"
+    },
+    {
+      "id": "cost",
+      "description": "Aggregate provider/search cost per verification exceeds the approved threshold.",
+      "signal": "cost_per_verification, deepseek token usage, and search request count",
+      "source": "worker MetricPoint values"
+    },
+    {
+      "id": "security_event",
+      "description": "Authentication, authorization, SSRF, upload, signed-download, secret-scan, or bucket-policy events require review.",
+      "signal": "security middleware events, object-storage policy failures, Sentry security issues, and CI security gate failures",
+      "source": "API Sentry project, CI security scans, and host security logs"
+    }
+  ]
+}

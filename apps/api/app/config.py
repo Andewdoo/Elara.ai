@@ -4,7 +4,7 @@ from tempfile import gettempdir
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import Field, SecretStr, field_validator, model_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,6 +19,10 @@ class Settings(BaseSettings):
 
     app_name: str = "Elara API"
     environment: Literal["development", "test", "staging", "production"] = "development"
+    release_revision: str = Field(
+        default="local",
+        validation_alias=AliasChoices("ELARA_RELEASE_REVISION", "RELEASE_REVISION"),
+    )
     acceptance_test_mode: bool = False
     database_url: str = "postgresql+psycopg://elara:elara-local-password@localhost:5432/elara"
     redis_url: str = "redis://localhost:6379/0"
@@ -208,6 +212,8 @@ class Settings(BaseSettings):
     def production_settings_are_explicit_and_secure(self) -> "Settings":
         if self.environment not in {"staging", "production"}:
             return self
+        if not self.release_revision.strip() or self.release_revision == "local":
+            raise ValueError("ELARA_RELEASE_REVISION must identify the deployed revision")
         origins = [urlsplit(value) for value in self.cors_allowed_origins]
         web_origin = urlsplit(self.web_app_url)
         if web_origin.scheme != "https":

@@ -35,7 +35,11 @@ def create_app() -> FastAPI:
 
     @app.get("/health", tags=["operations"])
     def health() -> dict[str, str]:
-        return {"status": "ok"}
+        return {
+            "status": "ok",
+            "environment": settings.environment,
+            "revision": settings.release_revision,
+        }
 
     return app
 
