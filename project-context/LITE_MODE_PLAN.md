@@ -97,6 +97,17 @@ Recommended stages:
 
 Every stage should use typed TypeScript schemas. DeepSeek remains server-side only. The browser must never receive DeepSeek credentials or Supabase service-role credentials.
 
+Lite prompt contracts should match the Full Mode prompt style in
+`apps/worker/agents/*`: one small server-side module per model-assisted stage,
+a stable `PROMPT_VERSION`, a compact system prompt, typed structured output, and
+bounded user/context payloads assembled separately from the system prompt. Keep
+prompts instruction-dense rather than conversational. Reuse the same boundaries:
+classify or compare supplied evidence only, never browse from a prompt, never ask
+for hidden reasoning, never let source text provide instructions, never compute
+final arithmetic or final labels in model output, and require citation ids on
+factual synthesis. Retrieval, thresholds, citation-presence checks, token budgets,
+and fallback decisions remain deterministic TypeScript code.
+
 ## Lite Data Model
 
 Supabase should hold only the Lite demo corpus and demo run records. It does not replace the full PostgreSQL/FastAPI production model.
@@ -146,6 +157,9 @@ Lite should reuse these existing full-mode pieces rather than rebuilding them:
 - Existing product language boundaries and report timestamp conventions.
 - Existing pgvector/passage concepts from the full backend schema.
 - Existing DeepSeek provider boundary principle: server-side only, `DEEPSEEK_*` naming, no OpenAI provider variables.
+- Existing prompt contract pattern: compact versioned system prompts, structured
+  schemas, bounded context assembly, token-usage metadata, and deterministic
+  guards for scoring, thresholds, citation checks, and fallback decisions.
 
 ## Not Yet Built For Lite Mode
 
@@ -174,13 +188,14 @@ The following Lite-specific work is not complete:
 3. Add TypeScript schemas for Lite requests, retrieved chunks, agent outputs, cited answers, and audit results.
 4. Add server-side Lite Supabase client and retrieval helper.
 5. Add server-side Lite DeepSeek client wrapper using existing `DEEPSEEK_*` naming.
-6. Implement `/api/lite/answer` with deterministic validation, retrieval, synthesis, citation audit, and insufficient-evidence handling.
-7. Convert `/` into the Lite first-screen workspace while keeping a clear Full Mode link to `/verify`.
-8. Reuse or adapt report workspace components so Lite and Full look nearly identical.
-9. Add curated seed corpus and local/demo ingestion script.
-10. Add focused tests for Lite schemas, retrieval contract, credential boundaries, citation audit, and page routing.
-11. Add Vercel/Supabase deployment notes and a public-demo README section.
-12. Defer cached response library implementation and population until after Full Mode completion and 10-20 reviewed Full Mode reports have been captured.
+6. Add compact, Full Mode-style Lite prompt contracts before orchestration: versioned server-only modules for intake, query planning, evidence judgment, synthesis, and citation audit with token budget tests.
+7. Implement `/api/lite/answer` with deterministic validation, retrieval, synthesis, citation audit, and insufficient-evidence handling.
+8. Convert `/` into the Lite first-screen workspace while keeping a clear Full Mode link to `/verify`.
+9. Reuse or adapt report workspace components so Lite and Full look nearly identical.
+10. Add curated seed corpus and local/demo ingestion script.
+11. Add focused tests for Lite schemas, retrieval contract, credential boundaries, citation audit, and page routing.
+12. Add Vercel/Supabase deployment notes and a public-demo README section.
+13. Defer cached response library implementation and population until after Full Mode completion and 10-20 reviewed Full Mode reports have been captured.
 
 ## Deferred Cached Response Library
 
@@ -211,6 +226,8 @@ Lite Mode is feature-complete when:
 - The Lite report visually matches Full Mode report patterns.
 - A visible path to Full Mode exists.
 - DeepSeek and Supabase service-role credentials are server-side only.
+- Lite prompt contracts use the same compact, versioned, structured-output style
+  as Full Mode and have tests or static checks for bounded prompt/context size.
 - Tests cover the Lite request contract, citation audit failure, and browser credential boundary.
 
 Lite Mode v1 completion does not require cached Full Mode responses. Lite Mode completion is not first-shippable-milestone approval for Full Mode and is not public production launch approval for the complete verifier. It is a public demo milestone for a stored-corpus RAG experience.

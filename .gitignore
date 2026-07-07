@@ -38,6 +38,7 @@ Thumbs.db
 # Local object storage and database dumps
 *.dump
 *.sql
+!infrastructure/lite/*.sql
 minio-data/
 
 # Logs

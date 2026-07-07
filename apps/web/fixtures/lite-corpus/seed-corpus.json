@@ -1,0 +1,121 @@
+{
+  "corpus_version": "lite-corpus-v1",
+  "metadata": {
+    "purpose": "Safe public Lite Mode seed corpus for stored-corpus RAG demonstrations.",
+    "cached_full_mode_responses": "deferred"
+  },
+  "documents": [
+    {
+      "id": "city-transit-budget-2025",
+      "title": "City Transit Budget Summary 2025",
+      "publisher": "Fictional City Budget Office",
+      "document_date": "2025-04-15",
+      "source_url": "https://example.org/elara-lite/city-transit-budget-2025",
+      "visibility": "public",
+      "metadata": {
+        "demo_case": "support-and-numerical-context",
+        "safe_to_publish": true
+      },
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "Transit grants"
+        },
+        {
+          "type": "paragraph",
+          "text": "The council approved $12.4 million for electric bus grants in fiscal year 2025. The prior fiscal year budget listed $10.0 million for the same grant category.",
+          "page_number": 3,
+          "section_label": "Transit grants",
+          "paragraph_index": 0
+        },
+        {
+          "type": "table_row",
+          "caption": "Transit grant comparison",
+          "cells": {
+            "Fiscal year": "2025",
+            "Electric bus grants": "$12.4 million",
+            "Prior year": "$10.0 million"
+          },
+          "page_number": 4,
+          "section_label": "Transit grant comparison",
+          "paragraph_index": 1
+        }
+      ]
+    },
+    {
+      "id": "city-transit-correction-2025",
+      "title": "Transit Grant Correction Notice",
+      "publisher": "Fictional City Budget Office",
+      "document_date": "2025-05-02",
+      "source_url": "https://example.org/elara-lite/transit-grant-correction-2025",
+      "visibility": "public",
+      "metadata": {
+        "demo_case": "contradiction",
+        "safe_to_publish": true
+      },
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "Correction"
+        },
+        {
+          "type": "paragraph",
+          "text": "A public draft incorrectly stated that the city approved $14.2 million for electric bus grants. The adopted budget amount is $12.4 million.",
+          "page_number": 1,
+          "section_label": "Correction",
+          "paragraph_index": 0
+        }
+      ]
+    },
+    {
+      "id": "community-health-minutes-2025",
+      "title": "Community Health Board Meeting Minutes",
+      "publisher": "Fictional County Health Board",
+      "document_date": "2025-02-20",
+      "source_url": "https://example.org/elara-lite/community-health-minutes-2025",
+      "visibility": "public",
+      "metadata": {
+        "demo_case": "quote-and-paraphrase",
+        "safe_to_publish": true
+      },
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "Nutrition pilot"
+        },
+        {
+          "type": "transcript_turn",
+          "speaker": "Chair Rivera",
+          "timestamp": "00:14:08",
+          "text": "The pilot will serve three neighborhood clinics during its first quarter, and staff will publish participation numbers before the next board meeting.",
+          "page_number": 2,
+          "section_label": "Nutrition pilot",
+          "paragraph_index": 0
+        },
+        {
+          "type": "paragraph",
+          "text": "The minutes do not report measured outcomes for the pilot because the program had not started by the meeting date.",
+          "page_number": 2,
+          "section_label": "Nutrition pilot",
+          "paragraph_index": 1
+        }
+      ]
+    },
+    {
+      "id": "library-hours-update-2024",
+      "title": "Library Hours Update",
+      "publisher": "Fictional Public Library",
+      "document_date": "2024-09-10",
+      "source_url": "https://example.org/elara-lite/library-hours-update-2024",
+      "visibility": "public",
+      "metadata": {
+        "demo_case": "insufficient-evidence",
+        "safe_to_publish": true
+      },
+      "content_markdown": "# Library Hours Update\n\n## Weekend schedule\n\nBeginning October 1, 2024, the downtown branch will open at 10:00 a.m. on Saturdays and close at 6:00 p.m.\n\n---\n\n## Scope note\n\nThis notice does not discuss staffing levels, renovation budgets, or visitor counts."
+    }
+  ]
+}

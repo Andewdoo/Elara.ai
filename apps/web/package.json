@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "lite:ingest": "node scripts/ingest-lite-corpus.mjs"
   },
   "dependencies": {
     "@sentry/nextjs": "^10.60.0",

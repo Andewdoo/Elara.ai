@@ -1,10 +1,24 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
+
+async function readSourceFiles(dir, files = []) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (path.endsWith(join("app", "api"))) continue;
+      await readSourceFiles(path, files);
+      continue;
+    }
+    if (/\.(ts|tsx)$/.test(entry.name)) files.push(path);
+  }
+  return files;
+}
 
 test("Firebase browser shell only references approved public Firebase env vars", async () => {
   const firebaseSource = await readFile(join(root, "lib", "firebase.ts"), "utf8");
@@ -32,6 +46,45 @@ test("Firebase browser shell only references approved public Firebase env vars",
   for (const name of forbidden) {
     assert.doesNotMatch(firebaseSource, new RegExp(name));
   }
+});
+
+test("Lite browser surface only references public env and never service-role access", async () => {
+  const browserRoots = ["app", "components", "hooks", "stores"];
+  const files = (await Promise.all(browserRoots.map((dir) => readSourceFiles(join(root, dir)).catch(() => [])))).flat();
+  files.push(join(root, "lib", "auth.ts"), join(root, "lib", "firebase.ts"), join(root, "lib", "utils.ts"));
+  const browserSource = (await Promise.all(files.map((file) => readFile(file, "utf8")))).join("\n");
+  const envReferences = Array.from(browserSource.matchAll(/process\.env\.([A-Z0-9_]+)/g), (match) => match[1]);
+  const allowedPublicLiteEnv = [
+    "NEXT_PUBLIC_ELARA_MODE",
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+  ];
+  const forbiddenServerEnv = [
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "DEEPSEEK_API_KEY",
+    "SEARCH_API_KEY",
+    "DATABASE_URL",
+    "REDIS_URL",
+    "CELERY_BROKER_URL",
+    "CELERY_RESULT_BACKEND",
+    "S3_SECRET_ACCESS_KEY",
+    "FIREBASE_PRIVATE_KEY",
+    "FIREBASE_CLIENT_EMAIL",
+    "SENTRY_AUTH_TOKEN",
+    "LANGSMITH_API_KEY",
+  ];
+
+  for (const name of allowedPublicLiteEnv) {
+    assert.match(await readFile(join(root, "..", "..", ".env.example"), "utf8"), new RegExp(`${name}=`));
+  }
+  for (const name of envReferences) {
+    assert.match(name, /^NEXT_PUBLIC_/);
+  }
+  for (const name of forbiddenServerEnv) {
+    assert.doesNotMatch(browserSource, new RegExp(`process\\.env\\.${name}\\b`));
+  }
+  assert.doesNotMatch(browserSource, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.doesNotMatch(browserSource, /service-role|serviceRole|service_role/i);
 });
 
 test("report workspace includes the required evidence-reviewed timestamp language", async () => {
