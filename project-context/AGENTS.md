@@ -458,11 +458,12 @@ Required closure rules:
 - The deterministic full-stack acceptance test must run without real provider credentials. Real-provider checks belong in controlled staging.
 - Brave remains the selected search provider. Do not add a secondary provider without an explicit architecture decision.
 - Public production launch requires human-reviewed methodology calibration, not only synthetic smoke fixtures.
-- Required staging and production smoke checks must fail closed when configuration is missing; they must not silently skip.
+- The private internal staging smoke check must fail closed when configuration is missing; a separate production smoke check is required only before a future public-production launch.
 - After code changes, run `.\.graphify-venv\Scripts\graphify.exe update .` from the repository root and include graph freshness in final verification.
 
 Release decisions must distinguish:
 
+- private internal deployment approved,
 - feature implementation complete,
 - first shippable milestone approved,
 - public production launch approved.

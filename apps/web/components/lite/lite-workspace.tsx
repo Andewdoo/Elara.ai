@@ -1,20 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, FileSearch, GitBranch, Loader2, ShieldCheck } from "lucide-react";
-import { type FormEvent, useMemo, useState } from "react";
+import { ArrowRight, CheckCircle2, Circle, FileSearch, GitBranch, Loader2, RefreshCw, ShieldCheck, XCircle } from "lucide-react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, Textarea } from "@/components/ui/form-controls";
+import { ReportWorkspace } from "@/components/report/report-workspace";
+import { isLiteReportResponse, liteResponseToReportWorkspace } from "@/lib/lite/report-adapter";
 import type { LiteResponse } from "@/lib/lite/schemas";
 
-const progressStages = [
-  "Intake",
-  "Evidence retrieval",
-  "Citation audit",
-  "Report",
+const liteProgressStages = [
+  {
+    id: "intake",
+    label: "Intake",
+    description: "Validating the submitted claim or question.",
+  },
+  {
+    id: "query_planning",
+    label: "Query planning",
+    description: "Planning bounded searches against the curated library.",
+  },
+  {
+    id: "library_retrieval",
+    label: "Library retrieval",
+    description: "Selecting stored evidence chunks from the Lite corpus.",
+  },
+  {
+    id: "evidence_review",
+    label: "Evidence review",
+    description: "Comparing selected chunks with the submitted request.",
+  },
+  {
+    id: "synthesis",
+    label: "Synthesis",
+    description: "Drafting a cited answer from selected chunks only.",
+  },
+  {
+    id: "citation_audit",
+    label: "Citation audit",
+    description: "Checking citation presence before showing the result.",
+  },
 ] as const;
 
 const samplePrompts = [
@@ -24,6 +52,14 @@ const samplePrompts = [
 ] as const;
 
 type LiteInputHint = "claim" | "question" | "quote" | "paraphrase";
+type LiteProgressStatus = "idle" | "loading" | "success" | "failure" | "cancelled";
+type LiteStageStatus = "queued" | "active" | "complete" | "failed" | "cancelled";
+type LiteSubmission = {
+  input: string;
+  inputTypeHint: LiteInputHint;
+};
+
+const finalOptimisticStageIndex = liteProgressStages.length - 1;
 
 export function LiteWorkspace() {
   const [input, setInput] = useState("");
@@ -31,46 +67,110 @@ export function LiteWorkspace() {
   const [result, setResult] = useState<LiteResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [progressStatus, setProgressStatus] = useState<LiteProgressStatus>("idle");
+  const [activeStageIndex, setActiveStageIndex] = useState(0);
+  const [lastSubmission, setLastSubmission] = useState<LiteSubmission | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const requestSequenceRef = useRef(0);
 
-  const activeStage = useMemo(() => {
-    if (isSubmitting) return "Evidence retrieval";
-    if (!result) return "Intake";
-    if (result.kind === "answer") return "Report";
-    if (result.kind === "insufficient_evidence") return "Citation audit";
-    return "Intake";
-  }, [isSubmitting, result]);
+  useEffect(() => {
+    if (!isSubmitting) return;
+    const timer = setInterval(() => {
+      setActiveStageIndex((stageIndex) => Math.min(stageIndex + 1, finalOptimisticStageIndex));
+    }, 850);
+    return () => clearInterval(timer);
+  }, [isSubmitting]);
+
+  const progressSummary = useMemo(() => {
+    if (progressStatus === "loading") return liteProgressStages[activeStageIndex].description;
+    if (progressStatus === "success" && result?.kind === "answer") return "Citation-audited Lite report is ready.";
+    if (progressStatus === "success" && result?.kind === "insufficient_evidence") return "Citation audit completed with an insufficient-evidence result.";
+    if (progressStatus === "failure") return "Lite request stopped before a typed report was completed.";
+    if (progressStatus === "cancelled") return "Lite request cancelled in this browser.";
+    return "Submit a request to see request-local Lite progress.";
+  }, [activeStageIndex, progressStatus, result?.kind]);
 
   async function submitLiteRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const trimmed = input.trim();
+    await runLiteRequest({ input: input.trim(), inputTypeHint });
+  }
+
+  async function runLiteRequest(submission: LiteSubmission) {
+    const trimmed = submission.input.trim();
     if (!trimmed) {
       setError("Enter a claim or question for the Lite evidence library.");
       return;
     }
+    const requestId = requestSequenceRef.current + 1;
+    requestSequenceRef.current = requestId;
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    setLastSubmission({ input: trimmed, inputTypeHint: submission.inputTypeHint });
     setIsSubmitting(true);
+    setProgressStatus("loading");
+    setActiveStageIndex(0);
     setError(null);
     setResult(null);
     try {
       const response = await fetch("/api/lite/answer", {
         method: "POST",
         headers: { "content-type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           corpus_version: "lite-corpus-v1",
           input: trimmed,
-          input_type_hint: inputTypeHint,
+          input_type_hint: submission.inputTypeHint,
           client_trace_id: createClientTraceId(),
         }),
       });
       const body = (await response.json()) as LiteResponse;
+      if (requestSequenceRef.current !== requestId) return;
       setResult(body);
       if (!response.ok || body.kind === "error") {
+        setProgressStatus("failure");
         setError(body.kind === "error" ? body.message : "Lite Mode could not complete this request.");
+      } else {
+        setProgressStatus("success");
+        setActiveStageIndex(finalOptimisticStageIndex);
       }
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Lite Mode could not reach the evidence library.");
+      if (requestSequenceRef.current !== requestId) return;
+      if (isAbortError(caught)) {
+        setProgressStatus("cancelled");
+        setError("Lite request cancelled. No background Lite worker is running.");
+      } else {
+        setProgressStatus("failure");
+        setError(caught instanceof Error ? caught.message : "Lite Mode could not reach the evidence library.");
+      }
     } finally {
-      setIsSubmitting(false);
+      if (requestSequenceRef.current === requestId) {
+        setIsSubmitting(false);
+        abortControllerRef.current = null;
+      }
     }
+  }
+
+  function cancelLiteRequest() {
+    if (!isSubmitting) return;
+    abortControllerRef.current?.abort();
+  }
+
+  function clearLiteWorkspace() {
+    abortControllerRef.current?.abort();
+    requestSequenceRef.current += 1;
+    abortControllerRef.current = null;
+    setInput("");
+    setResult(null);
+    setError(null);
+    setIsSubmitting(false);
+    setProgressStatus("idle");
+    setActiveStageIndex(0);
+  }
+
+  function retryLiteRequest() {
+    const retrySubmission = lastSubmission ?? { input: input.trim(), inputTypeHint };
+    void runLiteRequest(retrySubmission);
   }
 
   return (
@@ -145,7 +245,28 @@ export function LiteWorkspace() {
                     Run Lite report
                   </Button>
                 </div>
-                {error && <p className="text-xs text-destructive" role="alert">{error}</p>}
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  {error ? <p className="text-xs text-destructive" role="alert">{error}</p> : <span className="text-xs text-muted-foreground">Lite progress is local to this browser request.</span>}
+                  <div className="flex gap-2">
+                    {isSubmitting && (
+                      <Button type="button" variant="destructive" size="sm" onClick={cancelLiteRequest}>
+                        <XCircle className="h-4 w-4" aria-hidden="true" />
+                        Cancel
+                      </Button>
+                    )}
+                    {error && !isSubmitting && (
+                      <Button type="button" variant="secondary" size="sm" onClick={retryLiteRequest}>
+                        <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                        Retry
+                      </Button>
+                    )}
+                    {(result || error || isSubmitting) && (
+                      <Button type="button" variant="ghost" size="sm" onClick={clearLiteWorkspace}>
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </form>
             </CardContent>
           </Card>
@@ -157,19 +278,30 @@ export function LiteWorkspace() {
               <CardTitle>Report progress</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3">
-              {progressStages.map((stage) => {
-                const isActive = stage === activeStage;
-                const isComplete = result?.kind === "answer" || (result?.kind === "insufficient_evidence" && stage !== "Report");
+              <div role="status" aria-live="polite" className="rounded-md border bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
+                {progressSummary}
+              </div>
+              <div role="progressbar" aria-label="Lite request progress" aria-valuemin={0} aria-valuemax={liteProgressStages.length} aria-valuenow={progressValue(progressStatus, activeStageIndex)} className="h-2 overflow-hidden rounded-full bg-muted">
+                <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(progressValue(progressStatus, activeStageIndex) / liteProgressStages.length) * 100}%` }} />
+              </div>
+              {liteProgressStages.map((stage, index) => {
+                const stageStatus = liteStageStatus(progressStatus, activeStageIndex, index);
                 return (
-                  <div key={stage} className="flex items-center gap-3 rounded-md border bg-white px-3 py-2">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-md bg-muted text-primary">
-                      {isSubmitting && isActive ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
+                  <div key={stage.id} className="flex items-start gap-3 rounded-md border bg-white px-3 py-2">
+                    <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted text-primary">
+                      <LiteStageIcon status={stageStatus} />
                     </span>
-                    <span className="text-sm font-medium">{stage}</span>
-                    <Badge tone={isActive ? "info" : isComplete ? "support" : "neutral"}>{isActive ? "Active" : isComplete ? "Ready" : "Queued"}</Badge>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium">{stage.label}</span>
+                      <span className="block text-xs leading-5 text-muted-foreground">{stage.description}</span>
+                    </span>
+                    <Badge tone={toneForStageStatus(stageStatus)}>{labelForStageStatus(stageStatus)}</Badge>
                   </div>
                 );
               })}
+              <p className="text-xs leading-5 text-muted-foreground">
+                Lite Mode uses optimistic request-local progress while one server-side answer request returns the final typed response.
+              </p>
             </CardContent>
           </Card>
 
@@ -221,55 +353,11 @@ function LiteResultPanel({ result }: { result: LiteResponse | null }) {
     );
   }
 
-  const reviewed = new Date(result.reviewed_at).toLocaleString();
+  if (isLiteReportResponse(result)) {
+    return <ReportWorkspace data={liteResponseToReportWorkspace(result)} />;
+  }
 
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-wrap items-center gap-2">
-          <CardTitle>Report workspace</CardTitle>
-          <Badge tone={result.kind === "answer" ? "support" : "warning"}>{result.audit_status}</Badge>
-          <span className="text-xs text-muted-foreground">Run {result.run_id}</span>
-        </div>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <p className="text-sm text-muted-foreground">
-          Evidence reviewed as of {reviewed}. New evidence or corrections may change this assessment.
-        </p>
-        {result.kind === "answer" ? (
-          <>
-            <div className="rounded-md border bg-muted/40 p-3">
-              <span className="text-xs text-muted-foreground">Answer</span>
-              <p className="mt-1 whitespace-pre-wrap text-sm leading-6">{result.answer_markdown}</p>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <EvidenceList title="Cited sentences" items={result.cited_sentences.map((sentence) => `${sentence.text} [${sentence.source_labels.join(", ")}]`)} />
-              <EvidenceList title="Selected evidence" items={result.selected_context.chunks.map((chunk) => `${chunk.source_label}: ${chunk.heading_path ?? chunk.page_or_position ?? chunk.source_title}`)} />
-            </div>
-          </>
-        ) : (
-          <div className="rounded-md border bg-muted/40 p-3">
-            <span className="text-xs text-muted-foreground">Insufficient evidence</span>
-            <p className="mt-1 text-sm leading-6">{result.message}</p>
-            {result.gaps.length > 0 && <EvidenceList title="Gaps" items={result.gaps} />}
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function EvidenceList({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div className="rounded-md border bg-white p-3">
-      <p className="text-sm font-semibold">{title}</p>
-      <ul className="mt-2 grid gap-2 text-sm text-muted-foreground">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
+  return null;
 }
 
 function Signal({ icon: Icon, label, value }: { icon: typeof FileSearch; label: string; value: string }) {
@@ -280,6 +368,57 @@ function Signal({ icon: Icon, label, value }: { icon: typeof FileSearch; label: 
       <span className="block text-sm font-semibold">{value}</span>
     </div>
   );
+}
+
+function LiteStageIcon({ status }: { status: LiteStageStatus }) {
+  if (status === "active") return <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />;
+  if (status === "complete") return <CheckCircle2 className="h-4 w-4" aria-hidden="true" />;
+  if (status === "failed" || status === "cancelled") return <XCircle className="h-4 w-4" aria-hidden="true" />;
+  return <Circle className="h-4 w-4" aria-hidden="true" />;
+}
+
+function liteStageStatus(
+  progressStatus: LiteProgressStatus,
+  activeStageIndex: number,
+  stageIndex: number,
+): LiteStageStatus {
+  if (progressStatus === "success") return "complete";
+  if (progressStatus === "failure" && stageIndex === activeStageIndex) return "failed";
+  if (progressStatus === "cancelled" && stageIndex === activeStageIndex) return "cancelled";
+  if (progressStatus === "failure" || progressStatus === "cancelled") {
+    return stageIndex < activeStageIndex ? "complete" : "queued";
+  }
+  if (progressStatus === "loading") {
+    if (stageIndex < activeStageIndex) return "complete";
+    if (stageIndex === activeStageIndex) return "active";
+  }
+  return "queued";
+}
+
+function labelForStageStatus(status: LiteStageStatus) {
+  if (status === "active") return "Active";
+  if (status === "complete") return "Ready";
+  if (status === "failed") return "Needs retry";
+  if (status === "cancelled") return "Cancelled";
+  return "Queued";
+}
+
+function toneForStageStatus(status: LiteStageStatus) {
+  if (status === "active") return "info";
+  if (status === "complete") return "support";
+  if (status === "failed") return "danger";
+  if (status === "cancelled") return "warning";
+  return "neutral";
+}
+
+function progressValue(progressStatus: LiteProgressStatus, activeStageIndex: number) {
+  if (progressStatus === "success") return liteProgressStages.length;
+  if (progressStatus === "idle") return 0;
+  return Math.min(activeStageIndex + 1, liteProgressStages.length);
+}
+
+function isAbortError(error: unknown) {
+  return error instanceof DOMException && error.name === "AbortError";
 }
 
 function createClientTraceId() {

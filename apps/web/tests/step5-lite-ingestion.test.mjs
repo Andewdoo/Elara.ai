@@ -11,7 +11,7 @@ const tempRoot = join(root, "tests", ".tmp", `lite-step5-${process.pid}`);
 
 async function compileLiteModules() {
   const ts = require("typescript");
-  const files = ["schemas.ts", "server-config.ts", "deepseek.ts", "ingestion.ts"];
+  const files = ["schemas.ts", "server-config.ts", "deepseek.ts", "supabase.ts", "ingestion.ts"];
   const moduleDir = join(tempRoot, "lib", "lite");
   await mkdir(moduleDir, { recursive: true });
   await writeFile(join(tempRoot, "package.json"), "{\"type\":\"commonjs\"}", "utf8");
@@ -210,7 +210,7 @@ test("Lite Supabase ingestion writes only through service-role server requests",
   const result = await ingestion.ingestLiteCorpusToSupabase(corpus, {
     config: {
       url: "https://supabase.example.test",
-      serviceRoleKey: "service-role-secret",
+      serviceRoleKey: "sb_secret_server_only",
       schema: "public",
     },
     fetchImpl: async (url, init) => {
@@ -230,8 +230,8 @@ test("Lite Supabase ingestion writes only through service-role server requests",
   assert.equal(result.chunk_count, 1);
   assert.equal(requests.length, 3);
   for (const request of requests) {
-    assert.equal(request.init.headers.Authorization, "Bearer service-role-secret");
-    assert.equal(request.init.headers.apikey, "service-role-secret");
+    assert.equal(request.init.headers.Authorization, undefined);
+    assert.equal(request.init.headers.apikey, "sb_secret_server_only");
     assert.equal(request.init.headers["Content-Profile"], "public");
   }
   assert.match(requests[0].url, /on_conflict=corpus_version,source_content_hash/);

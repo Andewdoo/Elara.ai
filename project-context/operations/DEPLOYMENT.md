@@ -5,6 +5,20 @@ GitHub-connected container host owns separate FastAPI and Celery services. Fireb
 Hosting, Firestore, Firebase Storage, Firebase Functions, public object buckets, and
 browser-side provider/database calls are not part of this topology.
 
+## Current public demo status
+
+The always-on public portfolio path is Lite Mode, documented in
+[LITE_MODE.md](LITE_MODE.md). Lite Mode is deployed from the Vercel-hosted
+Next.js app, uses Supabase Postgres/pgvector only for the curated public-demo
+corpus and Lite demo records, and calls DeepSeek only through server-side
+`DEEPSEEK_*` configuration.
+
+Lite Mode does not replace this Full Mode production topology. Full Mode remains
+paused after Step 25B staging evidence and requires paid always-on infrastructure
+for the FastAPI API, Redis, Celery worker stack, PostgreSQL, private object
+storage, and controlled live-provider validation before public production launch
+approval.
+
 ## Vercel frontend
 
 1. Import the GitHub repository and set the project root to `apps/web`.

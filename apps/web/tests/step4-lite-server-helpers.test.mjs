@@ -181,7 +181,7 @@ test("Lite embedding route absence exposes a named lexical metadata fallback", a
   assert.deepEqual(fallback.lexical_terms.slice(0, 3), ["policy", "took", "effect"]);
 });
 
-test("Lite Supabase helper uses service-role headers only in mocked server client", async () => {
+test("Lite Supabase helper supports new secret-key headers in mocked server client", async () => {
   const { supabase } = await modules;
   const captured = {};
   const reviewedAt = "2026-07-07T12:00:00.000Z";
@@ -189,7 +189,7 @@ test("Lite Supabase helper uses service-role headers only in mocked server clien
   const client = new supabase.LiteSupabaseClient({
     config: {
       url: "https://supabase.example.test",
-      serviceRoleKey: "service-role-secret",
+      serviceRoleKey: "sb_secret_server_only",
       schema: "public",
     },
     fetchImpl: async (url, init) => {
@@ -230,11 +230,41 @@ test("Lite Supabase helper uses service-role headers only in mocked server clien
   });
 
   assert.equal(captured.url, "https://supabase.example.test/rest/v1/rpc/match_lite_chunks");
-  assert.equal(captured.headers.Authorization, "Bearer service-role-secret");
-  assert.equal(captured.headers.apikey, "service-role-secret");
+  assert.equal(captured.headers.Authorization, undefined);
+  assert.equal(captured.headers.apikey, "sb_secret_server_only");
   assert.equal(captured.headers["Content-Profile"], "public");
   assert.equal(captured.body.filter_corpus_version, "lite-corpus-v1");
   assert.equal(chunks[0].chunk_id, "chunk-1");
   assert.equal(chunks[0].reviewed_at, reviewedAt);
   assert.equal(chunks[0].retrieval_scores.semantic, 0.82);
+});
+
+test("Lite Supabase helper keeps legacy service-role JWT bearer headers", async () => {
+  const { supabase } = await modules;
+  const captured = {};
+  const legacyServiceRoleJwt = "eyJhbGciOiJIUzI1NiJ9.service-role-signature";
+
+  const client = new supabase.LiteSupabaseClient({
+    config: {
+      url: "https://supabase.example.test",
+      serviceRoleKey: legacyServiceRoleJwt,
+      schema: "public",
+    },
+    fetchImpl: async (url, init) => {
+      captured.url = url;
+      captured.headers = init.headers;
+      captured.body = JSON.parse(init.body);
+      return new Response(JSON.stringify([]), { status: 200, headers: { "content-type": "application/json" } });
+    },
+    logger: { info() {}, warn() {} },
+  });
+
+  await client.matchLiteChunks({
+    queryEmbedding: [0.1, 0.2, 0.3],
+    corpusVersion: "lite-corpus-v1",
+    matchCount: 3,
+  });
+
+  assert.equal(captured.headers.Authorization, `Bearer ${legacyServiceRoleJwt}`);
+  assert.equal(captured.headers.apikey, legacyServiceRoleJwt);
 });

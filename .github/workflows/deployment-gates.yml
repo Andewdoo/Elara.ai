@@ -12,24 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     steps:
-      - run: echo "CI passed; GitHub-connected staging services may deploy this revision."
+      - run: echo "CI passed; the private internal AWS services may deploy this revision."
       - uses: actions/checkout@v4
       - name: Staging smoke check
         env:
           API_BASE_URL: ${{ vars.STAGING_API_BASE_URL }}
           WEB_APP_URL: ${{ vars.STAGING_WEB_APP_URL }}
         run: python scripts/smoke_gate.py --environment staging --require-https
-  production-gate:
-    needs: [staging-gate]
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - run: echo "Production approval granted; GitHub-connected hosts may promote this revision."
-      - uses: actions/checkout@v4
-      - name: Production smoke check
-        env:
-          API_BASE_URL: ${{ vars.PRODUCTION_API_BASE_URL }}
-          WEB_APP_URL: ${{ vars.PRODUCTION_WEB_APP_URL }}
-        run: python scripts/smoke_gate.py --environment production --require-https
 # Vercel deploys apps/web through its GitHub integration. No Vercel or registry
 # credential is required by this repository workflow.

@@ -487,7 +487,7 @@ function reportMetadata(promptVersions, retrievalStrategy) {
   };
 }
 
-function model(promptVersion) {
+function model() {
   return {
     provider: "deepseek",
     model: "deepseek-chat-test",

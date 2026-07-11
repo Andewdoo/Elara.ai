@@ -1,20 +1,19 @@
-# Step 25A Staging Operations Runbook
+# Step 25A Private Internal AWS Operations Runbook
 
-This runbook prepares the repository for the real staging validation phase. It does not deploy, request secrets, or define placeholder production credentials.
+This runbook prepares the repository for private internal AWS validation. It does not deploy, request secrets, or define placeholder credentials. It does not approve a first-shippable milestone or public-production launch.
 
 ## External Prerequisites
 
-- GitHub `staging` and `production` environments have required reviewers.
-- GitHub environment variables are set: `STAGING_API_BASE_URL`, `STAGING_WEB_APP_URL`, `PRODUCTION_API_BASE_URL`, and `PRODUCTION_WEB_APP_URL`.
-- API and worker hosts set `ENVIRONMENT=staging` or `ENVIRONMENT=production` and the same non-secret `ELARA_RELEASE_REVISION` value, normally the Git commit SHA.
-- Secret managers contain real Firebase Admin, DeepSeek, Brave, PostgreSQL/pgvector, Redis, private object-storage, Sentry, and optional tracing credentials. Do not copy those values into git, CI logs, tickets, screenshots, or chat.
-- Staging and production use isolated PostgreSQL databases, Redis instances, object buckets, Firebase projects or tenants, Sentry environments, and provider credentials.
+- GitHub `staging` environment has `STAGING_API_BASE_URL` and `STAGING_WEB_APP_URL`.
+- API and worker hosts set `ENVIRONMENT=staging` and the same non-secret `ELARA_RELEASE_REVISION` value, normally the Git commit SHA.
+- Server-side configuration contains real Firebase Admin, DeepSeek, Brave, PostgreSQL/pgvector, Redis, private object-storage, and Sentry credentials. Do not copy values into git, CI logs, tickets, screenshots, or chat.
+- The Full Mode database, Redis instance, and object bucket are separate from Lite Supabase data.
 - Private object buckets enforce public-access block, non-public bucket policy status, default encryption, and lifecycle rules approved by governance.
 - Backup tooling, restore targets, rollback permissions, alert routing, and on-call ownership exist in the external infrastructure provider.
 
 ## Smoke Gates
 
-The deployment-gates workflow runs `scripts/smoke_gate.py` for staging and production. The gate fails closed when required URLs are missing, non-HTTPS, malformed, unreachable, or when `/health` does not return `{"status": "ok"}`. The web smoke check is credential-free and only verifies that the public app origin responds without exposing secrets.
+The deployment-gates workflow runs `scripts/smoke_gate.py` for internal staging. The gate fails closed when required URLs are missing, non-HTTPS, malformed, unreachable, or when `/health` does not return `{"status": "ok"}`. The web smoke check is credential-free and only verifies that the configured Vercel app origin responds without exposing secrets.
 
 `/health` returns a non-secret environment and revision. During Phase 25B, compare the API `revision` to the worker/container revision reported by the host or release dashboard before running live cases.
 
@@ -54,16 +53,15 @@ The deployment-gates workflow runs `scripts/smoke_gate.py` for staging and produ
 - Confirm bucket public-access block, policy status, and default encryption checks pass at API startup.
 - Confirm rows store object keys, not permanent public URLs.
 
-## Credential Rotation
+## Deferred: Credential Rotation
 
-- Rotate one staging credential per provider category during Phase 25B: Firebase Admin, DeepSeek, Brave, PostgreSQL, Redis, object storage, Sentry, and tracing if enabled.
-- Verify old credentials stop working after rotation and no client bundle, URL, log, trace, or artifact contains the rotated value.
-- Rotate immediately if any credential appears in a browser bundle, SSE URL, signed URL artifact, log, trace, or CI output.
+- Credential-rotation rehearsal is deferred for private internal deployment. Rotate immediately if any credential appears in a browser bundle, SSE URL, signed URL artifact, log, trace, or CI output.
+- A future first-shippable or public-production release must rotate one credential per provider category and verify old credentials stop working.
 
-## Alerts
+## Deferred: Formal Alerts
 
-Use `infrastructure/alerts.step25a.json` as the alert definition checklist. Required alert coverage includes API failures, queue depth, run duration, provider failures, extraction failure, low evidence yield, citation-audit failure, cost, and security events. Phase 25B must attach provider-specific thresholds, routes, and delivery evidence without committing secrets.
+Use `infrastructure/alerts.step25a.json` as a future checklist. Private internal deployment only requires that API, worker, provider, and citation-audit failures are visible in host logs or Sentry. Provider-specific thresholds, routes, and delivery evidence remain required for a future first-shippable or public-production release.
 
 ## Controlled Live Cases
 
-Use `infrastructure/controlled-live-cases.step25a.json` during Phase 25B. Run one approved public or synthetic case for each MVP input type: claim, article URL, article text, quote, paraphrase, and uploaded document. Stop on the first infrastructure blocker rather than repeatedly redeploying or retrying provider calls.
+Use `infrastructure/controlled-live-cases.step25a.json` during Phase 25B. Private internal deployment requires one approved public or synthetic claim case. The full set of claim, article URL, article text, quote, paraphrase, and uploaded-document cases remains required for a future first-shippable or public-production release. Stop on the first infrastructure blocker rather than repeatedly redeploying or retrying provider calls.

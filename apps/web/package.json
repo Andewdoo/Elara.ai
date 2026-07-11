@@ -13,14 +13,14 @@
     "lite:ingest": "node scripts/ingest-lite-corpus.mjs"
   },
   "dependencies": {
-    "@sentry/nextjs": "^10.60.0",
     "@hookform/resolvers": "^5.2.2",
+    "@sentry/nextjs": "^10.60.0",
     "@tanstack/react-query": "^5.90.12",
     "@xyflow/react": "^12.9.3",
     "clsx": "^2.1.1",
     "firebase": "^12.15.0",
     "lucide-react": "^0.562.0",
-    "next": "^16.2.9",
+    "next": "^16.2.10",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.68.0",

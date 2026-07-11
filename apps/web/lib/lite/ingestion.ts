@@ -11,6 +11,7 @@ import {
   requireServerEnv,
   type LiteServerEnv,
 } from "./server-config";
+import { liteSupabaseAuthHeaders } from "./supabase";
 
 assertLiteServerOnly("Lite corpus ingestion");
 
@@ -356,7 +357,7 @@ export class LiteSupabaseIngestionClient {
     const response = await this.fetchImpl(`${this.config.url}/rest/v1/${path}`, {
       ...init,
       headers: {
-        Authorization: `Bearer ${this.config.serviceRoleKey}`,
+        ...liteSupabaseAuthHeaders(this.config.serviceRoleKey),
         apikey: this.config.serviceRoleKey,
         "Content-Type": "application/json",
         Accept: "application/json",

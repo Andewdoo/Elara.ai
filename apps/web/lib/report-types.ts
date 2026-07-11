@@ -91,6 +91,8 @@ export type SourceGraphRecord = {
 export type ReportRecord = {
   run_id: string;
   verdict: string | null;
+  answer_markdown?: string | null;
+  workspace_scope?: string | null;
   scores: Record<string, number | null>;
   atomic_claims: Array<{
     id: string;
@@ -134,6 +136,7 @@ export type ReportRecord = {
 };
 
 export type ReportWorkspaceData = {
+  mode?: "full" | "lite";
   run: VerificationRun;
   report: ReportRecord;
   sources: SourceRecord[];

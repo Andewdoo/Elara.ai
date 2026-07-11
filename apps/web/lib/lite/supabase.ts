@@ -315,7 +315,7 @@ export class LiteSupabaseClient {
   private headers(method: "GET" | "POST"): HeadersInit {
     const profileHeader = method === "GET" ? "Accept-Profile" : "Content-Profile";
     return {
-      Authorization: `Bearer ${this.config.serviceRoleKey}`,
+      ...liteSupabaseAuthHeaders(this.config.serviceRoleKey),
       apikey: this.config.serviceRoleKey,
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -463,6 +463,13 @@ export class LiteSupabaseClient {
       clearTimeout(timeout);
     }
   }
+}
+
+export function liteSupabaseAuthHeaders(serviceRoleKey: string): HeadersInit {
+  if (serviceRoleKey.startsWith("eyJ")) {
+    return { Authorization: `Bearer ${serviceRoleKey}` };
+  }
+  return {};
 }
 
 export interface LiteMatchedChunkRow {

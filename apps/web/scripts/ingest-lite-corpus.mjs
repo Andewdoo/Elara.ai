@@ -31,7 +31,7 @@ try {
 
 async function compileLiteIngestionModules() {
   const ts = require("typescript");
-  const files = ["schemas.ts", "server-config.ts", "deepseek.ts", "ingestion.ts"];
+  const files = ["schemas.ts", "server-config.ts", "deepseek.ts", "supabase.ts", "ingestion.ts"];
   const moduleDir = join(tempRoot, "lib", "lite");
   await mkdir(moduleDir, { recursive: true });
   await writeFile(join(tempRoot, "package.json"), "{\"type\":\"commonjs\"}", "utf8");

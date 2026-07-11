@@ -546,17 +546,7 @@ revoke execute on function public.match_lite_chunks(
 ) from public, anon, authenticated;
 
 grant select on table public.lite_public_documents to anon, authenticated;
-grant select (
-  id,
-  corpus_version,
-  title,
-  source_url,
-  publisher,
-  document_date,
-  ingested_at,
-  source_content_hash,
-  metadata
-) on public.lite_documents to anon, authenticated;
+grant select on table public.lite_documents to anon, authenticated;
 grant all on table public.lite_documents to service_role;
 grant all on table public.lite_chunks to service_role;
 grant all on table public.lite_runs to service_role;

@@ -2052,10 +2052,11 @@ Steps 1-17 establish the planned product surface and its major subsystems. They 
 
 ### 12.1 Release Bars
 
-Use two explicit release bars:
+Use three explicit release bars:
 
-1. **First shippable milestone:** the complete verification path works end to end, produces a citation-audited durable report, passes deterministic integration tests, and can be exercised safely in a controlled staging environment.
-2. **Public production launch:** the first milestone is stable, methodology thresholds are calibrated on human-reviewed cases, security/privacy/governance controls are approved, and production operations and rollback have been rehearsed.
+1. **Private internal deployment:** a small, explicitly allowlisted group can use the complete verification path in one AWS environment. The path produces citation-audited durable reports, passes deterministic acceptance tests, and has working authentication, private evidence storage, backups, HTTPS, and a basic operational smoke check. It makes no availability, security-certification, or public-launch claim.
+2. **First shippable milestone:** the complete verification path works end to end, produces a citation-audited durable report, passes deterministic integration tests, and can be exercised safely in a controlled staging environment.
+3. **Public production launch:** the first milestone is stable, methodology thresholds are calibrated on human-reviewed cases, security/privacy/governance controls are approved, and production operations and rollback have been rehearsed.
 
 Do not describe the project as complete merely because every numbered feature step has a corresponding file or unit test. Completion is based on observable behavior and release evidence.
 
@@ -2189,37 +2190,35 @@ Complete a release review for SSRF and DNS rebinding, redirect validation, promp
 
 Document and implement policies for upload retention, snapshot retention, deletion, sharing, corrections, appeals, and high-impact allegations. Prevent automatic publication when stronger review controls are required. Store only the evidence needed for auditability and never silently delete a snapshot referenced by a completed report.
 
-### 12.9 Step 25 - Staging and Operational Readiness
+### 12.9 Step 25 - Private Internal Deployment Validation
 
-Deploy the complete stack to staging with real Firebase Authentication, PostgreSQL/pgvector, Redis, private object storage, Brave Search, DeepSeek, Sentry, and redacted worker tracing where enabled.
+Deploy the complete stack to one named private AWS environment. A single host running the API, worker, PostgreSQL/pgvector, and Redis containers is acceptable for this bar; private S3 storage remains required. Keep Firebase Authentication, Brave Search, DeepSeek, and Sentry server-side. Tracing is optional and, when enabled, must be redacted.
 
 Required validation:
 
-- staging and production smoke checks cannot silently skip because a required URL is unset;
-- migrations run as a controlled release job;
-- backup, restore, application rollback, and migration rollback procedures are rehearsed;
-- API and worker run the same compatible revision;
-- Redis restart and SSE reconnect recover from PostgreSQL truth;
-- queues, retries, dead jobs, signed downloads, bucket permissions, and credential rotation are tested;
-- alerts cover API failures, queue depth, run duration, provider failures, extraction failure, low evidence yield, citation-audit failure, cost, and security events.
+- the internal HTTPS API and Vercel web origin pass the credential-free smoke gate; missing URLs must fail closed rather than silently skip;
+- API and worker run the same non-local compatible revision;
+- the controlled migration procedure, one database backup, and the documented application rollback path are verified;
+- Firebase sign-in, one Redis restart/SSE reconnect, queue processing, and a private signed export work;
+- the S3 bucket is non-public, encrypted, and stores object keys rather than permanent public URLs;
+- provider failures, citation-audit failures, and worker/API failures are visible in logs or Sentry;
+- one approved public or synthetic claim case reaches a durable, citation-audited report without placing private data in logs, traces, or test artifacts.
 
-Run controlled live staging verifications for every MVP input type without placing private data in logs, traces, or test artifacts.
+Record sanitized evidence and explicit limitations. The following remain deferred for this private-internal bar: multi-AZ availability, production environment separation, formal alert routing, credential-rotation rehearsal, migration rollback rehearsal, and every-MVP-input live-case coverage. They remain requirements for the first shippable and public-production bars.
 
-### 12.10 Step 26 - Final Release Audit
+### 12.10 Step 26 - Private Internal Readiness Audit
 
-The first shippable milestone is complete only when all of the following are true:
+The private internal deployment is approved only when all of the following are true:
 
 - The full workflow reaches `COMPLETED` through synthesis and citation audit.
 - Citation failures cannot publish a report.
 - All local and CI quality gates pass from a clean checkout.
 - Database migrations and container builds pass.
 - Deterministic full-stack acceptance tests pass.
-- Staging end-to-end tests pass with real services.
-- Security regressions pass.
-- Human-reviewed evaluation meets approved release thresholds before public launch.
-- Privacy, retention, correction, and governance policies are approved.
-- Monitoring and alerts are active.
-- Deployment and rollback have been rehearsed.
+- The private AWS environment passes the Step 25 smoke and controlled-case checks with real services.
+- Focused authentication, cross-user authorization, retrieval, upload, signed-export, and citation-audit regressions pass.
+- A database backup exists and the documented application rollback path is verified.
+- Known limitations, including the absence of public-production approval, are recorded.
 - Documentation and the Graphify knowledge graph are current.
 
-Record the final evidence in a versioned release-readiness report. State separately whether the result is approved for the controlled first milestone, for public production launch, for neither, or for the milestone with explicit public-launch blockers.
+Record the final evidence in a versioned internal-readiness report. State separately whether private internal deployment is approved, whether the first shippable milestone is approved, and whether public production launch is approved. The latter two remain unapproved unless their original, stricter bars are met.
