@@ -20,44 +20,12 @@ Parameters:
     Type: AWS::EC2::VPC::Id
   InstanceType:
     Type: String
-    Default: t3.large
+    Default: m7i-flex.large
   RootVolumeSize:
     Type: Number
     Default: 100
 
 Resources:
-  EvidenceBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
-    Properties:
-      BucketName: !Ref EvidenceBucketName
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-      LifecycleConfiguration:
-        Rules:
-          - Id: AbortIncompleteMultipartUploads
-            Status: Enabled
-            AbortIncompleteMultipartUpload:
-              DaysAfterInitiation: 7
-      OwnershipControls:
-        Rules:
-          - ObjectOwnership: BucketOwnerEnforced
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: true
-      Tags:
-        - Key: Project
-          Value: Elara
-        - Key: Environment
-          Value: public-beta
-      VersioningConfiguration:
-        Status: Enabled
-
   InstanceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -81,13 +49,13 @@ Resources:
                   - s3:GetBucketPolicyStatus
                   - s3:GetBucketPublicAccessBlock
                   - s3:ListBucket
-                Resource: !GetAtt EvidenceBucket.Arn
+                Resource: !Sub "arn:${AWS::Partition}:s3:::${EvidenceBucketName}"
               - Effect: Allow
                 Action:
                   - s3:DeleteObject
                   - s3:GetObject
                   - s3:PutObject
-                Resource: !Sub "${EvidenceBucket.Arn}/*"
+                Resource: !Sub "arn:${AWS::Partition}:s3:::${EvidenceBucketName}/*"
               - Effect: Allow
                 Action: secretsmanager:GetSecretValue
                 Resource: !Sub "arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${AppSecretName}*"
@@ -228,7 +196,7 @@ Outputs:
   ApiDomain:
     Value: !Ref ApiDomain
   BucketName:
-    Value: !Ref EvidenceBucket
+    Value: !Ref EvidenceBucketName
   ElasticIp:
     Value: !Ref ElasticIp
   InstanceId:
