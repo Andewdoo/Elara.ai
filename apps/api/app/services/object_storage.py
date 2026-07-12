@@ -7,6 +7,24 @@ from typing import Protocol
 from app.config import get_settings
 
 
+def _s3_client_options(settings) -> dict[str, object]:
+    from botocore.config import Config
+
+    options: dict[str, object] = {
+        "region_name": settings.s3_region,
+        "config": Config(
+            signature_version="s3v4",
+            s3={"addressing_style": "path" if settings.s3_force_path_style else "auto"},
+        ),
+    }
+    if settings.s3_access_key_id and settings.s3_secret_access_key:
+        options.update(
+            aws_access_key_id=settings.s3_access_key_id,
+            aws_secret_access_key=settings.s3_secret_access_key,
+        )
+    return options
+
+
 class ObjectStorage(Protocol):
     def put_private_object(self, *, key: str, body: bytes, content_type: str) -> None: ...
 
@@ -22,20 +40,11 @@ class ObjectStorage(Protocol):
 class S3ObjectStorage:
     def __init__(self) -> None:
         import boto3
-        from botocore.config import Config
 
         settings = get_settings()
         self.bucket = settings.s3_bucket_name
         self.encryption = settings.s3_server_side_encryption
-        client_options = {
-            "aws_access_key_id": settings.s3_access_key_id,
-            "aws_secret_access_key": settings.s3_secret_access_key,
-            "region_name": settings.s3_region,
-            "config": Config(
-                signature_version="s3v4",
-                s3={"addressing_style": "path" if settings.s3_force_path_style else "auto"},
-            ),
-        }
+        client_options = _s3_client_options(settings)
         self.client = boto3.client("s3", endpoint_url=settings.s3_endpoint_url, **client_options)
         self.signing_client = boto3.client(
             "s3",

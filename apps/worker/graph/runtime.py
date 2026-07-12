@@ -69,6 +69,29 @@ _RUN_STATUSES = {
 }
 
 
+def _uses_s3_snapshot_store(settings: Settings) -> bool:
+    return bool(
+        settings.s3_access_key_id and settings.s3_secret_access_key
+    ) or settings.environment in {"staging", "production"}
+
+
+def _s3_client_options(settings: Settings) -> dict[str, object]:
+    options: dict[str, object] = {
+        "endpoint_url": settings.s3_endpoint_url,
+        "region_name": settings.s3_region,
+        "config": BotoConfig(
+            signature_version="s3v4",
+            s3={"addressing_style": "path" if settings.s3_force_path_style else "virtual"},
+        ),
+    }
+    if settings.s3_access_key_id and settings.s3_secret_access_key:
+        options.update(
+            aws_access_key_id=settings.s3_access_key_id,
+            aws_secret_access_key=settings.s3_secret_access_key,
+        )
+    return options
+
+
 class DurableProgressWriter:
     def __init__(self, record) -> None:
         self._record = record
@@ -676,22 +699,8 @@ def execute_verification_workflow(
                     cache_ttl_seconds=settings.search_cache_ttl_seconds,
                 )
                 staging = SnapshotFileStore(settings.fetch_storage_dir)
-                if all((settings.s3_access_key_id, settings.s3_secret_access_key)):
-                    object_client = boto3.client(
-                        "s3",
-                        endpoint_url=settings.s3_endpoint_url,
-                        aws_access_key_id=settings.s3_access_key_id,
-                        aws_secret_access_key=settings.s3_secret_access_key,
-                        region_name=settings.s3_region,
-                        config=BotoConfig(
-                            signature_version="s3v4",
-                            s3={
-                                "addressing_style": (
-                                    "path" if settings.s3_force_path_style else "virtual"
-                                )
-                            },
-                        ),
-                    )
+                if _uses_s3_snapshot_store(settings):
+                    object_client = boto3.client("s3", **_s3_client_options(settings))
                     snapshot_store = S3SnapshotStore(
                         client=object_client,
                         bucket=settings.s3_bucket_name,
@@ -700,8 +709,6 @@ def execute_verification_workflow(
                         region=settings.s3_region,
                         server_side_encryption=settings.s3_server_side_encryption,
                     )
-                elif settings.environment in {"staging", "production"}:
-                    raise RuntimeError("S3 snapshot credentials are required outside local development")
                 else:
                     snapshot_store = staging
                 fetcher = SecureFetcher(

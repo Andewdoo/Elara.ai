@@ -233,9 +233,22 @@ class Settings(BaseSettings):
             "CELERY_BROKER_URL": self.effective_celery_broker_url,
             "CELERY_RESULT_BACKEND": self.effective_celery_result_backend,
         }
-        if any(urlsplit(value).scheme != "rediss" for value in redis_urls.values()):
+        insecure_redis = []
+        for name, value in redis_urls.items():
+            parsed = urlsplit(value)
+            if parsed.scheme == "rediss":
+                continue
+            if (
+                self.environment == "staging"
+                and parsed.scheme == "redis"
+                and parsed.hostname == "redis"
+            ):
+                continue
+            insecure_redis.append(name)
+        if insecure_redis:
             raise ValueError(
-                "Redis and Celery Redis URLs must use TLS (rediss://) outside development and test"
+                "Redis and Celery Redis URLs must use TLS (rediss://), except for the internal "
+                "Compose hostname redis in staging"
             )
         for name, value in {
             **redis_urls,
@@ -254,8 +267,6 @@ class Settings(BaseSettings):
             "FIREBASE_PROJECT_ID": self.firebase_project_id,
             "FIREBASE_CLIENT_EMAIL": self.firebase_client_email,
             "FIREBASE_PRIVATE_KEY": self.firebase_private_key,
-            "S3_ACCESS_KEY_ID": self.s3_access_key_id,
-            "S3_SECRET_ACCESS_KEY": self.s3_secret_access_key,
         }
         missing = [name for name, value in required.items() if not value or "replace-with" in value]
         if missing:

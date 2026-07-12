@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-elara}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-elara-local-password}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -18,7 +18,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis-data:/data
     healthcheck:
@@ -34,8 +34,8 @@ services:
       MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-elara-local-access-key}
       MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-elara-local-secret-key}
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
     volumes:
       - object-storage-data:/data
     healthcheck:
@@ -77,8 +77,8 @@ services:
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
       S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-http://object-storage:9000}
       S3_PUBLIC_ENDPOINT_URL: ${S3_PUBLIC_ENDPOINT_URL:-http://localhost:9000}
-      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-elara-local-access-key}
-      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-elara-local-secret-key}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME:-elara-local}
       S3_REGION: ${S3_REGION:-us-east-1}
       S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
@@ -101,7 +101,7 @@ services:
       object-storage-init:
         condition: service_completed_successfully
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
 
   worker:
     build:
@@ -118,8 +118,8 @@ services:
       CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
       S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-http://object-storage:9000}
-      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-elara-local-access-key}
-      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-elara-local-secret-key}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME:-elara-local}
       S3_REGION: ${S3_REGION:-us-east-1}
       S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
@@ -151,6 +151,8 @@ services:
         condition: service_healthy
       object-storage-init:
         condition: service_completed_successfully
+    volumes:
+      - fetch-storage-data:/var/lib/elara/fetch
 
   web:
     build:
@@ -170,9 +172,10 @@ services:
     depends_on:
       - api
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
 
 volumes:
   postgres-data:
   redis-data:
   object-storage-data:
+  fetch-storage-data:

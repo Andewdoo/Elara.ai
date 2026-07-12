@@ -1,0 +1,232 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Elara public-beta single-host stack
+
+Parameters:
+  AmiId:
+    Type: AWS::EC2::Image::Id
+  ApiDomain:
+    Type: String
+  AppSecretName:
+    Type: String
+  GitRef:
+    Type: String
+  RepositoryUrl:
+    Type: String
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+  InstanceType:
+    Type: String
+    Default: t3.large
+  RootVolumeSize:
+    Type: Number
+    Default: 100
+
+Resources:
+  EvidenceBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: AbortIncompleteMultipartUploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Project
+          Value: Elara
+        - Key: Environment
+          Value: public-beta
+      VersioningConfiguration:
+        Status: Enabled
+
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Policies:
+        - PolicyName: ElaraPublicBetaDataAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetBucketEncryption
+                  - s3:GetBucketPolicyStatus
+                  - s3:GetBucketPublicAccessBlock
+                  - s3:ListBucket
+                Resource: !GetAtt EvidenceBucket.Arn
+              - Effect: Allow
+                Action:
+                  - s3:DeleteObject
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: !Sub "${EvidenceBucket.Arn}/*"
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Sub "arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${AppSecretName}*"
+      Tags:
+        - Key: Project
+          Value: Elara
+        - Key: Environment
+          Value: public-beta
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref InstanceRole
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Elara public-beta HTTPS ingress
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - Description: HTTP for ACME redirect and certificate issuance
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - Description: HTTPS public API
+          IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - Description: HTTP/3 public API
+          IpProtocol: udp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: elara-public-beta
+        - Key: Project
+          Value: Elara
+        - Key: Environment
+          Value: public-beta
+
+  Host:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !Ref InstanceType
+      IamInstanceProfile: !Ref InstanceProfile
+      MetadataOptions:
+        HttpEndpoint: enabled
+        HttpPutResponseHopLimit: 2
+        HttpTokens: required
+        InstanceMetadataTags: disabled
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeleteOnTermination: true
+          DeviceIndex: "0"
+          GroupSet:
+            - !Ref SecurityGroup
+          SubnetId: !Ref SubnetId
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            DeleteOnTermination: false
+            Encrypted: true
+            VolumeSize: !Ref RootVolumeSize
+            VolumeType: gp3
+      Tags:
+        - Key: Name
+          Value: elara-public-beta
+        - Key: Project
+          Value: Elara
+        - Key: Environment
+          Value: public-beta
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          set -euo pipefail
+          exec > >(tee /var/log/elara-bootstrap.log | logger -t elara-bootstrap -s 2>/dev/console) 2>&1
+
+          dnf install -y docker git jq
+          systemctl enable --now docker
+          mkdir -p /usr/local/lib/docker/cli-plugins
+          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+            -o /usr/local/lib/docker/cli-plugins/docker-compose
+          chmod 0755 /usr/local/lib/docker/cli-plugins/docker-compose
+
+          install -d -m 0755 /opt/elara
+          git clone ${RepositoryUrl} /opt/elara/app
+          git -C /opt/elara/app checkout --detach ${GitRef}
+          aws secretsmanager get-secret-value \
+            --region ${AWS::Region} \
+            --secret-id ${AppSecretName} \
+            --query SecretString \
+            --output text > /opt/elara/app/.env.private
+          chmod 0600 /opt/elara/app/.env.private
+
+          cd /opt/elara/app
+          COMPOSE="docker compose -f docker-compose.yml -f docker-compose.public-beta.yml"
+          $COMPOSE build api worker
+          $COMPOSE up -d postgres redis object-storage object-storage-init
+          $COMPOSE run --rm --no-deps api alembic upgrade head
+          $COMPOSE up -d api worker caddy
+
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8000/health >/dev/null; then
+              touch /var/lib/elara-bootstrap-complete
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
+
+  ElasticIp:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: elara-public-beta
+        - Key: Project
+          Value: Elara
+        - Key: Environment
+          Value: public-beta
+
+  ElasticIpAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt ElasticIp.AllocationId
+      InstanceId: !Ref Host
+
+Outputs:
+  ApiDomain:
+    Value: !Ref ApiDomain
+  BucketName:
+    Value: !Ref EvidenceBucket
+  ElasticIp:
+    Value: !Ref ElasticIp
+  InstanceId:
+    Value: !Ref Host
