@@ -18,12 +18,8 @@ services:
     image: caddy:2.10-alpine
     profiles: ["app"]
     restart: unless-stopped
-    environment:
-      API_DOMAIN: ${API_DOMAIN:?API_DOMAIN is required}
     ports:
       - "80:80"
-      - "443:443"
-      - "443:443/udp"
     volumes:
       - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data

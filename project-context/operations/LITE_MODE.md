@@ -1,17 +1,17 @@
-# Lite Mode deployment and portfolio runbook
+# Lite Mode Side-Project Demo Runbook
 
 Lite Mode is an additive public demo path for Elara.ai. It runs from the
 Vercel-hosted Next.js app and queries a curated Supabase Postgres/pgvector corpus
-through server-side routes and helpers. It is not the complete production verifier.
+through server-side routes and helpers. It is not the complete Full Mode verifier.
 
-Full Mode remains the production architecture for verification work: Next.js calls
+Full Mode remains the complete architecture for verification work: Next.js calls
 FastAPI, FastAPI enforces authentication and authorization, PostgreSQL/pgvector is
 durable truth, Redis and Celery coordinate asynchronous work, the worker runs the
 LangGraph-style workflow, Brave Search and private S3-compatible storage stay
 server-side, and DeepSeek is called only through `DEEPSEEK_*` server configuration.
 
 Lite Mode is the default public page at `/`. Full Mode remains reachable through
-`/verify` and must be presented as the complete production verifier architecture,
+`/verify` and must be presented as the complete verifier architecture,
 not as the currently hosted public demo.
 
 ## Lite Mode versus Full Mode
@@ -34,12 +34,10 @@ Full Mode:
 - Runs through Next.js, FastAPI, PostgreSQL/pgvector, Redis, Celery workers,
   LangGraph-style workflow stages, Brave Search, private S3-compatible storage,
   Firebase Authentication, Sentry, tracing, and server-side DeepSeek.
-- Remains paused after Step 25B staging evidence. The latest recorded staging
-  state did not complete live-provider validation, migration/rollback rehearsal,
-  queue recovery, credential rotation, alert delivery, or controlled live cases.
-- Requires paid always-on infrastructure for the FastAPI API, Redis, Celery
-  worker stack, PostgreSQL, private object storage, and related production
-  services before production launch approval can be considered.
+- Runs on the existing single AWS demo host when that host is started.
+- Still needs a browser-reachable HTTPS API address, Firebase sign-in validation,
+  queue processing, and one durable citation-audited report before the hosted
+  Full Mode demo is operational.
 
 ## Vercel project setup
 
@@ -134,7 +132,7 @@ commands are tracked in
 - Add `--dry-run` to validate chunking, hashing, and embedding mode without
   writing to Supabase.
 - Add `--embedding-mode fixture` for deterministic credential-free tests or
-  demos. Production/demo corpus refreshes should use the default `auto` mode,
+  demos. Stable-demo corpus refreshes should use the default `auto` mode,
   which calls the configured `DEEPSEEK_*` embedding route when
   `DEEPSEEK_EMBEDDING_MODEL` is present.
 - Do not point Lite ingestion at arbitrary user uploads, live web crawls, or
@@ -161,7 +159,7 @@ Use this copy when describing the hosted portfolio demo:
 Elara Lite is a public stored-corpus demo. It evaluates submitted claims or
 questions only against a curated evidence library and returns cited,
 timestamped, insufficient-evidence-aware answers. It is not the complete Elara
-production verifier, does not search the live web, does not verify uploaded
+Full Mode verifier, does not search the live web, does not verify uploaded
 private documents, and does not assign permanent credibility scores.
 ```
 

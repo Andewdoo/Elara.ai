@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Elara Lite is the public, always-on demo path for Elara.ai while the full production stack remains paused after Step 25B staging validation. It demonstrates the same product experience and report language as the full verifier, but it runs a narrower retrieval-augmented generation workflow over a curated stored evidence library.
+Elara Lite is the low-cost, always-on demo path for the Elara side project. Full Mode uses the existing single-host AWS demo stack. Neither mode is a production SaaS. Lite demonstrates the same product experience and report language as the full verifier, but runs a narrower retrieval-augmented generation workflow over a curated stored evidence library.
 
-This file is an additive planning overlay. It does not replace `IMPLEMENTATION_PLAN.md`, `project-context/AGENTS.md`, or the full production architecture. Full Mode remains the target architecture for production verification; Lite Mode is the cost-controlled public demo that users see first.
+This file is an additive planning overlay. It does not replace `DEMO_SCOPE.md`, `IMPLEMENTATION_PLAN.md`, `project-context/AGENTS.md`, or the complete Full Mode architecture. Lite Mode is the cost-controlled demo users see first.
 
 ## Current Full Mode Baseline
 
-The full production version remains the source of truth for the serious distributed-system architecture:
+Full Mode remains the source of truth for the complete verifier architecture:
 
 - Next.js App Router frontend with verification, live progress, report, history, saved reports, settings, React Flow source graph, Recharts score views, and report workspace components.
 - FastAPI backend as the authentication, authorization, validation, durable report-read, protected snapshot/export, SSE, and Celery enqueue boundary.
@@ -16,13 +16,13 @@ The full production version remains the source of truth for the serious distribu
 - Redis Streams, Redis-backed locks/rate limits/cancellation mirrors, and Celery queues for transient progress and asynchronous work.
 - Celery worker with LangGraph-style workflow stages for intake, decomposition, planning, retrieval, extraction, segmentation, evidence classification, scoring, numerical audit, synthesis, citation audit, and revision.
 - DeepSeek integration kept server-side behind explicit `DEEPSEEK_*` configuration.
-- Brave Search, S3-compatible private storage, Sentry, tracing, staging operations, governance controls, smoke gates, and release-readiness documentation.
+- Brave Search, S3-compatible private storage, Sentry, tracing, demo operations, governance controls, and smoke checks.
 
-Full Mode is intentionally paused before further paid always-on deployment work. The latest recorded staging state is Step 25B blocked before live-provider validation by a credential-free staging smoke gate HTTP status failure. Live-provider validation, migration/rollback rehearsal, queue recovery, credential rotation, alert delivery, and controlled live cases were not completed after that blocker.
+Full Mode has been recovered on the single AWS host and is waiting on a browser-reachable HTTPS API address plus the minimum end-to-end demo checks. Historical Step 25B evidence remains useful context, but formal migration/rollback, queue-recovery, credential-rotation, alert-delivery, and comprehensive live-case programs do not block the side-project demo.
 
 ## Lite Mode Goal
 
-Lite Mode should be the first page users see when they enter the site. It must look like the full Elara interface, reuse the same design system and report workspace where practical, and make the public demo feel like the real product without claiming to run the full production verifier.
+Lite Mode should be the first page users see when they enter the site. It must look like the full Elara interface, reuse the same design system and report workspace where practical, and feel like the real project without claiming to run the complete Full Mode verifier.
 
 Lite Mode flow:
 
@@ -37,14 +37,14 @@ User enters a claim or question
 -> UI displays the same report-style workspace with Lite-specific labels
 ```
 
-Lite Mode must communicate that it answers from a curated stored evidence library. It must not imply live web retrieval, full-source discovery, uploaded-document verification, or production release approval.
+Lite Mode must communicate that it answers from a curated stored evidence library. It must not imply live web retrieval, full-source discovery, uploaded-document verification, or Full Mode behavior.
 
 ## Build Sequence
 
 Build Lite Mode in three phases:
 
 1. Lite v1 public demo: build the Lite UI, Supabase pgvector corpus, server-side DeepSeek RAG pipeline, citation audit, report adapter, tests, and Vercel/Supabase deployment path. Do not depend on a cached library of Full Mode responses for this phase.
-2. Full Mode completion and evidence capture: after Lite v1 is hosted, resume and complete the Full Mode production verifier, temporarily deploy it when needed, run high-quality controlled cases, and record the 10-20 strongest completed reports with sanitized evidence of their behavior.
+2. Full Mode demo completion and evidence capture: bring up the existing single-host AWS verifier when needed, run a small set of high-quality controlled cases, and optionally record reviewed completed reports with sanitized evidence.
 3. Full-to-Lite cache population: after Full Mode responses are captured and reviewed, add them to the Lite cached response library as curated demo exemplars. The cache must preserve the original prompt, answer, citations, evidence snapshot metadata, model/workflow versions, reviewed timestamp, and provenance notes needed to explain that each exemplar came from a completed Full Mode run.
 
 Lite v1 should still be useful without the cache. It should retrieve from the curated evidence library and generate fresh cited answers from stored chunks. The later cached response library is a polish and reliability layer for portfolio demos, not a prerequisite for building or hosting Lite Mode.
@@ -56,7 +56,7 @@ Full Mode:
 - URL target: `/verify` and existing full verification routes.
 - Runtime: Next.js -> FastAPI -> PostgreSQL -> Redis -> Celery -> worker -> DeepSeek/Brave/S3.
 - Purpose: complete evidence-management and automated verification architecture.
-- Status: implemented through Step 25B staging-readiness work, paused before additional paid hosting and live validation.
+- Status: deployed to a single AWS host; HTTPS reachability and one real end-to-end demo case remain.
 
 Lite Mode:
 
@@ -110,7 +110,7 @@ and fallback decisions remain deterministic TypeScript code.
 
 ## Lite Data Model
 
-Supabase should hold only the Lite demo corpus and demo run records. It does not replace the full PostgreSQL/FastAPI production model.
+Supabase should hold only the Lite demo corpus and demo run records. It does not replace the Full Mode PostgreSQL/FastAPI durable model.
 
 Minimum tables:
 
@@ -230,4 +230,4 @@ Lite Mode is feature-complete when:
   as Full Mode and have tests or static checks for bounded prompt/context size.
 - Tests cover the Lite request contract, citation audit failure, and browser credential boundary.
 
-Lite Mode v1 completion does not require cached Full Mode responses. Lite Mode completion is not first-shippable-milestone approval for Full Mode and is not public production launch approval for the complete verifier. It is a public demo milestone for a stored-corpus RAG experience.
+Lite Mode v1 completion does not require cached Full Mode responses. It is one demo path for a stored-corpus RAG experience and does not prove that the Full Mode hosted demo works.

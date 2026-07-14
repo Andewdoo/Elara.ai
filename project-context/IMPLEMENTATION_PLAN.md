@@ -1,5 +1,11 @@
 # Elara.ai Implementation Plan
 
+## Current Deployment Scope
+
+Elara is a personal, low-traffic side project for owner-controlled demonstrations, not a production SaaS or public-service launch. `DEMO_SCOPE.md` is authoritative for deployment and completion scope. Prefer Vercel plus one AWS EC2 host and do not require high availability, multi-AZ services, autoscaling, separate staging/production infrastructure, formal on-call, or public-launch certification unless the user explicitly expands the project scope.
+
+The product-correctness boundaries in this plan still apply: server-side credentials, non-public internal services, Firebase authorization, secure retrieval, deterministic scoring, PostgreSQL durability, and citation audit before completion.
+
 Version: 1.1
 
 Date: July 2026
@@ -114,7 +120,7 @@ Create `docker-compose.yml` for local development:
 Environment separation:
 
 - `.env.example` only contains placeholder names.
-- Development, staging, and production credentials are isolated.
+- Local-development and hosted-demo credentials are isolated.
 - Secrets are loaded server-side only.
 - Required model variables:
   - `DEEPSEEK_API_KEY`
@@ -140,7 +146,7 @@ Deployment and service URL variables:
 - Vercel receives `NEXT_PUBLIC_API_BASE_URL`, the four public Firebase values, and `NEXT_PUBLIC_SENTRY_DSN`.
 - FastAPI receives `WEB_APP_URL`, `CORS_ALLOWED_ORIGINS`, Firebase Admin credentials, database/Redis/object-storage credentials, and `SENTRY_DSN_API`.
 - The worker receives DeepSeek, search, database, Redis, object-storage, and `SENTRY_DSN_WORKER` credentials.
-- Do not require `VERCEL_TOKEN`, Vercel project ids, container-registry credentials, or staging/production URL aliases for the default GitHub-connected deployment flow.
+- Do not require `VERCEL_TOKEN`, Vercel project ids, container-registry credentials, or separate staging/production URL aliases for the default GitHub-connected demo flow.
 - Local `.env.private` may contain real development credentials and must remain ignored. Commit only a placeholder-only `.env.example`.
 
 ### 2.2 PostgreSQL and Alembic Foundation
@@ -457,7 +463,7 @@ Indexes:
 Notes:
 
 - Use the actual dimension required by the approved DeepSeek embedding route.
-- If the embedding dimension differs from 1536, update the Alembic migration before production.
+- If the embedding dimension differs from 1536, update the Alembic migration before deploying that embedding route.
 - Do not detach embeddings from passage ids; every vector result must resolve to exact source text.
 
 #### evidence_items
@@ -1952,25 +1958,22 @@ GitHub Actions pipeline:
 10. Run evaluation smoke tests.
 11. Run security regression tests.
 12. Allow Vercel to create preview deployments from GitHub pull requests.
-13. Run preview or staging smoke tests against configured deployment URLs.
-14. Require manual approval where the backend host or database migration process requires it.
-15. Merge to the production branch so Vercel and the selected backend host deploy from GitHub.
+13. Run one hosted-demo smoke test against the configured HTTPS API and Vercel URL.
+14. Run Alembic before starting an incompatible application revision.
+15. Deploy the chosen demo revision. A separate staging promotion path is optional.
 
 Deployment topology:
 
 - Next.js frontend on Vercel, connected directly to the GitHub repository with `apps/web` as the project root once the monorepo is created.
 - Firebase Authentication supplies user identity only; Firebase Hosting is not used.
-- FastAPI runs as a stateless service on a GitHub-connected container host.
-- Celery worker runs as a separate service on the same or a compatible GitHub-connected container host.
-- PostgreSQL managed service with pgvector.
-- Redis managed service.
-- S3-compatible storage.
+- FastAPI, Celery, PostgreSQL/pgvector, and Redis run as containers on one AWS EC2 demo host.
+- Private S3-compatible storage remains server-side and non-public.
 - Sentry for application monitoring.
 - LangSmith-compatible tracing or custom trace store for worker evaluations.
 
 Deployment environment ownership:
 
-- Configure public Next.js variables in Vercel for Preview and Production environments.
+- Configure public Next.js variables for the stable Vercel demo deployment. Vercel's `Production` environment name is a platform label, not a production-SaaS claim.
 - Configure Firebase Admin, DeepSeek, search, database, Redis, object-storage, and backend Sentry values only on the FastAPI/worker host.
 - Configure `WEB_APP_URL` and `CORS_ALLOWED_ORIGINS` on FastAPI with the exact Vercel/custom-domain origins.
 - GitHub-connected Vercel deployment does not require `VERCEL_TOKEN`, `VERCEL_ORG_ID`, or `VERCEL_PROJECT_ID`.
@@ -1980,7 +1983,7 @@ Migration rule:
 
 - Run database migrations as a controlled deployment step before incompatible code is activated.
 
-## 9. First Shippable Milestone
+## 9. Hosted Demo Milestone
 
 Deliver a responsive web app that:
 
@@ -1995,7 +1998,7 @@ Deliver a responsive web app that:
 9. Applies deterministic scoring and citation auditing.
 10. Displays a citation-grounded report with exact passages, limitations, versions, and the evidence-reviewed timestamp.
 
-Advanced provenance views, additional input types, exports, sharing, corrections, OCR, domain connectors, multilingual retrieval, and snapshot comparisons can layer onto the same architecture after the milestone is stable.
+For the current side-project scope, one approved claim path is enough for the hosted demo. Advanced provenance views, additional input types, sharing, corrections, OCR, domain connectors, multilingual retrieval, and snapshot comparisons are optional follow-up work.
 
 ## 10. Implementation Order
 
@@ -2015,16 +2018,16 @@ Advanced provenance views, additional input types, exports, sharing, corrections
 14. Add report workspace, source drawer, React Flow graph, and Recharts score visualizations.
 15. Add feedback, corrections, exports, saved reports, and history.
 16. Add Sentry, worker metrics, provider usage metrics, and evaluation harness.
-17. Add security regression tests and production hardening.
-18. Close the production workflow through synthesis, citation audit, revision, and durable completion.
+17. Add focused security regressions for the hosted-demo boundary.
+18. Close the full workflow through synthesis, citation audit, revision, and durable completion.
 19. Restore and enforce every local and CI quality gate.
 20. Add a deterministic full-stack end-to-end verification test.
 21. Finish retrieval hardening, including the isolated Playwright fallback.
 22. Build a human-reviewed evaluation corpus and calibrate the methodology.
 23. Complete product, report, accessibility, and responsive acceptance testing.
 24. Complete the security, privacy, retention, correction, and governance review.
-25. Validate staging infrastructure, observability, migrations, backup, and rollback.
-26. Run the final release audit and approve the first shippable milestone separately from public launch.
+25. Validate the hosted demo: HTTPS, Firebase sign-in, queue processing, and one durable citation-audited report.
+26. Run broader release audits only if the user later expands the project beyond a side-project demo.
 
 ## 11. Non-Negotiable Product Language
 
@@ -2046,23 +2049,22 @@ Evidence reviewed as of [date and time]. New evidence or corrections may change 
 
 Elara.ai must answer only what the evidence supports. It must show what was found, how it was found, why each source was selected, which sources depend on one another, which evidence was inaccessible, and how the published methodology produced the final label.
 
-## 12. Completion and Production-Readiness Plan
+## 12. Hosted-Demo Completion Plan
 
-Steps 1-17 establish the planned product surface and its major subsystems. They do not by themselves prove that the first shippable milestone or a public production launch is complete. Completion requires the closure work below, executed in dependency order.
+Steps 1-17 establish the planned product surface and its major subsystems. The current goal is not public-production readiness. Completion means the owner can run one credible hosted demonstration using the real API, worker, providers, and durable citation-audited report path.
 
-### 12.1 Release Bars
+### 12.1 Completion Bars
 
-Use three explicit release bars:
+Use two explicit bars:
 
-1. **Private internal deployment:** a small, explicitly allowlisted group can use the complete verification path in one AWS environment. The path produces citation-audited durable reports, passes deterministic acceptance tests, and has working authentication, private evidence storage, backups, HTTPS, and a basic operational smoke check. It makes no availability, security-certification, or public-launch claim.
-2. **First shippable milestone:** the complete verification path works end to end, produces a citation-audited durable report, passes deterministic integration tests, and can be exercised safely in a controlled staging environment.
-3. **Public production launch:** the first milestone is stable, methodology thresholds are calibrated on human-reviewed cases, security/privacy/governance controls are approved, and production operations and rollback have been rehearsed.
+1. **Feature complete:** the relevant behavior exists and its focused tests pass.
+2. **Hosted demo operational:** the Vercel frontend and AWS API are reachable over HTTPS; Firebase sign-in works; one approved claim is processed by Celery; the report and citation-audit records are durable; refresh/reconnect reloads PostgreSQL truth; and internal services and credentials remain non-public.
 
-Do not describe the project as complete merely because every numbered feature step has a corresponding file or unit test. Completion is based on observable behavior and release evidence.
+Public-production approval is out of scope. Do not add availability, certification, enterprise operations, or large-scale release gates unless the user explicitly changes the scope.
 
-### 12.2 Step 18 - Production Workflow Closure
+### 12.2 Step 18 - Full Workflow Closure
 
-The Celery production path must execute the complete controlled workflow:
+The real Celery path used by the hosted demo must execute the complete controlled workflow:
 
 ```text
 QUEUED
@@ -2079,7 +2081,7 @@ QUEUED
 
 Required work:
 
-- Remove production-only graph options that stop execution after numerical audit.
+- Remove runtime shortcuts that stop execution after numerical audit.
 - Give the runtime entry point a name that reflects full verification rather than planning-only execution.
 - Run synthesis and citation audit after deterministic scoring and numerical audit.
 - Add a bounded citation-revision loop. Unsupported or partially supported sentences must be removed or revised from approved evidence and audited again.
@@ -2090,7 +2092,7 @@ Required work:
 
 Exit criteria:
 
-- A production-runtime regression test proves the full status sequence reaches `COMPLETED`.
+- A real-runtime regression test proves the full status sequence reaches `COMPLETED`.
 - Citation failure, cancellation, provider exhaustion, and redelivery tests prove invalid runs cannot reach `COMPLETED`.
 - A completed run can be read through the report API and can create an authorized export.
 
@@ -2108,7 +2110,7 @@ Required gates:
 - API and worker container builds from a clean checkout.
 - Security and evaluation gate jobs.
 
-No known failure may be reclassified as harmless without a written, reviewed reason. Tests must exercise the production runtime boundary, not only isolated graph assembly.
+No known failure may be reclassified as harmless without a written reason. Tests must exercise the real hosted-demo runtime boundary, not only isolated graph assembly.
 
 ### 12.4 Step 20 - Deterministic Full-Stack Acceptance Test
 
@@ -2127,7 +2129,7 @@ The acceptance test must:
 9. Create and download an authorized private export.
 10. Prove a second user cannot access the run or any related artifact.
 
-This test must run in CI without real provider credentials. Separate staging smoke tests may exercise real providers.
+This test must run in CI without real provider credentials. One hosted-demo smoke may exercise real providers.
 
 ### 12.5 Step 21 - Retrieval Hardening
 
@@ -2163,11 +2165,11 @@ Each benchmark case should define:
 
 Maintain separate development/calibration, locked validation, adversarial-security, and regression sets. Measure verdict macro-F1, attribution accuracy, evidence precision/recall, passage recall, primary-source recall, citation entailment, numerical accuracy, unsupported-statement rate, source clustering, confidence calibration/Brier score, latency, and cost.
 
-Every formula, weight, threshold, or penalty change creates a new methodology version and reruns the locked validation set. Public launch is blocked until release thresholds are documented, reviewed, and met. Unsupported factual statements must be zero in the release benchmark.
+Every formula, weight, threshold, or penalty change creates a new methodology version. A broad human-reviewed release benchmark is optional for the side-project demo unless the owner intends to present methodology-performance claims. Unsupported factual statements must still be rejected by citation audit.
 
 ### 12.7 Step 23 - Product and Report Acceptance
 
-Verify desktop, mobile, keyboard, loading, empty, failure, reconnect, retry, and cancellation behavior. Remove remaining production-facing mock surfaces.
+Verify the desktop demo path plus the loading, failure, reconnect, retry, and cancellation behavior the demo will exercise. Remove remaining demo-facing mock surfaces.
 
 Every applicable completed report must expose:
 
@@ -2186,39 +2188,33 @@ TanStack Query remains the owner of server state. Browser charts consume server 
 
 ### 12.8 Step 24 - Security, Privacy, and Governance Review
 
-Complete a release review for SSRF and DNS rebinding, redirect validation, prompt injection, hostile uploads, resource exhaustion, cross-user access, signed URL expiry, rate limits, cookies, exact-origin CORS, proxy trust, log/trace redaction, secret scanning, dependency vulnerabilities, and private bucket policy.
+Keep focused checks for SSRF and redirects, prompt injection boundaries, cross-user access, signed URL expiry, cookies, exact-origin CORS, log/trace redaction, secret scanning, and private bucket policy. These protect credentials, private data, and report correctness even for a low-traffic demo. Enterprise-scale resource-exhaustion analysis and release certification are out of scope.
 
 Document and implement policies for upload retention, snapshot retention, deletion, sharing, corrections, appeals, and high-impact allegations. Prevent automatic publication when stronger review controls are required. Store only the evidence needed for auditability and never silently delete a snapshot referenced by a completed report.
 
-### 12.9 Step 25 - Private Internal Deployment Validation
+### 12.9 Step 25 - Hosted Demo Validation
 
-Deploy the complete stack to one named private AWS environment. A single host running the API, worker, PostgreSQL/pgvector, and Redis containers is acceptable for this bar; private S3 storage remains required. Keep Firebase Authentication, Brave Search, DeepSeek, and Sentry server-side. Tracing is optional and, when enabled, must be redacted.
+Run the complete stack on the existing single AWS EC2 demo host. The web application and HTTPS API are browser reachable, while PostgreSQL, Redis, object storage, and the worker remain non-public. Keep Firebase Authentication, Brave Search, DeepSeek, Sentry auth, and tracing credentials server-side.
 
 Required validation:
 
-- the internal HTTPS API and Vercel web origin pass the credential-free smoke gate; missing URLs must fail closed rather than silently skip;
+- the HTTPS API and Vercel web origin respond;
 - API and worker run the same non-local compatible revision;
-- the controlled migration procedure, one database backup, and the documented application rollback path are verified;
-- Firebase sign-in, one Redis restart/SSE reconnect, queue processing, and a private signed export work;
-- the S3 bucket is non-public, encrypted, and stores object keys rather than permanent public URLs;
-- provider failures, citation-audit failures, and worker/API failures are visible in logs or Sentry;
+- Firebase sign-in and queue processing work;
+- the private object store is non-public and stores object keys rather than permanent public URLs;
 - one approved public or synthetic claim case reaches a durable, citation-audited report without placing private data in logs, traces, or test artifacts.
 
-Record sanitized evidence and explicit limitations. The following remain deferred for this private-internal bar: multi-AZ availability, production environment separation, formal alert routing, credential-rotation rehearsal, migration rollback rehearsal, and every-MVP-input live-case coverage. They remain requirements for the first shippable and public-production bars.
+SSE reconnect, a signed export/ownership denial check, one backup, and a quick look at provider or worker errors are sensible if they are easy to run. Application rollback rehearsal, Redis restart drills, dead-job recovery, exhaustive provider checks, multi-AZ availability, production separation, formal alert routing, credential rotation, migration rollback rehearsal, and every-input live cases are optional and do not block the side-project demo.
 
-### 12.10 Step 26 - Private Internal Readiness Audit
+### 12.10 Step 26 - Optional Demo Review
 
-The private internal deployment is approved only when all of the following are true:
+The hosted demo is operational when all of the following are true:
 
 - The full workflow reaches `COMPLETED` through synthesis and citation audit.
 - Citation failures cannot publish a report.
-- All local and CI quality gates pass from a clean checkout.
-- Database migrations and container builds pass.
-- Deterministic full-stack acceptance tests pass.
-- The private AWS environment passes the Step 25 smoke and controlled-case checks with real services.
-- Focused authentication, cross-user authorization, retrieval, upload, signed-export, and citation-audit regressions pass.
-- A database backup exists and the documented application rollback path is verified.
-- Known limitations, including the absence of public-production approval, are recorded.
+- The AWS environment passes the Step 25 smoke and one controlled claim with real services.
+- Firebase authentication and the demo's private-data ownership boundary work.
+- Known limitations are recorded without claiming production readiness.
 - Documentation and the Graphify knowledge graph are current.
 
-Record the final evidence in a versioned internal-readiness report. State separately whether private internal deployment is approved, whether the first shippable milestone is approved, and whether public production launch is approved. The latter two remain unapproved unless their original, stricter bars are met.
+No formal versioned release audit is required for an owner-operated side project. Record only enough sanitized evidence to repeat the demo and diagnose failures. A future public-production audit begins only if the user explicitly changes the scope.

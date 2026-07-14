@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     steps:
-      - run: echo "CI passed; the private internal AWS services may deploy this revision."
+      - run: echo "CI passed; the public-beta AWS services may deploy this revision."
       - uses: actions/checkout@v4
       - name: Staging smoke check
         env:

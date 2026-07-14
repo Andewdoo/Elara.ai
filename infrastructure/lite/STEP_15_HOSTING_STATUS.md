@@ -1,5 +1,7 @@
 # Lite Step 15 Hosting Status
 
+> Historical hosting record. Elara is now explicitly scoped as a personal, low-traffic side-project demo. References below to Vercel Production mean Vercel's stable environment name, not a production-SaaS posture.
+
 Date: 2026-07-11
 
 Scope: host the additive Lite v1 public demo on a Lite-only Supabase project and

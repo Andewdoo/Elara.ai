@@ -4,16 +4,38 @@ Description: Elara public-beta single-host stack
 Parameters:
   AmiId:
     Type: AWS::EC2::Image::Id
+  # Retained only because the active, immutable bootstrap UserData references
+  # it. Browser traffic uses CloudFrontDomainName, not this legacy DNS value.
   ApiDomain:
     Type: String
   AppSecretName:
     Type: String
+  BuildxSha256:
+    Type: String
+    Default: f1332ddb9010bd0b72628266c3a906d9a6979848033df4c8d9bd2cd113bae12b
+    AllowedPattern: "^[0-9a-f]{64}$"
+  BuildxVersion:
+    Type: String
+    Default: v0.34.1
+    AllowedPattern: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+  ComposeSha256:
+    Type: String
+    Default: f9ebc6ebdb19d769b793c245a736caaeb198c62587f13b25c660c13b4987f959
+    AllowedPattern: "^[0-9a-f]{64}$"
+  ComposeVersion:
+    Type: String
+    Default: v5.3.1
+    AllowedPattern: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+  SourceDeployKeySecretName:
+    Type: String
+    Description: Secrets Manager secret containing the read-only GitHub deploy key for RepositoryUrl.
   EvidenceBucketName:
     Type: String
   GitRef:
     Type: String
   RepositoryUrl:
     Type: String
+    Description: SSH Git URL for the immutable application checkout.
   SubnetId:
     Type: AWS::EC2::Subnet::Id
   VpcId:
@@ -26,6 +48,24 @@ Parameters:
     Default: 100
 
 Resources:
+  EvidenceBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref EvidenceBucketName
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource:
+              - !Sub "arn:${AWS::Partition}:s3:::${EvidenceBucketName}"
+              - !Sub "arn:${AWS::Partition}:s3:::${EvidenceBucketName}/*"
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"
+
   InstanceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -45,7 +85,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - s3:GetBucketEncryption
+                  - s3:GetEncryptionConfiguration
                   - s3:GetBucketPolicyStatus
                   - s3:GetBucketPublicAccessBlock
                   - s3:ListBucket
@@ -58,7 +98,9 @@ Resources:
                 Resource: !Sub "arn:${AWS::Partition}:s3:::${EvidenceBucketName}/*"
               - Effect: Allow
                 Action: secretsmanager:GetSecretValue
-                Resource: !Sub "arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${AppSecretName}*"
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${AppSecretName}*"
+                  - !Sub "arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${SourceDeployKeySecretName}*"
       Tags:
         - Key: Project
           Value: Elara
@@ -74,23 +116,15 @@ Resources:
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      # This description is immutable. Keep it stable so updating ingress rules
+      # for the CloudFront origin cannot replace the single demo host.
       GroupDescription: Elara public-beta HTTPS ingress
       VpcId: !Ref VpcId
       SecurityGroupIngress:
-        - Description: HTTP for ACME redirect and certificate issuance
+        - Description: HTTP CloudFront origin
           IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - Description: HTTPS public API
-          IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 0.0.0.0/0
-        - Description: HTTP/3 public API
-          IpProtocol: udp
-          FromPort: 443
-          ToPort: 443
           CidrIp: 0.0.0.0/0
       SecurityGroupEgress:
         - IpProtocol: "-1"
@@ -141,16 +175,34 @@ Resources:
           set -euo pipefail
           exec > >(tee /var/log/elara-bootstrap.log | logger -t elara-bootstrap -s 2>/dev/console) 2>&1
 
-          dnf install -y docker git jq
+          dnf install -y docker git jq openssh-clients
           systemctl enable --now docker
           mkdir -p /usr/local/lib/docker/cli-plugins
-          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
-            -o /usr/local/lib/docker/cli-plugins/docker-compose
-          chmod 0755 /usr/local/lib/docker/cli-plugins/docker-compose
+          curl -fsSL https://github.com/docker/compose/releases/download/${ComposeVersion}/docker-compose-linux-x86_64 \
+            -o /tmp/docker-compose
+          echo "${ComposeSha256}  /tmp/docker-compose" | sha256sum --check --strict
+          install -m 0755 /tmp/docker-compose /usr/local/lib/docker/cli-plugins/docker-compose
+          rm -f /tmp/docker-compose
+          curl -fsSL https://github.com/docker/buildx/releases/download/${BuildxVersion}/buildx-${BuildxVersion}.linux-amd64 \
+            -o /tmp/docker-buildx
+          echo "${BuildxSha256}  /tmp/docker-buildx" | sha256sum --check --strict
+          install -m 0755 /tmp/docker-buildx /usr/local/lib/docker/cli-plugins/docker-buildx
+          rm -f /tmp/docker-buildx
 
           install -d -m 0755 /opt/elara
-          git clone ${RepositoryUrl} /opt/elara/app
+          deploy_key_path="$(mktemp /run/elara-source-deploy-key.XXXXXX)"
+          trap 'rm -f "$deploy_key_path"' EXIT
+          aws secretsmanager get-secret-value \
+            --region ${AWS::Region} \
+            --secret-id ${SourceDeployKeySecretName} \
+            --query SecretString \
+            --output text > "$deploy_key_path"
+          chmod 0600 "$deploy_key_path"
+          GIT_SSH_COMMAND="ssh -i $deploy_key_path -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" \
+            git clone ${RepositoryUrl} /opt/elara/app
           git -C /opt/elara/app checkout --detach ${GitRef}
+          rm -f "$deploy_key_path"
+          trap - EXIT
           aws secretsmanager get-secret-value \
             --region ${AWS::Region} \
             --secret-id ${AppSecretName} \
@@ -159,7 +211,8 @@ Resources:
           chmod 0600 /opt/elara/app/.env.private
 
           cd /opt/elara/app
-          COMPOSE="docker compose -f docker-compose.yml -f docker-compose.public-beta.yml"
+          export S3_BUCKET_NAME=${EvidenceBucketName}
+          COMPOSE="docker compose --env-file .env.private -f docker-compose.yml -f docker-compose.public-beta.yml"
           $COMPOSE build api worker
           $COMPOSE up -d postgres redis object-storage object-storage-init
           $COMPOSE run --rm --no-deps api alembic upgrade head
@@ -192,11 +245,49 @@ Resources:
       AllocationId: !GetAtt ElasticIp.AllocationId
       InstanceId: !Ref Host
 
+  ApiDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: Elara side-project demo API
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+            - PUT
+            - POST
+            - PATCH
+            - DELETE
+          CachedMethods:
+            - GET
+            - HEAD
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+          OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
+          TargetOriginId: Ec2HttpOrigin
+          ViewerProtocolPolicy: redirect-to-https
+        Enabled: true
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        Origins:
+          - DomainName: !GetAtt Host.PublicDnsName
+            Id: Ec2HttpOrigin
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: http-only
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+
 Outputs:
   ApiDomain:
+    Description: Legacy bootstrap compatibility value; not the demo HTTPS API.
     Value: !Ref ApiDomain
   BucketName:
     Value: !Ref EvidenceBucketName
+  CloudFrontDomainName:
+    Description: Default CloudFront HTTPS hostname for the browser-facing API.
+    Value: !GetAtt ApiDistribution.DomainName
   ElasticIp:
     Value: !Ref ElasticIp
   InstanceId:

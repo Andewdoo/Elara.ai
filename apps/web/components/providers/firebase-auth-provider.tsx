@@ -13,6 +13,7 @@ import { onAuthStateChanged, type User } from "firebase/auth";
 import {
   signInWithEmail as firebaseEmailSignIn,
   signInWithGoogle as firebaseGoogleSignIn,
+  signUpWithEmail as firebaseEmailSignUp,
   signOut as firebaseSignOut,
 } from "@/lib/auth";
 import { getFirebaseAuth, hasPublicFirebaseConfig } from "@/lib/firebase";
@@ -22,6 +23,7 @@ type FirebaseAuthContextValue = {
   loading: boolean;
   configured: boolean;
   signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -31,6 +33,7 @@ const FirebaseAuthContext = createContext<FirebaseAuthContextValue>({
   loading: true,
   configured: false,
   signInWithEmail: async () => undefined,
+  signUpWithEmail: async () => undefined,
   signInWithGoogle: async () => undefined,
   signOut: async () => undefined,
 });
@@ -63,6 +66,9 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
       configured,
       signInWithEmail: async (email: string, password: string) => {
         await firebaseEmailSignIn(email, password);
+      },
+      signUpWithEmail: async (email: string, password: string) => {
+        await firebaseEmailSignUp(email, password);
       },
       signInWithGoogle: async () => {
         await firebaseGoogleSignIn();

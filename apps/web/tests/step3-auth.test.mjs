@@ -8,12 +8,24 @@ test("Firebase web auth exchanges tokens in headers and never in URLs", async ()
   const auth = await read("../lib/auth.ts");
 
   assert.match(auth, /Authorization.*Bearer/);
+  assert.match(auth, /createUserWithEmailAndPassword/);
+  assert.match(auth, /export async function signUpWithEmail/);
   assert.match(auth, /credentials: "include"/);
   assert.match(auth, /Array\.isArray\(body\?\.detail\)/);
   assert.match(auth, /if \(!response\.ok\)/);
   assert.doesNotMatch(auth, /[?&](token|id_token|session)=/i);
   assert.doesNotMatch(auth, /FIREBASE_(CLIENT_EMAIL|PRIVATE_KEY)/);
   assert.doesNotMatch(auth, new RegExp(["OPEN", "AI"].join(""), "i"));
+});
+
+test("auth controls expose email account creation", async () => {
+  const controls = await read("../components/app/auth-controls.tsx");
+  const provider = await read("../components/providers/firebase-auth-provider.tsx");
+
+  assert.match(controls, /Need an account\? Sign up/);
+  assert.match(controls, /Create account/);
+  assert.match(controls, /signUpWithEmail/);
+  assert.match(provider, /signUpWithEmail/);
 });
 
 test("verification form creates a real authenticated API run", async () => {

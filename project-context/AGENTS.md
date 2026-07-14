@@ -2,6 +2,12 @@
 
 This file is the operating guide for AI coding agents and human contributors working on Elara.ai. It accompanies `IMPLEMENTATION_PLAN.md` and should be followed before making architecture, code, schema, or provider-integration changes.
 
+## Deployment Scope
+
+Elara is a personal, low-traffic side project for owner-controlled demonstrations. It is not a production SaaS or a public-service launch. `DEMO_SCOPE.md` is authoritative whenever older planning or historical release language conflicts with this posture.
+
+Prefer Vercel plus the existing single AWS EC2 host. Do not require multi-AZ services, autoscaling, Kubernetes, WAF, managed database/Redis, separate staging and production environments, formal on-call, enterprise governance, or public-launch approval unless the user explicitly changes the scope. Keep the minimum demo boundaries in `DEMO_SCOPE.md`.
+
 ## Project Mission
 
 Elara.ai is an evidence-management and automated verification platform. It evaluates the evidence available for a specific claim, quotation, article, source document, or statement as of a specific retrieval timestamp.
@@ -19,11 +25,11 @@ Every report must be traceable from verdict to score, score to evidence, evidenc
 
 Before implementing major functionality, read:
 
-1. `IMPLEMENTATION_PLAN.md`
-2. `docs/Elara.ai_Verification_and_Targeted_Retrieval_Methodology.pdf`
-3. `docs/Elara.ai_Web_Application_Architecture_and_Technical_Blueprint.pdf`
+1. `DEMO_SCOPE.md` for deployment or release work.
+2. The smallest applicable section of `IMPLEMENTATION_PLAN.md`.
+3. The project PDFs only for broad architecture or methodology changes.
 
-The implementation plan is the immediate build guide. The PDFs are the source of truth for methodology and architectural boundaries.
+The implementation plan is the immediate build guide. The PDFs remain source material for methodology and architectural boundaries, not the hosted-demo operations bar.
 
 ## Fixed Technology Stack
 
@@ -85,10 +91,8 @@ Persistence:
 Deployment and operations:
 
 - Vercel for Next.js
-- container hosting for FastAPI and Celery worker
-- managed PostgreSQL with pgvector
-- managed Redis
-- S3-compatible storage
+- one AWS EC2 demo host for FastAPI, Celery, PostgreSQL/pgvector, and Redis
+- private S3-compatible storage
 - Sentry
 - GitHub Actions
 
@@ -433,40 +437,39 @@ Follow this order unless the user asks otherwise:
 14. Report workspace, React Flow, and Recharts.
 15. Feedback, exports, saved reports, history.
 16. Monitoring, evaluation, security hardening.
-17. Security regression tests and initial production hardening.
-18. Production workflow closure through citation-audited durable completion.
+17. Focused security regressions needed for the demo boundary.
+18. Full workflow closure through citation-audited durable completion.
 19. Local and CI quality-gate closure.
 20. Deterministic full-stack end-to-end acceptance testing.
 21. Isolated Playwright fallback and retrieval hardening.
 22. Human-reviewed evaluation and methodology calibration.
 23. Product, report, accessibility, and responsive acceptance.
 24. Security, privacy, retention, correction, and governance review.
-25. Staging, observability, migration, backup, and rollback validation.
-26. Final release audit.
+25. Hosted-demo smoke, authentication, queue, and one live-case validation.
+26. Optional broader release audit only if the project scope expands.
 
 ## Completion Closure Rules
 
-Feature files and unit tests are not sufficient evidence that the project is complete. Follow Steps 18-26 in `IMPLEMENTATION_PLAN.md` after the initial feature sequence.
+Feature files and unit tests alone do not prove the hosted demo works. Use the hosted-demo success bar in `DEMO_SCOPE.md`; Steps 25-26 from the former public-beta plan are historical guidance, not mandatory production-release gates.
 
 Required closure rules:
 
-- The production Celery path must execute the complete LangGraph workflow through synthesis and citation audit; test-only graph assembly does not satisfy this requirement.
+- The real Celery path used by the demo must execute the complete LangGraph workflow through synthesis and citation audit; test-only graph assembly does not satisfy this requirement.
 - A run may transition to `COMPLETED` only after report artifacts and citation audit records are durable and typed state passes the deterministic completion gate.
 - Citation audit failures require a bounded evidence-grounded revision and re-audit or a safe terminal failure. Unsupported sentences must never be published.
 - `run.completed` must be durable in PostgreSQL and mirrored to Redis; SSE is informative and PostgreSQL remains authoritative.
 - Retries and redelivery must be idempotent and must not duplicate durable artifacts or rewind terminal state.
-- The deterministic full-stack acceptance test must run without real provider credentials. Real-provider checks belong in controlled staging.
+- The deterministic full-stack acceptance test must run without real provider credentials. One controlled hosted-demo case may exercise real providers.
 - Brave remains the selected search provider. Do not add a secondary provider without an explicit architecture decision.
-- Public production launch requires human-reviewed methodology calibration, not only synthetic smoke fixtures.
-- The private internal staging smoke check must fail closed when configuration is missing; a separate production smoke check is required only before a future public-production launch.
+- One approved public or synthetic claim must reach a durable citation-audited report on the hosted demo.
+- HTTPS, Firebase authentication, server-side secrets, non-public internal services, and cross-user ownership enforcement remain required for the demo.
 - After code changes, run `.\.graphify-venv\Scripts\graphify.exe update .` from the repository root and include graph freshness in final verification.
 
-Release decisions must distinguish:
+Current completion decisions distinguish:
 
-- private internal deployment approved,
 - feature implementation complete,
-- first shippable milestone approved,
-- public production launch approved.
+- hosted demo operational,
+- optional future production-launch readiness, only if the user explicitly requests that scope.
 
 Do not use these labels interchangeably.
 
@@ -484,9 +487,9 @@ Before finalizing a change, verify:
 - It handles inaccessible sources explicitly.
 - It keeps scoring deterministic.
 - It includes tests or a clear reason tests were not run.
-- It exercises the production runtime boundary when workflow behavior changes.
+- It exercises the actual hosted-demo runtime boundary when workflow behavior changes.
 - It cannot mark a run complete before citation audit and durable report persistence.
 - It preserves idempotency across retry, redelivery, cancellation, and terminal states.
-- It passes the applicable lint, type, test, migration, build, container, security, and evaluation gates.
+- It passes focused checks applicable to the changed behavior; repository-wide production-release gate matrices are not required for ordinary demo work.
 - It updates Graphify after code changes.
-- It states whether the work advances feature completion, the first milestone, or public-launch readiness.
+- It states whether the work advances feature completion or hosted-demo readiness.

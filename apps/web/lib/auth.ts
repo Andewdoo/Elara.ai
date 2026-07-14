@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   getIdToken,
   signInWithEmailAndPassword,
@@ -71,6 +72,17 @@ async function rollbackFailedSignIn() {
 
 export async function signInWithEmail(email: string, password: string) {
   const credential = await signInWithEmailAndPassword(requireFirebaseAuth(), email, password);
+  try {
+    await createApiSession(credential.user);
+  } catch (error) {
+    await rollbackFailedSignIn();
+    throw error;
+  }
+  return credential.user;
+}
+
+export async function signUpWithEmail(email: string, password: string) {
+  const credential = await createUserWithEmailAndPassword(requireFirebaseAuth(), email, password);
   try {
     await createApiSession(credential.user);
   } catch (error) {

@@ -1,5 +1,7 @@
 # Step 24B Governance Controls
 
+> These controls preserve basic privacy and report-integrity behavior. Any public-launch approval language below applies only to an explicitly requested future scope and does not block the current side-project demo.
+
 ## Implemented and enforced
 
 - Any persisted atomic claim classified as an allegation holds the citation-audited run in `review_required`; only an authenticated `reviewer` or `admin` can approve, reject, or require revision. Redelivery cannot bypass a durable decision.
@@ -24,4 +26,4 @@ The controls above intentionally use conservative fail-closed defaults. Public-l
 - tier quotas, burst/storage budgets, operator overrides, and the trusted-proxy allowlist/multi-hop policy;
 - storage residency, KMS/operator access, audit logging, disaster recovery, approved container digests, and dependency exception/upgrade policy.
 
-These unresolved decisions are public-launch blockers; they do not weaken the enforced private-by-default and publication-hold behavior.
+These unresolved decisions are blockers only to a future public launch; they do not block the owner-controlled demo or weaken the enforced private-by-default and publication-hold behavior.
