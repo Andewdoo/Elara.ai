@@ -580,14 +580,14 @@
     "semantic_hash": "2c94637834c2bdc9808e9b271bb58fc3"
   },
   "apps/worker/agents/planning.py": {
-    "mtime": 1782745714.6129508,
-    "ast_hash": "4b90d26eb55a78096ebf9e8f839ddbd0",
-    "semantic_hash": "4b90d26eb55a78096ebf9e8f839ddbd0"
+    "mtime": 1784143000.691731,
+    "ast_hash": "bd66866a259760a9de5ab6004b36c534",
+    "semantic_hash": ""
   },
   "apps/worker/agents/schemas.py": {
-    "mtime": 1782918530.2668066,
-    "ast_hash": "4ad03e779eb63fa5ed599ba2fadef992",
-    "semantic_hash": "4ad03e779eb63fa5ed599ba2fadef992"
+    "mtime": 1784142998.9610648,
+    "ast_hash": "21ab2bde38f4db35f809276b350ba49b",
+    "semantic_hash": ""
   },
   "apps/worker/agents/synthesis.py": {
     "mtime": 1782745714.6162086,
@@ -680,9 +680,9 @@
     "semantic_hash": "6bcc21515466d453ca49fee306b35788"
   },
   "apps/worker/graph/workflow.py": {
-    "mtime": 1783187607.4076,
-    "ast_hash": "c4459e4d0be60f80da8fdc7ed9526a98",
-    "semantic_hash": "c4459e4d0be60f80da8fdc7ed9526a98"
+    "mtime": 1784143451.5317829,
+    "ast_hash": "365d847fe4641eedc0d4535b90072d4b",
+    "semantic_hash": ""
   },
   "apps/worker/provenance/__init__.py": {
     "mtime": 1782866056.7531383,
@@ -770,9 +770,9 @@
     "semantic_hash": "69c1ee25525d78df5c7b50b491a3d51c"
   },
   "apps/worker/tests/test_agent_schemas.py": {
-    "mtime": 1782702964.7390497,
-    "ast_hash": "f61e7bb3676f6af06eac9432fad81318",
-    "semantic_hash": "f61e7bb3676f6af06eac9432fad81318"
+    "mtime": 1784141591.652807,
+    "ast_hash": "10e71162dda2651e1498051ee90440cf",
+    "semantic_hash": ""
   },
   "apps/worker/tests/test_deepseek_client.py": {
     "mtime": 1782703400.9962938,
@@ -815,14 +815,14 @@
     "semantic_hash": "c4a7b7db4f2ec0c568f9661d6ca8f6b5"
   },
   "apps/worker/tests/test_verification_task.py": {
-    "mtime": 1783187774.999388,
-    "ast_hash": "16bb8acdce5e023382fe417c89727b33",
-    "semantic_hash": "16bb8acdce5e023382fe417c89727b33"
+    "mtime": 1784141655.6746104,
+    "ast_hash": "10bd9419174821125282acb2745e6163",
+    "semantic_hash": ""
   },
   "apps/worker/tests/test_workflow.py": {
-    "mtime": 1783306775.1756513,
-    "ast_hash": "d79947115857cc4f504f5ad9150ff0ab",
-    "semantic_hash": "d79947115857cc4f504f5ad9150ff0ab"
+    "mtime": 1784143265.4613042,
+    "ast_hash": "ec666413dd2896e32b3d1e414c6e2cac",
+    "semantic_hash": ""
   },
   "package.json": {
     "mtime": 1783467326.364461,
@@ -1080,9 +1080,9 @@
     "semantic_hash": "ab7337179b27b91996ce054afdfa37e1"
   },
   "apps/worker/acceptance/doubles.py": {
-    "mtime": 1783218036.6108253,
-    "ast_hash": "f490ef33b3721225d9f16106b11f68b1",
-    "semantic_hash": "f490ef33b3721225d9f16106b11f68b1"
+    "mtime": 1784143004.5591118,
+    "ast_hash": "1d292618888fa17977fcd50ffbf8319b",
+    "semantic_hash": ""
   },
   "apps/worker/tests/test_acceptance_doubles.py": {
     "mtime": 1783216768.5662744,
@@ -1450,8 +1450,48 @@
     "semantic_hash": ""
   },
   "project-context/operations/DEMO_VALIDATION_25C_EVIDENCE.md": {
-    "mtime": 1784076855.7515678,
-    "ast_hash": "11a0086d77db356d209540a36e74cf0a",
+    "mtime": 1784079179.0667434,
+    "ast_hash": "e1e4eef0b5082ea4736e33fe0064ded7",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20260715_013631_why_did_the_worker_fail_during_planning_with_inval.md": {
+    "mtime": 1784079391.2522473,
+    "ast_hash": "eca8e5b61cfaacb32387a61c51bfe564",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20260715_014346_how_can_the_planner_failure_be_fixed_and_could_oth.md": {
+    "mtime": 1784079826.1215703,
+    "ast_hash": "50c69000bdb717c4fb3f7ec032fb65c5",
+    "semantic_hash": ""
+  },
+  "project-context/sub-agent optimization prompts.md": {
+    "mtime": 1784082421.7142208,
+    "ast_hash": "64187f5b60cc064a3278b5521a78f6b1",
+    "semantic_hash": ""
+  },
+  "project-context/sub-agent optimization.md": {
+    "mtime": 1784082420.0378957,
+    "ast_hash": "96a98ffd021140ead35a72ca6866bdeb",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20260715_022755_create_a_sub_agent_optimization_implementation_pla.md": {
+    "mtime": 1784082475.5712793,
+    "ast_hash": "fed421f44748c886aa1a1ab695faa0da",
+    "semantic_hash": ""
+  },
+  "apps/worker/agents/validation.py": {
+    "mtime": 1784142557.1057823,
+    "ast_hash": "0b8803238e0c1be2d9b051c3e24e30a8",
+    "semantic_hash": ""
+  },
+  "apps/worker/tests/test_agent_contract_validation.py": {
+    "mtime": 1784142290.57382,
+    "ast_hash": "7a117445e99b946b28d4260558389926",
+    "semantic_hash": ""
+  },
+  "apps/worker/tests/test_planning_normalization.py": {
+    "mtime": 1784143453.2351031,
+    "ast_hash": "19cc8efeddd5356da5e42c34db2c34e9",
     "semantic_hash": ""
   }
 }

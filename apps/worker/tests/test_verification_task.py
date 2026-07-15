@@ -138,7 +138,9 @@ def ready_state(run, passage_id: str) -> VerificationState:
     )
 
 
-def make_run() -> tuple[sessionmaker[Session], VerificationRun]:
+def make_run(
+    submitted_text: str = "A durable claim",
+) -> tuple[sessionmaker[Session], VerificationRun]:
     engine = create_engine(
         "sqlite+pysqlite://",
         connect_args={"check_same_thread": False},
@@ -162,7 +164,7 @@ def make_run() -> tuple[sessionmaker[Session], VerificationRun]:
             input_type=InputType.CLAIM,
             research_depth=ResearchDepth.STANDARD,
             status=RunStatus.QUEUED,
-            submitted_text="A durable claim",
+            submitted_text=submitted_text,
             normalized_target={},
             workflow_version="step-5-test",
         )
@@ -348,8 +350,10 @@ def test_completion_cancellation_race_is_won_by_cancellation(
     assert not any(event.event_type == "run.completed" for event in events)
 
 
-def test_task_marks_nonretryable_workflow_stop_failed(monkeypatch: pytest.MonkeyPatch):
-    factory, run = make_run()
+def test_synthetic_hosted_run_invalid_research_plan_is_durable_nonretryable_failure(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    factory, run = make_run("Synthetic public claim: the city published its annual budget.")
     redis_client = FakeRedis()
     settings = Settings(environment="test")
 
@@ -370,6 +374,8 @@ def test_task_marks_nonretryable_workflow_stop_failed(monkeypatch: pytest.Monkey
             )
         ],
     )
+    assert stopped.ready_for_completion is False
+    assert stopped.recoverable_errors[-1].retryable is False
     monkeypatch.setattr(task_module, "get_settings", lambda: settings)
     monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
@@ -391,6 +397,14 @@ def test_task_marks_nonretryable_workflow_stop_failed(monkeypatch: pytest.Monkey
     assert durable_run is not None and durable_run.status == RunStatus.FAILED
     assert durable_run.failure_code == "INVALID_RESEARCH_PLAN"
     assert last_event is not None and last_event.event_type == "run.failed"
+    with factory() as db:
+        completed = db.scalar(
+            select(AgentEvent).where(
+                AgentEvent.run_id == run.id,
+                AgentEvent.event_type == "run.completed",
+            )
+        )
+    assert completed is None
 
 
 def test_task_rejects_exhausted_citation_revision(monkeypatch: pytest.MonkeyPatch):

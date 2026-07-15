@@ -204,6 +204,39 @@ class SearchQueryOutput(AgentOutput):
     priority: UnitScore = 0.5
 
 
+class PlanningDraftQueryOutput(AgentOutput):
+    """A model-owned query scoped to its containing research objective."""
+
+    query: str = Field(min_length=1, max_length=500)
+    recency_hint: str | None = Field(default=None, max_length=100)
+    domain_hints: list[str] = Field(default_factory=list)
+    priority: UnitScore = 0.5
+
+
+class PlanningDraftObjectiveOutput(AgentOutput):
+    """A model-owned objective with no database-like objective reference."""
+
+    claim_ref: str = Field(min_length=1, max_length=64)
+    intent: EvidenceIntent
+    target: str = Field(min_length=1)
+    required_source_role: str | None = Field(default=None, max_length=100)
+    priority: UnitScore = 0.5
+    preferred_source_types: list[str] = Field(default_factory=list)
+    queries: list[PlanningDraftQueryOutput] = Field(min_length=1)
+
+
+class PlanningDraftOutput(AgentOutput):
+    """The narrow schema DeepSeek may use to propose a research plan.
+
+    Objective references and query intents are deterministic workflow values,
+    deliberately absent from this model-facing contract.
+    """
+
+    objectives: list[PlanningDraftObjectiveOutput] = Field(min_length=1)
+    primary_source_targets: list[str] = Field(default_factory=list)
+    known_evidence_gaps: list[str] = Field(default_factory=list)
+
+
 class PlanningOutput(AgentOutput):
     objectives: list[ResearchObjectiveOutput] = Field(min_length=1)
     queries: list[SearchQueryOutput] = Field(min_length=1)
@@ -327,6 +360,9 @@ __all__ = [
     "EvidenceClassificationOutput",
     "EvidenceQualityOutput",
     "IntakeClassificationOutput",
+    "PlanningDraftObjectiveOutput",
+    "PlanningDraftOutput",
+    "PlanningDraftQueryOutput",
     "PlanningOutput",
     "QuoteFidelityComponentsOutput",
     "SentenceCitationAuditOutput",

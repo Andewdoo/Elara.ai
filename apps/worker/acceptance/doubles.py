@@ -172,15 +172,11 @@ class DeterministicDeepSeekDouble:
                     "verification_scope": "Compare the two Q1 net-income values.",
                 }]
             }
-        elif name == "PlanningOutput":
+        elif name == "PlanningDraftOutput":
             payload = {
                 "objectives": [
-                    {"objective_ref": "objective-primary", "claim_ref": "claim-1", "intent": "primary", "target": "Find the filing.", "priority": 1},
-                    {"objective_ref": "objective-contradiction", "claim_ref": "claim-1", "intent": "contradiction", "target": "Find contrary evidence.", "priority": 0.8},
-                ],
-                "queries": [
-                    {"query": "Company X Q1 2026 net income filing", "objective_ref": "objective-primary", "intent": "primary", "priority": 1},
-                    {"query": "Company X Q1 2026 net income correction", "objective_ref": "objective-contradiction", "intent": "contradiction", "priority": 0.8},
+                    {"claim_ref": "claim-1", "intent": "primary", "target": "Find the filing.", "priority": 1, "queries": [{"query": "Company X Q1 2026 net income filing", "priority": 1}]},
+                    {"claim_ref": "claim-1", "intent": "contradiction", "target": "Find contrary evidence.", "priority": 0.8, "queries": [{"query": "Company X Q1 2026 net income correction", "priority": 0.8}]},
                 ],
                 "primary_source_targets": ["Controlled quarterly filing"],
             }

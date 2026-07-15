@@ -34,7 +34,8 @@ def test_decomposition_rejects_inconsistent_weights_and_duplicate_refs():
         DecompositionOutput(atomic_claims=[atomic_claim(), atomic_claim()])
 
 
-def test_planning_queries_must_reference_declared_objectives():
+def test_planner_unknown_objective_ref_is_blocked_by_pydantic_before_workflow():
+    """The workflow's redundant unknown-objective guard is unreachable."""
     with pytest.raises(ValidationError):
         PlanningOutput.model_validate(
             {

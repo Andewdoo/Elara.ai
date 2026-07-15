@@ -25,6 +25,7 @@ from agents.schemas import (
     PlanningOutput,
     SynthesisOutput,
 )
+from agents.validation import validate_research_plan
 from app.database.base import Base
 from app.config import Settings
 from app.models import (
@@ -179,10 +180,259 @@ PLAN = {
 }
 
 
+DRAFT_PLAN = {
+    "objectives": [
+        {
+            "claim_ref": "claim-1",
+            "intent": "primary",
+            "target": "Locate the original quarterly filing.",
+            "queries": [{"query": "Company X Q1 2026 net income filing"}],
+        },
+        {
+            "claim_ref": "claim-1",
+            "intent": "contradiction",
+            "target": "Locate corrections or contradictory records.",
+            "queries": [{"query": "Company X Q1 2026 net income correction"}],
+        },
+    ]
+}
+
+
+def test_planner_normalizes_draft_and_validates_contract():
+    workflow_state = VerificationState.model_validate(
+        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=FakeModel([DRAFT_PLAN]), submitted_input="synthetic public claim")
+        ).planner(workflow_state)
+    )
+
+    assert result.recoverable_errors == []
+    assert result.objectives[0].objective_ref.startswith("obj-")
+    assert result.queries[0].objective_ref == result.objectives[0].objective_ref
+    assert result.queries[0].intent == result.objectives[0].intent
+
+
+def test_planner_rejects_unknown_draft_claim_ref_with_stable_diagnostics():
+    invalid_draft = deepcopy(DRAFT_PLAN)
+    invalid_draft["objectives"][0]["claim_ref"] = "unknown-claim"
+    workflow_state = VerificationState.model_validate(
+        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=FakeModel([invalid_draft]), submitted_input="synthetic public claim")
+        ).planner(workflow_state)
+    )
+
+    assert result.recoverable_errors[-1].details == {
+        "primary_violation": "PLAN_UNKNOWN_CLAIM_REF",
+        "violation_count": 1,
+        "repair_attempted": False,
+        "violation_summary": "PLAN_UNKNOWN_CLAIM_REF",
+    }
+
+
+def planner_contract_cases() -> list[tuple[str, dict[str, object], dict[str, object]]]:
+    """Pydantic-valid plans that characterize each workflow-only planner guard."""
+    cases: list[tuple[str, dict[str, object], dict[str, object]]] = [
+        ("valid_control", deepcopy(PLAN), {}),
+    ]
+
+    duplicate_objective = deepcopy(PLAN)
+    duplicate_objective["objectives"].insert(
+        1,
+        {
+            "objective_ref": "objective-1",
+            "claim_ref": "claim-1",
+            "intent": "primary",
+            "target": "Locate an additional original filing.",
+        },
+    )
+    cases.append(("duplicate_objective_ref", duplicate_objective, {}))
+
+    unknown_claim = deepcopy(PLAN)
+    unknown_claim["objectives"].append(
+        {
+            "objective_ref": "objective-3",
+            "claim_ref": "unknown-claim",
+            "intent": "support",
+            "target": "Locate a supporting record.",
+        }
+    )
+    unknown_claim["queries"].append(
+        {
+            "query": "Company X supporting record",
+            "objective_ref": "objective-3",
+            "intent": "support",
+        }
+    )
+    cases.append(("unknown_claim_ref", unknown_claim, {}))
+
+    missing_coverage = deepcopy(PLAN)
+    missing_claim = {
+        **DECOMPOSITION["atomic_claims"][0],
+        "claim_ref": "claim-2",
+        "text": "Company X renamed a product in Q1 2026.",
+        "fact_checkability": "not_fact_checkable",
+    }
+    cases.append(
+        (
+            "missing_claim_coverage",
+            missing_coverage,
+            {"claims": [*DECOMPOSITION["atomic_claims"], missing_claim]},
+        )
+    )
+
+    extra_coverage = deepcopy(unknown_claim)
+    cases.append(("extra_claim_coverage", extra_coverage, {}))
+
+    query_limit = deepcopy(PLAN)
+    query_limit["queries"].extend(
+        {
+            "query": f"Company X Q1 2026 primary filing {index}",
+            "objective_ref": "objective-1",
+            "intent": "primary",
+        }
+        for index in range(59)
+    )
+    cases.append(("query_limit", query_limit, {}))
+
+    duplicate_query = deepcopy(PLAN)
+    duplicate_query["queries"][1]["query"] = "  COMPANY x q1 2026 NET income FILING  "
+    cases.append(("duplicate_normalized_query", duplicate_query, {}))
+
+    primary_missing = deepcopy(PLAN)
+    primary_missing["objectives"][0]["intent"] = "support"
+    primary_missing["queries"][0]["intent"] = "support"
+    cases.append(("missing_primary_path", primary_missing, {}))
+
+    contradiction_missing = deepcopy(PLAN)
+    contradiction_missing["objectives"][1]["intent"] = "support"
+    contradiction_missing["queries"][1]["intent"] = "support"
+    cases.append(("missing_contradiction_path", contradiction_missing, {}))
+
+    attribution_missing = deepcopy(PLAN)
+    attribution_input = {**INTAKE, "requires_attribution_check": True}
+    cases.append(
+        ("missing_attribution_path", attribution_missing, {"normalized_input": attribution_input})
+    )
+
+    exact_quote_missing = deepcopy(PLAN)
+    quote_input = {
+        **INTAKE,
+        "input_kind": "quote",
+        "normalized_text": "This synthetic statement must be searched verbatim.",
+    }
+    cases.append(("missing_exact_quote", exact_quote_missing, {"normalized_input": quote_input}))
+
+    intent_mismatch = deepcopy(PLAN)
+    intent_mismatch["queries"].append(
+        {
+            "query": "Company X Q1 2026 supporting context",
+            "objective_ref": "objective-1",
+            "intent": "support",
+        }
+    )
+    cases.append(("query_objective_intent_mismatch", intent_mismatch, {}))
+    return cases
+
+
+@pytest.mark.skip(reason="Planning drafts cannot supply persisted objective references or query intents.")
+@pytest.mark.parametrize(("case_name", "plan", "updates"), planner_contract_cases())
+def test_planner_reports_stable_contract_diagnostics_for_pydantic_valid_plans(
+    case_name: str, plan: dict[str, object], updates: dict[str, object]
+):
+    """Freeze the generic v1 failure until Prompt 2 extracts precise validators."""
+    PlanningOutput.model_validate(plan)
+    workflow_state = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+            **updates,
+        }
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=FakeModel([plan]), submitted_input="synthetic public claim")
+        ).planner(workflow_state)
+    )
+
+    expected_primary_violations = {
+        "duplicate_objective_ref": "PLAN_DUPLICATE_OBJECTIVE_REF",
+        "unknown_claim_ref": "PLAN_EXTRA_CLAIM_COVERAGE",
+        "missing_claim_coverage": "PLAN_MISSING_CLAIM_COVERAGE",
+        "extra_claim_coverage": "PLAN_EXTRA_CLAIM_COVERAGE",
+        "query_limit": "PLAN_QUERY_LIMIT_EXCEEDED",
+        "duplicate_normalized_query": "PLAN_DUPLICATE_QUERY",
+        "missing_primary_path": "PLAN_PRIMARY_PATH_MISSING",
+        "missing_contradiction_path": "PLAN_CONTRADICTION_PATH_MISSING",
+        "missing_attribution_path": "PLAN_ATTRIBUTION_PATH_MISSING",
+        "missing_exact_quote": "PLAN_EXACT_QUOTE_PATH_MISSING",
+        "query_objective_intent_mismatch": "PLAN_INTENT_MISMATCH",
+    }
+    if case_name == "valid_control":
+        assert result.recoverable_errors == []
+        assert WorkflowStage.PLANNER in result.completed_stages
+    else:
+        assert result.recoverable_errors[-1].code == "INVALID_RESEARCH_PLAN"
+        assert result.recoverable_errors[-1].details["primary_violation"] == expected_primary_violations[case_name]
+        assert result.recoverable_errors[-1].details["violation_count"] == len(
+            validate_research_plan(workflow_state, PlanningOutput.model_validate(plan))
+        )
+        assert result.recoverable_errors[-1].details["repair_attempted"] is False
+        assert WorkflowStage.PLANNER not in result.completed_stages
+
+
+def test_planner_failure_event_contains_only_stable_diagnostics():
+    raw_claim = "Raw claim text must never appear in a planner failure event."
+    raw_query = "Raw query text must never appear in a planner failure event."
+    invalid_plan = deepcopy(DRAFT_PLAN)
+    invalid_plan["objectives"][0]["queries"].append(
+        {"query": f"  {raw_query.upper()}  "}
+    )
+    invalid_plan["objectives"][1]["queries"][0]["query"] = raw_query
+    workflow_state = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": {**INTAKE, "normalized_text": raw_claim},
+            "claims": DECOMPOSITION["atomic_claims"],
+        }
+    )
+    progress = RecordingProgress()
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([invalid_plan]),
+                submitted_input=raw_claim,
+                progress=progress,
+            )
+        ).planner(workflow_state)
+    )
+
+    event = progress.events[-1]
+    details = event["payload"]["details"]
+    assert result.recoverable_errors[-1].code == "INVALID_RESEARCH_PLAN"
+    assert details == {
+        "primary_violation": "PLAN_DUPLICATE_QUERY",
+        "violation_count": 1,
+        "repair_attempted": False,
+        "violation_summary": "PLAN_DUPLICATE_QUERY",
+    }
+    assert raw_claim not in str(event)
+    assert raw_query not in str(event)
+
+
 def test_planning_workflow_is_typed_and_persists_public_progress():
     progress = RecordingProgress()
     writer = RecordingStateWriter()
-    model = FakeModel([INTAKE, DECOMPOSITION, PLAN])
+    model = FakeModel([INTAKE, DECOMPOSITION, DRAFT_PLAN])
     workflow = build_workflow(
         WorkflowServices(
             model=model,
@@ -196,7 +446,7 @@ def test_planning_workflow_is_typed_and_persists_public_progress():
     result = VerificationState.model_validate(asyncio.run(workflow.ainvoke(state())))
 
     assert result.claims[0].claim_ref == "claim-1"
-    assert result.queries[0].objective_ref == "objective-1"
+    assert result.queries[0].objective_ref.startswith("obj-")
     assert result.completed_stages == [
         WorkflowStage.INTAKE,
         WorkflowStage.DECOMPOSITION,
@@ -291,20 +541,13 @@ def test_planner_requires_primary_and_contradiction_paths_per_claim():
         "claim_ref": "claim-2",
         "text": "Demand increased in Q1 2026.",
     }
-    incomplete_plan = deepcopy(PLAN)
+    incomplete_plan = deepcopy(DRAFT_PLAN)
     incomplete_plan["objectives"].append(
         {
-            "objective_ref": "objective-3",
             "claim_ref": "claim-2",
             "intent": "primary",
             "target": "Locate demand records.",
-        }
-    )
-    incomplete_plan["queries"].append(
-        {
-            "query": "Company X Q1 2026 demand records",
-            "objective_ref": "objective-3",
-            "intent": "primary",
+            "queries": [{"query": "Company X Q1 2026 demand records"}],
         }
     )
     value = VerificationState.model_validate(
@@ -621,7 +864,7 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     }
     workflow = build_workflow(
         WorkflowServices(
-            model=FakeModel([INTAKE, DECOMPOSITION, PLAN, evidence, synthesis, audit]),
+            model=FakeModel([INTAKE, DECOMPOSITION, DRAFT_PLAN, evidence, synthesis, audit]),
             submitted_input="Company X doubled net income in Q1 2026.",
             extensions=WorkflowExtensions(
                 discovery_source_selection=discovery,
@@ -927,7 +1170,7 @@ def test_runtime_executes_and_persists_planning_handoff():
         run_id,
         record=record,
         is_cancelled=lambda *_args: False,
-        model=FakeModel([INTAKE, DECOMPOSITION, PLAN]),
+        model=FakeModel([INTAKE, DECOMPOSITION, DRAFT_PLAN]),
     )
 
     assert result is not None
@@ -1089,7 +1332,7 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
         run_id,
         record=lambda *_args, **kwargs: public_events.append(kwargs),
         is_cancelled=lambda *_args: False,
-        model=FakeModel([INTAKE, DECOMPOSITION, PLAN, evidence, synthesis, audit]),
+        model=FakeModel([INTAKE, DECOMPOSITION, DRAFT_PLAN, evidence, synthesis, audit]),
         workflow_extensions=WorkflowExtensions(
             discovery_source_selection=discovery,
             secure_retrieval=retrieval,
@@ -1154,7 +1397,7 @@ def test_runtime_resumes_retryable_retrieval_from_extracting_status():
         run_id,
         record=lambda *_args, **_kwargs: None,
         is_cancelled=lambda *_args: False,
-        model=FakeModel([INTAKE, DECOMPOSITION, PLAN]),
+        model=FakeModel([INTAKE, DECOMPOSITION, DRAFT_PLAN]),
     )
     with factory() as db:
         run = db.get(VerificationRun, run_id)

@@ -23,21 +23,22 @@ from agents.intake import PROMPT_VERSION as INTAKE_PROMPT_VERSION
 from agents.intake import SYSTEM_PROMPT as INTAKE_PROMPT
 from agents.planning import PROMPT_VERSION as PLANNER_PROMPT_VERSION
 from agents.planning import SYSTEM_PROMPT as PLANNER_PROMPT
+from agents.planning import UnknownPlanningDraftClaimRefError, normalize_research_plan
 from agents.schemas import (
     CitationAuditOutput,
     DecompositionOutput,
     Entailment,
     EvidenceClassificationOutput,
     EvidenceStance,
-    FactCheckability,
     InputKind,
     IntakeClassificationOutput,
-    PlanningOutput,
+    PlanningDraftOutput,
     SentenceCitationAuditOutput,
     SynthesisOutput,
 )
 from agents.synthesis import PROMPT_VERSION as SYNTHESIS_PROMPT_VERSION
 from agents.synthesis import SYSTEM_PROMPT as SYNTHESIS_PROMPT
+from agents.validation import summarize_violation_codes, validate_research_plan
 from graph.state import RecoverableError, VerificationState, WorkflowStage
 from graph.transitions import (
     citation_audit_ready,
@@ -403,67 +404,42 @@ class WorkflowNodes:
                 {"role": "system", "content": PLANNER_PROMPT},
                 {"role": "user", "content": _json(state.claims)},
             ],
-            output_schema=PlanningOutput,
+            output_schema=PlanningDraftOutput,
             max_tokens=6000,
         )
         if isinstance(response, VerificationState):
             return response
-        output = response.output
-        claim_refs = {claim.claim_ref for claim in state.claims}
-        objective_refs = {objective.objective_ref for objective in output.objectives}
-        query_limit = {"QUICK": 24, "STANDARD": 60, "DEEP": 120}[state.research_depth.value]
-        planned_claim_refs = {objective.claim_ref for objective in output.objectives}
-        query_texts = [" ".join(query.query.casefold().split()) for query in output.queries]
-        objective_by_ref = {objective.objective_ref: objective for objective in output.objectives}
-        intents_by_claim: dict[str, set[str]] = {claim_ref: set() for claim_ref in claim_refs}
-        for query in output.queries:
-            objective = objective_by_ref.get(query.objective_ref)
-            if objective is not None:
-                intents_by_claim[objective.claim_ref].add(query.intent.value)
-        fact_checkable_claim_refs = {
-            claim.claim_ref
-            for claim in state.claims
-            if claim.fact_checkability != FactCheckability.NOT_FACT_CHECKABLE
-        }
-        required_paths_missing = any(
-            not {"primary", "contradiction"}.issubset(intents_by_claim[claim_ref])
-            for claim_ref in fact_checkable_claim_refs
-        )
-        attribution_required = bool(
-            state.normalized_input
-            and state.normalized_input.requires_attribution_check
-        ) or any(claim.claim_kind.value in {"quotation", "attribution"} for claim in state.claims)
-        attribution_missing = attribution_required and not any(
-            query.intent.value == "attribution" for query in output.queries
-        )
-        exact_quote_missing = (
-            state.normalized_input is not None
-            and state.normalized_input.input_kind.value == "quote"
-            and len(state.normalized_input.normalized_text) <= 300
-            and not any(state.normalized_input.normalized_text in query.query for query in output.queries)
-        )
-        invalid = (
-            len(objective_refs) != len(output.objectives)
-            or any(objective.claim_ref not in claim_refs for objective in output.objectives)
-            or planned_claim_refs != claim_refs
-            or len(output.queries) > query_limit
-            or len(query_texts) != len(set(query_texts))
-            or required_paths_missing
-            or attribution_missing
-            or exact_quote_missing
-            or any(query.objective_ref not in objective_refs for query in output.queries)
-            or any(
-                query.objective_ref in objective_by_ref
-                and query.intent != objective_by_ref[query.objective_ref].intent
-                for query in output.queries
+        try:
+            output = normalize_research_plan(
+                response.output,
+                allowed_claim_refs=[claim.claim_ref for claim in state.claims],
             )
-        )
-        if invalid:
+        except UnknownPlanningDraftClaimRefError:
             return await self._failure(
                 state,
                 WorkflowStage.PLANNER,
                 code="INVALID_RESEARCH_PLAN",
-                message="Research planning returned invalid claim or objective references.",
+                message="Research planning returned an invalid plan contract.",
+                details={
+                    "primary_violation": "PLAN_UNKNOWN_CLAIM_REF",
+                    "violation_count": 1,
+                    "repair_attempted": False,
+                    "violation_summary": "PLAN_UNKNOWN_CLAIM_REF",
+                },
+            )
+        violations = validate_research_plan(state, output)
+        if violations:
+            return await self._failure(
+                state,
+                WorkflowStage.PLANNER,
+                code="INVALID_RESEARCH_PLAN",
+                message="Research planning returned an invalid plan contract.",
+                details={
+                    "primary_violation": violations[0].code,
+                    "violation_count": len(violations),
+                    "repair_attempted": False,
+                    "violation_summary": summarize_violation_codes(violations),
+                },
             )
         updated = state.complete(
             WorkflowStage.PLANNER,

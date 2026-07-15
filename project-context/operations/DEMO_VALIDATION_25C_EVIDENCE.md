@@ -59,3 +59,41 @@ Status: **Blocked pending deployment of the tested repair; hosted demo not opera
 ### Required handoff
 
 Repair the host's approved read-only GitHub deploy-key transport, then fetch and deploy commit `aacc9c8` through the existing `/opt/elara/app` Compose procedure. Reconfirm API and worker revisions match before repeating Firebase sign-in. Only after that passes should the approved claim, Celery synthesis/citation-audit completion, PostgreSQL reload/SSE reconnect, and browser-exposure checks be run.
+
+## 2026-07-14 in-app-browser continuation
+
+Status: **Blocked by the current validation environment; hosted demo remains not operational.**
+
+### Sanitized evidence
+
+- Stable Vercel frontend: `https://elara-ai-web.vercel.app/verify` loaded successfully in the in-app browser. The rendered page reported Firebase Web configuration ready and stated that model, search, database, Redis, object-storage, Firebase Admin, Sentry authentication, and tracing credentials are not exposed to the browser.
+- No approved Firebase demo-account session was present in the supplied browser. The sign-in dialog was reachable, but no account credentials or existing authenticated session were supplied, so no authentication attempt was made.
+- A single credential-free browser request to the recorded CloudFront API health URL was blocked locally by the browser client before it reached the endpoint. Per the demo-validation instruction, it was not retried.
+- The local checkout contains the tested auth-mapper repair at `aacc9c89f129b29d665dc998da2fa43f7929a1db` (`fix(api): disambiguate verification run owner relationship`). This does not establish that the API and worker deployed to the EC2 host use that revision.
+
+### Required proof still unavailable
+
+The current session cannot prove a valid FastAPI session, an approved claim's Celery path through synthesis and durable citation audit to `COMPLETED`, PostgreSQL reload after refresh or SSE reconnect, the deployed API/worker revision match, or the externally reachable API health response. It therefore cannot mark the hosted demo operational.
+
+### Approved next handoff
+
+Use an environment with authorized AWS/browser network access, start the single EC2 host if necessary, and confirm the deployed API and worker both use the selected revision (including the auth-mapper repair). Sign in to the approved Firebase demo account, run one reviewed public or synthetic claim, confirm `COMPLETED` only after citation audit, refresh or reconnect SSE to reload the report from PostgreSQL, and retain only sanitized status, URL, revision, and exposure evidence. Stop the EC2 host after the demo when it is no longer needed.
+
+## 2026-07-14 authenticated Full Mode attempt
+
+Status: **Blocked during the real Celery workflow; hosted demo remains not operational.**
+
+### Sanitized evidence
+
+- The approved Firebase demo account was signed in through the stable Vercel frontend, and FastAPI accepted the authenticated verification request. This proves a valid browser-to-API session for the submitted run.
+- Approved public demo case: the WHO's 11 March 2020 characterization of COVID-19 as a pandemic.
+- FastAPI durably created run `544bd765-4da4-47df-9ccc-ec9215bb4af8`; the browser connected to its SSE stream and received intake and planner progress events from the actual Celery path.
+- The worker then reached the durable terminal `FAILED` state with the sanitized error: `Research planning returned invalid claim or objective references.` No retry was attempted.
+
+### Result and remaining limitation
+
+Because the worker failed before source discovery, synthesis, and citation audit, this attempt cannot prove a durable `COMPLETED` report, PostgreSQL report reload after refresh/SSE reconnect, or the deployed API/worker revision match. The browser UI continued to state that server credentials and private-service credentials are not exposed, but that client-side statement does not replace a deployed-service exposure review.
+
+### Required handoff
+
+Diagnose and deploy the research-planning failure on the same selected API/worker revision, then rerun one reviewed demo case once. Do not mark the demo operational until the real worker completes synthesis and durable citation audit, the report reloads from PostgreSQL after refresh or SSE reconnect, and the API/worker revision and private-service boundaries are confirmed with sanitized evidence.

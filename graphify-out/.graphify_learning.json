@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-13T20:05:32.080363+00:00",
+  "generated_at": "2026-07-15T19:13:37.778965+00:00",
   "nodes": {
     "apps_api_app_config_settings": {
       "code_fingerprint": "bda5fc535a5c4fa5d7c004cb0b5853b11f759a9fcfb4739b91a3cb88dfbad2b3",
@@ -12,7 +12,7 @@
           "q": "is the backend stack impossible to host thorugh free tier?"
         }
       ],
-      "score": 0.999458504,
+      "score": 0.955119672,
       "source_file": "apps/api/app/config.py",
       "status": "tentative",
       "uses": 1
@@ -28,7 +28,7 @@
           "q": "is the backend stack impossible to host thorugh free tier?"
         }
       ],
-      "score": 0.999458504,
+      "score": 0.955119672,
       "source_file": "apps/api/app/services/object_storage.py",
       "status": "tentative",
       "uses": 1
@@ -44,7 +44,7 @@
           "q": "Does the authoritative project guidance now define Elara as a low-traffic side-project hosted demo rather than a production SaaS?"
         }
       ],
-      "score": 0.999958053,
+      "score": 0.95559706,
       "source_file": "project-context/DEMO_SCOPE.md",
       "status": "tentative",
       "uses": 1
@@ -60,10 +60,31 @@
           "q": "Does the authoritative project guidance now define Elara as a low-traffic side-project hosted demo rather than a production SaaS?"
         }
       ],
-      "score": 0.999958053,
+      "score": 0.95559706,
       "source_file": "project-context/DEMO_SCOPE.md",
       "status": "tentative",
       "uses": 1
+    },
+    "project_context_implementation_plan_4_4_langgraph_nodes": {
+      "code_fingerprint": "8172841a49b9f14cc7c5c80d5c99d5b15851f9017711a72f2dd86fb36d79bf35",
+      "label": "4.4 LangGraph Nodes",
+      "last": "2026-07-15T02:27:55.570272+00:00",
+      "provenance": [
+        {
+          "date": "2026-07-15T02:27:55.570272+00:00",
+          "outcome": "useful",
+          "q": "Create a sub-agent optimization implementation plan and step-by-step sub-agent prompt file for the Elara worker failure without changing the stack."
+        },
+        {
+          "date": "2026-07-15T01:36:31.250735+00:00",
+          "outcome": "useful",
+          "q": "why did the worker fail during planning with invalid claim or objective references"
+        }
+      ],
+      "score": 1.967174557,
+      "source_file": "project-context/IMPLEMENTATION_PLAN.md",
+      "status": "preferred",
+      "uses": 2
     },
     "project_context_implementation_plan_hosted_demo_completion_plan": {
       "code_fingerprint": "8172841a49b9f14cc7c5c80d5c99d5b15851f9017711a72f2dd86fb36d79bf35",
@@ -76,8 +97,93 @@
           "q": "Does the authoritative project guidance now define Elara as a low-traffic side-project hosted demo rather than a production SaaS?"
         }
       ],
-      "score": 0.999958053,
+      "score": 0.95559706,
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
+      "status": "tentative",
+      "uses": 1
+    },
+    "project_context_implementation_plan_synthesis": {
+      "code_fingerprint": "8172841a49b9f14cc7c5c80d5c99d5b15851f9017711a72f2dd86fb36d79bf35",
+      "label": "Synthesis",
+      "last": "2026-07-15T02:27:55.570272+00:00",
+      "provenance": [
+        {
+          "date": "2026-07-15T02:27:55.570272+00:00",
+          "outcome": "useful",
+          "q": "Create a sub-agent optimization implementation plan and step-by-step sub-agent prompt file for the Elara worker failure without changing the stack."
+        },
+        {
+          "date": "2026-07-15T01:43:46.120548+00:00",
+          "outcome": "useful",
+          "q": "how can the planner failure be fixed and could other agent roles have similar issues"
+        }
+      ],
+      "score": 1.9672889,
+      "source_file": "project-context/IMPLEMENTATION_PLAN.md",
+      "status": "preferred",
+      "uses": 2
+    },
+    "project_context_operations_deployment": {
+      "code_fingerprint": "93e84f162a72d69cca5832774970d698f19beaf6e30d564c8bb90a0a4702c6af",
+      "label": "DEPLOYMENT.md",
+      "last": "2026-07-13T19:39:44.585067+00:00",
+      "provenance": [
+        {
+          "date": "2026-07-13T19:39:44.585067+00:00",
+          "outcome": "useful",
+          "q": "Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?"
+        }
+      ],
+      "score": 0.955241759,
+      "source_file": "project-context/operations/DEPLOYMENT.md",
+      "status": "tentative",
+      "uses": 1
+    },
+    "project_context_operations_lite_mode": {
+      "code_fingerprint": "2e445e4589fdb3c4de3d9cd6c0744f1ca628da0a71ee5b42f9b272d93853e1de",
+      "label": "LITE_MODE.md",
+      "last": "2026-07-13T19:39:44.585067+00:00",
+      "provenance": [
+        {
+          "date": "2026-07-13T19:39:44.585067+00:00",
+          "outcome": "useful",
+          "q": "Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?"
+        }
+      ],
+      "score": 0.955241759,
+      "source_file": "project-context/operations/LITE_MODE.md",
+      "status": "tentative",
+      "uses": 1
+    },
+    "project_context_operations_public_beta_aws_deployment": {
+      "code_fingerprint": "1318dcbedaa8b6a156ff92c7396286660747c5e1e5eb21cb53a234e9d293d847",
+      "label": "PUBLIC_BETA_AWS_DEPLOYMENT.md",
+      "last": "2026-07-13T19:39:44.585067+00:00",
+      "provenance": [
+        {
+          "date": "2026-07-13T19:39:44.585067+00:00",
+          "outcome": "useful",
+          "q": "Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?"
+        }
+      ],
+      "score": 0.955241759,
+      "source_file": "project-context/operations/PUBLIC_BETA_AWS_DEPLOYMENT.md",
+      "status": "tentative",
+      "uses": 1
+    },
+    "project_context_operations_staging_operations": {
+      "code_fingerprint": "2c3f70f245412d64d2a4647bfb872c1bff0d5c766e91309bd004f533e77e0589",
+      "label": "STAGING_OPERATIONS.md",
+      "last": "2026-07-13T19:39:44.585067+00:00",
+      "provenance": [
+        {
+          "date": "2026-07-13T19:39:44.585067+00:00",
+          "outcome": "useful",
+          "q": "Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?"
+        }
+      ],
+      "score": 0.955241759,
+      "source_file": "project-context/operations/STAGING_OPERATIONS.md",
       "status": "tentative",
       "uses": 1
     },
@@ -92,7 +198,7 @@
           "q": "Does the authoritative project guidance now define Elara as a low-traffic side-project hosted demo rather than a production SaaS?"
         }
       ],
-      "score": 0.999958053,
+      "score": 0.95559706,
       "source_file": "project-context/operations/STAGING_OPERATIONS.md",
       "status": "tentative",
       "uses": 1

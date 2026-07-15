@@ -31,6 +31,7 @@ agent
 agents
 aggregate
 aggressive
+alchemy
 alembic
 alert
 alias
@@ -39,6 +40,8 @@ allegation
 allow
 allowed
 allows
+already
+always
 ambiguities
 analysis
 analyze
@@ -58,6 +61,7 @@ apply
 approval
 approved
 apps
+architectural
 architecture
 are
 args
@@ -69,6 +73,7 @@ assess
 assist
 assistance
 async
+asynchronous
 atomic
 atomically
 attach
@@ -92,6 +97,7 @@ authorized
 autoprefixer
 available
 average
+awaiting
 aware
 aws
 backed
@@ -103,7 +109,9 @@ badge
 balance
 bar
 barrier
+bars
 base
+baseline
 bearer
 bearing
 beautiful
@@ -114,11 +122,13 @@ beta
 between
 block
 blocked
+blocker
 blocks
 blueprint
 bodies
 body
 boost
+bootstrap
 bound
 boundaries
 boundary
@@ -134,6 +144,7 @@ bucket
 buckets
 budget
 build
+built
 bundle
 but
 button
@@ -142,6 +153,7 @@ cache
 cached
 calculation
 calculations
+calibration
 call
 callers
 calls
@@ -167,6 +179,7 @@ celery
 certainty
 certificate
 chain
+change
 changed
 changing
 chart
@@ -176,6 +189,8 @@ check
 checkability
 checked
 checker
+checklist
+checkout
 checks
 chunk
 chunked
@@ -197,6 +212,7 @@ client
 close
 closed
 closes
+closure
 cloud
 clsx
 cluster
@@ -204,6 +220,7 @@ clustering
 clusters
 code
 codex
+coding
 column
 columns
 combine
@@ -229,6 +246,7 @@ conditional
 confidence
 config
 configuration
+configure
 configured
 confirm
 conflict
@@ -239,6 +257,7 @@ connecting
 connection
 consistency
 consistent
+console
 const
 constants
 constraint
@@ -251,10 +270,12 @@ container
 contains
 content
 context
+continuation
 contract
 contracts
 contradiction
 contribution
+contributor
 controlled
 controls
 conversion
@@ -263,6 +284,7 @@ convert
 cookie
 coordinate
 copies
+core
 corpus
 correct
 correction
@@ -275,11 +297,14 @@ cover
 covers
 create
 creates
+creating
 credential
 credentialed
 credentials
 credibility
+criteria
 cross
+curated
 current
 currently
 cursor
@@ -308,6 +333,8 @@ deepseek
 default
 defaults
 defenses
+deferred
+define
 definitions
 defs
 delete
@@ -332,6 +359,8 @@ detects
 deterministic
 deterministically
 dev
+development
+diagnosis
 digest
 dimension
 dimensions
@@ -352,6 +381,7 @@ diverse
 dns
 docker
 document
+documents
 does
 dom
 domain
@@ -370,6 +400,7 @@ dual
 duplicate
 durable
 durably
+each
 edge
 edges
 effective
@@ -394,6 +425,7 @@ enqueue
 ensure
 entailment
 entity
+entry
 enum
 enums
 env
@@ -495,15 +527,18 @@ flag
 flags
 float
 flow
+follow
 for
 forbidden
 forbids
 force
 form
 format
+forms
 formula
 formulas
 found
+foundation
 four
 fragment
 frame
@@ -528,15 +563,18 @@ getattr
 gets
 git
 global
+goal
 google
 goto
 governance
 graph
 grounded
 group
+groups
 guarantees
 guard
 guarded
+guardrails
 guidance
 handle
 handoff
@@ -587,6 +625,7 @@ ignore
 ignores
 immediately
 immutable
+implementation
 implementations
 implemented
 importance
@@ -607,11 +646,13 @@ indexes
 infer
 info
 information
+infrastructure
 ingest
 ingestion
 init
 initial
 initialize
+injection
 input
 inputs
 insecure
@@ -625,6 +666,7 @@ instrumentation
 insufficient
 intake
 integer
+integration
 integrations
 integrity
 intent
@@ -680,6 +722,8 @@ library
 lifecycle
 like
 limit
+limitation
+limitations
 limited
 limiter
 limits
@@ -710,6 +754,7 @@ making
 malformed
 malicious
 managed
+management
 map
 mapping
 maps
@@ -736,12 +781,14 @@ metrics
 middleware
 migration
 migrations
+milestone
 min
 minimum
 mirror
 mirrors
 mismatched
 missing
+mission
 mixed
 mjs
 mode
@@ -754,6 +801,7 @@ monitoring
 monkey
 most
 move
+multi
 multiclass
 multipliers
 must
@@ -766,6 +814,7 @@ native
 nav
 navigation
 near
+negotiable
 network
 neutral
 never
@@ -805,13 +854,16 @@ onedrive
 online
 only
 operand
+operated
 operation
 operational
 operations
 operator
+optimize
 option
 optional
 options
+order
 ordered
 ordering
 origin
@@ -867,6 +919,7 @@ persisted
 persistence
 persists
 pgvector
+phase
 phrases
 pinned
 pinning
@@ -893,6 +946,7 @@ posture
 preflight
 prepare
 prepared
+prerequisites
 preservation
 preserve
 preserved
@@ -902,6 +956,7 @@ prevents
 primary
 principal
 principles
+priorities
 priority
 privacy
 private
@@ -915,6 +970,7 @@ project
 projection
 prompt
 prompts
+proof
 properties
 props
 protected
@@ -928,7 +984,9 @@ publication
 publish
 published
 pure
+purpose
 put
+pydantic
 pymupdf
 quality
 quantitative
@@ -960,6 +1018,7 @@ readable
 readiness
 readme
 ready
+real
 reasoning
 reasons
 reaudited
@@ -978,6 +1037,7 @@ recorded
 recording
 records
 recoverable
+recovery
 rectangular
 redact
 redacted
@@ -1002,16 +1062,20 @@ release
 remain
 remaining
 remains
+remediation
 remote
 remove
 removes
 rendered
+repair
 replace
+replaced
 replay
 replays
 repo
 report
 reports
+repository
 representation
 reproducibility
 reproducible
@@ -1020,6 +1084,7 @@ request
 requested
 require
 required
+requirements
 requires
 research
 reserves
@@ -1030,7 +1095,9 @@ resolver
 resolvers
 response
 responses
+responsibilities
 rest
+restoration
 restore
 result
 results
@@ -1050,6 +1117,7 @@ retrieves
 retry
 retryable
 returns
+reusable
 reuses
 revalidated
 revalidation
@@ -1068,12 +1136,14 @@ root
 rounded
 rounding
 route
+router
 routes
 routing
 row
 rows
 rpc
 rule
+rules
 run
 runbook
 runs
@@ -1083,6 +1153,7 @@ safe
 safely
 sample
 sanitize
+sanitized
 save
 saved
 scalar
@@ -1120,7 +1191,9 @@ selection
 self
 send
 sends
+sensible
 sensitive
+sent
 sentence
 sentences
 sentry
@@ -1144,6 +1217,7 @@ shared
 shell
 shingles
 short
+should
 side
 sign
 signal
@@ -1173,6 +1247,7 @@ split
 splits
 sql
 sse
+ssm
 ssr
 ssrf
 stable
@@ -1182,6 +1257,7 @@ stages
 staging
 stale
 stance
+standards
 start
 starts
 state
@@ -1238,6 +1314,7 @@ targeted
 targets
 task
 technical
+technology
 telemetry
 temp
 temperature
@@ -1245,6 +1322,7 @@ terminal
 terminology
 terms
 test
+testing
 tests
 text
 textarea
@@ -1320,6 +1398,7 @@ unsafe
 unsave
 unset
 untrusted
+update
 upgrade
 upload
 uploaded
@@ -1345,6 +1424,7 @@ validates
 validation
 value
 values
+variables
 variant
 variants
 vector
@@ -1360,7 +1440,9 @@ verify
 version
 versioned
 versions
+versus
 view
+visualizations
 wait
 warn
 web
@@ -1391,6 +1473,7 @@ xadd
 xread
 xyflow
 years
+yet
 zero
 zod
 zustand
