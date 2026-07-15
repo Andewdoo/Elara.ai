@@ -105,14 +105,14 @@
     "semantic_hash": "8cd54affded43f7097611d66cd86f7b2"
   },
   "apps/api/app/models/user.py": {
-    "mtime": 1782525250.231472,
-    "ast_hash": "817ade6a610b4228b1bc6bbbe7e92925",
-    "semantic_hash": "817ade6a610b4228b1bc6bbbe7e92925"
+    "mtime": 1784076644.8228626,
+    "ast_hash": "d7dd55dcaf7e7652807c1d86b2d5646b",
+    "semantic_hash": ""
   },
   "apps/api/app/models/verification_run.py": {
-    "mtime": 1783356746.55433,
-    "ast_hash": "fe62aa99926ac4e643e03a752df1e34e",
-    "semantic_hash": "fe62aa99926ac4e643e03a752df1e34e"
+    "mtime": 1784076646.776372,
+    "ast_hash": "080b81435287c968c1acde53848bca24",
+    "semantic_hash": ""
   },
   "apps/api/app/redis_client.py": {
     "mtime": 1782609932.341385,
@@ -1447,6 +1447,11 @@
   "graphify-out/memory/query_20260713_200634_which_prompt_steps_should_be_replaced_with_the_aws.md": {
     "mtime": 1783973195.000458,
     "ast_hash": "d564f252084213959c0394f54b912237",
+    "semantic_hash": ""
+  },
+  "project-context/operations/DEMO_VALIDATION_25C_EVIDENCE.md": {
+    "mtime": 1784076855.7515678,
+    "ast_hash": "11a0086d77db356d209540a36e74cf0a",
     "semantic_hash": ""
   }
 }
