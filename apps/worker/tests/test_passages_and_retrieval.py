@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from datetime import UTC, datetime
 from decimal import Decimal
+from types import SimpleNamespace
 from uuid import uuid4
 
 import httpx
@@ -30,7 +31,12 @@ from graph.state import (
     VerificationState,
     WorkflowStage,
 )
-from research.passage_retrieval import HybridPassageSearchService, PassageRetriever, exact_match_score
+from research.passage_retrieval import (
+    HybridPassageSearchService,
+    PassageRetriever,
+    exact_match_score,
+    rank_classification_candidates,
+)
 
 
 def _state(*, blocks: list[ExtractedBlockRecord], body: str = "body") -> VerificationState:
@@ -211,6 +217,31 @@ def test_pgvector_cosine_operator_is_used_for_vector_candidate_search():
     )
     assert "to_tsvector" in lexical
     assert "websearch_to_tsquery" in lexical
+
+
+def test_classification_candidates_are_bounded_by_research_depth_and_deterministic():
+    claims = [
+        SimpleNamespace(claim_ref=f"claim-{index}", text=f"Claim {index} value {index}")
+        for index in range(1, 26)
+    ]
+    passages = [
+        SimpleNamespace(
+            passage_id=f"passage-{index}",
+            text=f"Passage {index} confirms value {index}",
+            extraction_certainty=Decimal("0.95"),
+        )
+        for index in range(1, 26)
+    ]
+
+    quick = rank_classification_candidates(claims, passages, research_depth="QUICK")
+    standard = rank_classification_candidates(claims, passages, research_depth="STANDARD")
+    deep = rank_classification_candidates(claims, passages, research_depth="DEEP")
+
+    assert len(quick) == 5
+    assert len(standard) == 10
+    assert len(deep) == 20
+    assert quick == rank_classification_candidates(claims, passages, research_depth="QUICK")
+    assert len({(item.claim_ref, item.passage_id) for item in deep}) == len(deep)
 
 
 def test_embedding_provider_failure_is_a_durable_lexical_fallback():

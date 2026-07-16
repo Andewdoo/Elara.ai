@@ -12,12 +12,15 @@ from extraction.service import ExtractionService
 from graph.state import CandidateSource, ExtractedBlockRecord, ExtractedSourceRecord, SnapshotRecord, VerificationState
 from research.cache import RetrievalRateLimiter
 from research.fetcher import FetchError, SecureFetcher
-from research.ranking import RankingSignals, lexical_overlap, priority_score, select_diverse
+from research.ranking import (
+    RESEARCH_DEPTH_LIMITS,
+    RankingSignals,
+    lexical_overlap,
+    priority_score,
+    select_diverse,
+)
 from research.search import BraveSearchClient, SearchProviderError
 from research.url_guard import UnsafeUrlError, canonicalize_url
-
-
-_LIMITS = {"QUICK": 5, "STANDARD": 10, "DEEP": 20}
 
 
 class RetrievalPipeline:
@@ -100,7 +103,9 @@ class RetrievalPipeline:
                     )
         if not by_url and last_provider_error is not None:
             raise last_provider_error
-        selected = select_diverse(list(by_url.values()), limit=_LIMITS[state.research_depth.value])
+        selected = select_diverse(
+            list(by_url.values()), limit=RESEARCH_DEPTH_LIMITS[state.research_depth.value]
+        )
         # Keep source refs stable after ranking/deduplication.
         selected = [item.model_copy(update={"source_ref": f"source-{index}"}) for index, item in enumerate(selected, 1)]
         return state.model_copy(

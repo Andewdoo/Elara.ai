@@ -6,7 +6,7 @@ import math
 import re
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Any
+from typing import Any, Protocol, Sequence
 from uuid import UUID
 
 from sqlalchemy import Select, func, select
@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 
 from agents.deepseek_client import DeepSeekClient, DeepSeekError
 from app.models.sources import RunSource, SourcePassage
+from research.ranking import RESEARCH_DEPTH_LIMITS
 
 
 _TOKEN = re.compile(r"[\w.-]+", re.UNICODE)
@@ -41,6 +42,77 @@ class PassageSearchResponse:
     retrieval_mode: str
     embedding_model: str | None = None
     fallback_reason: str | None = None
+
+
+class ClassificationClaim(Protocol):
+    claim_ref: str
+    text: str
+
+
+class ClassificationPassage(Protocol):
+    passage_id: str
+    text: str
+    extraction_certainty: Decimal
+
+
+@dataclass(frozen=True, slots=True)
+class RankedClassificationCandidate:
+    """One deterministic claim/passage candidate selected for classification."""
+
+    claim_ref: str
+    passage_id: str
+    rank: int
+
+
+def rank_classification_candidates(
+    claims: Sequence[ClassificationClaim],
+    passages: Sequence[ClassificationPassage],
+    *,
+    research_depth: str,
+) -> list[RankedClassificationCandidate]:
+    """Select a bounded, deterministic and claim-balanced task candidate set.
+
+    The selection reuses retrieval's lexical, exact-match, and extraction
+    certainty signals.  Results are interleaved by claim rank so the fixed
+    research-depth budget cannot be consumed by a single claim.
+    """
+    try:
+        task_limit = RESEARCH_DEPTH_LIMITS[research_depth]
+    except KeyError as exc:
+        raise ValueError("unknown research depth for classification ranking") from exc
+
+    ranked_by_claim: list[tuple[str, list[str]]] = []
+    for claim in sorted(claims, key=lambda item: item.claim_ref):
+        ranked_passages = sorted(
+            passages,
+            key=lambda passage: (
+                -(
+                    Decimal("0.65") * lexical_score(claim.text, passage.text)
+                    + Decimal("0.25") * exact_match_score(claim.text, passage.text)
+                    + Decimal("0.10") * _unit(Decimal(str(passage.extraction_certainty)))
+                ),
+                passage.passage_id,
+            ),
+        )
+        ranked_by_claim.append(
+            (claim.claim_ref, [passage.passage_id for passage in ranked_passages])
+        )
+
+    selected: list[RankedClassificationCandidate] = []
+    for rank in range(len(passages)):
+        for claim_ref, passage_ids in ranked_by_claim:
+            if rank >= len(passage_ids):
+                continue
+            selected.append(
+                RankedClassificationCandidate(
+                    claim_ref=claim_ref,
+                    passage_id=passage_ids[rank],
+                    rank=rank + 1,
+                )
+            )
+            if len(selected) == task_limit:
+                return selected
+    return selected
 
 
 class PassageRetriever:
@@ -292,6 +364,8 @@ __all__ = [
     "HybridPassageSearchService",
     "PassageSearchResponse",
     "PassageSearchResult",
+    "RankedClassificationCandidate",
     "exact_match_score",
     "lexical_score",
+    "rank_classification_candidates",
 ]

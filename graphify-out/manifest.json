@@ -560,33 +560,33 @@
     "semantic_hash": "fea68d787b78ebc07d30e83de1dd7194"
   },
   "apps/worker/agents/decomposition.py": {
-    "mtime": 1782745714.6119337,
-    "ast_hash": "51eb754031baee032551e0c6f58758bf",
-    "semantic_hash": "51eb754031baee032551e0c6f58758bf"
+    "mtime": 1784225105.416312,
+    "ast_hash": "c2c432524ea119c80278bd94b6429d9e",
+    "semantic_hash": ""
   },
   "apps/worker/agents/deepseek_client.py": {
-    "mtime": 1783053738.708908,
-    "ast_hash": "637c99e3ecc15db0c825fa60e81b0e3c",
-    "semantic_hash": "637c99e3ecc15db0c825fa60e81b0e3c"
+    "mtime": 1784223170.5178792,
+    "ast_hash": "996d0eb9601dbe3975396a8a5ea9c52c",
+    "semantic_hash": ""
   },
   "apps/worker/agents/evidence_classification.py": {
-    "mtime": 1782918163.6041296,
-    "ast_hash": "fae87339c2d81d8253c79bfe883ea7e9",
-    "semantic_hash": "fae87339c2d81d8253c79bfe883ea7e9"
+    "mtime": 1784226095.5947125,
+    "ast_hash": "8dab220eacfeae85e04e1c7d988f96d6",
+    "semantic_hash": ""
   },
   "apps/worker/agents/intake.py": {
-    "mtime": 1782745714.609396,
-    "ast_hash": "2c94637834c2bdc9808e9b271bb58fc3",
-    "semantic_hash": "2c94637834c2bdc9808e9b271bb58fc3"
+    "mtime": 1784224820.827812,
+    "ast_hash": "a9022dd1c2fa6ba5f991b4b4c4b8d5a7",
+    "semantic_hash": ""
   },
   "apps/worker/agents/planning.py": {
-    "mtime": 1784143000.691731,
-    "ast_hash": "bd66866a259760a9de5ab6004b36c534",
+    "mtime": 1784222511.8455105,
+    "ast_hash": "d9a003ac4aebbe942d0d8b5828986bad",
     "semantic_hash": ""
   },
   "apps/worker/agents/schemas.py": {
-    "mtime": 1784142998.9610648,
-    "ast_hash": "21ab2bde38f4db35f809276b350ba49b",
+    "mtime": 1784226052.735309,
+    "ast_hash": "c520f379da2219ea726a8ece5fcd2bc1",
     "semantic_hash": ""
   },
   "apps/worker/agents/synthesis.py": {
@@ -610,9 +610,9 @@
     "semantic_hash": "d7330b04c66228c425da9a3c19478c10"
   },
   "apps/worker/elara_worker/errors.py": {
-    "mtime": 1782607120.9610012,
-    "ast_hash": "30c0356e5d1c651c4742f4712128876c",
-    "semantic_hash": "30c0356e5d1c651c4742f4712128876c"
+    "mtime": 1784223875.6563952,
+    "ast_hash": "d8e321289ee218627eb49f05129517f9",
+    "semantic_hash": ""
   },
   "apps/worker/elara_worker/tasks/__init__.py": {
     "mtime": 1782607120.964503,
@@ -620,9 +620,9 @@
     "semantic_hash": "92630fe74cea74b84685e40de3f87f6b"
   },
   "apps/worker/elara_worker/tasks/verification.py": {
-    "mtime": 1783357860.0177937,
-    "ast_hash": "b7f521d7afcab5c24c18f6dcec3b8a91",
-    "semantic_hash": "b7f521d7afcab5c24c18f6dcec3b8a91"
+    "mtime": 1784223790.0984805,
+    "ast_hash": "f63fda3a0c5c0ae3659cf53c01f0a972",
+    "semantic_hash": ""
   },
   "apps/worker/extraction/__init__.py": {
     "mtime": 1782762924.4257965,
@@ -680,8 +680,8 @@
     "semantic_hash": "6bcc21515466d453ca49fee306b35788"
   },
   "apps/worker/graph/workflow.py": {
-    "mtime": 1784143451.5317829,
-    "ast_hash": "365d847fe4641eedc0d4535b90072d4b",
+    "mtime": 1784226054.5272822,
+    "ast_hash": "74f1df3aaeeeda918d3c2a38d4f567ce",
     "semantic_hash": ""
   },
   "apps/worker/provenance/__init__.py": {
@@ -725,19 +725,19 @@
     "semantic_hash": "bfd4847783d2d39fbf67816309d78b42"
   },
   "apps/worker/research/passage_retrieval.py": {
-    "mtime": 1782793815.9411528,
-    "ast_hash": "e9b1979d7eaeec5e5159e6654cb9bf89",
-    "semantic_hash": "e9b1979d7eaeec5e5159e6654cb9bf89"
+    "mtime": 1784225946.4455466,
+    "ast_hash": "30e388714793cc50e728945dd7d33f0a",
+    "semantic_hash": ""
   },
   "apps/worker/research/pipeline.py": {
-    "mtime": 1783302372.9852715,
-    "ast_hash": "0bde70e70a8dc095821c792104d3d6ba",
-    "semantic_hash": "0bde70e70a8dc095821c792104d3d6ba"
+    "mtime": 1784225944.606316,
+    "ast_hash": "07622ee383f82485cd086531f41e8ee0",
+    "semantic_hash": ""
   },
   "apps/worker/research/ranking.py": {
-    "mtime": 1782764295.2522933,
-    "ast_hash": "5d70f43c7f0053ac22cf891e008bb528",
-    "semantic_hash": "5d70f43c7f0053ac22cf891e008bb528"
+    "mtime": 1784225943.0836878,
+    "ast_hash": "a94d5d56c7af5fdd536cd44cb268d177",
+    "semantic_hash": ""
   },
   "apps/worker/research/search.py": {
     "mtime": 1783302371.3609061,
@@ -775,9 +775,9 @@
     "semantic_hash": ""
   },
   "apps/worker/tests/test_deepseek_client.py": {
-    "mtime": 1782703400.9962938,
-    "ast_hash": "3796940e5e3a2beed359809ac5685ed9",
-    "semantic_hash": "3796940e5e3a2beed359809ac5685ed9"
+    "mtime": 1784224298.667874,
+    "ast_hash": "6f274e99a772f9c2575b6f6e21523c7c",
+    "semantic_hash": ""
   },
   "apps/worker/tests/test_numerical_audit.py": {
     "mtime": 1782919769.3364377,
@@ -785,9 +785,9 @@
     "semantic_hash": "21a5cce09b4dca22f6bd134cae152a12"
   },
   "apps/worker/tests/test_passages_and_retrieval.py": {
-    "mtime": 1782793956.510892,
-    "ast_hash": "9bf128cc788efe13bebba47a6e018006",
-    "semantic_hash": "9bf128cc788efe13bebba47a6e018006"
+    "mtime": 1784226161.8412895,
+    "ast_hash": "27737a41d14953af5138cf577bbfbb3d",
+    "semantic_hash": ""
   },
   "apps/worker/tests/test_provenance.py": {
     "mtime": 1782867507.9489174,
@@ -815,13 +815,13 @@
     "semantic_hash": "c4a7b7db4f2ec0c568f9661d6ca8f6b5"
   },
   "apps/worker/tests/test_verification_task.py": {
-    "mtime": 1784141655.6746104,
-    "ast_hash": "10bd9419174821125282acb2745e6163",
+    "mtime": 1784223834.811738,
+    "ast_hash": "42d151557453c4b4aa98725317598a8d",
     "semantic_hash": ""
   },
   "apps/worker/tests/test_workflow.py": {
-    "mtime": 1784143265.4613042,
-    "ast_hash": "ec666413dd2896e32b3d1e414c6e2cac",
+    "mtime": 1784226211.096657,
+    "ast_hash": "1ab0d1482afb51d3f8c8dce766ed31bd",
     "semantic_hash": ""
   },
   "package.json": {
@@ -1465,8 +1465,8 @@
     "semantic_hash": ""
   },
   "project-context/sub-agent optimization prompts.md": {
-    "mtime": 1784082421.7142208,
-    "ast_hash": "64187f5b60cc064a3278b5521a78f6b1",
+    "mtime": 1784144101.4667242,
+    "ast_hash": "c436ee336bd7ff38142fcf53e8ece35a",
     "semantic_hash": ""
   },
   "project-context/sub-agent optimization.md": {
@@ -1480,8 +1480,8 @@
     "semantic_hash": ""
   },
   "apps/worker/agents/validation.py": {
-    "mtime": 1784142557.1057823,
-    "ast_hash": "0b8803238e0c1be2d9b051c3e24e30a8",
+    "mtime": 1784222513.6434283,
+    "ast_hash": "0e54e526252eaa478fdc8ed130c3ec3a",
     "semantic_hash": ""
   },
   "apps/worker/tests/test_agent_contract_validation.py": {
@@ -1490,8 +1490,13 @@
     "semantic_hash": ""
   },
   "apps/worker/tests/test_planning_normalization.py": {
-    "mtime": 1784143453.2351031,
-    "ast_hash": "19cc8efeddd5356da5e42c34db2c34e9",
+    "mtime": 1784222518.294485,
+    "ast_hash": "955333da4613d7755c5f4c93e67bb981",
+    "semantic_hash": ""
+  },
+  "apps/worker/tests/test_decomposition_normalization.py": {
+    "mtime": 1784225225.9515312,
+    "ast_hash": "a832db18a1a584f31f9bb908c828a5ff",
     "semantic_hash": ""
   }
 }

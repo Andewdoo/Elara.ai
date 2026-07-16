@@ -26,6 +26,12 @@ ModelRole = Literal["chat", "reasoning"]
 _SAFE_MODEL_IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$")
 _SAFE_PROMPT_VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$")
 _SAFE_RESPONSE_IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$")
+_STRUCTURED_RESPONSE_INVALID = "STRUCTURED_RESPONSE_INVALID"
+_STRUCTURED_RESPONSE_REPAIR_EXHAUSTED = "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED"
+_STRUCTURED_REPAIR_INSTRUCTION = (
+    "The previous response failed schema validation. Regenerate the complete response "
+    "to conform exactly to the JSON Schema. Return only one JSON object."
+)
 
 
 class DeepSeekConfigurationError(RuntimeError):
@@ -114,6 +120,7 @@ class CallMetadata(BaseModel):
     response_id: str | None = None
     finish_reason: str | None = None
     usage: TokenUsage = Field(default_factory=TokenUsage)
+    attempt_count: int = Field(default=1, ge=1, le=2)
 
 
 class StructuredResponse(BaseModel, Generic[OutputT]):
@@ -141,6 +148,7 @@ class ProviderErrorMetadata(BaseModel):
     status_code: int | None = None
     error_code: str | None = None
     retryable: bool = False
+    attempt_count: int = Field(default=1, ge=1, le=2)
 
 
 class DeepSeekError(RuntimeError):
@@ -305,7 +313,14 @@ class DeepSeekClient:
         model_role: ModelRole = "chat",
         temperature: float = 0.1,
         max_tokens: int | None = None,
+        repair_invalid_response: bool = False,
     ) -> StructuredResponse[OutputT]:
+        """Generate a schema-valid response, optionally repairing one malformed result.
+
+        The repair request repeats only the original trusted messages and schema plus a
+        fixed instruction. It deliberately never includes malformed model content or
+        validation details.
+        """
         if not _SAFE_PROMPT_VERSION.fullmatch(prompt_version):
             raise ValueError("prompt_version must be a stable, non-sensitive identifier")
         if not 0.0 <= temperature <= 0.3:
@@ -331,9 +346,8 @@ class DeepSeekClient:
                 + json.dumps(output_schema.model_json_schema(), separators=(",", ":"))
             ),
         }
-        payload: dict[str, Any] = {
+        base_payload: dict[str, Any] = {
             "model": model,
-            "messages": [schema_instruction, *self._validate_messages(messages)],
             "response_format": {"type": "json_object"},
             "temperature": temperature,
             "stream": False,
@@ -341,8 +355,81 @@ class DeepSeekClient:
         if max_tokens is not None:
             if max_tokens < 1:
                 raise ValueError("max_tokens must be positive")
-            payload["max_tokens"] = max_tokens
+            base_payload["max_tokens"] = max_tokens
 
+        trusted_messages = [schema_instruction, *self._validate_messages(messages)]
+        for attempt_count in range(1, 3):
+            request_messages = list(trusted_messages)
+            if attempt_count == 2:
+                request_messages.append(
+                    {"role": "system", "content": _STRUCTURED_REPAIR_INSTRUCTION}
+                )
+            response, latency_ms = await self._post_structured(
+                payload={**base_payload, "messages": request_messages},
+                model=model,
+                prompt_version=prompt_version,
+                temperature=temperature,
+                attempt_count=attempt_count,
+            )
+            try:
+                body = response.json()
+                choice = body["choices"][0]
+                raw_content = choice["message"]["content"]
+                if not isinstance(raw_content, str):
+                    raise TypeError("response content is not text")
+                parsed_output = output_schema.model_validate_json(
+                    self._strip_json_fence(raw_content)
+                )
+                usage = TokenUsage.model_validate(body.get("usage") or {})
+            except (KeyError, IndexError, TypeError, ValueError, ValidationError):
+                error_code = (
+                    _STRUCTURED_RESPONSE_INVALID
+                    if attempt_count == 1
+                    else _STRUCTURED_RESPONSE_REPAIR_EXHAUSTED
+                )
+                metadata = self._error_metadata(
+                    model,
+                    prompt_version,
+                    temperature,
+                    latency_ms,
+                    status_code=response.status_code,
+                    error_code=error_code,
+                    attempt_count=attempt_count,
+                )
+                logger.warning(
+                    "DeepSeek returned an invalid structured response",
+                    extra=metadata.model_dump(),
+                )
+                if not repair_invalid_response or attempt_count == 2:
+                    raise DeepSeekResponseError(
+                        "DeepSeek returned an invalid structured response", metadata=metadata
+                    ) from None
+                continue
+
+            metadata = CallMetadata(
+                model=self._safe_response_identifier(body.get("model")) or model,
+                prompt_version=prompt_version,
+                temperature=temperature,
+                latency_ms=latency_ms,
+                response_id=self._safe_response_identifier(body.get("id")),
+                finish_reason=self._safe_response_identifier(choice.get("finish_reason")),
+                usage=usage,
+                attempt_count=attempt_count,
+            )
+            logger.info("DeepSeek structured request completed", extra=metadata.model_dump())
+            return StructuredResponse[output_schema](output=parsed_output, metadata=metadata)
+
+        raise AssertionError("structured response repair loop exceeded its fixed bound")
+
+    async def _post_structured(
+        self,
+        *,
+        payload: Mapping[str, Any],
+        model: str,
+        prompt_version: str,
+        temperature: float,
+        attempt_count: int,
+    ) -> tuple[httpx.Response, int]:
         started = time.perf_counter()
         try:
             with safe_trace(
@@ -352,6 +439,7 @@ class DeepSeekClient:
                     "provider": "deepseek",
                     "model": model,
                     "prompt_version": prompt_version,
+                    "retry_count": attempt_count - 1,
                 },
             ):
                 response = await self._http.post(
@@ -365,7 +453,12 @@ class DeepSeekClient:
         except httpx.TimeoutException:
             latency_ms = self._latency_ms(started)
             metadata = self._error_metadata(
-                model, prompt_version, temperature, latency_ms, retryable=True
+                model,
+                prompt_version,
+                temperature,
+                latency_ms,
+                retryable=True,
+                attempt_count=attempt_count,
             )
             logger.warning("DeepSeek request timed out", extra=metadata.model_dump())
             raise DeepSeekTimeoutError(
@@ -374,7 +467,12 @@ class DeepSeekClient:
         except httpx.RequestError:
             latency_ms = self._latency_ms(started)
             metadata = self._error_metadata(
-                model, prompt_version, temperature, latency_ms, retryable=True
+                model,
+                prompt_version,
+                temperature,
+                latency_ms,
+                retryable=True,
+                attempt_count=attempt_count,
             )
             logger.warning("DeepSeek request transport failed", extra=metadata.model_dump())
             raise DeepSeekUnavailableError(
@@ -389,46 +487,9 @@ class DeepSeekClient:
                 prompt_version=prompt_version,
                 temperature=temperature,
                 latency_ms=latency_ms,
+                attempt_count=attempt_count,
             )
-
-        try:
-            body = response.json()
-            choice = body["choices"][0]
-            raw_content = choice["message"]["content"]
-            if not isinstance(raw_content, str):
-                raise TypeError("response content is not text")
-            parsed_output = output_schema.model_validate_json(
-                self._strip_json_fence(raw_content)
-            )
-            usage = TokenUsage.model_validate(body.get("usage") or {})
-        except (KeyError, IndexError, TypeError, ValueError, ValidationError):
-            metadata = self._error_metadata(
-                model,
-                prompt_version,
-                temperature,
-                latency_ms,
-                status_code=response.status_code,
-                error_code="invalid_structured_response",
-            )
-            logger.warning(
-                "DeepSeek returned an invalid structured response",
-                extra=metadata.model_dump(),
-            )
-            raise DeepSeekResponseError(
-                "DeepSeek returned an invalid structured response", metadata=metadata
-            ) from None
-
-        metadata = CallMetadata(
-            model=self._safe_response_identifier(body.get("model")) or model,
-            prompt_version=prompt_version,
-            temperature=temperature,
-            latency_ms=latency_ms,
-            response_id=self._safe_response_identifier(body.get("id")),
-            finish_reason=self._safe_response_identifier(choice.get("finish_reason")),
-            usage=usage,
-        )
-        logger.info("DeepSeek structured request completed", extra=metadata.model_dump())
-        return StructuredResponse[output_schema](output=parsed_output, metadata=metadata)
+        return response, latency_ms
 
     async def complete_structured(self, **kwargs: Any) -> StructuredResponse[Any]:
         """Compatibility alias for workflow nodes that use completion terminology."""
@@ -456,6 +517,7 @@ class DeepSeekClient:
         prompt_version: str,
         temperature: float,
         latency_ms: int,
+        attempt_count: int = 1,
     ) -> DeepSeekError:
         status = response.status_code
         error_code = self._provider_error_code(status)
@@ -468,6 +530,7 @@ class DeepSeekClient:
             status_code=status,
             error_code=error_code,
             retryable=retryable,
+            attempt_count=attempt_count,
         )
         logger.warning("DeepSeek provider rejected a request", extra=metadata.model_dump())
         if status in {401, 403}:
@@ -510,6 +573,7 @@ class DeepSeekClient:
         status_code: int | None = None,
         error_code: str | None = None,
         retryable: bool = False,
+        attempt_count: int = 1,
     ) -> ProviderErrorMetadata:
         return ProviderErrorMetadata(
             model=model,
@@ -519,6 +583,7 @@ class DeepSeekClient:
             status_code=status_code,
             error_code=error_code,
             retryable=retryable,
+            attempt_count=attempt_count,
         )
 
     @staticmethod

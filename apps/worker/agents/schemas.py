@@ -173,6 +173,36 @@ class AtomicClaimOutput(AgentOutput):
         return self
 
 
+class DecompositionDraftClaimOutput(AgentOutput):
+    """Model-owned claim content before deterministic reference assignment."""
+
+    text: str = Field(min_length=1)
+    claim_kind: ClaimKind
+    importance: Importance
+    importance_weight: Literal[1, 2, 3]
+    fact_checkability: FactCheckability
+    original_text_span: str | None = None
+    entities: list[NamedEntity] = Field(default_factory=list)
+    time_period: str | None = Field(default=None, max_length=500)
+    locations: list[str] = Field(default_factory=list)
+    metrics: list[MetricReference] = Field(default_factory=list)
+    comparison: str | None = None
+    parent_claim_index: int | None = Field(default=None, ge=0, strict=True)
+    ambiguities: list[str] = Field(default_factory=list)
+    verification_scope: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def importance_matches_weight(self) -> "DecompositionDraftClaimOutput":
+        expected = {
+            Importance.ESSENTIAL: 3,
+            Importance.MAJOR: 2,
+            Importance.MINOR: 1,
+        }[self.importance]
+        if self.importance_weight != expected:
+            raise ValueError("importance_weight must match importance")
+        return self
+
+
 class DecompositionOutput(AgentOutput):
     atomic_claims: list[AtomicClaimOutput] = Field(min_length=1)
     unresolved_ambiguities: list[str] = Field(default_factory=list)
@@ -183,6 +213,13 @@ class DecompositionOutput(AgentOutput):
         if len(refs) != len(set(refs)):
             raise ValueError("claim_ref values must be unique")
         return self
+
+
+class DecompositionDraftOutput(AgentOutput):
+    """Strict model-facing decomposition contract without trusted identifiers."""
+
+    atomic_claims: list[DecompositionDraftClaimOutput] = Field(min_length=1)
+    unresolved_ambiguities: list[str] = Field(default_factory=list)
 
 
 class ResearchObjectiveOutput(AgentOutput):
@@ -291,8 +328,27 @@ class EvidenceClassificationItemOutput(AgentOutput):
     recommended_rejection_reasons: list[str] = Field(default_factory=list)
 
 
+class EvidenceClassificationTaskResultOutput(AgentOutput):
+    """Language judgment keyed only by a declared classification task."""
+
+    task_ref: str = Field(pattern=r"^classification-[a-f0-9]{24}$")
+    stance: EvidenceStance
+    quality: EvidenceQualityOutput
+    explicit_support: str | None = None
+    explicit_contradiction: str | None = None
+    uncertainty: str | None = None
+    omitted_context: list[str] = Field(default_factory=list)
+    context_issues: list[ContextIssue] = Field(default_factory=list)
+    confidence_issues: list[ConfidenceIssue] = Field(default_factory=list)
+    quote_fidelity: QuoteFidelityComponentsOutput | None = None
+    entity_match: bool
+    time_period_match: bool
+    quotation_or_number_located: bool | None = None
+    recommended_rejection_reasons: list[str] = Field(default_factory=list)
+
+
 class EvidenceClassificationOutput(AgentOutput):
-    classifications: list[EvidenceClassificationItemOutput] = Field(default_factory=list)
+    classifications: list[EvidenceClassificationTaskResultOutput] = Field(default_factory=list)
 
 
 class CitedReportSentenceOutput(AgentOutput):
@@ -356,8 +412,11 @@ __all__ = [
     "ConfidenceIssue",
     "ContextIssue",
     "CitedReportSentenceOutput",
+    "DecompositionDraftClaimOutput",
+    "DecompositionDraftOutput",
     "DecompositionOutput",
     "EvidenceClassificationOutput",
+    "EvidenceClassificationTaskResultOutput",
     "EvidenceQualityOutput",
     "IntakeClassificationOutput",
     "PlanningDraftObjectiveOutput",

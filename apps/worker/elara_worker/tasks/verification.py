@@ -28,7 +28,11 @@ from app.services.run_lifecycle import (
     persist_progress,
     persist_completed_run,
 )
-from elara_worker.errors import TransientFetchError, TransientProviderError
+from elara_worker.errors import (
+    TransientFetchError,
+    TransientProviderError,
+    is_retryable_workflow_error,
+)
 from graph.runtime import execute_verification_workflow
 from graph.state import ResearchDepth as GraphResearchDepth, VerificationState
 from observability import (
@@ -324,10 +328,20 @@ def verify_run(self: Task, run_id: str) -> None:
                             "cancelled": result.cancelled,
                         }
                     )
-            if result is not None and any(error.retryable for error in result.recoverable_errors):
-                error = next(
-                    item for item in reversed(result.recoverable_errors) if item.retryable
-                )
+            retryable_error = next(
+                (
+                    item
+                    for item in reversed(result.recoverable_errors if result is not None else [])
+                    if is_retryable_workflow_error(
+                        code=item.code,
+                        retryable=item.retryable,
+                        details=item.details,
+                    )
+                ),
+                None,
+            )
+            if retryable_error is not None:
+                error = retryable_error
                 if error.details.get("failure_kind") == "fetch":
                     raise TransientFetchError("A recoverable retrieval step failed")
                 raise TransientProviderError("A recoverable provider step failed")

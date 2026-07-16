@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from agents.planning import max_query_count
 from agents.schemas import EvidenceIntent, FactCheckability, InputKind, PlanningOutput
 
 if TYPE_CHECKING:
@@ -25,7 +26,6 @@ class AgentContractViolation:
     count: int = 1
 
 
-_QUERY_LIMITS = {"QUICK": 24, "STANDARD": 60, "DEEP": 120}
 _SUMMARY_CODE_LIMIT = 8
 _SUMMARY_CHARACTER_LIMIT = 256
 
@@ -89,7 +89,7 @@ def validate_research_plan(
             )
         )
 
-    query_limit = _QUERY_LIMITS[state.research_depth.value]
+    query_limit = max_query_count(state.research_depth.value)
     query_limit_excess = len(output.queries) - query_limit
     if query_limit_excess > 0:
         violations.append(
@@ -150,9 +150,16 @@ def validate_research_plan(
             )
         )
 
-    attribution_required = bool(
-        state.normalized_input and state.normalized_input.requires_attribution_check
-    ) or any(claim.claim_kind.value in {"quotation", "attribution"} for claim in state.claims)
+    exact_quote_required = (
+        state.normalized_input is not None
+        and state.normalized_input.input_kind == InputKind.QUOTE
+        and len(state.normalized_input.normalized_text) <= 300
+    )
+    attribution_required = (
+        exact_quote_required
+        or bool(state.normalized_input and state.normalized_input.requires_attribution_check)
+        or any(claim.claim_kind.value in {"quotation", "attribution"} for claim in state.claims)
+    )
     if attribution_required and not any(
         query.intent == EvidenceIntent.ATTRIBUTION for query in output.queries
     ):
@@ -163,13 +170,10 @@ def validate_research_plan(
             )
         )
 
-    exact_quote_required = (
-        state.normalized_input is not None
-        and state.normalized_input.input_kind == InputKind.QUOTE
-        and len(state.normalized_input.normalized_text) <= 300
-    )
     if exact_quote_required and not any(
-        state.normalized_input.normalized_text in query.query for query in output.queries
+        query.intent == EvidenceIntent.ATTRIBUTION
+        and state.normalized_input.normalized_text in query.query
+        for query in output.queries
     ):
         violations.append(
             AgentContractViolation(

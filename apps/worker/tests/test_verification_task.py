@@ -456,6 +456,139 @@ def test_task_rejects_exhausted_citation_revision(monkeypatch: pytest.MonkeyPatc
 
 
 @pytest.mark.parametrize(
+    ("code", "details"),
+    [
+        ("AGENT_CONTRACT_REPAIR_EXHAUSTED", {"semantic_validation_attempt_count": 2}),
+        ("STRUCTURED_RESPONSE_INVALID", {"attempt_count": 1}),
+        ("STRUCTURED_RESPONSE_REPAIR_EXHAUSTED", {"attempt_count": 2}),
+        (
+            "DEEPSEEK_LANGUAGE_STEP_FAILED",
+            {
+                "error_code": "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+                "attempt_count": 2,
+            },
+        ),
+    ],
+)
+def test_deterministic_contract_errors_never_enter_celery_retry_budget(
+    monkeypatch: pytest.MonkeyPatch, code: str, details: dict[str, object]
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+    calls = 0
+    raw_response_marker = "raw-invalid-response-marker"
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    stopped = VerificationState(
+        run_id=run.id,
+        user_id=run.user_id,
+        research_depth=GraphResearchDepth.STANDARD,
+        methodology_version="1.0",
+        recoverable_errors=[
+            RecoverableError(
+                stage=WorkflowStage.PLANNER,
+                code=code,
+                public_message="Research planning could not satisfy its contract.",
+                # Exercise the defensive mapping rather than relying on the
+                # workflow's normal default of False.
+                retryable=True,
+                details={**details, "raw_response": raw_response_marker},
+            )
+        ],
+    )
+
+    def execute(*_args, **_kwargs):
+        nonlocal calls
+        calls += 1
+        return stopped
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_verification_workflow", execute)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.successful()
+    assert calls == 1
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+        failure = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id, AgentEvent.event_type == "run.failed")
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
+    assert durable is not None and durable.status == RunStatus.FAILED
+    assert durable.failure_code == code
+    assert failure is not None
+    assert raw_response_marker not in str(failure.payload)
+    assert raw_response_marker not in failure.public_message
+
+
+@pytest.mark.parametrize(
+    ("failure_kind", "error_code", "failure_code"),
+    [
+        ("provider", "provider_timeout", "PROVIDER_UNAVAILABLE"),
+        ("provider", "rate_limit_error", "PROVIDER_UNAVAILABLE"),
+        ("fetch", "fetch_timeout", "FETCH_UNAVAILABLE"),
+    ],
+)
+def test_retryable_provider_and_fetch_workflow_failures_keep_their_retry_budget(
+    monkeypatch: pytest.MonkeyPatch,
+    failure_kind: str,
+    error_code: str,
+    failure_code: str,
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+    calls = 0
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    def execute(*_args, **_kwargs):
+        nonlocal calls
+        calls += 1
+        return VerificationState(
+            run_id=run.id,
+            user_id=run.user_id,
+            research_depth=GraphResearchDepth.STANDARD,
+            methodology_version="1.0",
+            recoverable_errors=[
+                RecoverableError(
+                    stage=WorkflowStage.PLANNER,
+                    code="DEEPSEEK_LANGUAGE_STEP_FAILED",
+                    public_message="A language-analysis step could not be completed.",
+                    retryable=True,
+                    details={"failure_kind": failure_kind, "error_code": error_code},
+                )
+            ],
+        )
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_verification_workflow", execute)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.failed()
+    assert calls == 3
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+    assert durable is not None and durable.failure_code == failure_code
+
+
+@pytest.mark.parametrize(
     ("error", "failure_code"),
     [
         (TransientProviderError("provider detail"), "PROVIDER_UNAVAILABLE"),

@@ -6,7 +6,11 @@ import pytest
 from pydantic import ValidationError
 
 import agents.planning as planning
-from agents.planning import UnknownPlanningDraftClaimRefError, normalize_research_plan
+from agents.planning import (
+    UnknownPlanningDraftClaimRefError,
+    build_planner_payload,
+    normalize_research_plan,
+)
 from agents.schemas import PlanningDraftOutput
 from agents.validation import validate_research_plan
 from graph.state import ResearchDepth, VerificationState
@@ -156,3 +160,52 @@ def test_post_normalization_validator_rejects_duplicate_queries_and_missing_cove
         for violation in validate_research_plan(coverage_state, missing_output)
     }
     assert "PLAN_MISSING_CLAIM_COVERAGE" in coverage_codes
+
+
+def test_planner_payload_adds_exact_quote_only_when_required_and_validator_requires_attribution():
+    quote = "This synthetic statement must be searched verbatim."
+    quote_state = VerificationState.model_validate(
+        {
+            **_state().model_dump(),
+            "normalized_input": {
+                "input_kind": "quote",
+                "normalized_text": quote,
+                "detected_language": "English",
+                "fact_checkability": "fact_checkable",
+            },
+        }
+    )
+
+    payload = build_planner_payload(quote_state)
+    assert payload["exact_quote"] == quote
+    assert payload["requires_attribution_check"] is True
+
+    draft = PlanningDraftOutput.model_validate(
+        {
+            "objectives": [
+                {
+                    "claim_ref": "claim-1",
+                    "intent": "primary",
+                    "target": "Find the primary record.",
+                    "queries": [{"query": quote}],
+                },
+                {
+                    "claim_ref": "claim-1",
+                    "intent": "contradiction",
+                    "target": "Find contradictory evidence.",
+                    "queries": [{"query": "synthetic statement contradiction"}],
+                },
+                {
+                    "claim_ref": "claim-1",
+                    "intent": "attribution",
+                    "target": "Identify the speaker and source.",
+                    "queries": [{"query": "synthetic statement attribution"}],
+                },
+            ]
+        }
+    )
+
+    output = normalize_research_plan(draft, allowed_claim_refs=["claim-1"])
+    assert {item.code for item in validate_research_plan(quote_state, output)} == {
+        "PLAN_EXACT_QUOTE_PATH_MISSING"
+    }

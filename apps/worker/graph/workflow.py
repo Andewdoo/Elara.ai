@@ -16,29 +16,43 @@ from agents.citation_audit import PROMPT_VERSION as CITATION_AUDIT_PROMPT_VERSIO
 from agents.citation_audit import SYSTEM_PROMPT as CITATION_AUDIT_PROMPT
 from agents.decomposition import PROMPT_VERSION as DECOMPOSITION_PROMPT_VERSION
 from agents.decomposition import SYSTEM_PROMPT as DECOMPOSITION_PROMPT
+from agents.decomposition import DecompositionNormalizationError, normalize_decomposition
 from agents.deepseek_client import DeepSeekError, StructuredResponse
-from agents.evidence_classification import PROMPT_VERSION as EVIDENCE_PROMPT_VERSION
-from agents.evidence_classification import SYSTEM_PROMPT as EVIDENCE_PROMPT
+from agents.evidence_classification import (
+    PROMPT_VERSION as EVIDENCE_PROMPT_VERSION,
+    SYSTEM_PROMPT as EVIDENCE_PROMPT,
+    build_classification_tasks,
+)
 from agents.intake import PROMPT_VERSION as INTAKE_PROMPT_VERSION
 from agents.intake import SYSTEM_PROMPT as INTAKE_PROMPT
 from agents.planning import PROMPT_VERSION as PLANNER_PROMPT_VERSION
 from agents.planning import SYSTEM_PROMPT as PLANNER_PROMPT
-from agents.planning import UnknownPlanningDraftClaimRefError, normalize_research_plan
+from agents.planning import (
+    UnknownPlanningDraftClaimRefError,
+    build_planner_payload,
+    normalize_research_plan,
+)
 from agents.schemas import (
     CitationAuditOutput,
-    DecompositionOutput,
+    DecompositionDraftOutput,
     Entailment,
     EvidenceClassificationOutput,
+    EvidenceClassificationItemOutput,
     EvidenceStance,
     InputKind,
     IntakeClassificationOutput,
     PlanningDraftOutput,
+    PlanningOutput,
     SentenceCitationAuditOutput,
     SynthesisOutput,
 )
 from agents.synthesis import PROMPT_VERSION as SYNTHESIS_PROMPT_VERSION
 from agents.synthesis import SYSTEM_PROMPT as SYNTHESIS_PROMPT
-from agents.validation import summarize_violation_codes, validate_research_plan
+from agents.validation import (
+    AgentContractViolation,
+    summarize_violation_codes,
+    validate_research_plan,
+)
 from graph.state import RecoverableError, VerificationState, WorkflowStage
 from graph.transitions import (
     citation_audit_ready,
@@ -79,6 +93,7 @@ class StructuredModelClient(Protocol):
         model_role: str = "chat",
         temperature: float = 0.1,
         max_tokens: int | None = None,
+        repair_invalid_response: bool = False,
     ) -> StructuredResponse: ...
 
 
@@ -230,6 +245,7 @@ class WorkflowNodes:
         messages: Sequence[Mapping[str, str]],
         output_schema: type,
         max_tokens: int,
+        repair_invalid_response: bool = False,
     ) -> StructuredResponse | VerificationState:
         try:
             return await self.services.model.generate_structured(
@@ -239,6 +255,7 @@ class WorkflowNodes:
                 model_role="chat",
                 temperature=0.0,
                 max_tokens=max_tokens,
+                repair_invalid_response=repair_invalid_response,
             )
         except DeepSeekError as exc:
             return await self._failure(
@@ -272,7 +289,19 @@ class WorkflowNodes:
             WorkflowStage.INTAKE,
             messages=[
                 {"role": "system", "content": INTAKE_PROMPT},
-                {"role": "user", "content": self.services.submitted_input},
+                {
+                    "role": "user",
+                    "content": _json(
+                        {
+                            "submitted_input": self.services.submitted_input,
+                            "expected_input_kind": (
+                                self.services.expected_input_kind.value
+                                if self.services.expected_input_kind is not None
+                                else None
+                            ),
+                        }
+                    ),
+                },
             ],
             output_schema=IntakeClassificationOutput,
             max_tokens=2500,
@@ -289,6 +318,10 @@ class WorkflowNodes:
                 WorkflowStage.INTAKE,
                 code="INPUT_TYPE_MISMATCH",
                 message="Language analysis did not preserve the submitted input type.",
+                details={
+                    "expected_input_kind": self.services.expected_input_kind.value,
+                    "returned_input_kind": output.input_kind.value,
+                },
             )
         if not output.normalized_text.strip() or len(output.normalized_text) > 100_000:
             return await self._failure(
@@ -343,35 +376,24 @@ class WorkflowNodes:
                 {"role": "system", "content": DECOMPOSITION_PROMPT},
                 {"role": "user", "content": _json(state.normalized_input)},
             ],
-            output_schema=DecompositionOutput,
+            output_schema=DecompositionDraftOutput,
             max_tokens=5000,
         )
         if isinstance(response, VerificationState):
             return response
-        output = response.output
-        refs = {claim.claim_ref for claim in output.atomic_claims}
         claim_limit = {"QUICK": 12, "STANDARD": 25, "DEEP": 50}[state.research_depth.value]
-        normalized_claims = [" ".join(claim.text.casefold().split()) for claim in output.atomic_claims]
-        invalid_spans = any(
-            claim.original_text_span is not None
-            and claim.original_text_span not in state.normalized_input.normalized_text
-            for claim in output.atomic_claims
-        )
-        if (
-            len(output.atomic_claims) > claim_limit
-            or len(normalized_claims) != len(set(normalized_claims))
-            or any(
-                claim.parent_claim_ref is not None and claim.parent_claim_ref not in refs
-                for claim in output.atomic_claims
+        try:
+            output = normalize_decomposition(
+                response.output,
+                normalized_text=state.normalized_input.normalized_text,
+                claim_limit=claim_limit,
             )
-            or _has_claim_cycle(output)
-            or invalid_spans
-        ):
+        except DecompositionNormalizationError as error:
             return await self._failure(
                 state,
                 WorkflowStage.DECOMPOSITION,
-                code="INVALID_CLAIM_GRAPH",
-                message="Claim decomposition returned invalid claim references.",
+                code=error.code,
+                message=error.public_message,
             )
         updated = state.complete(
             WorkflowStage.DECOMPOSITION,
@@ -397,47 +419,79 @@ class WorkflowNodes:
                 code="CLAIMS_REQUIRED",
                 message="Research planning requires at least one atomic claim.",
             )
+        allowed_claim_refs = [claim.claim_ref for claim in state.claims]
+        planner_messages = [
+            {"role": "system", "content": PLANNER_PROMPT},
+            {"role": "user", "content": _json(build_planner_payload(state))},
+        ]
         response = await self._call(
             state,
             WorkflowStage.PLANNER,
-            messages=[
-                {"role": "system", "content": PLANNER_PROMPT},
-                {"role": "user", "content": _json(state.claims)},
-            ],
+            messages=planner_messages,
             output_schema=PlanningDraftOutput,
             max_tokens=6000,
+            repair_invalid_response=True,
         )
         if isinstance(response, VerificationState):
             return response
-        try:
-            output = normalize_research_plan(
-                response.output,
-                allowed_claim_refs=[claim.claim_ref for claim in state.claims],
-            )
-        except UnknownPlanningDraftClaimRefError:
-            return await self._failure(
-                state,
-                WorkflowStage.PLANNER,
-                code="INVALID_RESEARCH_PLAN",
-                message="Research planning returned an invalid plan contract.",
-                details={
-                    "primary_violation": "PLAN_UNKNOWN_CLAIM_REF",
-                    "violation_count": 1,
-                    "repair_attempted": False,
-                    "violation_summary": "PLAN_UNKNOWN_CLAIM_REF",
+        output, violations = _validate_planner_output(
+            state,
+            response.output,
+            allowed_claim_refs=allowed_claim_refs,
+        )
+        semantic_repair_attempt_count = 0
+        if violations:
+            semantic_repair_attempt_count = 1
+            await self.services.progress.publish(
+                run_id=state.run_id,
+                stage=WorkflowStage.PLANNER,
+                event_type="workflow.planner.semantic_repair_started",
+                message="Research planning is being regenerated to satisfy deterministic checks.",
+                payload={
+                    **_stage_progress(WorkflowStage.PLANNER, completed=False),
+                    "primary_violation": violations[0].code,
+                    "violation_count": len(violations),
+                    "semantic_repair_attempt_count": semantic_repair_attempt_count,
                 },
             )
-        violations = validate_research_plan(state, output)
-        if violations:
+            repaired_response = await self._call(
+                state,
+                WorkflowStage.PLANNER,
+                messages=[
+                    {"role": "system", "content": PLANNER_PROMPT},
+                    {
+                        "role": "system",
+                        "content": _planner_repair_instruction(
+                            violations,
+                            allowed_claim_refs=allowed_claim_refs,
+                        ),
+                    },
+                    {"role": "user", "content": _json(build_planner_payload(state))},
+                ],
+                output_schema=PlanningDraftOutput,
+                max_tokens=6000,
+                repair_invalid_response=response.metadata.attempt_count == 1,
+            )
+            if isinstance(repaired_response, VerificationState):
+                return repaired_response
+            response = repaired_response
+            output, violations = _validate_planner_output(
+                state,
+                response.output,
+                allowed_claim_refs=allowed_claim_refs,
+            )
+        if violations or output is None:
             return await self._failure(
                 state,
                 WorkflowStage.PLANNER,
-                code="INVALID_RESEARCH_PLAN",
+                code="AGENT_CONTRACT_REPAIR_EXHAUSTED",
                 message="Research planning returned an invalid plan contract.",
                 details={
                     "primary_violation": violations[0].code,
                     "violation_count": len(violations),
-                    "repair_attempted": False,
+                    "repair_attempted": True,
+                    "semantic_validation_attempt_count": 2,
+                    "semantic_repair_attempt_count": semantic_repair_attempt_count,
                     "violation_summary": summarize_violation_codes(violations),
                 },
             )
@@ -452,7 +506,12 @@ class WorkflowNodes:
         return await self._finish(
             updated,
             WorkflowStage.PLANNER,
-            payload={"objective_count": len(output.objectives), "query_count": len(output.queries)},
+            payload={
+                "objective_count": len(output.objectives),
+                "query_count": len(output.queries),
+                "semantic_validation_attempt_count": semantic_repair_attempt_count + 1,
+                "semantic_repair_attempt_count": semantic_repair_attempt_count,
+            },
         )
 
     async def evidence_classification(self, state: VerificationState) -> VerificationState:
@@ -467,12 +526,25 @@ class WorkflowNodes:
                 code="EVIDENCE_INPUTS_REQUIRED",
                 message="Evidence classification requires claims and extracted passages.",
             )
+        tasks = build_classification_tasks(
+            state.claims,
+            state.passages,
+            research_depth=state.research_depth.value,
+        )
+        if not tasks:
+            return await self._failure(
+                state,
+                WorkflowStage.EVIDENCE_CLASSIFICATION,
+                code="CLASSIFICATION_COVERAGE_MISMATCH",
+                message="Evidence classification did not produce required bounded tasks.",
+                details={"expected_task_count": 0, "returned_task_count": 0},
+            )
         response = await self._call(
             state,
             WorkflowStage.EVIDENCE_CLASSIFICATION,
             messages=[
                 {"role": "system", "content": EVIDENCE_PROMPT},
-                {"role": "user", "content": _json({"claims": state.claims, "passages": state.passages})},
+                {"role": "user", "content": _json({"tasks": [task.prompt_payload() for task in tasks]})},
             ],
             output_schema=EvidenceClassificationOutput,
             max_tokens=8000,
@@ -480,28 +552,40 @@ class WorkflowNodes:
         if isinstance(response, VerificationState):
             return response
         output = response.output
-        claim_refs = {claim.claim_ref for claim in state.claims}
-        passages = {passage.passage_id: passage for passage in state.passages}
-        pairs = [(item.claim_ref, item.passage_id) for item in output.classifications]
-        invalid = (
-            len(pairs) != len(set(pairs))
-            or any(
-                item.claim_ref not in claim_refs or item.passage_id not in passages
-                for item in output.classifications
-            )
-        )
-        if invalid:
+        tasks_by_ref = {task.task_ref: task for task in tasks}
+        expected_task_refs = set(tasks_by_ref)
+        returned_task_refs = [item.task_ref for item in output.classifications]
+        returned_task_ref_set = set(returned_task_refs)
+        duplicate_count = len(returned_task_refs) - len(returned_task_ref_set)
+        missing_count = len(expected_task_refs - returned_task_ref_set)
+        unknown_count = len(returned_task_ref_set - expected_task_refs)
+        if duplicate_count or missing_count or unknown_count:
             return await self._failure(
                 state,
                 WorkflowStage.EVIDENCE_CLASSIFICATION,
-                code="INVALID_EVIDENCE_REFERENCES",
-                message="Evidence classification referenced unavailable claims or passages.",
+                code="CLASSIFICATION_COVERAGE_MISMATCH",
+                message="Evidence classification did not return exactly one result for every required task.",
+                details={
+                    "expected_task_count": len(expected_task_refs),
+                    "returned_task_count": len(returned_task_refs),
+                    "missing_task_count": missing_count,
+                    "duplicate_task_count": duplicate_count,
+                    "unknown_task_count": unknown_count,
+                    "extra_task_count": unknown_count,
+                },
             )
+        passages = {passage.passage_id: passage for passage in state.passages}
         guarded_classifications = []
-        for item in output.classifications:
-            passage = passages.get(item.passage_id)
-            if passage is None:
-                continue
+        for result in output.classifications:
+            task = tasks_by_ref[result.task_ref]
+            item = EvidenceClassificationItemOutput.model_validate(
+                {
+                    **result.model_dump(exclude={"task_ref"}),
+                    "claim_ref": task.claim_ref,
+                    "passage_id": task.passage_id,
+                }
+            )
+            passage = passages[task.passage_id]
             quality = item.quality.model_copy(
                 update={"extraction_certainty": float(passage.extraction_certainty)}
             )
@@ -1026,19 +1110,38 @@ def _approved_passage_ids(state: VerificationState) -> set[str]:
     }
 
 
-def _has_claim_cycle(output: DecompositionOutput) -> bool:
-    parents = {
-        claim.claim_ref: claim.parent_claim_ref for claim in output.atomic_claims
-    }
-    for claim_ref in parents:
-        seen: set[str] = set()
-        current: str | None = claim_ref
-        while current is not None:
-            if current in seen:
-                return True
-            seen.add(current)
-            current = parents.get(current)
-    return False
+def _validate_planner_output(
+    state: VerificationState,
+    draft: PlanningDraftOutput,
+    *,
+    allowed_claim_refs: Sequence[str],
+) -> tuple[PlanningOutput | None, tuple[AgentContractViolation, ...]]:
+    """Normalize and validate one planner response without retaining its contents."""
+    try:
+        output = normalize_research_plan(draft, allowed_claim_refs=allowed_claim_refs)
+    except UnknownPlanningDraftClaimRefError:
+        return None, (
+            AgentContractViolation(
+                code="PLAN_UNKNOWN_CLAIM_REF",
+                field="objectives.claim_ref",
+            ),
+        )
+    return output, validate_research_plan(state, output)
+
+
+def _planner_repair_instruction(
+    violations: Sequence[AgentContractViolation],
+    *,
+    allowed_claim_refs: Sequence[str],
+) -> str:
+    """Build a bounded corrective instruction without model content or error values."""
+    violation_codes = ",".join(sorted({violation.code for violation in violations}))
+    allowed_refs = ",".join(sorted(allowed_claim_refs))
+    return (
+        "Regenerate the complete planning response. Correct the deterministic contract "
+        f"violation codes: {violation_codes}. Use only these allowed claim references: "
+        f"{allowed_refs}. Return only one JSON object."
+    )
 
 
 def _json(value: object) -> str:
