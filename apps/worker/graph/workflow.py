@@ -44,7 +44,9 @@ from agents.schemas import (
     PlanningDraftOutput,
     PlanningOutput,
     SentenceCitationAuditOutput,
+    SynthesisDraftOutput,
     SynthesisOutput,
+    iter_auditable_sentences,
 )
 from agents.synthesis import PROMPT_VERSION as SYNTHESIS_PROMPT_VERSION
 from agents.synthesis import SYSTEM_PROMPT as SYNTHESIS_PROMPT
@@ -60,6 +62,7 @@ from graph.transitions import (
     stop_requested,
     synthesis_ready,
 )
+from research.extension_errors import WorkflowExtensionError
 
 
 PROMPT_VERSIONS = {
@@ -671,12 +674,16 @@ class WorkflowNodes:
                     ),
                 },
             ],
-            output_schema=SynthesisOutput,
+            output_schema=SynthesisDraftOutput,
             max_tokens=8000,
         )
         if isinstance(response, VerificationState):
             return response
-        cited = {pid for sentence in _sentences(response.output) for pid in sentence.passage_ids}
+        cited = {
+            passage_id
+            for _, sentence in iter_auditable_sentences(response.output)
+            for passage_id in sentence.passage_ids
+        }
         if not cited.issubset(approved_passage_ids):
             return await self._failure(
                 state,
@@ -703,15 +710,6 @@ class WorkflowNodes:
             f"Evidence reviewed as of {reviewed_at.isoformat()}. "
             "New evidence or corrections may change this assessment."
         )
-        inaccessible_notes = list(response.output.inaccessible_source_notes)
-        for snapshot in state.snapshots:
-            if snapshot.access_status.upper() == "FETCHED":
-                continue
-            note = f"Source {snapshot.source_ref} was {snapshot.access_status.lower()}"
-            if snapshot.failure_reason:
-                note += f": {snapshot.failure_reason}"
-            if note not in inaccessible_notes:
-                inaccessible_notes.append(note)
         model_versions = {
             stage: metadata.model for stage, metadata in state.model_calls.items()
         }
@@ -720,17 +718,14 @@ class WorkflowNodes:
             stage: metadata.prompt_version for stage, metadata in state.model_calls.items()
         }
         prompt_versions[WorkflowStage.SYNTHESIS.value] = response.metadata.prompt_version
-        guarded_report = response.output.model_copy(
-            update={
-                "inaccessible_source_notes": inaccessible_notes,
-                "evidence_reviewed_at": reviewed_at,
-                "evidence_timestamp": timestamp,
-                "methodology_version": state.methodology_version,
-                "workflow_version": state.workflow_version,
-                "model_versions": model_versions,
-                "prompt_versions": prompt_versions,
-                "parser_versions": state.parser_versions,
-            }
+        guarded_report = _build_deterministic_report(
+            state,
+            response.output,
+            approved_passage_ids=approved_passage_ids,
+            evidence_reviewed_at=reviewed_at,
+            evidence_timestamp=timestamp,
+            model_versions=model_versions,
+            prompt_versions=prompt_versions,
         )
         updated = state.complete(
             WorkflowStage.SYNTHESIS,
@@ -741,7 +736,7 @@ class WorkflowNodes:
         return await self._finish(
             updated,
             WorkflowStage.SYNTHESIS,
-            payload={"sentence_count": len(_sentences(response.output))},
+            payload={"sentence_count": sum(1 for _ in iter_auditable_sentences(guarded_report))},
         )
 
     async def citation_audit(self, state: VerificationState) -> VerificationState:
@@ -756,10 +751,21 @@ class WorkflowNodes:
                 code="REPORT_DRAFT_REQUIRED",
                 message="Citation audit requires an evidence-grounded report draft.",
             )
+        auditable_sentences = list(iter_auditable_sentences(state.report_draft))
+        sentence_refs = [sentence.sentence_ref for _, sentence in auditable_sentences]
+        if len(sentence_refs) != len(set(sentence_refs)):
+            return await self._failure(
+                state,
+                WorkflowStage.CITATION_AUDIT,
+                code="DUPLICATE_REPORT_SENTENCE_REF",
+                message="Citation audit requires unique report sentence references.",
+            )
         passage_map = {p.passage_id: p for p in state.passages}
         approved_passages = _approved_passage_ids(state)
         report_passages = {
-            passage_id for sentence in _sentences(state.report_draft) for passage_id in sentence.passage_ids
+            passage_id
+            for _, sentence in auditable_sentences
+            for passage_id in sentence.passage_ids
         }
         if not report_passages.issubset(passage_map):
             return await self._failure(
@@ -784,12 +790,15 @@ class WorkflowNodes:
                     "role": "user",
                     "content": _json(
                         {
-                            "report_sentences": _sentences(state.report_draft),
+                            "report_sentences": [
+                                sentence
+                                for _, sentence in auditable_sentences
+                            ],
                             "cited_passages": [
                                 passage_map[pid]
                                 for pid in {
                                     pid
-                                    for sentence in _sentences(state.report_draft)
+                                    for _, sentence in auditable_sentences
                                     for pid in sentence.passage_ids
                                 }
                                 if pid in passage_map
@@ -874,12 +883,16 @@ class WorkflowNodes:
                     ),
                 },
             ],
-            output_schema=SynthesisOutput,
+            output_schema=SynthesisDraftOutput,
             max_tokens=8000,
         )
         if isinstance(response, VerificationState):
             return response
-        cited = {pid for sentence in _sentences(response.output) for pid in sentence.passage_ids}
+        cited = {
+            passage_id
+            for _, sentence in iter_auditable_sentences(response.output)
+            for passage_id in sentence.passage_ids
+        }
         if not cited.issubset(approved_ids):
             return await self._failure(
                 state,
@@ -899,23 +912,28 @@ class WorkflowNodes:
                 message="The revised report omitted the strongest credible contradiction.",
             )
         prior = state.report_draft
-        revised = response.output.model_copy(
-            update={
-                "evidence_reviewed_at": prior.evidence_reviewed_at,
-                "evidence_timestamp": prior.evidence_timestamp,
-                "methodology_version": prior.methodology_version,
-                "workflow_version": prior.workflow_version,
-                "model_versions": {
-                    **prior.model_versions,
-                    WorkflowStage.CITATION_REVISION.value: response.metadata.model,
-                },
-                "prompt_versions": {
-                    **prior.prompt_versions,
-                    WorkflowStage.CITATION_REVISION.value: response.metadata.prompt_version,
-                },
-                "parser_versions": prior.parser_versions,
-                "inaccessible_source_notes": prior.inaccessible_source_notes,
-            }
+        revised = SynthesisOutput(
+            title=prior.title,
+            summary_sentences=response.output.summary_sentences,
+            factual_sentences=response.output.factual_sentences,
+            strongest_credible_contradiction=response.output.strongest_credible_contradiction,
+            attribution_findings=response.output.attribution_findings,
+            limitations=prior.limitations,
+            inaccessible_source_notes=prior.inaccessible_source_notes,
+            evidence_gaps=prior.evidence_gaps,
+            evidence_reviewed_at=prior.evidence_reviewed_at,
+            evidence_timestamp=prior.evidence_timestamp,
+            methodology_version=prior.methodology_version,
+            workflow_version=prior.workflow_version,
+            model_versions={
+                **prior.model_versions,
+                WorkflowStage.CITATION_REVISION.value: response.metadata.model,
+            },
+            prompt_versions={
+                **prior.prompt_versions,
+                WorkflowStage.CITATION_REVISION.value: response.metadata.prompt_version,
+            },
+            parser_versions=prior.parser_versions,
         )
         completed = [
             stage for stage in state.completed_stages if stage != WorkflowStage.CITATION_AUDIT
@@ -956,21 +974,14 @@ class WorkflowNodes:
                 if not isinstance(updated, VerificationState):
                     raise TypeError("workflow extensions must return VerificationState")
                 updated = VerificationState.model_validate(updated.model_dump())
-            except Exception as exc:
-                retryable = bool(getattr(exc, "retryable", False))
+            except WorkflowExtensionError as exc:
                 return await self._failure(
                     state,
                     stage,
-                    code="WORKFLOW_EXTENSION_FAILED",
-                    message=f"The {stage.value.replace('_', ' ')} stage could not be completed.",
-                    retryable=retryable,
-                    details={
-                        "failure_kind": (
-                            "fetch"
-                            if stage in {WorkflowStage.RETRIEVAL, WorkflowStage.EXTRACTION}
-                            else "provider" if stage == WorkflowStage.DISCOVERY else "workflow"
-                        )
-                    },
+                    code=exc.code,
+                    message=exc.public_message,
+                    retryable=exc.retryable,
+                    details=exc.details,
                 )
             updated = updated.complete(stage)
             return await self._finish(updated, stage)
@@ -1158,11 +1169,71 @@ def _jsonable(value: object) -> object:
     return value
 
 
-def _sentences(report: SynthesisOutput):
-    values = [*report.summary_sentences, *report.factual_sentences, *report.attribution_findings]
-    if report.strongest_credible_contradiction is not None:
-        values.append(report.strongest_credible_contradiction)
-    return values
+def _sanitize_inaccessible_reason(reason: str | None) -> str | None:
+    if not reason:
+        return None
+    sanitized = " ".join("".join(char for char in reason if char.isprintable()).split())
+    return sanitized[:300] or None
+
+
+def _deterministic_inaccessible_source_notes(state: VerificationState) -> list[str]:
+    notes: list[str] = []
+    for snapshot in sorted(
+        state.snapshots,
+        key=lambda item: (item.source_ref, item.snapshot_id),
+    ):
+        if snapshot.access_status.upper() == "FETCHED":
+            continue
+        note = f"Source {snapshot.source_ref} was {snapshot.access_status.lower()}"
+        if reason := _sanitize_inaccessible_reason(snapshot.failure_reason):
+            note += f": {reason}"
+        if note not in notes:
+            notes.append(note)
+    return notes
+
+
+def _deterministic_evidence_gaps(
+    state: VerificationState, approved_passage_ids: set[str]
+) -> list[str]:
+    supported_claim_refs = {
+        item.claim_ref for item in state.evidence if item.passage_id in approved_passage_ids
+    }
+    return [
+        f"No approved evidence was available for claim {claim.claim_ref}."
+        for claim in state.claims
+        if claim.claim_ref not in supported_claim_refs
+    ]
+
+
+def _build_deterministic_report(
+    state: VerificationState,
+    draft: SynthesisDraftOutput,
+    *,
+    approved_passage_ids: set[str],
+    evidence_reviewed_at: datetime,
+    evidence_timestamp: str,
+    model_versions: dict[str, str],
+    prompt_versions: dict[str, str],
+) -> SynthesisOutput:
+    return SynthesisOutput(
+        title="Evidence assessment",
+        summary_sentences=draft.summary_sentences,
+        factual_sentences=draft.factual_sentences,
+        strongest_credible_contradiction=draft.strongest_credible_contradiction,
+        attribution_findings=draft.attribution_findings,
+        limitations=[
+            "This assessment is limited to the submitted target and approved evidence reviewed at the stated timestamp."
+        ],
+        inaccessible_source_notes=_deterministic_inaccessible_source_notes(state),
+        evidence_gaps=_deterministic_evidence_gaps(state, approved_passage_ids),
+        evidence_reviewed_at=evidence_reviewed_at,
+        evidence_timestamp=evidence_timestamp,
+        methodology_version=state.methodology_version,
+        workflow_version=state.workflow_version,
+        model_versions=model_versions,
+        prompt_versions=prompt_versions,
+        parser_versions=state.parser_versions,
+    )
 
 
 def _guard_citation_audit(
@@ -1170,8 +1241,15 @@ def _guard_citation_audit(
     passage_map: Mapping[str, object],
     audit: CitationAuditOutput,
 ) -> CitationAuditOutput | None:
-    sentences = {sentence.sentence_ref: sentence for sentence in _sentences(report)}
-    required = {(ref, pid) for ref, sentence in sentences.items() for pid in sentence.passage_ids}
+    auditable_sentences = list(iter_auditable_sentences(report))
+    sentences = {sentence.sentence_ref: sentence for _, sentence in auditable_sentences}
+    if len(sentences) != len(auditable_sentences):
+        return None
+    required = {
+        (sentence.sentence_ref, passage_id)
+        for _, sentence in auditable_sentences
+        for passage_id in sentence.passage_ids
+    }
     received = {(item.sentence_ref, item.passage_id) for item in audit.sentence_audits}
     if (
         received != required

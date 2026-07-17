@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-15T19:13:37.778965+00:00",
+  "generated_at": "2026-07-16T23:48:01.130856+00:00",
   "nodes": {
     "apps_api_app_config_settings": {
       "code_fingerprint": "bda5fc535a5c4fa5d7c004cb0b5853b11f759a9fcfb4739b91a3cb88dfbad2b3",
@@ -12,7 +12,7 @@
           "q": "is the backend stack impossible to host thorugh free tier?"
         }
       ],
-      "score": 0.955119672,
+      "score": 0.929204778,
       "source_file": "apps/api/app/config.py",
       "status": "tentative",
       "uses": 1
@@ -28,7 +28,7 @@
           "q": "is the backend stack impossible to host thorugh free tier?"
         }
       ],
-      "score": 0.955119672,
+      "score": 0.929204778,
       "source_file": "apps/api/app/services/object_storage.py",
       "status": "tentative",
       "uses": 1
@@ -44,7 +44,7 @@
           "q": "Does the authoritative project guidance now define Elara as a low-traffic side-project hosted demo rather than a production SaaS?"
         }
       ],
-      "score": 0.95559706,
+      "score": 0.929669213,
       "source_file": "project-context/DEMO_SCOPE.md",
       "status": "tentative",
       "uses": 1
@@ -60,7 +60,7 @@
           "q": "Does the authoritative project guidance now define Elara as a low-traffic side-project hosted demo rather than a production SaaS?"
         }
       ],
-      "score": 0.95559706,
+      "score": 0.929669213,
       "source_file": "project-context/DEMO_SCOPE.md",
       "status": "tentative",
       "uses": 1
@@ -81,7 +81,7 @@
           "q": "why did the worker fail during planning with invalid claim or objective references"
         }
       ],
-      "score": 1.967174557,
+      "score": 1.913799967,
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
       "status": "preferred",
       "uses": 2
@@ -97,7 +97,7 @@
           "q": "Does the authoritative project guidance now define Elara as a low-traffic side-project hosted demo rather than a production SaaS?"
         }
       ],
-      "score": 0.95559706,
+      "score": 0.929669213,
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
       "status": "tentative",
       "uses": 1
@@ -118,7 +118,7 @@
           "q": "how can the planner failure be fixed and could other agent roles have similar issues"
         }
       ],
-      "score": 1.9672889,
+      "score": 1.913911208,
       "source_file": "project-context/IMPLEMENTATION_PLAN.md",
       "status": "preferred",
       "uses": 2
@@ -134,7 +134,7 @@
           "q": "Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?"
         }
       ],
-      "score": 0.955241759,
+      "score": 0.929323552,
       "source_file": "project-context/operations/DEPLOYMENT.md",
       "status": "tentative",
       "uses": 1
@@ -150,7 +150,7 @@
           "q": "Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?"
         }
       ],
-      "score": 0.955241759,
+      "score": 0.929323552,
       "source_file": "project-context/operations/LITE_MODE.md",
       "status": "tentative",
       "uses": 1
@@ -166,7 +166,7 @@
           "q": "Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?"
         }
       ],
-      "score": 0.955241759,
+      "score": 0.929323552,
       "source_file": "project-context/operations/PUBLIC_BETA_AWS_DEPLOYMENT.md",
       "status": "tentative",
       "uses": 1
@@ -182,7 +182,7 @@
           "q": "Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?"
         }
       ],
-      "score": 0.955241759,
+      "score": 0.929323552,
       "source_file": "project-context/operations/STAGING_OPERATIONS.md",
       "status": "tentative",
       "uses": 1
@@ -198,7 +198,7 @@
           "q": "Does the authoritative project guidance now define Elara as a low-traffic side-project hosted demo rather than a production SaaS?"
         }
       ],
-      "score": 0.95559706,
+      "score": 0.929669213,
       "source_file": "project-context/operations/STAGING_OPERATIONS.md",
       "status": "tentative",
       "uses": 1

@@ -13,6 +13,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 from graph.state import DependencyRecord, ExtractedSourceRecord, VerificationState
 from provenance.clustering import cluster_sources
+from research.extension_errors import WorkflowExtensionError
 
 
 _SPACE = re.compile(r"\s+")
@@ -188,6 +189,11 @@ class SourceDependencyAnalyzer:
             )
             for edge in edges
         ]
+        validate_provenance(
+            source_refs=set(candidates),
+            dependencies=clustered_edges,
+            multipliers=multipliers,
+        )
         return state.model_copy(
             update={
                 "information_clusters": clusters,
@@ -203,6 +209,60 @@ class ProvenancePipeline:
 
     async def process(self, state: VerificationState) -> VerificationState:
         return self.analyzer.analyze(state)
+
+
+_ALLOWED_DEPENDENCY_MULTIPLIERS = {
+    Decimal("1.00"),
+    Decimal("0.35"),
+    Decimal("0.10"),
+    Decimal("0.00"),
+}
+
+
+def validate_provenance(
+    *,
+    source_refs: set[str],
+    dependencies: list[DependencyRecord],
+    multipliers: dict[str, Decimal],
+) -> None:
+    """Reject invalid deterministic provenance outputs before stage completion."""
+    unknown_endpoints = sum(
+        1
+        for edge in dependencies
+        if edge.parent_source_ref not in source_refs or edge.child_source_ref not in source_refs
+    )
+    if unknown_endpoints:
+        raise WorkflowExtensionError(
+            code="INVALID_PROVENANCE_ENDPOINT",
+            public_message="Provenance referenced a source that was not selected for this run.",
+            details={"invalid_endpoint_count": unknown_endpoints},
+        )
+    edge_keys = [
+        (edge.parent_source_ref, edge.child_source_ref, edge.relationship)
+        for edge in dependencies
+    ]
+    duplicate_count = len(edge_keys) - len(set(edge_keys))
+    if duplicate_count:
+        raise WorkflowExtensionError(
+            code="DUPLICATE_PROVENANCE_EDGE",
+            public_message="Provenance produced duplicate source-dependency edges.",
+            details={"duplicate_edge_count": duplicate_count},
+        )
+    missing_multiplier_count = len(source_refs - set(multipliers))
+    invalid_multiplier_count = sum(
+        1
+        for source_ref, value in multipliers.items()
+        if source_ref not in source_refs or value not in _ALLOWED_DEPENDENCY_MULTIPLIERS
+    )
+    if missing_multiplier_count or invalid_multiplier_count:
+        raise WorkflowExtensionError(
+            code="INVALID_DEPENDENCY_MULTIPLIER",
+            public_message="Provenance produced an unsupported source-dependency multiplier.",
+            details={
+                "missing_multiplier_count": missing_multiplier_count,
+                "invalid_multiplier_count": invalid_multiplier_count,
+            },
+        )
 
 
 def dependency_multipliers(
@@ -374,4 +434,9 @@ def _canonical_url(url: str) -> str:
         return url
 
 
-__all__ = ["ProvenancePipeline", "SourceDependencyAnalyzer", "dependency_multipliers"]
+__all__ = [
+    "ProvenancePipeline",
+    "SourceDependencyAnalyzer",
+    "dependency_multipliers",
+    "validate_provenance",
+]

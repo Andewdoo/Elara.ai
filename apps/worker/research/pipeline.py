@@ -7,10 +7,14 @@ from decimal import Decimal
 import time
 from urllib.parse import urlsplit
 from uuid import uuid4
+from xml.etree.ElementTree import ParseError
+
+import fitz
 
 from extraction.service import ExtractionService
 from graph.state import CandidateSource, ExtractedBlockRecord, ExtractedSourceRecord, SnapshotRecord, VerificationState
 from research.cache import RetrievalRateLimiter
+from research.extension_errors import WorkflowExtensionError
 from research.fetcher import FetchError, SecureFetcher
 from research.ranking import (
     RESEARCH_DEPTH_LIMITS,
@@ -21,6 +25,9 @@ from research.ranking import (
 )
 from research.search import BraveSearchClient, SearchProviderError
 from research.url_guard import UnsafeUrlError, canonicalize_url
+
+
+_UNTRUSTED_SOURCE_EXTRACTION_ERRORS = (UnicodeError, ParseError, fitz.FileDataError)
 
 
 class RetrievalPipeline:
@@ -103,6 +110,16 @@ class RetrievalPipeline:
                     )
         if not by_url and last_provider_error is not None:
             raise last_provider_error
+        if not by_url:
+            raise WorkflowExtensionError(
+                code="NO_DISCOVERY_RESULTS",
+                public_message="The configured search policy returned no evidence candidates.",
+                details={
+                    "provider": "brave",
+                    "query_count": len(state.queries),
+                    "search_result_count": sum(result_counts.values()),
+                },
+            )
         selected = select_diverse(
             list(by_url.values()), limit=RESEARCH_DEPTH_LIMITS[state.research_depth.value]
         )
@@ -160,6 +177,16 @@ class RetrievalPipeline:
                         },
                     )
                 )
+        accessible_count = sum(snapshot.access_status == "FETCHED" for snapshot in snapshots)
+        if not accessible_count:
+            raise WorkflowExtensionError(
+                code="NO_ACCESSIBLE_SOURCES",
+                public_message="No selected evidence source could be retrieved safely.",
+                details={
+                    "candidate_count": len(state.candidate_sources),
+                    "snapshot_count": len(snapshots),
+                },
+            )
         return state.model_copy(update={"snapshots": snapshots})
 
     async def extract(self, state: VerificationState) -> VerificationState:
@@ -172,13 +199,17 @@ class RetrievalPipeline:
             if snapshot.access_status != "FETCHED" or not snapshot.snapshot_path:
                 snapshots.append(snapshot)
                 continue
+            if not snapshot.content_hash:
+                raise WorkflowExtensionError(
+                    code="SNAPSHOT_HASH_MISSING",
+                    public_message="A retrieved evidence snapshot is incomplete.",
+                    details={"snapshot_id": snapshot.snapshot_id},
+                )
+            source = sources[snapshot.source_ref]
             try:
-                if not snapshot.content_hash:
-                    raise ValueError("fetched snapshot is missing its content hash")
                 content = self.fetcher.read_content(
                     snapshot.snapshot_path, expected_hash=snapshot.content_hash
                 )
-                source = sources[snapshot.source_ref]
                 expected_terms = tuple(
                     claims[objectives[objective_ref]]
                     for objective_ref in source.objective_refs
@@ -191,9 +222,10 @@ class RetrievalPipeline:
                     expected_terms=expected_terms,
                     allow_browser_fallback=_browser_fallback_is_justified(source),
                 )
-            except Exception:
-                # Parser and storage errors caused by untrusted source bytes are
-                # source-level failures, not permission to abort the whole run.
+            except _UNTRUSTED_SOURCE_EXTRACTION_ERRORS:
+                # Malformed untrusted source bytes can make a parser reject this
+                # source. Storage, state, and invariant failures intentionally
+                # propagate to the worker's internal-error path instead.
                 outcome = None
             document = outcome.document if outcome is not None else None
             if document is None:
@@ -296,6 +328,17 @@ class RetrievalPipeline:
         for snapshot in snapshots:
             if snapshot.parser_name and snapshot.parser_version:
                 parser_versions[snapshot.parser_name] = snapshot.parser_version
+        if not extracted:
+            raise WorkflowExtensionError(
+                code="NO_EXTRACTED_SOURCES",
+                public_message="No retrieved evidence source contained usable extractable content.",
+                details={
+                    "fetched_snapshot_count": sum(
+                        snapshot.access_status == "FETCHED" for snapshot in state.snapshots
+                    ),
+                    "snapshot_count": len(state.snapshots),
+                },
+            )
         return state.model_copy(
             update={
                 "snapshots": snapshots,

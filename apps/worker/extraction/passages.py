@@ -9,6 +9,7 @@ from uuid import NAMESPACE_URL, uuid5
 
 from agents.deepseek_client import DeepSeekClient, DeepSeekError
 from graph.state import EmbeddingRunMetadata, ExtractedBlockRecord, PassageRecord, VerificationState
+from research.extension_errors import WorkflowExtensionError
 
 
 _SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'])|\n+")
@@ -92,6 +93,12 @@ class PassageSegmenter:
                     )
                     seen[text_hash] = len(passages)
                     passages.append(passage)
+        if not passages:
+            raise WorkflowExtensionError(
+                code="NO_USABLE_PASSAGES",
+                public_message="Extracted evidence did not contain usable passages for analysis.",
+                details={"extracted_source_count": len(state.extracted_sources)},
+            )
         return passages
 
     def _split(self, text: str) -> list[tuple[str, bool]]:

@@ -20,6 +20,7 @@ from agents.deepseek_client import (
 from agents.decomposition import normalize_decomposition
 from agents.evidence_classification import build_classification_tasks, classification_task_ref
 from agents.schemas import (
+    CitedReportSentenceOutput,
     CitationAuditOutput,
     DecompositionDraftOutput,
     DecompositionOutput,
@@ -57,7 +58,15 @@ from graph.state import (
     VerificationState,
     WorkflowStage,
 )
-from graph.workflow import WorkflowExtensions, WorkflowNodes, WorkflowServices, build_workflow
+from graph.transitions import citation_audit_ready, evidence_ready, synthesis_ready
+from graph.workflow import (
+    WorkflowExtensions,
+    WorkflowNodes,
+    WorkflowServices,
+    _guard_citation_audit,
+    build_workflow,
+)
+from research.extension_errors import WorkflowExtensionError
 from graph.runtime import (
     SqlWorkflowStateWriter,
     execute_planning_workflow,
@@ -1036,26 +1045,59 @@ def test_extension_outputs_are_revalidated():
         return value.model_copy(update={"candidate_sources": [{"source_ref": "incomplete"}]})
 
     node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
-    with pytest.warns(UserWarning, match="Pydantic serializer warnings"):
-        result = asyncio.run(node.extension(WorkflowStage.DISCOVERY, invalid_extension)(state()))
+    with pytest.warns(UserWarning, match="Pydantic serializer warnings"), pytest.raises(ValidationError):
+        asyncio.run(node.extension(WorkflowStage.DISCOVERY, invalid_extension)(state()))
 
-    assert result.candidate_sources == []
-    assert result.recoverable_errors[0].code == "WORKFLOW_EXTENSION_FAILED"
-
-
-def test_retryable_retrieval_extension_preserves_fetch_failure_kind():
-    class TemporaryFetchFailure(RuntimeError):
-        retryable = True
-
+def test_typed_extension_error_preserves_safe_failure_contract():
     async def unavailable(_value: VerificationState) -> VerificationState:
-        raise TemporaryFetchFailure("private detail")
+        raise WorkflowExtensionError(
+            code="NO_ACCESSIBLE_SOURCES",
+            public_message="No accessible sources were available after secure retrieval.",
+            retryable=True,
+            details={"candidate_count": 2, "failure_kind": "fetch"},
+        )
 
     node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
     result = asyncio.run(node.extension(WorkflowStage.RETRIEVAL, unavailable)(state()))
 
+    assert result.recoverable_errors[0].code == "NO_ACCESSIBLE_SOURCES"
+    assert (
+        result.recoverable_errors[0].public_message
+        == "No accessible sources were available after secure retrieval."
+    )
     assert result.recoverable_errors[0].retryable is True
-    assert result.recoverable_errors[0].details == {"failure_kind": "fetch"}
-    assert "private detail" not in result.recoverable_errors[0].public_message
+    assert result.recoverable_errors[0].details == {"candidate_count": 2, "failure_kind": "fetch"}
+
+
+def test_unexpected_extension_runtime_error_reaches_worker_boundary():
+    async def broken_extension(_value: VerificationState) -> VerificationState:
+        raise RuntimeError("programming invariant failed")
+
+    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
+    with pytest.raises(RuntimeError, match="programming invariant failed"):
+        asyncio.run(node.extension(WorkflowStage.RETRIEVAL, broken_extension)(state()))
+
+
+@pytest.mark.parametrize(
+    ("route", "stage", "node_name", "expected_code"),
+    [
+        (evidence_ready, WorkflowStage.EVIDENCE_CLASSIFICATION, "evidence_classification", "EVIDENCE_INPUTS_REQUIRED"),
+        (synthesis_ready, WorkflowStage.SYNTHESIS, "synthesis", "APPROVED_EVIDENCE_REQUIRED"),
+        (citation_audit_ready, WorkflowStage.CITATION_AUDIT, "citation_audit", "REPORT_DRAFT_REQUIRED"),
+    ],
+)
+def test_missing_transition_prerequisite_reaches_responsible_stage(
+    route, stage: WorkflowStage, node_name: str, expected_code: str
+):
+    value = state()
+    assert route(value) == "continue"
+
+    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
+    result = asyncio.run(getattr(node, node_name)(value))
+
+    assert result.recoverable_errors[-1].stage == stage
+    assert result.recoverable_errors[-1].code == expected_code
+    assert result.ready_for_completion is False
 
 
 def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
@@ -1149,7 +1191,6 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
         ]
     }
     synthesis = {
-        "title": "Assessment of Company X net income claim",
         "summary_sentences": [
             {
                 "sentence_ref": "summary-1",
@@ -1288,7 +1329,6 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
     revision_model = FakeModel(
         [
             {
-                "title": "Revised report",
                 "summary_sentences": [
                     {
                         "sentence_ref": "summary-1-revised",
@@ -1331,6 +1371,148 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
         ).citation_audit(revised)
     )
     assert audited.ready_for_completion is True
+
+
+def test_citation_audit_requires_exact_unique_known_sentence_passage_pairs():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing reports a value of 20.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    )
+    complete = {
+        "sentence_ref": "summary-1",
+        "passage_id": "passage-1",
+        "entailment": "entailed",
+        "support_explanation": "The passage contains the reported value.",
+    }
+    assert _guard_citation_audit(
+        report,
+        {"passage-1": object()},
+        CitationAuditOutput.model_validate({"sentence_audits": [complete], "needs_revision": False}),
+    ) is not None
+
+    invalid_audits = [
+        [],
+        [complete, complete],
+        [{**complete, "sentence_ref": "unknown-1"}],
+        [{**complete, "passage_id": "unknown-passage"}],
+    ]
+    for audits in invalid_audits:
+        assert _guard_citation_audit(
+            report,
+            {"passage-1": object()},
+            CitationAuditOutput.model_validate(
+                {"sentence_audits": audits, "needs_revision": False}
+            ),
+        ) is None
+
+
+def test_citation_audit_preflight_rejects_duplicate_sentence_refs_without_model_call():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing reports a value of 20.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    ).model_copy(
+        update={
+            "factual_sentences": [
+                CitedReportSentenceOutput(
+                    sentence_ref="summary-1",
+                    text="The filing records the same value.",
+                    passage_ids=["passage-1"],
+                )
+            ]
+        }
+    )
+    model = FakeModel([])
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=model, submitted_input="unused")).citation_audit(
+            state().model_copy(update={"report_draft": report})
+        )
+    )
+
+    assert model.calls == []
+    assert result.recoverable_errors[-1].code == "DUPLICATE_REPORT_SENTENCE_REF"
+    assert result.ready_for_completion is False
+
+
+def test_citation_audit_rejects_a_report_pair_from_rejected_evidence():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing reports a value of 20.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    )
+    value = state().model_copy(
+        update={
+            "report_draft": report,
+            "snapshots": [
+                SnapshotRecord(
+                    snapshot_id="snapshot-1",
+                    source_ref="source-1",
+                    access_status="FETCHED",
+                    retrieved_at=datetime(2026, 7, 4, tzinfo=UTC),
+                )
+            ],
+            "passages": [
+                PassageRecord(
+                    passage_id="passage-1",
+                    source_ref="source-1",
+                    snapshot_id="snapshot-1",
+                    text="The filing reports a value of 20.",
+                    text_hash="hash-1",
+                    extraction_certainty=Decimal("1"),
+                )
+            ],
+            "evidence": [
+                EvidenceClassificationItemOutput.model_validate(
+                    {
+                        "claim_ref": "claim-1",
+                        "passage_id": "passage-1",
+                        "stance": "strongly_supports",
+                        "quality": {
+                            "relevance": 1,
+                            "directness": 1,
+                            "claim_specific_authority": 1,
+                            "transparency": 1,
+                            "temporal_fit": 1,
+                            "extraction_certainty": 1,
+                        },
+                        "entity_match": True,
+                        "time_period_match": True,
+                        "recommended_rejection_reasons": ["deterministic_gate"],
+                    }
+                )
+            ],
+        }
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused")).citation_audit(value)
+    )
+
+    assert result.recoverable_errors[-1].code == "REJECTED_EVIDENCE_CITED"
+    assert result.ready_for_completion is False
 
 
 def test_citation_revision_limit_exhaustion_fails_closed():
@@ -1613,7 +1795,6 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
         ]
     }
     synthesis = {
-        "title": "Company X value assessment",
         "summary_sentences": [
             {
                 "sentence_ref": "summary-1",
@@ -1659,7 +1840,7 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
     ]
     with factory() as db:
         run = db.get(VerificationRun, run_id)
-        assert run is not None and run.title == "Company X value assessment"
+        assert run is not None and run.title == "Evidence assessment"
         assert db.scalar(select(func.count()).select_from(ReportCitation)) == 1
         persist_completed_run(db, run_id=run_id, expected_citation_count=1)
         report = build_report(db, run=run)
@@ -1731,9 +1912,12 @@ def test_runtime_resumes_retryable_retrieval_from_extracting_status():
             )
 
         async def retrieve(self, _value):
-            error = RuntimeError("temporary private storage failure")
-            error.retryable = True
-            raise error
+            raise WorkflowExtensionError(
+                code="RETRIEVAL_UNAVAILABLE",
+                public_message="A retrieval service was temporarily unavailable.",
+                retryable=True,
+                details={"failure_kind": "fetch"},
+            )
 
         async def extract(self, value):
             return value
@@ -1754,6 +1938,7 @@ def test_runtime_resumes_retryable_retrieval_from_extracting_status():
     assert result is not None
     assert pipeline.calls == 1
     assert result.recoverable_errors[-1].retryable is True
+    assert result.recoverable_errors[-1].code == "RETRIEVAL_UNAVAILABLE"
     assert result.recoverable_errors[-1].details == {"failure_kind": "fetch"}
 
 

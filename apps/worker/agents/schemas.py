@@ -6,6 +6,7 @@ rejection gates, arithmetic, and completion decisions remain deterministic.
 
 from datetime import datetime
 from enum import StrEnum
+from collections.abc import Iterator
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -357,12 +358,29 @@ class CitedReportSentenceOutput(AgentOutput):
     passage_ids: list[str] = Field(default_factory=list)
 
 
-class SynthesisOutput(AgentOutput):
-    title: str = Field(min_length=1, max_length=300)
+class SynthesisDraftOutput(AgentOutput):
+    """The model-authored portion of a report, limited to cited assertions."""
+
     summary_sentences: list[CitedReportSentenceOutput] = Field(min_length=1)
     factual_sentences: list[CitedReportSentenceOutput] = Field(default_factory=list)
     strongest_credible_contradiction: CitedReportSentenceOutput | None = None
     attribution_findings: list[CitedReportSentenceOutput] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def cited_report_sentence_refs_are_unique(self) -> "SynthesisDraftOutput":
+        sentences = list(iter_auditable_sentences(self))
+        refs = [sentence.sentence_ref for _, sentence in sentences]
+        if len(refs) != len(set(refs)):
+            raise ValueError("sentence_ref values must be unique across the report")
+        if any(not sentence.passage_ids for _, sentence in sentences):
+            raise ValueError("every factual report sentence must cite at least one passage")
+        return self
+
+
+class SynthesisOutput(SynthesisDraftOutput):
+    """The final report, with system-owned contextual notes added deterministically."""
+
+    title: str = Field(min_length=1, max_length=300)
     limitations: list[str] = Field(default_factory=list)
     inaccessible_source_notes: list[str] = Field(default_factory=list)
     evidence_gaps: list[str] = Field(default_factory=list)
@@ -373,23 +391,6 @@ class SynthesisOutput(AgentOutput):
     model_versions: dict[str, str] = Field(default_factory=dict)
     prompt_versions: dict[str, str] = Field(default_factory=dict)
     parser_versions: dict[str, str] = Field(default_factory=dict)
-
-    @model_validator(mode="after")
-    def cited_report_sentence_refs_are_unique(self) -> "SynthesisOutput":
-        sentences = [
-            *self.summary_sentences,
-            *self.factual_sentences,
-            *self.attribution_findings,
-        ]
-        if self.strongest_credible_contradiction is not None:
-            sentences.append(self.strongest_credible_contradiction)
-        refs = [sentence.sentence_ref for sentence in sentences]
-        if len(refs) != len(set(refs)):
-            raise ValueError("sentence_ref values must be unique across the report")
-        if any(not sentence.passage_ids for sentence in sentences):
-            raise ValueError("every factual report sentence must cite at least one passage")
-        return self
-
 
 class SentenceCitationAuditOutput(AgentOutput):
     sentence_ref: str = Field(min_length=1, max_length=64)
@@ -404,6 +405,18 @@ class CitationAuditOutput(AgentOutput):
     unsupported_sentence_refs: list[str] = Field(default_factory=list)
     missing_citation_sentence_refs: list[str] = Field(default_factory=list)
     needs_revision: bool
+
+
+def iter_auditable_sentences(
+    report: SynthesisDraftOutput,
+) -> Iterator[tuple[str, CitedReportSentenceOutput]]:
+    """Yield every model-authored factual sentence in its durable report section."""
+
+    yield from (("summary", sentence) for sentence in report.summary_sentences)
+    yield from (("factual_finding", sentence) for sentence in report.factual_sentences)
+    if report.strongest_credible_contradiction is not None:
+        yield "strongest_contradiction", report.strongest_credible_contradiction
+    yield from (("attribution", sentence) for sentence in report.attribution_findings)
 
 
 __all__ = [
@@ -425,5 +438,7 @@ __all__ = [
     "PlanningOutput",
     "QuoteFidelityComponentsOutput",
     "SentenceCitationAuditOutput",
+    "SynthesisDraftOutput",
     "SynthesisOutput",
+    "iter_auditable_sentences",
 ]

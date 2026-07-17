@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import httpx
+import pytest
 from sqlalchemy import create_engine, select
 from sqlalchemy.dialects.postgresql import dialect as postgresql_dialect
 from sqlalchemy.orm import sessionmaker
@@ -37,6 +38,7 @@ from research.passage_retrieval import (
     exact_match_score,
     rank_classification_candidates,
 )
+from research.extension_errors import WorkflowExtensionError
 
 
 def _state(*, blocks: list[ExtractedBlockRecord], body: str = "body") -> VerificationState:
@@ -149,6 +151,16 @@ def test_quote_passage_retains_exact_quote_with_speaker_and_surrounding_context(
     assert quote.metadata["quote_context_attached"] is True
     assert "surrounding introduction" in quote.text
     assert "comparison period" in quote.text
+
+
+def test_segmenter_raises_no_usable_passages_when_extracted_content_has_only_headings():
+    state = _state(blocks=[ExtractedBlockRecord(kind="heading", text="Evidence title")])
+
+    with pytest.raises(WorkflowExtensionError) as caught:
+        PassageSegmenter().segment(state)
+
+    assert caught.value.code == "NO_USABLE_PASSAGES"
+    assert caught.value.details == {"extracted_source_count": 1}
 
 
 def test_embeddings_use_configured_deepseek_route_and_fallback_when_unavailable():

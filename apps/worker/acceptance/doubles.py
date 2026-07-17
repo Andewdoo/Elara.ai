@@ -192,16 +192,14 @@ class DeterministicDeepSeekDouble:
                 }
                 for passage_id in passage_ids[:2]
             ]}
-        elif name == "SynthesisOutput":
+        elif name == "SynthesisDraftOutput":
             passage_id = passage_ids[0]
             payload = {
-                "title": "Controlled Company X net-income assessment",
                 "summary_sentences": [{
                     "sentence_ref": "summary-1",
                     "text": "The controlled evidence reports net income of 20 units versus 10 units for the comparable period.",
                     "passage_ids": [passage_id],
                 }],
-                "limitations": ["This deterministic fixture evaluates only the submitted claim."],
             }
         elif name == "CitationAuditOutput":
             passage_id = passage_ids[0]

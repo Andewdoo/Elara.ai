@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime
 from decimal import Decimal
 from uuid import uuid4
 
@@ -10,7 +11,9 @@ import pytest
 
 from agents.schemas import EvidenceIntent, SearchQueryOutput
 from extraction.service import ExtractionService
-from graph.state import CandidateSource, ResearchDepth, VerificationState
+from graph.state import CandidateSource, ResearchDepth, SnapshotRecord, VerificationState
+from research.extension_errors import WorkflowExtensionError
+from research.fetcher import FetchError
 from research.pipeline import RetrievalPipeline
 from research.ranking import RankingSignals, priority_score, select_diverse
 from research.search import (
@@ -23,6 +26,25 @@ from research.search import (
 
 def run(value):
     return asyncio.run(value)
+
+
+def _pipeline_source_state(*, snapshots: list[SnapshotRecord] | None = None) -> VerificationState:
+    return VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.0",
+        candidate_sources=[
+            CandidateSource(
+                source_ref="source-1",
+                url="https://example.test/evidence",
+                canonical_url="https://example.test/evidence",
+                domain="example.test",
+                selection_reason="focused failure test",
+            )
+        ],
+        snapshots=snapshots or [],
+    )
 
 
 def test_brave_search_uses_only_server_key_and_expected_endpoint():
@@ -123,6 +145,67 @@ def test_discovery_preserves_partial_brave_results_when_later_query_fails():
         "https://example.test/evidence"
     ]
     assert result.query_result_counts["objective-2:failing query"] == 0
+
+
+def test_discovery_raises_typed_error_when_brave_returns_no_candidates():
+    class EmptySearch:
+        async def search(self, query: str, *, count: int = 10):
+            del query, count
+            return []
+
+        async def aclose(self):
+            return None
+
+    state = VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.0",
+        queries=[
+            SearchQueryOutput(
+                query="no available evidence",
+                objective_ref="objective-1",
+                intent=EvidenceIntent.SUPPORT,
+                priority=1,
+            )
+        ],
+    )
+    pipeline = RetrievalPipeline(search=EmptySearch(), fetcher=object())  # type: ignore[arg-type]
+
+    with pytest.raises(WorkflowExtensionError) as caught:
+        run(pipeline.discover(state))
+
+    error = caught.value
+    assert error.code == "NO_DISCOVERY_RESULTS"
+    assert error.public_message == "The configured search policy returned no evidence candidates."
+    assert error.retryable is False
+    assert error.details == {
+        "provider": "brave",
+        "query_count": 1,
+        "search_result_count": 0,
+    }
+
+
+def test_workflow_extension_error_accepts_only_safe_primitive_details():
+    error = WorkflowExtensionError(
+        code="NO_DISCOVERY_RESULTS",
+        public_message="The configured search policy returned no evidence candidates.",
+        details={"query_count": 0, "provider": "brave", "retry_after_seconds": None},
+    )
+
+    assert str(error) == error.public_message
+    assert error.retryable is False
+    assert error.details == {
+        "query_count": 0,
+        "provider": "brave",
+        "retry_after_seconds": None,
+    }
+    with pytest.raises(TypeError, match="safe primitive"):
+        WorkflowExtensionError(
+            code="NO_DISCOVERY_RESULTS",
+            public_message="The configured search policy returned no evidence candidates.",
+            details={"provider_payload": {"secret": "not safe"}},  # type: ignore[arg-type]
+        )
 
 
 def test_priority_formula_is_exact_and_deterministic():
@@ -265,3 +348,64 @@ def test_paywall_and_correction_notice_are_classified_deterministically():
     assert paywall.fallback_attempted is False
     assert corrected is not None
     assert corrected.correction_notices == (corrected_body.strip(),)
+
+
+def test_retrieval_raises_no_accessible_sources_after_per_source_failures():
+    class InaccessibleFetcher:
+        async def fetch(self, _url: str):
+            raise FetchError("source denied automated access", access_status="BOT_BLOCKED")
+
+    pipeline = RetrievalPipeline(search=object(), fetcher=InaccessibleFetcher())  # type: ignore[arg-type]
+
+    with pytest.raises(WorkflowExtensionError) as caught:
+        run(pipeline.retrieve(_pipeline_source_state()))
+
+    assert caught.value.code == "NO_ACCESSIBLE_SOURCES"
+    assert caught.value.details == {"candidate_count": 1, "snapshot_count": 1}
+
+
+def test_extraction_marks_untrusted_parser_bytes_but_propagates_programming_failures():
+    snapshot = SnapshotRecord(
+        snapshot_id="snapshot-1",
+        source_ref="source-1",
+        access_status="FETCHED",
+        retrieved_at=datetime.now(UTC),
+        content_hash="a" * 64,
+        content_type="text/html",
+        snapshot_path="snapshot-1.html",
+    )
+
+    class SnapshotReader:
+        def read_content(self, _path: str, *, expected_hash: str) -> bytes:
+            assert expected_hash == "a" * 64
+            return b"\xff"
+
+    class ParserByteFailure:
+        async def extract_with_outcome(self, *_args, **_kwargs):
+            raise UnicodeDecodeError("utf-8", b"\xff", 0, 1, "invalid source byte")
+
+    parser_pipeline = RetrievalPipeline(
+        search=object(),
+        fetcher=SnapshotReader(),  # type: ignore[arg-type]
+        extractor=ParserByteFailure(),  # type: ignore[arg-type]
+    )
+    state = _pipeline_source_state(snapshots=[snapshot])
+
+    with pytest.raises(WorkflowExtensionError) as caught:
+        run(parser_pipeline.extract(state))
+
+    assert caught.value.code == "NO_EXTRACTED_SOURCES"
+    assert caught.value.details == {"fetched_snapshot_count": 1, "snapshot_count": 1}
+
+    class ProgrammingFailure:
+        async def extract_with_outcome(self, *_args, **_kwargs):
+            raise RuntimeError("injected extraction invariant failure")
+
+    invariant_pipeline = RetrievalPipeline(
+        search=object(),
+        fetcher=SnapshotReader(),  # type: ignore[arg-type]
+        extractor=ProgrammingFailure(),  # type: ignore[arg-type]
+    )
+
+    with pytest.raises(RuntimeError, match="injected extraction invariant failure"):
+        run(invariant_pipeline.extract(state))

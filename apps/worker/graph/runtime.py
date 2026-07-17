@@ -26,6 +26,7 @@ from agents.schemas import (
     IntakeClassificationOutput,
     ResearchObjectiveOutput,
     SearchQueryOutput,
+    iter_auditable_sentences,
 )
 from app.config import Settings
 from app.models.claims import AtomicClaim, SearchQuery
@@ -528,22 +529,13 @@ class SqlWorkflowStateWriter:
     ) -> None:
         if state.report_draft is None or state.citation_audit is None:
             return
-        sentence_groups = (
-            ("summary", state.report_draft.summary_sentences),
-            ("factual_finding", state.report_draft.factual_sentences),
-            ("attribution", state.report_draft.attribution_findings),
-            (
-                "strongest_contradiction",
-                [state.report_draft.strongest_credible_contradiction]
-                if state.report_draft.strongest_credible_contradiction is not None
-                else [],
-            ),
-        )
+        auditable_sentences = list(iter_auditable_sentences(state.report_draft))
         sentences = {
             sentence.sentence_ref: (section, sentence)
-            for section, group in sentence_groups
-            for sentence in group
+            for section, sentence in auditable_sentences
         }
+        if len(sentences) != len(auditable_sentences):
+            raise ValueError("duplicate sentence_ref values cannot be persisted")
         db.execute(delete(ReportCitation).where(ReportCitation.run_id == run.id))
         claim_ids = select(AtomicClaim.id).where(AtomicClaim.run_id == run.id)
         evidence_rows = db.scalars(

@@ -633,6 +633,37 @@ def test_transient_failures_retry_twice_then_use_public_code(
     ]
 
 
+def test_unexpected_workflow_error_reaches_sanitized_worker_failure_boundary(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    def broken_workflow(*_args, **_kwargs):
+        raise RuntimeError("private snapshot path: /secret/evidence")
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_verification_workflow", broken_workflow)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.failed()
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+    assert durable is not None
+    assert durable.failure_code == "WORKER_ERROR"
+    assert durable.failure_message == "Verification stopped because the worker encountered an error."
+    assert "/secret/evidence" not in durable.failure_message
+
+
 def test_prepare_run_loads_postgres_and_mirrors_public_progress():
     factory, run = make_run()
     redis_client = FakeRedis()

@@ -12,7 +12,8 @@ from auditing.numerical import (
     NumericalOperation,
     RoundingRule,
 )
-from graph.state import ResearchDepth, VerificationState
+from graph.state import ResearchDepth, ScoreBundle, VerificationState
+from research.extension_errors import WorkflowExtensionError
 
 
 def candidate(operation, inputs, **kwargs):
@@ -186,6 +187,7 @@ def test_workflow_service_appends_auditable_records_without_float_recomputation(
         user_id=uuid4(),
         research_depth=ResearchDepth.STANDARD,
         methodology_version="1.0",
+        scores=ScoreBundle(methodology_version="1.0"),
         numerical_candidates=[raw],
     )
     result = asyncio.run(NumericalAuditor().process(state))
@@ -193,3 +195,17 @@ def test_workflow_service_appends_auditable_records_without_float_recomputation(
     assert len(result.calculations) == 1
     assert result.calculations[0].result["value"] == "40.0"
     assert result.calculations[0].inputs["values"][1]["role"] == "denominator"
+
+
+def test_numerical_audit_requires_scoring_results():
+    state = VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.0",
+    )
+
+    with pytest.raises(WorkflowExtensionError) as caught:
+        asyncio.run(NumericalAuditor().process(state))
+
+    assert caught.value.code == "NUMERICAL_AUDIT_SCORES_REQUIRED"

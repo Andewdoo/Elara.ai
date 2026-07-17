@@ -146,7 +146,7 @@ def client(
     fake_redis: FakeRedis,
     dispatcher: RecordingDispatcher,
 ) -> Generator[TestClient, None, None]:
-    app = create_app()
+    app = create_app(settings)
 
     def override_db() -> Generator[Session, None, None]:
         with session_factory() as db:

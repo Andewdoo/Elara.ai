@@ -8,7 +8,9 @@ from agents.schemas import (
     FactCheckability,
     Importance,
     PlanningOutput,
+    SynthesisDraftOutput,
     SynthesisOutput,
+    iter_auditable_sentences,
 )
 
 
@@ -92,3 +94,43 @@ def test_synthesis_requires_citations_for_every_factual_sentence():
     )
 
     assert output.summary_sentences[0].passage_ids == ["passage-1"]
+    assert [section for section, _ in iter_auditable_sentences(output)] == [
+        "summary",
+        "strongest_contradiction",
+    ]
+
+
+def test_model_synthesis_draft_rejects_free_form_factual_gap_fields():
+    with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
+        SynthesisDraftOutput.model_validate(
+            {
+                "summary_sentences": [
+                    {
+                        "sentence_ref": "summary-1",
+                        "text": "The supplied passage supports the narrow claim.",
+                        "passage_ids": ["passage-1"],
+                    }
+                ],
+                "limitations": ["A separate source confirmed the claim."],
+            }
+        )
+
+    with pytest.raises(ValidationError, match="sentence_ref values must be unique"):
+        SynthesisDraftOutput.model_validate(
+            {
+                "summary_sentences": [
+                    {
+                        "sentence_ref": "summary-1",
+                        "text": "The supplied passage supports the narrow claim.",
+                        "passage_ids": ["passage-1"],
+                    }
+                ],
+                "factual_sentences": [
+                    {
+                        "sentence_ref": "summary-1",
+                        "text": "The same passage contains a second finding.",
+                        "passage_ids": ["passage-1"],
+                    }
+                ],
+            }
+        )

@@ -13,6 +13,7 @@ from graph.state import (
     ScoreBundle,
     VerificationState,
 )
+from research.extension_errors import WorkflowExtensionError
 from scoring.formulas import (
     FORMULAS,
     EvidenceQuality,
@@ -82,6 +83,7 @@ class DeterministicScoringService:
     async def process(self, state: VerificationState) -> VerificationState:
         passages = {item.passage_id: item for item in state.passages}
         sources = {item.source_ref: item for item in state.candidate_sources}
+        self._validate_inputs(state, passages, sources)
         accepted = [item for item in state.evidence if not item.recommended_rejection_reasons]
         scored: list[ScoredEvidenceRecord] = []
         calculations: list[CalculationRecord] = []
@@ -499,6 +501,52 @@ class DeterministicScoringService:
             methodology_version=state.methodology_version,
         )
         return state.model_copy(update={"scored_evidence": scored, "claim_scores": claim_scores, "calculations": calculations, "scores": scores})
+
+    @staticmethod
+    def _validate_inputs(state, passages, sources) -> None:
+        if not state.claims:
+            raise WorkflowExtensionError(
+                code="SCORING_CLAIMS_REQUIRED",
+                public_message="Deterministic scoring requires at least one atomic claim.",
+            )
+        if not state.evidence:
+            raise WorkflowExtensionError(
+                code="SCORING_EVIDENCE_REQUIRED",
+                public_message="Deterministic scoring requires classified evidence.",
+            )
+        claim_refs = {claim.claim_ref for claim in state.claims}
+        missing_claims = sum(1 for item in state.evidence if item.claim_ref not in claim_refs)
+        missing_passages = sum(1 for item in state.evidence if item.passage_id not in passages)
+        unknown_sources = sum(
+            1
+            for item in state.evidence
+            if item.passage_id in passages and passages[item.passage_id].source_ref not in sources
+        )
+        if missing_claims or missing_passages or unknown_sources:
+            raise WorkflowExtensionError(
+                code="INVALID_SCORING_EVIDENCE_INPUT",
+                public_message="Classified evidence did not match the available scoring inputs.",
+                details={
+                    "missing_claim_count": missing_claims,
+                    "missing_passage_count": missing_passages,
+                    "unknown_source_count": unknown_sources,
+                },
+            )
+        missing_multipliers = set(sources) - set(state.source_dependency_multipliers)
+        invalid_multipliers = sum(
+            1
+            for value in state.source_dependency_multipliers.values()
+            if value not in {Decimal("1.00"), Decimal("0.35"), Decimal("0.10"), Decimal("0.00")}
+        )
+        if missing_multipliers or invalid_multipliers:
+            raise WorkflowExtensionError(
+                code="SCORING_DEPENDENCY_MULTIPLIERS_REQUIRED",
+                public_message="Deterministic scoring requires valid provenance dependency multipliers.",
+                details={
+                    "missing_multiplier_count": len(missing_multipliers),
+                    "invalid_multiplier_count": invalid_multipliers,
+                },
+            )
 
     @staticmethod
     def _primary_expected(state: VerificationState, claim_ref: str) -> bool:

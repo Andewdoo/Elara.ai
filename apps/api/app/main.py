@@ -1,15 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import get_settings
+from app.config import Settings, get_settings
 from app.observability import initialize_api_sentry
 from app.routes import auth_router, history_router, uploads_router, verifications_router
 from app.security import SecurityHeadersMiddleware
 from app.services.object_storage import get_object_storage
 
 
-def create_app() -> FastAPI:
-    settings = get_settings()
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or get_settings()
     initialize_api_sentry(settings)
     app = FastAPI(title=settings.app_name, version="1.0.0")
     app.add_middleware(

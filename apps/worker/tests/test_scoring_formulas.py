@@ -12,6 +12,7 @@ from scoring.formulas import (
 )
 from scoring.labels import InsufficientEvidence, article_label, final_claim_label, support_label
 from scoring.service import DeterministicScoringService
+from research.extension_errors import WorkflowExtensionError
 from agents.schemas import (AtomicClaimOutput, ClaimKind, ConfidenceIssue, ContextIssue,
     EvidenceClassificationItemOutput, EvidenceQualityOutput, EvidenceStance,
     FactCheckability, Importance, QuoteFidelityComponentsOutput)
@@ -134,6 +135,20 @@ def test_state_service_scores_only_accepted_evidence_and_emits_audit_records():
     assert all(row.formula_text and row.decimal_context and row.audit_status for row in result.calculations)
 
 
+def test_scoring_requires_explicit_claim_and_evidence_inputs():
+    state = VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.0",
+    )
+
+    with pytest.raises(WorkflowExtensionError) as caught:
+        asyncio.run(DeterministicScoringService().process(state))
+
+    assert caught.value.code == "SCORING_CLAIMS_REQUIRED"
+
+
 def test_state_service_applies_typed_context_confidence_and_quote_inputs():
     passage_id = str(uuid4())
     state = VerificationState(
@@ -190,6 +205,7 @@ def test_unresolved_key_fact_gate_is_applied_by_state_service():
             domain="records.example", source_type="PRIMARY", selection_reason="record")],
         passages=[PassageRecord(passage_id=passage_id, source_ref="s1", snapshot_id=str(uuid4()),
             text="The statement appears here.", text_hash="key-fact", extraction_certainty=Decimal("1"))],
+        source_dependency_multipliers={"s1": Decimal("1.00")},
         evidence=[EvidenceClassificationItemOutput(claim_ref="c1", passage_id=passage_id,
             stance=EvidenceStance.STRONGLY_SUPPORTS,
             quality=EvidenceQualityOutput(relevance=1, directness=1,
