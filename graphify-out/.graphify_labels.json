@@ -215,14 +215,22 @@
   "213": "Docker",
   "214": "test_sse_events.py",
   "215": "step4-lite-server-helpers.test.mjs",
+  "216": "2026-07-16 Prompt 11 authorized attempt",
   "217": "Q: Create a sub-agent optimization implementation plan and step-by-step sub-agent prompt file for the Elara worker failure without changing the stack.",
   "218": "step11-lite-progress-ux.test.mjs",
   "219": "S3SnapshotStore",
+  "220": "2026-07-17 approved GitRef update and paired-deployment verification attempt",
   "221": "step10-lite-report-adapter.test.mjs",
   "222": "Q: is the backend stack impossible to host thorugh free tier?",
   "223": "Q: Which project guidance currently treats Elara as a production/public SaaS rather than a low-traffic side-project demo?",
   "224": "create_upload",
   "225": "reports.py",
   "226": "domain",
-  "228": "ambiguities"
+  "227": "2026-07-17 authorized Prompt 11 pre-deployment gate",
+  "228": "ambiguities",
+  "229": "atomic_claims",
+  "230": "2026-07-16 fresh SSM and source-transport diagnosis attempt",
+  "231": "2026-07-17 authorized Prompt 11 corrected GitRef change-set review",
+  "232": "2026-07-17 authorized Prompt 11 GitRef repair attempt",
+  "233": "2026-07-17 authorized Prompt 11 reviewed-change classification"
 }

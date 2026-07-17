@@ -674,7 +674,7 @@ def execute_verification_workflow(
 
     async def invoke() -> VerificationState:
         owns_model = model is None
-        client = model or DeepSeekClient()
+        client = model or _build_deepseek_client(settings)
         pipeline = retrieval_pipeline
         owns_pipeline = False
         try:
@@ -787,6 +787,11 @@ def execute_verification_workflow(
                 await client.aclose()
 
     return asyncio.run(invoke())
+
+
+def _build_deepseek_client(settings: Settings) -> DeepSeekClient:
+    """Construct the provider client within the bounded worker time budget."""
+    return DeepSeekClient(timeout_seconds=settings.deepseek_request_timeout_seconds)
 
 
 def execute_planning_workflow(*args, **kwargs) -> VerificationState | None:

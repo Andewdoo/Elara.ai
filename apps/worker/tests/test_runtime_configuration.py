@@ -1,5 +1,6 @@
 from app.config import Settings
-from graph.runtime import _s3_client_options, _uses_s3_snapshot_store
+from graph import runtime
+from graph.runtime import _build_deepseek_client, _s3_client_options, _uses_s3_snapshot_store
 
 
 def test_staging_uses_instance_role_credential_chain_for_s3():
@@ -34,3 +35,20 @@ def test_local_explicit_s3_credentials_are_preserved():
     assert _uses_s3_snapshot_store(settings) is True
     assert options["aws_access_key_id"] == "access"
     assert options["aws_secret_access_key"] == "secret"
+
+
+def test_worker_builds_deepseek_client_with_shared_settings_timeout(monkeypatch):
+    captured: dict[str, float] = {}
+
+    class RecordingClient:
+        def __init__(self, *, timeout_seconds: float) -> None:
+            captured["timeout_seconds"] = timeout_seconds
+
+    monkeypatch.setattr(runtime, "DeepSeekClient", RecordingClient)
+
+    client = _build_deepseek_client(
+        Settings(environment="test", deepseek_request_timeout_seconds=180)
+    )
+
+    assert isinstance(client, RecordingClient)
+    assert captured == {"timeout_seconds": 180}

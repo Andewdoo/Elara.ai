@@ -56,6 +56,7 @@ class Settings(BaseSettings):
     langsmith_api_key: SecretStr | None = None
     langsmith_project: str = "elara-local"
     langsmith_endpoint: str | None = None
+    deepseek_request_timeout_seconds: float = Field(default=120.0, gt=0, le=600)
     deepseek_input_cost_per_million_tokens: float = Field(default=0, ge=0)
     deepseek_output_cost_per_million_tokens: float = Field(default=0, ge=0)
     search_cost_per_request: float = Field(default=0, ge=0)
@@ -205,6 +206,14 @@ class Settings(BaseSettings):
         if self.langsmith_tracing and (not self.langsmith_api_key or not self.langsmith_project):
             raise ValueError(
                 "LANGSMITH_API_KEY and LANGSMITH_PROJECT are required when LANGSMITH_TRACING is true"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def deepseek_timeout_fits_within_the_worker_budget(self) -> "Settings":
+        if self.deepseek_request_timeout_seconds >= self.celery_task_soft_time_limit_seconds:
+            raise ValueError(
+                "DEEPSEEK_REQUEST_TIMEOUT_SECONDS must be below the Celery soft time limit"
             )
         return self
 
