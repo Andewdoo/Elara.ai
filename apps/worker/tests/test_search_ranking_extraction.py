@@ -364,6 +364,22 @@ def test_retrieval_raises_no_accessible_sources_after_per_source_failures():
     assert caught.value.details == {"candidate_count": 1, "snapshot_count": 1}
 
 
+def test_retrieval_converts_retryable_fetch_error_to_safe_workflow_failure():
+    class TimeoutFetcher:
+        async def fetch(self, _url: str):
+            raise FetchError("fetch exceeded the total request deadline", retryable=True)
+
+    pipeline = RetrievalPipeline(search=object(), fetcher=TimeoutFetcher())  # type: ignore[arg-type]
+
+    with pytest.raises(WorkflowExtensionError) as caught:
+        run(pipeline.retrieve(_pipeline_source_state()))
+
+    assert caught.value.code == "FETCH_UNAVAILABLE"
+    assert caught.value.public_message == "A source retrieval service was temporarily unavailable."
+    assert caught.value.retryable is True
+    assert caught.value.details == {"failure_kind": "fetch", "error_code": "fetch_unavailable"}
+
+
 def test_extraction_marks_untrusted_parser_bytes_but_propagates_programming_failures():
     snapshot = SnapshotRecord(
         snapshot_id="snapshot-1",

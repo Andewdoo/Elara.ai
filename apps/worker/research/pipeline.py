@@ -163,7 +163,17 @@ class RetrievalPipeline:
                 )
             except FetchError as exc:
                 if exc.retryable:
-                    raise
+                    # A raw FetchError bypasses the workflow extension boundary
+                    # and becomes a generic worker failure. Preserve neither the
+                    # URL nor provider diagnostics in durable state; expose only
+                    # the typed, retryable category that the Celery task maps to
+                    # its bounded retrieval retry budget.
+                    raise WorkflowExtensionError(
+                        code="FETCH_UNAVAILABLE",
+                        public_message="A source retrieval service was temporarily unavailable.",
+                        retryable=True,
+                        details={"failure_kind": "fetch", "error_code": "fetch_unavailable"},
+                    ) from exc
                 snapshots.append(
                     SnapshotRecord(
                         snapshot_id=snapshot_id,
