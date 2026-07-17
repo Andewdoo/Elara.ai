@@ -246,3 +246,199 @@ Status: **Blocked before the host deployment command by AWS CloudShell environme
 - Resume once AWS CloudShell (or the already approved AWS command path) provides a working terminal. Submit the prepared paired deploy exactly once, require API and worker revisions to equal `258cd78be4abd16732807f47e8c4ee5992b2be30`, then revalidate the Firebase/FastAPI session and submit one approved public or synthetic claim.
 - The EC2 host was last verified **running**. Follow `project-context/operations/DEPLOYMENT.md`: start the single existing EC2 host before a demo and wait for health; stop that same host after the demo when it is no longer needed. No stop command was issued in this continuation.
 - Remaining demo limitation: the actual Full Mode case has not yet reached Celery synthesis, durable citation audit, `COMPLETED`, or PostgreSQL-backed refresh/SSE reload.
+
+## 2026-07-17 authorized Prompt 11 pre-deployment gate
+
+Status: **Blocked by the single sanitized AWS prerequisite check; hosted demo remains not operational.**
+
+- The user explicitly authorized deployment and hosted testing, then completed the requested AWS and Firebase sign-in steps in the in-app browser.
+- One credential-safe CloudShell check evaluated only whether the configured stack revision equaled immutable target `258cd78be4abd16732807f47e8c4ee5992b2be30`, the known EC2 host was running, and SSM reported it online. It returned `PRECHECK=FAIL`.
+- The check intentionally did not print stack values, host output, account information, credentials, or service configuration. Its combined result does not safely identify which prerequisite failed.
+- Per Prompt 11, no retry, host command, deployment, checkout, Compose build/restart, Firebase/FastAPI validation, claim submission, Vercel change, or infrastructure mutation was attempted after this external gate failure.
+
+### Prompt 11 result matrix
+
+| Required proof | Result | Sanitized evidence |
+| --- | --- | --- |
+| Firebase authentication | Not revalidated | The same-revision host gate failed first. |
+| FastAPI session | Not revalidated | The same-revision host gate failed first. |
+| Claim enqueue | Not attempted | No hosted claim was submitted. |
+| Celery chain | Not attempted | No hosted claim was submitted. |
+| Synthesis | Not attempted | No hosted claim was submitted. |
+| Citation audit | Not attempted | No hosted claim was submitted. |
+| Durable `COMPLETED` report and citations | Not attempted | No hosted claim was submitted. |
+| Refresh or SSE reload from PostgreSQL | Not attempted | No completed hosted run exists for this attempt. |
+| API/worker same immutable revision | **FAIL** | Paired deployment was not reached, so matching container revisions were not established. |
+| Browser credential privacy | Not revalidated | Browser validation did not begin. |
+| Private PostgreSQL, Redis, Celery, and object-storage ports | Not revalidated | Host validation did not begin. |
+
+### Required handoff and EC2 state
+
+An authorized operator must safely identify and correct the single failed deployment prerequisite outside this attempt, then begin a fresh explicitly authorized Prompt 11 run. Deploy the API and worker together at `258cd78be4abd16732807f47e8c4ee5992b2be30`, compare their `ELARA_RELEASE_REVISION` values before the demo claim, and continue once through the approved Firebase/FastAPI session, Celery workflow, durable citation audit, PostgreSQL reload, and exposure checks. The paired rollback remains `deb5b92c96fdea89b487011ae166c8e5dfd2422f`; no migration is required.
+
+EC2 final state: **unverified by this combined failed check**. The previous record's last confirmed state was running; no stop command was issued here. Follow `project-context/operations/DEPLOYMENT.md` to start the single host and wait for health before a fresh demo, or stop it after the demo when no longer needed.
+
+## 2026-07-17 authorized Prompt 11 GitRef repair attempt
+
+Status: **Blocked while preparing the existing stack's GitRef correction; hosted demo remains not operational.**
+
+- A fresh sanitized diagnosis separated the prior combined prerequisite result: EC2 was running and SSM was online, while the existing CloudFormation `GitRef` did not equal target `258cd78be4abd16732807f47e8c4ee5992b2be30`.
+- One bounded in-place CloudFormation change-set request was made to update only the existing `GitRef` parameter, preserving every other existing parameter. It did not reach a ready change-set state (`CHANGESET=CREATE_FAILED`). No raw CloudFormation error, stack parameter value, account information, credential, or resource configuration was displayed or recorded.
+- No CloudFormation change-set execution, EC2 checkout, Compose build/restart, database migration, Firebase/FastAPI validation, claim submission, Vercel change, or hosted-demo mutation was performed after that result.
+
+### Required handoff
+
+An authorized operator must diagnose the sanitized change-set creation/readiness failure outside this attempt, verify that a GitRef-only update cannot replace or otherwise broaden the existing demo infrastructure, then begin a fresh explicitly authorized Prompt 11 run. Do not bypass the stack/revision guard or retry the same failed change-set request in this attempt.
+
+The required paired application target remains `258cd78be4abd16732807f47e8c4ee5992b2be30`; its rollback parent remains `deb5b92c96fdea89b487011ae166c8e5dfd2422f`, with no migration. EC2 was confirmed running during the sanitized diagnosis; no stop command was issued.
+
+## 2026-07-17 authorized Prompt 11 change-set diagnosis attempt
+
+Status: **Blocked by the AWS CloudShell terminal session; hosted demo remains not operational.**
+
+- One fresh read-only diagnostic was issued to classify the existing GitRef change set without returning a status reason, stack value, account detail, credential, or resource configuration.
+- Before a sanitized result was returned, the active CloudShell terminal reported that it had exited and required reconnection. The command outcome is therefore unverified.
+- Per Prompt 11, CloudShell was not reconnected and the same diagnostic was not retried in this attempt. No change-set execution, host deployment, checkout, Compose build/restart, database migration, Firebase/FastAPI validation, claim, Vercel change, or hosted-demo mutation was performed.
+
+### Required handoff
+
+Restore a working approved CloudShell or equivalent authorized AWS command session, then begin a fresh explicitly authorized attempt. First classify the existing GitRef change-set failure with sanitized output; only execute a reviewed, non-replacing GitRef-only change set if its safety is established. Then resume the paired API/worker deployment at `258cd78be4abd16732807f47e8c4ee5992b2be30` and the remaining minimum Full Mode evidence gate.
+
+## 2026-07-17 authorized Prompt 11 corrected GitRef change-set review
+
+Status: **Blocked by a non-minimal CloudFormation change set; hosted demo remains not operational.**
+
+- A fresh CloudShell session was available. The earlier change-set name was absent, so a corrected review-only change set was prepared from the existing stack template while preserving all parameters except the target `GitRef`.
+- CloudFormation created the corrected change set. Sanitized review found three resource changes that could not be established as a parameter-only, non-replacing revision update (`CHANGESET=REVIEW COUNT=3`).
+- The change set was not executed. No EC2 checkout, Compose build/restart, database migration, Firebase/FastAPI validation, claim submission, Vercel change, or hosted-demo mutation occurred.
+
+### Required handoff
+
+An authorized operator must inspect the reviewed CloudFormation changes through the approved infrastructure path and explicitly determine whether they are safe and in scope for the existing one-host demo. Do not execute this change set until that review is complete. If it is not needed for the paired application deployment, remove only the revision-guard ambiguity through an approved runbook correction before beginning a fresh Prompt 11 attempt.
+
+The application target remains `258cd78be4abd16732807f47e8c4ee5992b2be30`; rollback remains `deb5b92c96fdea89b487011ae166c8e5dfd2422f`, with no migration. EC2 state was previously confirmed running; no stop command was issued here.
+
+## 2026-07-17 authorized Prompt 11 reviewed-change classification
+
+Status: **Blocked pending explicit infrastructure-scope approval; hosted demo remains not operational.**
+
+- The reviewed GitRef change set was inspected without reading or recording resource configuration. Its sanitized scope includes an in-place EC2 instance change and a CloudFront change; no replacement was reported.
+- Changing the browser-facing CDN and the existing host is broader than the approved paired API/worker application deployment and could alter the current HTTPS demo path. The change set was not executed.
+- No EC2 checkout, Compose build/restart, database migration, Firebase/FastAPI validation, claim submission, Vercel change, or hosted-demo mutation occurred.
+
+### Required handoff
+
+An authorized operator must explicitly approve execution of this specific existing-stack EC2-and-CloudFront change set after reviewing its exact effects, or provide a runbook correction that removes the CloudFormation GitRef equality requirement from the direct paired application deployment. Do not infer approval for future infrastructure or configuration changes from Prompt 11's deployment authorization.
+
+## 2026-07-17 approved GitRef update and paired-deployment verification attempt
+
+Status: **Blocked before the hosted claim by missing sanitized SSM result output; hosted demo remains not operational.**
+
+- The user explicitly approved execution of the reviewed existing-stack EC2-and-CloudFront change set. It was submitted and reached CloudFormation `UPDATE_COMPLETE`.
+- Sanitized post-update readiness passed: the stack GitRef equaled immutable target `258cd78be4abd16732807f47e8c4ee5992b2be30`, the existing EC2 host was running, and SSM was online.
+- One paired SSM deployment command was submitted to fetch the advertised target, detach-checkout it, run the existing Compose application profile, and compare `ELARA_RELEASE_REVISION` from the API and worker containers. SSM reported command success, but its sanitized standard output contained no deployment result.
+- One independent non-mutating SSM container-revision probe was then submitted. It likewise reported command success with no sanitized standard output. Therefore the API and worker matching target revision cannot be proven.
+- No Firebase/FastAPI session revalidation, approved claim submission, Celery observation, report persistence/reload, browser credential inspection, or private-port validation was attempted after the same-revision proof failed.
+
+### Prompt 11 result matrix
+
+| Required proof | Result | Sanitized evidence |
+| --- | --- | --- |
+| Firebase authentication | Not revalidated | Same-revision proof failed first. |
+| FastAPI session | Not revalidated | Same-revision proof failed first. |
+| Claim enqueue | Not attempted | No hosted claim was submitted. |
+| Celery chain | Not attempted | No hosted claim was submitted. |
+| Synthesis | Not attempted | No hosted claim was submitted. |
+| Citation audit | Not attempted | No hosted claim was submitted. |
+| Durable `COMPLETED` report and citations | Not attempted | No hosted claim was submitted. |
+| Refresh or SSE reload from PostgreSQL | Not attempted | No completed hosted run exists for this attempt. |
+| API/worker same immutable revision | **FAIL** | SSM result output was unavailable for both paired deployment and independent revision probe. |
+| Browser credential privacy | Not revalidated | Browser validation did not begin. |
+| Private PostgreSQL, Redis, Celery, and object-storage ports | Not revalidated | Host validation did not begin. |
+
+### Required handoff and EC2 state
+
+An authorized operator must diagnose why successful SSM commands expose no sanitized result output, then begin a fresh explicitly authorized Prompt 11 attempt. Re-establish the API/worker target-revision proof before signing in or submitting the demo claim. The target remains `258cd78be4abd16732807f47e8c4ee5992b2be30`; rollback remains `deb5b92c96fdea89b487011ae166c8e5dfd2422f`, with no migration.
+
+EC2 was verified running before the paired deployment command. No stop command was issued in this attempt.
+
+## 2026-07-17 authorized Prompt 11 hosted Full Mode attempt
+
+Status: **FAIL — hosted demo is not operational; the single permitted Full Mode run was blocked by the external DeepSeek dependency.**
+
+- Approved prerequisites were present: an authorized Firebase demo session, the existing EC2 host running, the existing Vercel frontend at `https://elara-ai-web.vercel.app/verify`, and the existing CloudFront HTTPS API at `https://d2dbv8xhityejq.cloudfront.net`.
+- The existing approved stack update reached `UPDATE_COMPLETE`. On the existing host, only the `ELARA_RELEASE_REVISION` line in the existing private Compose environment file was corrected to immutable revision `258cd78be4abd16732807f47e8c4ee5992b2be30`; the existing Compose application profile then restarted API and worker together. No migration or infrastructure was added.
+- Before the claim, the existing host/container check confirmed that the API and worker container environments both reported `ELARA_RELEASE_REVISION=258cd78be4abd16732807f47e8c4ee5992b2be30`. The worker has no independently queryable revision endpoint, so this is the runbook-approved shared environment check.
+- The authorized Firebase user was signed in and the FastAPI-backed submission succeeded for the approved synthetic/public claim: “The World Health Organization characterized COVID-19 as a pandemic on 11 March 2020.” It was submitted in Deep research depth (Full Mode).
+- The browser showed PostgreSQL polling, claim decomposition, and source-research progress. At about 1:02, the run changed to `Failed` with zero of nine research items completed, before synthesis, citation audit, durable report/citation persistence, or `COMPLETED`.
+- One sanitized worker-log classification identified `WORKER_FAILURE=EXTERNAL_DEEPSEEK`. No retry, guard weakening, additional claim, or production-release audit was performed.
+
+### Prompt 11 result matrix
+
+| Required proof | Result | Sanitized evidence |
+| --- | --- | --- |
+| Firebase authentication | **PASS** | Authorized signed-in Firebase demo session was present in the existing Vercel app. |
+| FastAPI session | **PASS** | The hosted submission was accepted and created a verification run. |
+| Claim enqueue | **PASS** | The run entered PostgreSQL polling, decomposition, and source research. |
+| Celery chain | **FAIL** | Worker stopped during source research; one classification reported external DeepSeek. |
+| Synthesis | **FAIL** | Not reached after worker failure. |
+| Citation audit | **FAIL** | Not reached after worker failure. |
+| Durable `COMPLETED` report and citations | **FAIL** | No completed report was produced. |
+| Refresh or SSE reload from PostgreSQL | **FAIL** | Not performed because no completed report existed and the external block requires stopping. |
+| API/worker same immutable revision | **PASS** | Existing host/container environment check showed target revision in both containers. |
+| Browser credential privacy | **FAIL** | Full browser bundle/response inspection was not reached after the external block. |
+| Private PostgreSQL, Redis, Celery, and object-storage ports | **FAIL** | Private-port validation was not reached after the external block. |
+
+### Handoff, EC2, and remaining limitation
+
+The remaining demo limitation is the external DeepSeek failure during Full Mode source research; a fresh demo requires that dependency to be corrected and a new explicit authorization. The worker revision check remains host/container-environment based because the worker has no revision endpoint. The EC2 host remains **running**; no stop command was issued.
+
+For a later authorized demo, start the existing host from AWS Console > EC2 > Instances > select the existing Elara demo host > Instance state > Start instance; stop it from the same menu with Instance state > Stop instance when idle. Do not terminate it. The paired rollback remains `deb5b92c96fdea89b487011ae166c8e5dfd2422f`; it has no migration.
+
+## 2026-07-17 authorized Prompt 11 timeout-remediation attempt
+
+Status: **FAIL — hosted demo is not operational; the single permitted Full Mode run stopped at a sanitized worker error.**
+
+- Authorized prerequisites were present: the existing EC2 host was running, the approved Firebase session was active in the stable Vercel frontend `https://elara-ai-web.vercel.app/verify`, and the CloudFront HTTPS API remained `https://d2dbv8xhityejq.cloudfront.net`.
+- Immutable revision `18a39c9` was pushed and deployed to the existing host. The first paired deployment guard found the existing private `ELARA_RELEASE_REVISION` marker still set to the prior revision, so it stopped before any claim. The runbook's one-line marker correction was then applied and the existing Compose application profile rebuilt API and worker together; the host/container check reported `ELARA_RELEASE_REVISION=18a39c9` for both containers. No migration or infrastructure was added.
+- The authorized Firebase user submitted the approved public synthetic claim in Deep research depth. FastAPI accepted it, and the browser showed durable PostgreSQL polling, decomposition, and source-research progress.
+- At approximately 0:52 the run entered `Failed` with zero of nine research items completed, before synthesis, citation audit, durable report/citation persistence, or `COMPLETED`. The browser's sanitized public message was that the worker encountered an error.
+- One read-only worker-log classification probe was submitted with output restricted to approved failure classes. It completed as `WORKER_FAILURE=UNCLASSIFIED`; no DeepSeek, configuration, database, or common Python exception marker was present in the bounded result. Per Prompt 11, no retry, additional claim, guard weakening, or production-release audit was performed.
+
+### Prompt 11 result matrix
+
+| Required proof | Result | Sanitized evidence |
+| --- | --- | --- |
+| Firebase authentication | **PASS** | Approved Firebase session was active in the existing Vercel app. |
+| FastAPI session | **PASS** | The hosted claim was accepted and created a verification run. |
+| Claim enqueue | **PASS** | PostgreSQL polling, decomposition, and source research were observed. |
+| Celery chain | **FAIL** | Worker stopped during source research with a sanitized generic worker error. |
+| Synthesis | **FAIL** | Not reached after worker failure. |
+| Citation audit | **FAIL** | Not reached after worker failure. |
+| Durable `COMPLETED` report and citations | **FAIL** | No completed report was produced. |
+| Refresh or SSE reload from PostgreSQL | **FAIL** | No completed report existed to reload. |
+| API/worker same immutable revision | **PASS** | Existing host/container environment check reported `18a39c9` in both containers. |
+| Browser credential privacy | **FAIL** | Bundle/response inspection was not reached after the terminal worker failure. |
+| Private PostgreSQL, Redis, Celery, and object-storage ports | **FAIL** | Private-port validation was not reached after the terminal worker failure. |
+
+### Handoff, EC2, and remaining limitation
+
+The remaining demo limitation is the new unclassified worker error during Full Mode source research. Do not retry the run. A future attempt requires diagnosis and correction of that worker failure, then fresh explicit hosted-demo authorization. The worker revision check remains host/container-environment based because the worker has no independent revision endpoint.
+
+EC2 is **running**; no stop command was issued. To start it for a future demo, use AWS Console > EC2 > Instances > select the existing Elara demo host > Instance state > Start instance. Stop it from the same menu when idle; do not terminate it. The previous rollback parent remains `deb5b92c96fdea89b487011ae166c8e5dfd2422f`; the timeout-remediation revision has no migration.
+
+## 2026-07-17 retrieval-timeout diagnosis and repair
+
+Status: **Repair deployed; hosted demo remains not operational pending a fresh authorized case.**
+
+- A bounded, read-only worker-log check safely classified the prior generic worker failure as `research.fetcher.FetchError` with `TimeoutError` and cancellation markers. This was a transient source-retrieval timeout, not a DeepSeek provider failure.
+- Root cause: `RetrievalPipeline.retrieve` re-raised retryable `FetchError` values directly. That bypassed the workflow extension's typed `WorkflowExtensionError` boundary and reached the task's generic `WORKER_ERROR` path instead of Celery's bounded fetch retry policy.
+- Commit `cd4f3a34cb60b8cc868b3e51f72047b78ba093de` converts only retryable fetch failures to the safe `FETCH_UNAVAILABLE` workflow failure with `failure_kind=fetch`. A focused regression test and the retrieval/task test suite passed (`37 passed`); no provider, infrastructure, migration, or credential change was made.
+- The existing EC2 host was re-deployed through the existing Compose application profile. The host/container deploy gate confirmed both API and worker environments equal `cd4f3a34cb60b8cc868b3e51f72047b78ba093de` (`DEPLOY=PASS`). Public CloudFront health returned `status=ok` and that exact revision.
+- No second hosted claim was submitted: the prior Prompt 11 case was the permitted case for that attempt, and the repaired retry behavior requires a fresh explicit hosted-demo authorization before a new public/synthetic claim is sent.
+
+### Current handoff and EC2 state
+
+The remaining demo limitation is unproven end-to-end completion after the retrieval-timeout repair: Celery retries, synthesis, citation audit, durable `COMPLETED`, PostgreSQL-backed refresh/SSE reload, browser credential review, and private-port review still need one fresh authorized demo case. The worker revision check remains the runbook-approved host/container environment comparison because the worker has no revision endpoint.
+
+EC2 is **running**; no stop command was issued. Start or stop only the existing host using the procedure in `project-context/operations/DEPLOYMENT.md`; do not terminate it. This repair revision has no migration.
