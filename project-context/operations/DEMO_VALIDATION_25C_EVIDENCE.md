@@ -442,3 +442,124 @@ Status: **Repair deployed; hosted demo remains not operational pending a fresh a
 The remaining demo limitation is unproven end-to-end completion after the retrieval-timeout repair: Celery retries, synthesis, citation audit, durable `COMPLETED`, PostgreSQL-backed refresh/SSE reload, browser credential review, and private-port review still need one fresh authorized demo case. The worker revision check remains the runbook-approved host/container environment comparison because the worker has no revision endpoint.
 
 EC2 is **running**; no stop command was issued. Start or stop only the existing host using the procedure in `project-context/operations/DEPLOYMENT.md`; do not terminate it. This repair revision has no migration.
+
+## 2026-07-18 authorized Prompt 11 preflight
+
+Status: **BLOCKED — hosted demo is not operational; the public API preflight was stopped by the local browser client before reaching CloudFront.**
+
+- The user explicitly authorized Prompt 11 deployment and hosted testing. The approved AWS Console session was available; the existing stack reported a successful update, and the existing single EC2 host was running with all instance status checks passing. No start, stop, deployment, restart, CloudFormation update, or host command was issued.
+- The stable frontend remains `https://elara-ai-web.vercel.app/verify`. CloudFormation output confirmed the existing CloudFront HTTPS API hostname `https://d2dbv8xhityejq.cloudfront.net`.
+- One credential-free, read-only browser request to the CloudFront `/health` endpoint was blocked locally with `ERR_BLOCKED_BY_CLIENT` before an origin response was available. It was not retried.
+- Because the browser-facing API revision could not be read and no runbook-approved host/container revision comparison was available in this attempt, the API/worker same-revision gate was not established. The most recent historical paired deployment evidence remains `cd4f3a34cb60b8cc868b3e51f72047b78ba093de`; it is not current-attempt proof.
+- Firebase/FastAPI session validation, claim submission, Celery observation, synthesis, citation audit, durable report persistence, refresh/SSE reload, browser credential inspection, and private-port verification were not attempted after the preflight block. No secret, raw provider output, private source content, or host configuration was recorded.
+
+### Prompt 11 result matrix
+
+| Required proof | Result | Sanitized evidence |
+| --- | --- | --- |
+| Firebase authentication | **FAIL / not attempted** | Same-revision preflight did not pass. |
+| FastAPI session | **FAIL / not attempted** | Same-revision preflight did not pass. |
+| Claim enqueue | **FAIL / not attempted** | No claim was submitted. |
+| Celery chain | **FAIL / not attempted** | No claim was submitted. |
+| Synthesis | **FAIL / not attempted** | No claim was submitted. |
+| Citation audit | **FAIL / not attempted** | No claim was submitted. |
+| Durable `COMPLETED` report and citations | **FAIL / not attempted** | No claim was submitted. |
+| Refresh or SSE reload from PostgreSQL | **FAIL / not attempted** | No completed report exists for this attempt. |
+| API/worker same immutable revision | **FAIL / unproven** | Public health was client-blocked; paired container comparison was not reached. |
+| Browser credential privacy | **FAIL / not attempted** | Browser validation did not begin after the block. |
+| Private PostgreSQL, Redis, Celery, and object-storage ports | **FAIL / not attempted** | Host-boundary validation did not begin after the block. |
+
+### Handoff and EC2 state
+
+Restore the approved browser-network or alternate authorized read-only health path, then begin a fresh Prompt 11 preflight. First prove the current HTTPS API health/revision and the API/worker shared immutable revision; only then validate the Firebase/FastAPI session and submit one reviewed public or synthetic Full Mode claim. The EC2 host was **running** at the preflight; no stop command was issued. Start or stop only the existing host through the `project-context/operations/DEPLOYMENT.md` procedure, and do not terminate it.
+
+## 2026-07-18 authorized Prompt 11 continuation
+
+Status: **BLOCKED before claim submission; hosted demo remains not operational.**
+
+- The user explicitly authorized continuation. The existing Vercel verification page showed the approved Firebase demo session active; no account identifier is recorded here.
+- One fresh credential-free health/revision request from that signed-in app context returned no response (`TypeError`). It did not establish CloudFront health or `ELARA_RELEASE_REVISION`.
+- The most recent paired deployment evidence remains immutable revision `cd4f3a34cb60b8cc868b3e51f72047b78ba093de`, but it is historical evidence and does not satisfy this continuation's same-revision gate.
+- No FastAPI session revalidation, claim enqueue, Celery work, report persistence, refresh/SSE test, infrastructure change, or provider retry occurred. The approved WHO claim was not resubmitted.
+
+### Required handoff
+
+Restore an approved read-only health/revision path that can reach the existing CloudFront API and runbook-approved API/worker environment comparison. Only after that gate passes may a fresh explicitly authorized Full Mode case be submitted. EC2 state was not changed in this continuation.
+
+## 2026-07-19 authorized Prompt 11 AWS preflight
+
+Status: **BLOCKED before host inspection; hosted demo remains not operational.**
+
+- The user explicitly authorized resuming Prompt 11 and indicated readiness after opening the AWS Console.
+- One bounded, read-only local AWS identity check returned no usable identity result. It was not retried.
+- EC2 state, SSM availability, CloudFront health, API/worker revision comparison, Firebase/FastAPI session validation, claim submission, Celery progress, report persistence, refresh/SSE reload, credential review, and private-port review were not attempted after this gate failed.
+- No AWS, Vercel, host, Firebase, provider, database, or application mutation occurred. No raw AWS output, identifiers, credentials, or private source data were recorded.
+
+### Required handoff
+
+Restore the approved AWS CLI or CloudShell identity path to the deployment runner, then begin a fresh explicitly authorized Prompt 11 preflight. Establish the current HTTPS API health/revision and the runbook-approved API/worker shared revision before validating the Firebase session or submitting one approved public or synthetic claim. EC2 state is **unverified** in this attempt.
+
+## 2026-07-19 authorized Prompt 11 current preflight
+
+Status: **BLOCKED before deployment or claim submission; hosted demo remains not operational.**
+
+- The user explicitly authorized Prompt 11 hosted deployment/testing. The stable Vercel frontend showed an active approved Firebase demo session; no account identifier is recorded. FastAPI session validity was not revalidated because the host-access gate did not pass.
+- One bounded, read-only AWS identity preflight did not establish usable approved host access. It was not retried. EC2 state, SSM connectivity, CloudFront health, and the runbook-approved API/worker container-environment comparison remain unverified.
+- Target deployment revision `258cd78be4abd16732807f47e8c4ee5992b2be30` was not deployed or verified in this attempt. The rollback parent remains `deb5b92c96fdea89b487011ae166c8e5dfd2422f`; no migration applies to the target revision.
+- No AWS, Vercel, EC2, host, Firebase, provider, database, queue, or application mutation occurred. No claim was submitted and no secret, account identifier, private source content, or raw service output was recorded.
+
+### Prompt 11 result matrix
+
+| Required proof | Result | Sanitized evidence |
+| --- | --- | --- |
+| Firebase authentication | **PASS** | Approved Firebase demo session was active in the stable frontend. |
+| FastAPI session | **FAIL / not attempted** | Same-revision host preflight did not pass. |
+| Claim enqueue | **FAIL / not attempted** | No claim was submitted. |
+| Celery chain | **FAIL / not attempted** | No claim was submitted. |
+| Synthesis | **FAIL / not attempted** | No claim was submitted. |
+| Citation audit | **FAIL / not attempted** | No claim was submitted. |
+| Durable `COMPLETED` report and citations | **FAIL / not attempted** | No claim was submitted. |
+| Refresh or SSE reload from PostgreSQL | **FAIL / not attempted** | No completed report exists for this attempt. |
+| API/worker same immutable revision | **FAIL / unproven** | Host/container revision comparison was unavailable. |
+| Browser credential privacy | **FAIL / not attempted** | Browser validation did not begin after the host gate failed. |
+| Private PostgreSQL, Redis, Celery, and object-storage ports | **FAIL / not attempted** | Host-boundary validation did not begin after the host gate failed. |
+
+### Required handoff and EC2 state
+
+Restore the approved AWS CLI or CloudShell identity path to the deployment runner, then establish the current EC2 state, CloudFront `/health` revision, and the API/worker shared `ELARA_RELEASE_REVISION` through the runbook-approved host/container comparison. Only then validate the FastAPI session and submit one newly approved public or synthetic Full Mode claim. EC2 state is **unverified**; no start or stop action was issued.
+
+## 2026-07-19 authorized Prompt 11 continuation — CloudShell recovery
+
+Status: **BLOCKED during the paired deployment; hosted demo remains not operational.**
+
+- Root cause of the prior access gate: the local AWS CLI installation has no configured profile or credentials. The existing signed-in AWS Console CloudShell path was available and returned a successful sanitized identity check, so no credential was requested, printed, or stored.
+- The existing EC2 host was `running` and SSM was `Online`. CloudFront `/health` returned `status=ok` at API revision `cd4f3a34cb60b8cc868b3e51f72047b78ba093de`; the host/container comparison confirmed the running API and worker were both on that same revision before deployment.
+- One authorized paired deployment attempt fetched and checked out target `258cd78be4abd16732807f47e8c4ee5992b2be30` in the existing host checkout, then failed during the existing Compose step. The sanitized classification was `UNCLASSIFIED`; raw host logs were not read or recorded. Running API and worker containers remained together at `cd4f3a34cb60b8cc868b3e51f72047b78ba093de`.
+- The deployment was not retried. No claim was submitted, and FastAPI session validation, Celery progress, synthesis, citation audit, durable report persistence, refresh/SSE reload, browser credential review, and private-port review were not attempted after the deployment block.
+
+### Prompt 11 continuation matrix
+
+| Required proof | Result | Sanitized evidence |
+| --- | --- | --- |
+| Firebase authentication | **PASS** | Approved Firebase demo session was active in the stable frontend. |
+| FastAPI session | **FAIL / not attempted** | Paired deployment did not reach the target revision. |
+| Claim enqueue, Celery chain, synthesis, citation audit | **FAIL / not attempted** | No claim was submitted. |
+| Durable `COMPLETED` report and refresh/SSE reload | **FAIL / not attempted** | No completed report exists for this attempt. |
+| API/worker same immutable revision | **FAIL / target unproven** | Both running containers matched each other at the prior revision, not target `258cd78…`. |
+| Browser credential privacy and private service ports | **FAIL / not attempted** | Validation did not begin after deployment failed. |
+
+### Required handoff and EC2 state
+
+Review the existing host Compose failure through an approved sanitized diagnostic path before any further deployment attempt. Keep API and worker paired; do not submit the approved Full Mode claim until both report `258cd78be4abd16732807f47e8c4ee5992b2be30` and CloudFront health reports that revision. The rollback parent remains `deb5b92c96fdea89b487011ae166c8e5dfd2422f`; no rollback or EC2 start/stop action was issued. EC2 is **running**.
+
+## 2026-07-19 deployed Vercel Full Mode smoke test
+
+Status: **FAILED; no retry performed.**
+
+- The stable Vercel frontend accepted one approved public claim and created an authenticated Full Mode verification with a connected SSE stream.
+- Sanitized progress reached claim decomposition, planning, source research, and secure retrieval. The stream then closed with the public message that the worker encountered an error.
+- No sources were found before failure. Synthesis, citation audit, durable `COMPLETED` persistence, and refresh/SSE reload of a completed report did not occur. No raw run identifier, account identifier, private source content, credential, or worker log was recorded.
+
+### Required handoff
+
+Diagnose the deployed worker failure through an approved sanitized host path before another Full Mode submission. Do not treat this smoke test as proof of a completed hosted demo.

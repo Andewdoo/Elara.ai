@@ -373,6 +373,75 @@ Required final report:
 - EC2 running/stopped state.
 ```
 
+## Prompt 12 — Make supported evidence decisive despite non-material ambiguity
+
+```text
+You are implementing Prompt 12 of the Elara sub-agent optimization plan.
+
+Goal:
+Stop a free-text ambiguity marker from forcing an "Insufficient evidence" verdict when the accepted, adequate evidence already supports the claim and no accepted material evidence contradicts it. Preserve transparent limitations and every other evidence-sufficiency safeguard.
+
+Read only the scoring section of project-context/sub-agent optimization.md, the Scoring section of the implementation plan, apps/worker/scoring/{service,labels,formulas}.py, the claim/decomposition schemas that supply ambiguities, report calculation persistence, and focused scoring/workflow tests. Do not redesign retrieval, add a provider, or weaken citation audit.
+
+Required work:
+1. Trace the current path from claim.ambiguities and unresolved_ambiguities to ESSENTIAL_TERM_AMBIGUOUS and the final InsufficientEvidence gate. Document the exact deterministic predicate in code comments or calculation metadata; do not rely on a model's explanation.
+2. Replace the blanket rule that every essential-claim ambiguity is a hard insufficient-evidence gate. An ambiguity alone must not set unresolved_key_facts when the claim has adequate adjusted evidence, all accepted material evidence supports the claim, and there is no accepted material contradiction.
+3. Keep total adjusted-evidence minimum, no-adequate-essential-claim, single uncheckable interested-source, factual-accuracy, low-confidence, strongly-refuted-essential-claim, and unresolved speaker/date gates intact. Do not make a verdict supporting merely because no contradicting evidence was found.
+4. Retain the ambiguity as a durable, user-visible limitation and, when applicable, a calibrated confidence or context penalty. Persist a calculation record explaining that the ambiguity was non-blocking because the accepted evidence was adequate and unopposed.
+5. Scope ambiguities to their owning claim. A global or unrelated ambiguity must not downgrade a different claim or the entire article. If the existing schema cannot express ownership safely, add a small typed, normalized representation and the necessary persistence migration rather than parsing free-text strings in the scorer.
+6. Bump the methodology/scoring version if the meaning of the final-label gate changes. Preserve Decimal arithmetic, deterministic final labels, exact evidence provenance, and citation-audited completion.
+7. Improve report wording so a user can see "supported with an unresolved interpretation" rather than inferring that an evidence chart and verdict conflict. Do not present that as a permanent credibility score.
+
+Required regression cases:
+- "Meta stock price surpasses $600" with adequate, exclusively supporting accepted evidence is supported or the appropriate supporting label, while its interpretation caveat remains visible.
+- The equivalent wording "Meta stock surpasses $600" receives the same deterministic outcome when supplied the same normalized claim/evidence fixture.
+- A material contradictory passage, inadequate evidence, an unresolved date/speaker, or an interested single source still produces Insufficient evidence or the existing safe label as applicable.
+- An ambiguity attached to one minor claim does not downgrade a separately supported essential claim.
+- Calculation records expose the gate decision without storing raw model output or private reasoning.
+
+Verification:
+- focused scoring, formula, workflow, report-projection, and affected component tests;
+- a provider-free fixture proving phrase-equivalent claims produce the same label;
+- Graphify update after source or guidance changes.
+
+Stop after the focused tests pass. Do not deploy or alter external infrastructure. Hand off to Prompt 13.
+```
+
+## Prompt 13 — Repair worker startup and make retrieval failures diagnosable
+
+```text
+You are implementing Prompt 13 of the Elara sub-agent optimization plan.
+
+Goal:
+Make the local and hosted-demo worker start reliably, expose a precise sanitized failure when it cannot, and make user-supplied article URLs independent of Brave discovery. Keep Brave as the sole search provider.
+
+Read only the deployment/runtime configuration, Celery task startup and error handling, verification creation/enqueue path, secure retrieval and URL canonicalization code, and their focused tests. Read the retrieval-security and worker-operation guidance sections only as needed. Do not add Google Search, Google News APIs, another crawler, or a new infrastructure service.
+
+Required work:
+1. Reproduce and repair the Docker networking defect: a container must never use localhost to reach the Redis service. Separate host-development URLs from container URLs, or use explicit Docker-only variables, so API and worker use the Compose service hostname redis while local non-container tools may still use localhost.
+2. Ensure Docker Compose cannot silently override the worker's broker/result URLs with host-only values from .env.private. Preserve secret handling; never print, commit, or put credentials in browser configuration.
+3. Add a minimal worker readiness/liveness signal and a bounded restart/recovery policy appropriate to the single-host demo. If the worker cannot connect to Redis or exits, surface a durable sanitized WORKER_UNAVAILABLE or broker-specific failure rather than leaving runs to fail generically or retry connection attempts indefinitely.
+4. Preserve idempotent Celery enqueue, redelivery, cancellation, and PostgreSQL-before-COMPLETED ordering. Redis remains transient; do not store report truth only in Redis.
+5. Treat a user-pasted URL as a retrieval seed, not a Brave search result. Brave discovery must not be required for that exact URL to be fetched.
+6. For Google News wrapper URLs, safely validate the initial URL, follow only policy-approved redirects, canonicalize to the publisher URL when a redirect supplies one, and then fetch/extract the publisher article. If the wrapper or destination is blocked, paywalled, unavailable, or fails validation, persist a precise inaccessible-source reason; do not claim Brave should have found it and do not silently substitute a different article.
+7. Treat an inaccessible submitted URL as a non-fatal source outcome, not a generic worker error. When the submitted input, an accessible title, or safely extracted metadata provides a determinate underlying claim, continue with the existing bounded Brave discovery policy to seek independent evidence. Keep the inaccessible submitted URL in the report as a limitation.
+8. Never silently replace the submitted article: Brave results are supplementary evidence for the underlying claim, not proof that the inaccessible article said the same thing. If the exact article cannot be read and no determinate claim can be established safely, complete with a precise insufficient-evidence or no-verifiable-content outcome rather than inventing a claim or throwing a generic error.
+9. Keep SSRF/DNS/redirect/port/content-type/size/timeout protections and no-cookie/no-credential forwarding on every hop. Retrieved page text remains untrusted evidence.
+10. Improve the public, sanitized error path so a user can distinguish queue/worker unavailability, no Brave discovery result, inaccessible submitted URL, extraction failure, and citation-audit failure. Record stable codes and safe counts in durable events; reserve raw error detail for server-side monitoring.
+11. Add a provider-free fixture for: "WHO characterized COVID-19 as a pandemic on March 11, 2020." It must plan an official WHO/date-specific verification target, reach the normal evidence-classification and scoring path, and fail only with a precise typed reason when its fixture intentionally removes required evidence.
+
+Verification:
+- Compose/config tests prove worker and API resolve Redis to the redis service inside containers and do not inherit localhost URLs from host-only configuration;
+- worker startup/restart and unavailable-broker tests;
+- queue, retry/redelivery, cancellation, and durable failure-event tests;
+- direct publisher URL, Google News redirect-to-publisher, blocked redirect, invalid URL, paywall/inaccessible with supplementary Brave evidence, inaccessible URL with no safely determined claim, and Brave-zero-results fixtures;
+- the WHO dated-claim provider-free workflow fixture;
+- existing SSRF/redirect and retrieval-security regressions;
+- Graphify update after source or guidance changes.
+
+Stop after focused local tests and configuration checks pass. Do not deploy the hosted stack, change providers, or submit live claims. Hand off a concise local restart/deployment checklist.
+```
+
 ## Review checklist for every handoff
 
 - The assigned prompt, and only that prompt, was implemented.
