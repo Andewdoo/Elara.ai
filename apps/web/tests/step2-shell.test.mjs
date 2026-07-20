@@ -22,6 +22,7 @@ async function readSourceFiles(dir, files = []) {
 
 test("Firebase browser shell only references approved public Firebase env vars", async () => {
   const firebaseSource = await readFile(join(root, "lib", "firebase.ts"), "utf8");
+  const layoutSource = await readFile(join(root, "app", "layout.tsx"), "utf8");
   const allowed = [
     "NEXT_PUBLIC_FIREBASE_API_KEY",
     "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
@@ -41,10 +42,11 @@ test("Firebase browser shell only references approved public Firebase env vars",
   ];
 
   for (const name of allowed) {
-    assert.match(firebaseSource, new RegExp(name));
+    assert.match(layoutSource, new RegExp(name));
   }
   for (const name of forbidden) {
     assert.doesNotMatch(firebaseSource, new RegExp(name));
+    assert.doesNotMatch(layoutSource, new RegExp(name));
   }
 });
 
@@ -58,6 +60,10 @@ test("Lite browser surface only references public env and never service-role acc
     "NEXT_PUBLIC_ELARA_MODE",
     "NEXT_PUBLIC_SUPABASE_URL",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "NEXT_PUBLIC_FIREBASE_API_KEY",
+    "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
+    "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
+    "NEXT_PUBLIC_FIREBASE_APP_ID",
   ];
   const forbiddenServerEnv = [
     "SUPABASE_SERVICE_ROLE_KEY",

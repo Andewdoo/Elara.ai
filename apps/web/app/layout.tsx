@@ -10,11 +10,19 @@ export const metadata: Metadata = {
   description: "Evidence-managed verification reports with traceable sources, scores, and methodology.",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const environment = process.env;
+  const publicFirebaseConfig = {
+    apiKey: environment.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: environment.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: environment.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    appId: environment.NEXT_PUBLIC_FIREBASE_APP_ID,
+  };
+
   return (
     <html lang="en">
       <body>
-        <AppProviders>
+        <AppProviders publicFirebaseConfig={publicFirebaseConfig}>
           <AppShell>{children}</AppShell>
         </AppProviders>
       </body>

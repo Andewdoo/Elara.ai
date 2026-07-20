@@ -715,7 +715,7 @@ def test_transient_failures_retry_twice_then_use_public_code(
 
 
 def test_unexpected_workflow_error_reaches_sanitized_worker_failure_boundary(
-    monkeypatch: pytest.MonkeyPatch,
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ):
     factory, run = make_run()
     redis_client = FakeRedis()
@@ -737,12 +737,24 @@ def test_unexpected_workflow_error_reaches_sanitized_worker_failure_boundary(
     result = verify_run.apply(args=[str(run.id)], throw=False)
 
     assert result.failed()
+    assert f"run {run.id}" in caplog.text
+    assert "RuntimeError" in caplog.text
+    assert "private snapshot path: /secret/evidence" in caplog.text
     with factory() as db:
         durable = db.get(VerificationRun, run.id)
+        event = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id, AgentEvent.event_type == "run.failed")
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
     assert durable is not None
     assert durable.failure_code == "WORKER_ERROR"
     assert durable.failure_message == "Verification stopped because the worker encountered an error."
+    assert durable.internal_failure_detail == "unexpected_exception:RuntimeError"
     assert "/secret/evidence" not in durable.failure_message
+    assert "/secret/evidence" not in (durable.internal_failure_detail or "")
+    assert event is not None and event.payload == {"code": "WORKER_ERROR"}
 
 
 def test_redis_failure_uses_the_durable_worker_unavailable_boundary(

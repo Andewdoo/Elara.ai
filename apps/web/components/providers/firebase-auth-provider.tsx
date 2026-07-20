@@ -16,7 +16,7 @@ import {
   signUpWithEmail as firebaseEmailSignUp,
   signOut as firebaseSignOut,
 } from "@/lib/auth";
-import { getFirebaseAuth, hasPublicFirebaseConfig } from "@/lib/firebase";
+import { getFirebaseAuth, hasPublicFirebaseConfig, type PublicFirebaseConfig } from "@/lib/firebase";
 
 type FirebaseAuthContextValue = {
   user: User | null;
@@ -38,8 +38,8 @@ const FirebaseAuthContext = createContext<FirebaseAuthContextValue>({
   signOut: async () => undefined,
 });
 
-export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
-  const configured = hasPublicFirebaseConfig();
+export function FirebaseAuthProvider({ children, publicFirebaseConfig }: { children: ReactNode; publicFirebaseConfig: PublicFirebaseConfig }) {
+  const configured = hasPublicFirebaseConfig(publicFirebaseConfig);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(configured);
 
@@ -48,7 +48,7 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const auth = getFirebaseAuth();
+    const auth = getFirebaseAuth(publicFirebaseConfig);
     if (!auth) {
       return;
     }
@@ -57,7 +57,7 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
       setUser(nextUser);
       setLoading(false);
     });
-  }, [configured]);
+  }, [configured, publicFirebaseConfig]);
 
   const value = useMemo(
     () => ({
@@ -65,17 +65,17 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
       loading,
       configured,
       signInWithEmail: async (email: string, password: string) => {
-        await firebaseEmailSignIn(email, password);
+        await firebaseEmailSignIn(publicFirebaseConfig, email, password);
       },
       signUpWithEmail: async (email: string, password: string) => {
-        await firebaseEmailSignUp(email, password);
+        await firebaseEmailSignUp(publicFirebaseConfig, email, password);
       },
       signInWithGoogle: async () => {
-        await firebaseGoogleSignIn();
+        await firebaseGoogleSignIn(publicFirebaseConfig);
       },
-      signOut: firebaseSignOut,
+      signOut: () => firebaseSignOut(publicFirebaseConfig),
     }),
-    [configured, loading, user],
+    [configured, loading, publicFirebaseConfig, user],
   );
 
   return (

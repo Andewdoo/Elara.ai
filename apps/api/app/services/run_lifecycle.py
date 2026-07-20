@@ -110,6 +110,7 @@ def persist_progress(
     message: str,
     payload: dict[str, Any] | None = None,
     failure_code: str | None = None,
+    internal_failure_detail: str | None = None,
 ) -> DurableProgressEvent:
     now = utc_now()
     run = _load_locked_run(db, run_id)
@@ -128,6 +129,7 @@ def persist_progress(
         run.failed_at = now
         run.failure_code = failure_code or "WORKER_ERROR"
         run.failure_message = message
+        run.internal_failure_detail = internal_failure_detail
     elif stage == RunStatus.CANCELLED:
         run.cancellation_requested_at = run.cancellation_requested_at or now
 

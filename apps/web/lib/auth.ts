@@ -10,12 +10,12 @@ import {
   type User,
 } from "firebase/auth";
 
-import { getFirebaseAuth } from "@/lib/firebase";
+import { getFirebaseAuth, type PublicFirebaseConfig } from "@/lib/firebase";
 
 export const apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
-function requireFirebaseAuth() {
-  const auth = getFirebaseAuth();
+function requireFirebaseAuth(config: PublicFirebaseConfig) {
+  const auth = getFirebaseAuth(config);
   if (!auth) {
     throw new Error("Firebase Web configuration is missing.");
   }
@@ -60,51 +60,51 @@ export async function clearApiSession() {
   }
 }
 
-async function rollbackFailedSignIn() {
+async function rollbackFailedSignIn(config: PublicFirebaseConfig) {
   try {
     await clearApiSession();
   } catch {
     // Preserve the original sign-in/session error while still clearing local Firebase state.
   } finally {
-    await firebaseSignOut(requireFirebaseAuth());
+    await firebaseSignOut(requireFirebaseAuth(config));
   }
 }
 
-export async function signInWithEmail(email: string, password: string) {
-  const credential = await signInWithEmailAndPassword(requireFirebaseAuth(), email, password);
+export async function signInWithEmail(config: PublicFirebaseConfig, email: string, password: string) {
+  const credential = await signInWithEmailAndPassword(requireFirebaseAuth(config), email, password);
   try {
     await createApiSession(credential.user);
   } catch (error) {
-    await rollbackFailedSignIn();
+    await rollbackFailedSignIn(config);
     throw error;
   }
   return credential.user;
 }
 
-export async function signUpWithEmail(email: string, password: string) {
-  const credential = await createUserWithEmailAndPassword(requireFirebaseAuth(), email, password);
+export async function signUpWithEmail(config: PublicFirebaseConfig, email: string, password: string) {
+  const credential = await createUserWithEmailAndPassword(requireFirebaseAuth(config), email, password);
   try {
     await createApiSession(credential.user);
   } catch (error) {
-    await rollbackFailedSignIn();
+    await rollbackFailedSignIn(config);
     throw error;
   }
   return credential.user;
 }
 
-export async function signInWithGoogle() {
-  const credential = await signInWithPopup(requireFirebaseAuth(), new GoogleAuthProvider());
+export async function signInWithGoogle(config: PublicFirebaseConfig) {
+  const credential = await signInWithPopup(requireFirebaseAuth(config), new GoogleAuthProvider());
   try {
     await createApiSession(credential.user);
   } catch (error) {
-    await rollbackFailedSignIn();
+    await rollbackFailedSignIn(config);
     throw error;
   }
   return credential.user;
 }
 
-export async function signOut() {
-  const auth = requireFirebaseAuth();
+export async function signOut(config: PublicFirebaseConfig) {
+  const auth = requireFirebaseAuth(config);
   try {
     await clearApiSession();
   } finally {

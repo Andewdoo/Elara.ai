@@ -69,6 +69,7 @@ class VerificationRun(Base):
     failed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     failure_code: Mapped[str | None] = mapped_column(String(100))
     failure_message: Mapped[str | None] = mapped_column(Text)
+    internal_failure_detail: Mapped[str | None] = mapped_column(Text)
     cancellation_requested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     evidence_reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     saved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

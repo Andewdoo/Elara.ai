@@ -115,6 +115,7 @@ def _record(
     message: str,
     payload: dict[str, object] | None = None,
     failure_code: str | None = None,
+    internal_failure_detail: str | None = None,
 ) -> None:
     if _has_durable_event(factory, run_id, event_type):
         _backfill_progress(factory, redis_client, settings, run_id)
@@ -134,6 +135,7 @@ def _record(
             message=message,
             payload=payload,
             failure_code=failure_code,
+            internal_failure_detail=internal_failure_detail,
         )
     # Backfill in sequence order so a temporary Redis outage cannot create a
     # permanent hole before a later event.
@@ -243,6 +245,7 @@ def _mark_failure_safely(
     code: str,
     message: str,
     details: dict[str, object] | None = None,
+    internal_failure_detail: str | None = None,
 ) -> None:
     try:
         run = _load_run(factory, run_id)
@@ -257,6 +260,7 @@ def _mark_failure_safely(
                 message=message,
                 payload=_public_failure_payload(code, details),
                 failure_code=code,
+                internal_failure_detail=internal_failure_detail,
             )
     except Exception:
         logger.error("Unable to persist failure state for run %s", run_id, exc_info=False)
@@ -441,7 +445,14 @@ def verify_run(self: Task, run_id: str) -> None:
             code="COMPLETION_GATE_REJECTED",
             message="Verification stopped before durable citation-audited artifacts were ready.",
         )
-    except Exception:
+    except Exception as exc:
+        logger.exception(
+            "Verification worker encountered an unexpected error for run %s "
+            "(exception_type=%s, retry_count=%s)",
+            parsed_run_id,
+            type(exc).__name__,
+            self.request.retries,
+        )
         _mark_failure_safely(
             factory,
             redis_client,
@@ -449,6 +460,7 @@ def verify_run(self: Task, run_id: str) -> None:
             parsed_run_id,
             code="WORKER_ERROR",
             message="Verification stopped because the worker encountered an error.",
+            internal_failure_detail=f"unexpected_exception:{type(exc).__name__}",
         )
         raise
     finally:
