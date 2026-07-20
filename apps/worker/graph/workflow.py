@@ -401,6 +401,7 @@ class WorkflowNodes:
         updated = state.complete(
             WorkflowStage.DECOMPOSITION,
             claims=output.atomic_claims,
+            claim_ambiguities=output.claim_ambiguities,
             unresolved_ambiguities=output.unresolved_ambiguities,
             model_calls={**state.model_calls, WorkflowStage.DECOMPOSITION.value: response.metadata},
         )
@@ -1205,6 +1206,38 @@ def _deterministic_evidence_gaps(
     ]
 
 
+def _deterministic_ambiguity_limitations(state: VerificationState) -> list[str]:
+    """Describe only typed, non-blocking ambiguity decisions without model text."""
+    non_blocking_claim_refs = {
+        calculation.claim_ref
+        for calculation in state.calculations
+        if calculation.formula_name == "ambiguity_gate"
+        and calculation.claim_ref is not None
+        and calculation.result.get("non_blocking") is True
+    }
+    supporting_labels = {"Supported", "Mostly supported", "Leaning supported"}
+    labels_by_claim = {
+        score.claim_ref: score.final_label for score in state.claim_scores
+    }
+    ambiguity_counts = {
+        claim_ref: sum(
+            ambiguity.claim_ref == claim_ref
+            for ambiguity in state.claim_ambiguities
+        )
+        for claim_ref in non_blocking_claim_refs
+    }
+    return [
+        (
+            f"Claim {claim_ref} is supported with an unresolved interpretation "
+            f"({ambiguity_counts[claim_ref]} claim-local limitation(s)); accepted "
+            "evidence was adequate and unopposed."
+        )
+        for claim_ref in sorted(non_blocking_claim_refs)
+        if labels_by_claim.get(claim_ref) in supporting_labels
+        and ambiguity_counts.get(claim_ref, 0) > 0
+    ]
+
+
 def _build_deterministic_report(
     state: VerificationState,
     draft: SynthesisDraftOutput,
@@ -1222,7 +1255,8 @@ def _build_deterministic_report(
         strongest_credible_contradiction=draft.strongest_credible_contradiction,
         attribution_findings=draft.attribution_findings,
         limitations=[
-            "This assessment is limited to the submitted target and approved evidence reviewed at the stated timestamp."
+            "This assessment is limited to the submitted target and approved evidence reviewed at the stated timestamp.",
+            *_deterministic_ambiguity_limitations(state),
         ],
         inaccessible_source_notes=_deterministic_inaccessible_source_notes(state),
         evidence_gaps=_deterministic_evidence_gaps(state, approved_passage_ids),

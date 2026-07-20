@@ -99,6 +99,68 @@ def test_redirect_destination_is_re_resolved_and_private_target_is_blocked(tmp_p
     assert "internal.test" in resolutions
 
 
+def test_google_news_wrapper_redirects_to_a_revalidated_publisher_url(tmp_path):
+    resolved_hosts: list[str] = []
+    requested_hosts: list[str] = []
+
+    async def resolver(hostname: str, _port: int):
+        resolved_hosts.append(hostname)
+        return ["93.184.216.34"]
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        host = request.headers["host"]
+        requested_hosts.append(host)
+        if host == "news.google.com":
+            return httpx.Response(
+                302,
+                headers={"location": "https://publisher.example/story?utm_source=news&b=2&a=1"},
+                request=request,
+            )
+        assert host == "publisher.example"
+        return httpx.Response(
+            200,
+            headers={"content-type": "text/html"},
+            content=b"<html><body>Publisher article</body></html>",
+            request=request,
+        )
+
+    fetcher = SecureFetcher(
+        guard=UrlGuard(resolver=resolver),
+        store=SnapshotFileStore(tmp_path),
+        transport=httpx.MockTransport(handler),
+    )
+    result = run(fetcher.fetch("https://news.google.com/articles/example"))
+    run(fetcher.aclose())
+
+    assert requested_hosts == ["news.google.com", "publisher.example"]
+    assert "news.google.com" in resolved_hosts
+    assert "publisher.example" in resolved_hosts
+    assert result.requested_url == "https://news.google.com/articles/example"
+    assert result.final_url == "https://publisher.example/story?a=1&b=2"
+    assert result.redirect_chain == ("https://news.google.com/articles/example",)
+
+
+def test_google_news_wrapper_fails_closed_when_publisher_redirect_is_private(tmp_path):
+    async def resolver(hostname: str, _port: int):
+        return ["93.184.216.34"] if hostname == "news.google.com" else ["10.0.0.9"]
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            302,
+            headers={"location": "https://private.publisher.example/article"},
+            request=request,
+        )
+
+    fetcher = SecureFetcher(
+        guard=UrlGuard(resolver=resolver),
+        store=SnapshotFileStore(tmp_path),
+        transport=httpx.MockTransport(handler),
+    )
+    with pytest.raises(FetchError, match="non-public"):
+        run(fetcher.fetch("https://news.google.com/articles/example"))
+    run(fetcher.aclose())
+
+
 def test_dns_is_revalidated_immediately_before_connect_to_block_rebinding(tmp_path):
     resolutions = iter((["93.184.216.34"], ["10.0.0.8"]))
     requested = False

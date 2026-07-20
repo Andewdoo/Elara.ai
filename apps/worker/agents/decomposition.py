@@ -8,12 +8,13 @@ from typing import Any
 
 from agents.schemas import (
     AtomicClaimOutput,
+    ClaimAmbiguityOutput,
     DecompositionDraftOutput,
     DecompositionOutput,
 )
 
 
-PROMPT_VERSION = "decomposition-v2"
+PROMPT_VERSION = "decomposition-v3"
 SYSTEM_PROMPT = """
 Split the normalized target into independently testable atomic claims. Preserve
 claim-specific entities, periods, locations, metrics, comparisons, and original
@@ -21,10 +22,14 @@ text spans. Rank each claim as essential, major, or minor using weights 3, 2, or
 Label opinions, predictions, allegations, testimony, attribution, rhetorical
 framing, and partially fact-checkable claims explicitly. Return concise
 verification scopes and unresolved ambiguities, never a verdict or reasoning
-transcript. Return claims in their deterministic source order. If a claim has a
-parent, set parent_claim_index to that claim's zero-based index in the ordered
-claims list. Never create, return, infer, or reuse claim_ref or parent_claim_ref;
-the workflow assigns those identifiers deterministically.
+transcript. Attach an ambiguity to its owning claim either in that claim's
+ambiguities list or in claim_ambiguities with owner_claim_index set to the
+zero-based ordered claim index. Use unresolved_ambiguities only for genuinely
+unowned, report-visible limitations; they cannot be assigned to a claim later.
+Return claims in their deterministic source order. If a claim has a parent, set
+parent_claim_index to that claim's zero-based index in the ordered claims list.
+Never create, return, infer, or reuse claim_ref or parent_claim_ref; the workflow
+assigns those identifiers deterministically.
 """.strip()
 
 
@@ -80,15 +85,25 @@ def normalize_decomposition(
             "DECOMPOSITION_CLAIM_CYCLE",
             "Claim decomposition contains a parent cycle.",
         )
+    for ambiguity in draft.claim_ambiguities:
+        if ambiguity.owner_claim_index >= len(claims):
+            raise DecompositionNormalizationError(
+                "DECOMPOSITION_AMBIGUITY_OWNER_INDEX_INVALID",
+                "Claim ambiguity owner_claim_index must reference an ordered claim.",
+            )
 
     claim_refs = [
         _claim_ref(index, claim.model_dump(mode="json", exclude={"parent_claim_index"}))
         for index, claim in enumerate(claims)
     ]
+    ambiguities_by_claim = [list(claim.ambiguities) for claim in claims]
+    for ambiguity in draft.claim_ambiguities:
+        ambiguities_by_claim[ambiguity.owner_claim_index].append(ambiguity.text)
     atomic_claims = [
         AtomicClaimOutput.model_validate(
             {
                 **claim.model_dump(mode="json", exclude={"parent_claim_index"}),
+                "ambiguities": ambiguities_by_claim[index],
                 "claim_ref": claim_refs[index],
                 "parent_claim_ref": (
                     claim_refs[claim.parent_claim_index]
@@ -99,8 +114,14 @@ def normalize_decomposition(
         )
         for index, claim in enumerate(claims)
     ]
+    claim_ambiguities = [
+        ClaimAmbiguityOutput(text=text, claim_ref=claim_refs[index])
+        for index, claim in enumerate(claims)
+        for text in ambiguities_by_claim[index]
+    ]
     return DecompositionOutput(
         atomic_claims=atomic_claims,
+        claim_ambiguities=claim_ambiguities,
         unresolved_ambiguities=draft.unresolved_ambiguities,
     )
 

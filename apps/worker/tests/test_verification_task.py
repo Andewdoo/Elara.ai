@@ -4,7 +4,7 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from redis.exceptions import ResponseError
+from redis.exceptions import ConnectionError as RedisConnectionError, ResponseError
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -407,6 +407,87 @@ def test_synthetic_hosted_run_invalid_research_plan_is_durable_nonretryable_fail
     assert completed is None
 
 
+@pytest.mark.parametrize(
+    ("code", "message", "details", "expected_payload"),
+    [
+        (
+            "NO_DISCOVERY_RESULTS",
+            "The configured search policy returned no evidence candidates.",
+            {"provider": "brave", "query_count": 2, "private_error": "https://secret.test"},
+            {"code": "NO_DISCOVERY_RESULTS", "query_count": 2},
+        ),
+        (
+            "SUBMITTED_URL_INACCESSIBLE",
+            "The submitted URL could not be retrieved safely.",
+            {"submitted_url_count": 1, "snapshot_count": 1, "raw_exception": "private path"},
+            {"code": "SUBMITTED_URL_INACCESSIBLE", "submitted_url_count": 1, "snapshot_count": 1},
+        ),
+        (
+            "NO_EXTRACTED_SOURCES",
+            "No retrieved evidence source contained usable extractable content.",
+            {"fetched_snapshot_count": 2, "snapshot_count": 2},
+            {"code": "NO_EXTRACTED_SOURCES", "fetched_snapshot_count": 2, "snapshot_count": 2},
+        ),
+        (
+            "INCOMPLETE_CITATION_AUDIT",
+            "Citation audit did not evaluate every cited sentence and passage.",
+            {"unsupported_sentence_count": 1, "raw_response": "private model output"},
+            {"code": "INCOMPLETE_CITATION_AUDIT", "unsupported_sentence_count": 1},
+        ),
+    ],
+)
+def test_typed_workflow_failures_persist_only_stable_public_codes_and_counts(
+    monkeypatch: pytest.MonkeyPatch,
+    code: str,
+    message: str,
+    details: dict[str, object],
+    expected_payload: dict[str, object],
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    stopped = VerificationState(
+        run_id=run.id,
+        user_id=run.user_id,
+        research_depth=GraphResearchDepth.STANDARD,
+        methodology_version="1.0",
+        recoverable_errors=[
+            RecoverableError(
+                stage=WorkflowStage.RETRIEVAL,
+                code=code,
+                public_message=message,
+                details=details,
+            )
+        ],
+    )
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_verification_workflow", lambda *_args, **_kwargs: stopped)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.successful()
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+        event = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id, AgentEvent.event_type == "run.failed")
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
+    assert durable is not None and durable.failure_code == code
+    assert event is not None and event.public_message == message
+    assert event.payload == expected_payload
+    assert "private" not in str(event.payload)
+
+
 def test_task_rejects_exhausted_citation_revision(monkeypatch: pytest.MonkeyPatch):
     factory, run = make_run()
     redis_client = FakeRedis()
@@ -662,6 +743,36 @@ def test_unexpected_workflow_error_reaches_sanitized_worker_failure_boundary(
     assert durable.failure_code == "WORKER_ERROR"
     assert durable.failure_message == "Verification stopped because the worker encountered an error."
     assert "/secret/evidence" not in durable.failure_message
+
+
+def test_redis_failure_uses_the_durable_worker_unavailable_boundary(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+
+    def unavailable_lock(*_args, **_kwargs):
+        raise RedisConnectionError("redis://private-broker")
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", unavailable_lock)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.failed()
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+        event = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id, AgentEvent.event_type == "run.failed")
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
+    assert durable is not None and durable.failure_code == "WORKER_UNAVAILABLE"
+    assert durable.failure_message == "Verification worker temporarily lost its queue connection."
+    assert event is not None and "private-broker" not in event.public_message
 
 
 def test_prepare_run_loads_postgres_and_mirrors_public_progress():

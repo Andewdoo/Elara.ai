@@ -48,6 +48,12 @@ class RetrievalPipeline:
         by_url: dict[str, CandidateSource] = {}
         result_counts: dict[str, int] = {}
         last_provider_error: SearchProviderError | None = None
+        submitted_source = _submitted_url_source(state)
+        if submitted_source is not None:
+            # A pasted article is a retrieval seed, not a search result.  It
+            # must therefore survive an empty or temporarily unavailable
+            # supplementary Brave search.
+            by_url[submitted_source.canonical_url or submitted_source.url] = submitted_source
         for query in sorted(state.queries, key=lambda item: -item.priority):
             try:
                 results = await self.search.search(query.query, count=10)
@@ -98,6 +104,7 @@ class RetrievalPipeline:
                         evidence_intents=evidence_intents,
                         title=result.title,
                         source_type="PRIMARY" if intent == "primary" else "UNKNOWN",
+                        source_origin="brave_discovery",
                         selection_reason=f"Brave result for {intent} objective {query.objective_ref}",
                         priority=score,
                     )
@@ -120,17 +127,30 @@ class RetrievalPipeline:
                     "search_result_count": sum(result_counts.values()),
                 },
             )
-        selected = select_diverse(
-            list(by_url.values()), limit=RESEARCH_DEPTH_LIMITS[state.research_depth.value]
+        submitted = [
+            source for source in by_url.values() if source.source_origin == "submitted_url"
+        ]
+        discovered = [
+            source for source in by_url.values() if source.source_origin == "brave_discovery"
+        ]
+        discovered_limit = max(
+            0, RESEARCH_DEPTH_LIMITS[state.research_depth.value] - len(submitted)
         )
+        selected = [*submitted, *select_diverse(discovered, limit=discovered_limit)]
         # Keep source refs stable after ranking/deduplication.
-        selected = [item.model_copy(update={"source_ref": f"source-{index}"}) for index, item in enumerate(selected, 1)]
+        selected = [
+            item
+            if item.source_origin == "submitted_url"
+            else item.model_copy(update={"source_ref": f"source-{index}"})
+            for index, item in enumerate(selected, 1)
+        ]
         return state.model_copy(
             update={"candidate_sources": selected, "query_result_counts": result_counts}
         )
 
     async def retrieve(self, state: VerificationState) -> VerificationState:
         snapshots: list[SnapshotRecord] = []
+        resolved_sources: dict[str, CandidateSource] = {}
         for source in state.candidate_sources:
             snapshot_id = str(uuid4())
             retrieved_at = datetime.now(UTC)
@@ -141,6 +161,18 @@ class RetrievalPipeline:
                 ):
                     raise FetchError("retrieval rate limit reached", access_status="INACCESSIBLE")
                 result = await self.fetcher.fetch(source.canonical_url or source.url)
+                final_url = result.final_url
+                if final_url != source.canonical_url:
+                    # Google News article wrappers and ordinary public redirects
+                    # are fetched only through SecureFetcher.  Its per-hop
+                    # validation makes the final publisher URL the canonical
+                    # durable identity for the retrieved evidence.
+                    resolved_sources[source.source_ref] = source.model_copy(
+                        update={
+                            "canonical_url": final_url,
+                            "domain": urlsplit(final_url).hostname or source.domain,
+                        }
+                    )
                 snapshots.append(
                     SnapshotRecord(
                         snapshot_id=snapshot_id,
@@ -151,18 +183,20 @@ class RetrievalPipeline:
                         content_type=result.content_type,
                         snapshot_path=result.storage_path,
                         metadata={
+                            "requested_url": result.requested_url,
                             "final_url": result.final_url,
                             "redirect_chain": list(result.redirect_chain),
                             "content_length": result.content_length,
                             "origin_fetched_at": result.origin_fetched_at,
                             "cache_hit": result.cache_hit,
                             "fetch_latency_ms": round((time.perf_counter() - fetch_started) * 1000, 3),
+                            "source_origin": source.source_origin,
                             "untrusted_evidence": True,
                         },
                     )
                 )
             except FetchError as exc:
-                if exc.retryable:
+                if exc.retryable and source.source_origin != "submitted_url":
                     # A raw FetchError bypasses the workflow extension boundary
                     # and becomes a generic worker failure. Preserve neither the
                     # URL nor provider diagnostics in durable state; expose only
@@ -174,14 +208,24 @@ class RetrievalPipeline:
                         retryable=True,
                         details={"failure_kind": "fetch", "error_code": "fetch_unavailable"},
                     ) from exc
+                submitted_failure = source.source_origin == "submitted_url"
                 snapshots.append(
                     SnapshotRecord(
                         snapshot_id=snapshot_id,
                         source_ref=source.source_ref,
-                        access_status=exc.access_status,
+                        # A pasted URL is an input limitation.  Its transient
+                        # outage must not discard independently retrieved Brave
+                        # evidence or trigger an unbounded whole-run retry.
+                        access_status=("INACCESSIBLE" if submitted_failure and exc.retryable else exc.access_status),
                         retrieved_at=retrieved_at,
-                        failure_reason=str(exc),
+                        failure_reason=(
+                            _submitted_url_failure_reason(exc) if submitted_failure else str(exc)
+                        ),
                         metadata={
+                            "source_origin": source.source_origin,
+                            "inaccessible_reason_code": _inaccessible_reason_code(
+                                exc, submitted=submitted_failure
+                            ),
                             "untrusted_evidence": True,
                             "fetch_latency_ms": round((time.perf_counter() - fetch_started) * 1000, 3),
                         },
@@ -189,6 +233,18 @@ class RetrievalPipeline:
                 )
         accessible_count = sum(snapshot.access_status == "FETCHED" for snapshot in snapshots)
         if not accessible_count:
+            submitted_count = sum(
+                source.source_origin == "submitted_url" for source in state.candidate_sources
+            )
+            if submitted_count == len(state.candidate_sources):
+                raise WorkflowExtensionError(
+                    code="SUBMITTED_URL_INACCESSIBLE",
+                    public_message="The submitted URL could not be retrieved safely.",
+                    details={
+                        "submitted_url_count": submitted_count,
+                        "snapshot_count": len(snapshots),
+                    },
+                )
             raise WorkflowExtensionError(
                 code="NO_ACCESSIBLE_SOURCES",
                 public_message="No selected evidence source could be retrieved safely.",
@@ -197,7 +253,15 @@ class RetrievalPipeline:
                     "snapshot_count": len(snapshots),
                 },
             )
-        return state.model_copy(update={"snapshots": snapshots})
+        return state.model_copy(
+            update={
+                "snapshots": snapshots,
+                "candidate_sources": [
+                    resolved_sources.get(source.source_ref, source)
+                    for source in state.candidate_sources
+                ],
+            }
+        )
 
     async def extract(self, state: VerificationState) -> VerificationState:
         snapshots: list[SnapshotRecord] = []
@@ -367,6 +431,56 @@ def _browser_fallback_is_justified(source: CandidateSource) -> bool:
         source.priority >= Decimal("0.7500")
         or source.source_type in {"PRIMARY", "OFFICIAL_SELF_REPORT"}
         or {"primary", "correction"}.intersection(source.evidence_intents)
+    )
+
+
+def _submitted_url_source(state: VerificationState) -> CandidateSource | None:
+    normalized = state.normalized_input
+    if normalized is None or normalized.input_kind.value != "article_url":
+        return None
+    submitted_url = normalized.normalized_text
+    try:
+        canonical_url = canonicalize_url(submitted_url)
+    except UnsafeUrlError:
+        # Intake preserves the original user input.  SecureFetcher is the
+        # authoritative URL-policy boundary and will record the safe failure.
+        canonical_url = submitted_url
+    try:
+        domain = urlsplit(canonical_url).hostname or None
+    except ValueError:
+        domain = None
+    return CandidateSource(
+        source_ref="submitted-url",
+        url=submitted_url,
+        canonical_url=canonical_url,
+        domain=domain,
+        objective_refs=[objective.objective_ref for objective in state.objectives],
+        evidence_intents=["support"],
+        selection_reason="Submitted article URL retrieval seed",
+        source_origin="submitted_url",
+        priority=Decimal("1"),
+    )
+
+
+def _inaccessible_reason_code(exc: FetchError, *, submitted: bool) -> str:
+    prefix = "SUBMITTED_URL" if submitted else "SOURCE"
+    status = exc.access_status if exc.access_status in {"PAYWALLED", "BOT_BLOCKED", "UNSUPPORTED"} else "INACCESSIBLE"
+    return f"{prefix}_{status}"
+
+
+def _submitted_url_failure_reason(exc: FetchError) -> str:
+    """Return a precise public limitation without propagating transport detail."""
+    return {
+        "PAYWALLED": "The submitted URL is paywalled or requires authentication.",
+        "BOT_BLOCKED": "The submitted URL denied automated retrieval.",
+        "UNSUPPORTED": "The submitted URL returned unsupported content.",
+    }.get(
+        exc.access_status,
+        (
+            "The submitted URL was temporarily unavailable."
+            if exc.retryable
+            else "The submitted URL could not be accessed safely."
+        ),
     )
 
 __all__ = ["RetrievalPipeline"]

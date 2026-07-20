@@ -4,6 +4,7 @@ from uuid import UUID
 
 from celery import Task
 from redis import Redis
+from redis.exceptions import RedisError
 from sqlalchemy import exists, select
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -241,6 +242,7 @@ def _mark_failure_safely(
     *,
     code: str,
     message: str,
+    details: dict[str, object] | None = None,
 ) -> None:
     try:
         run = _load_run(factory, run_id)
@@ -253,10 +255,33 @@ def _mark_failure_safely(
                 stage=RunStatus.FAILED,
                 event_type="run.failed",
                 message=message,
+                payload=_public_failure_payload(code, details),
                 failure_code=code,
             )
     except Exception:
         logger.error("Unable to persist failure state for run %s", run_id, exc_info=False)
+
+
+def _public_failure_payload(
+    code: str, details: dict[str, object] | None = None
+) -> dict[str, object]:
+    """Keep terminal events actionable without retaining operational detail.
+
+    Workflow extension details are scalar by contract, but scalar text can still
+    be an URL, a provider response, or an internal exception.  The public
+    durable event needs only the stable failure code and bounded counts.  Raw
+    diagnostics stay in server-side logs/monitoring.
+    """
+    payload: dict[str, object] = {"code": code}
+    for key, value in (details or {}).items():
+        if (
+            key.endswith("_count")
+            and isinstance(value, int)
+            and not isinstance(value, bool)
+            and value >= 0
+        ):
+            payload[key] = value
+    return payload
 
 
 @celery_app.task(
@@ -354,6 +379,7 @@ def verify_run(self: Task, run_id: str) -> None:
                     parsed_run_id,
                     code=error.code,
                     message=error.public_message,
+                    details=error.details,
                 )
             elif result is not None and result.ready_for_completion:
                 if result.citation_audit is None:
@@ -395,6 +421,16 @@ def verify_run(self: Task, run_id: str) -> None:
                 code=code,
                 message="A temporary research service remained unavailable after retries.",
             )
+        raise
+    except RedisError:
+        _mark_failure_safely(
+            factory,
+            redis_client,
+            settings,
+            parsed_run_id,
+            code="WORKER_UNAVAILABLE",
+            message="Verification worker temporarily lost its queue connection.",
+        )
         raise
     except InvalidRunTransitionError:
         _mark_failure_safely(

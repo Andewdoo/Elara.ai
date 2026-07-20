@@ -30,6 +30,10 @@ def create_celery_app() -> Celery:
         task_reject_on_worker_lost=True,
         task_track_started=True,
         worker_prefetch_multiplier=1,
+        # Compose owns the small restart budget for the single-host demo;
+        # Celery itself must not wait forever for an unavailable Redis broker.
+        broker_connection_retry_on_startup=False,
+        broker_connection_retry=False,
         broker_transport_options={"visibility_timeout": 7_200},
         task_soft_time_limit=settings.celery_task_soft_time_limit_seconds,
         task_time_limit=settings.celery_task_time_limit_seconds,

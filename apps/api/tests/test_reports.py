@@ -49,8 +49,9 @@ def test_report_exposes_calculation_inputs_decimal_context_and_audit_status(
             entities=[],
             locations=[],
             metrics=[],
-            ambiguities=[],
+            ambiguities=["The phrase does not name a trading session."],
             fact_checkable=True,
+            final_label="Supported",
             gates={"claim_ref": "claim-1"},
         )
         db.add(claim)
@@ -78,16 +79,41 @@ def test_report_exposes_calculation_inputs_decimal_context_and_audit_status(
                 audit_status="passed",
             )
         )
+        db.add(
+            Calculation(
+                id=uuid4(),
+                run_id=run.id,
+                atomic_claim_id=claim.id,
+                formula_name="ambiguity_gate",
+                formula_text="owned ambiguity gate",
+                inputs={
+                    "scoring_version": "1.1-ambiguity-gate",
+                    "owned_ambiguity_count": 1,
+                },
+                result={"non_blocking": True, "unresolved_key_facts": False},
+                units="gate_decision",
+                decimal_context={"precision": 28, "rounding": "ROUND_HALF_UP"},
+                audit_status="non_blocking",
+            )
+        )
         db.commit()
         run_id = run.id
 
     response = client.get(f"/v1/verifications/{run_id}/report")
     assert response.status_code == 200
-    calculation = response.json()["calculations"][0]
+    calculation = next(
+        item
+        for item in response.json()["calculations"]
+        if item["formula_name"] == "numerical_percentage"
+    )
     assert calculation["inputs"]["values"][1]["role"] == "denominator"
     assert calculation["decimal_context"]["precision"] == 28
     assert calculation["audit_status"] == "passed"
     assert calculation["result"]["value"] == "40.0"
+    assert response.json()["limitations"] == [
+        "Claim claim-1 is supported with an unresolved interpretation "
+        "(1 claim-local limitation(s)); accepted evidence was adequate and unopposed."
+    ]
 
 
 def test_report_contract_exposes_reproducibility_roles_and_generation_time(

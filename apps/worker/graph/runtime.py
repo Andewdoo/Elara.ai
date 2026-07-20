@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from agents.deepseek_client import DeepSeekClient
 from agents.schemas import (
     AtomicClaimOutput,
+    ClaimAmbiguityOutput,
     ClaimKind,
     EvidenceIntent,
     Entailment,
@@ -628,6 +629,13 @@ def execute_verification_workflow(
             )
             for row in claim_rows
         ]
+        # AtomicClaim.ambiguities is already durable and claim-local. Rehydrate it
+        # as typed ownership; do not infer ownership from run-level free text.
+        claim_ambiguities = [
+            ClaimAmbiguityOutput(text=text, claim_ref=claim.claim_ref)
+            for claim in claims
+            for text in claim.ambiguities
+        ]
         objectives = [
             ResearchObjectiveOutput.model_validate(item)
             for item in (plan_data or {}).get("objectives", [])
@@ -665,6 +673,7 @@ def execute_verification_workflow(
             started_at=_as_utc(run.started_at or run.queued_at),
             normalized_input=normalized,
             claims=claims,
+            claim_ambiguities=claim_ambiguities,
             objectives=objectives,
             queries=queries,
             primary_source_targets=primary_source_targets,

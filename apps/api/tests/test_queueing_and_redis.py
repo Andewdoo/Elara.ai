@@ -2,6 +2,8 @@ import json
 from unittest.mock import Mock
 from uuid import uuid4
 
+import pytest
+
 from app.celery_app import VERIFICATION_QUEUES, celery_app
 from app.config import Settings
 from app.models.enums import ResearchDepth
@@ -17,8 +19,15 @@ from app.redis_client import (
     search_cache_key,
     source_cache_key,
     user_rate_limit_key,
+    worker_liveness_key,
 )
-from app.services.queueing import CeleryVerificationDispatcher, QUEUE_BY_DEPTH, TASK_NAME
+from app.services.queueing import (
+    BrokerUnavailableError,
+    CeleryVerificationDispatcher,
+    QUEUE_BY_DEPTH,
+    TASK_NAME,
+    WorkerUnavailableError,
+)
 
 
 def test_research_depths_route_to_distinct_named_queues():
@@ -34,11 +43,34 @@ def test_research_depths_route_to_distinct_named_queues():
     assert set(QUEUE_BY_DEPTH) == set(ResearchDepth)
 
 
+def test_dispatcher_refuses_new_work_when_the_worker_heartbeat_is_missing():
+    application = Mock()
+    dispatcher = CeleryVerificationDispatcher(application, worker_ready=lambda: False)
+
+    with pytest.raises(WorkerUnavailableError):
+        dispatcher.enqueue(uuid4(), ResearchDepth.STANDARD)
+
+    application.send_task.assert_not_called()
+
+
+def test_dispatcher_classifies_broker_enqueue_errors_without_exposing_details():
+    application = Mock()
+    application.send_task.side_effect = RuntimeError("redis://private-broker")
+    dispatcher = CeleryVerificationDispatcher(application, worker_ready=lambda: True)
+
+    with pytest.raises(BrokerUnavailableError) as raised:
+        dispatcher.enqueue(uuid4(), ResearchDepth.STANDARD)
+
+    assert "private-broker" not in str(raised.value)
+
+
 def test_celery_declares_all_verification_queues_and_safe_delivery_defaults():
     assert {queue.name for queue in celery_app.conf.task_queues} == set(VERIFICATION_QUEUES)
     assert celery_app.conf.task_default_queue == "verification.standard"
     assert celery_app.conf.task_acks_late is True
     assert celery_app.conf.worker_prefetch_multiplier == 1
+    assert celery_app.conf.broker_connection_retry_on_startup is False
+    assert celery_app.conf.broker_connection_retry is False
 
 
 def test_redis_keys_are_namespaced_stable_and_privacy_preserving():
@@ -54,6 +86,7 @@ def test_redis_keys_are_namespaced_stable_and_privacy_preserving():
     assert source_cache_key("https://example.com", "rev").endswith(":rev")
     assert search_cache_key("query") == search_cache_key("query")
     assert extract_cache_key("content", "parser-v1").startswith("elara:cache:extract:content:")
+    assert worker_liveness_key() == "elara:worker:liveness"
 
 
 def test_progress_event_is_json_safe_and_gets_a_ttl(fake_redis):

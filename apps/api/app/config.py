@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     redis_progress_ttl_seconds: int = Field(default=86_400, ge=300)
     redis_cancellation_ttl_seconds: int = Field(default=86_400, ge=300)
     redis_lock_ttl_seconds: int = Field(default=3_600, ge=60)
+    worker_liveness_ttl_seconds: int = Field(default=60, ge=15, le=300)
     sse_heartbeat_seconds: int = Field(default=20, ge=15, le=30)
     web_app_url: str = "http://localhost:3000"
     cors_allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])

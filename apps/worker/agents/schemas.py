@@ -174,6 +174,13 @@ class AtomicClaimOutput(AgentOutput):
         return self
 
 
+class ClaimAmbiguityOutput(AgentOutput):
+    """A durable ambiguity explicitly scoped to one normalized atomic claim."""
+
+    text: str = Field(min_length=1, max_length=1000)
+    claim_ref: str = Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")
+
+
 class DecompositionDraftClaimOutput(AgentOutput):
     """Model-owned claim content before deterministic reference assignment."""
 
@@ -204,8 +211,18 @@ class DecompositionDraftClaimOutput(AgentOutput):
         return self
 
 
+class DecompositionDraftAmbiguityOutput(AgentOutput):
+    """Model-owned ambiguity with an index, before trusted claim refs exist."""
+
+    text: str = Field(min_length=1, max_length=1000)
+    owner_claim_index: int = Field(ge=0, strict=True)
+
+
 class DecompositionOutput(AgentOutput):
     atomic_claims: list[AtomicClaimOutput] = Field(min_length=1)
+    # Only entries in claim_ambiguities can affect a particular claim's scoring.
+    # unresolved_ambiguities deliberately remains unowned, user-visible context.
+    claim_ambiguities: list[ClaimAmbiguityOutput] = Field(default_factory=list)
     unresolved_ambiguities: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
@@ -220,6 +237,7 @@ class DecompositionDraftOutput(AgentOutput):
     """Strict model-facing decomposition contract without trusted identifiers."""
 
     atomic_claims: list[DecompositionDraftClaimOutput] = Field(min_length=1)
+    claim_ambiguities: list[DecompositionDraftAmbiguityOutput] = Field(default_factory=list)
     unresolved_ambiguities: list[str] = Field(default_factory=list)
 
 
@@ -421,11 +439,13 @@ def iter_auditable_sentences(
 
 __all__ = [
     "AtomicClaimOutput",
+    "ClaimAmbiguityOutput",
     "CitationAuditOutput",
     "ConfidenceIssue",
     "ContextIssue",
     "CitedReportSentenceOutput",
     "DecompositionDraftClaimOutput",
+    "DecompositionDraftAmbiguityOutput",
     "DecompositionDraftOutput",
     "DecompositionOutput",
     "EvidenceClassificationOutput",

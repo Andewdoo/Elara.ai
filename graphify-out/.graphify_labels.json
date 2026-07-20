@@ -239,8 +239,10 @@
   "237": "test_auth_routes.py",
   "238": "report-route.tsx",
   "239": "2026-07-17 authorized Prompt 11 timeout-remediation attempt",
-  "240": "acceptable_passages",
+  "240": "cluster_sources",
   "241": "enforce_verification_rate_limit",
+  "242": "test_worker_recovery_configuration.py",
+  "243": "acceptable_passages",
   "250": "2026-07-18 authorized Prompt 11 preflight",
   "252": "2026-07-19 authorized Prompt 11 current preflight",
   "255": "2026-07-16 fresh SSM and source-transport diagnosis attempt"

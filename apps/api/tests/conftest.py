@@ -65,6 +65,9 @@ class FakeRedis:
     def exists(self, key: str) -> int:
         return int(key in self.values)
 
+    def get(self, key: str) -> str | None:
+        return self.values.get(key)
+
     def incr(self, key: str) -> int:
         value = int(self.values.get(key, "0")) + 1
         self.values[key] = str(value)

@@ -13,7 +13,7 @@ from scoring.formulas import (
 from scoring.labels import InsufficientEvidence, article_label, final_claim_label, support_label
 from scoring.service import DeterministicScoringService
 from research.extension_errors import WorkflowExtensionError
-from agents.schemas import (AtomicClaimOutput, ClaimKind, ConfidenceIssue, ContextIssue,
+from agents.schemas import (AtomicClaimOutput, ClaimAmbiguityOutput, ClaimKind, ConfidenceIssue, ContextIssue,
     EvidenceClassificationItemOutput, EvidenceQualityOutput, EvidenceStance,
     FactCheckability, Importance, QuoteFidelityComponentsOutput)
 from graph.state import CandidateSource, PassageRecord, ResearchDepth, VerificationState
@@ -223,6 +223,186 @@ def test_unresolved_key_fact_gate_is_applied_by_state_service():
         if row.formula_name == "attribution_support" and row.claim_ref is None
     )
     assert attribution.result == {"score": "100"}
+
+
+def _ambiguity_fixture(
+    *,
+    claim_text: str = "Meta stock price surpasses $600",
+    ambiguity_owner: str = "meta",
+    contradiction: bool = False,
+    multiplier: Decimal = Decimal("1"),
+    source_type: str = "PRIMARY",
+) -> VerificationState:
+    claims = [
+        AtomicClaimOutput(
+            claim_ref="meta",
+            text=claim_text,
+            claim_kind=ClaimKind.NUMERICAL,
+            importance=Importance.ESSENTIAL,
+            importance_weight=3,
+            fact_checkability=FactCheckability.FACT_CHECKABLE,
+            verification_scope="Verify the observed Meta stock price.",
+        )
+    ]
+    if ambiguity_owner == "minor":
+        claims.append(
+            AtomicClaimOutput(
+                claim_ref="minor",
+                text="The price milestone uses an unstated trading session.",
+                claim_kind=ClaimKind.FACTUAL,
+                importance=Importance.MINOR,
+                importance_weight=1,
+                fact_checkability=FactCheckability.FACT_CHECKABLE,
+                verification_scope="Identify the trading session.",
+            )
+        )
+    source_ref = "source-1"
+    passage_id = str(uuid4())
+    evidence = [
+        EvidenceClassificationItemOutput(
+            claim_ref="meta",
+            passage_id=passage_id,
+            stance=EvidenceStance.STRONGLY_SUPPORTS,
+            quality=EvidenceQualityOutput(
+                relevance=1,
+                directness=1,
+                claim_specific_authority=1,
+                transparency=1,
+                temporal_fit=1,
+                extraction_certainty=1,
+            ),
+            entity_match=True,
+            time_period_match=True,
+            quotation_or_number_located=True,
+        )
+    ]
+    if contradiction:
+        contradiction_passage_id = str(uuid4())
+        evidence.append(
+            EvidenceClassificationItemOutput(
+                claim_ref="meta",
+                passage_id=contradiction_passage_id,
+                stance=EvidenceStance.STRONGLY_CONTRADICTS,
+                quality=EvidenceQualityOutput(
+                    relevance=1,
+                    directness=1,
+                    claim_specific_authority=1,
+                    transparency=1,
+                    temporal_fit=1,
+                    extraction_certainty=1,
+                ),
+                entity_match=True,
+                time_period_match=True,
+                quotation_or_number_located=True,
+            )
+        )
+    passages = [
+        PassageRecord(
+            passage_id=passage_id,
+            source_ref=source_ref,
+            snapshot_id=str(uuid4()),
+            text="Meta closed above $600.",
+            text_hash="meta-support",
+            extraction_certainty=Decimal("1"),
+        )
+    ]
+    if contradiction:
+        passages.append(
+            PassageRecord(
+                passage_id=evidence[-1].passage_id,
+                source_ref=source_ref,
+                snapshot_id=str(uuid4()),
+                text="Meta did not close above $600.",
+                text_hash="meta-contradiction",
+                extraction_certainty=Decimal("1"),
+            )
+        )
+    return VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.1-ambiguity-gate",
+        claims=claims,
+        claim_ambiguities=[
+            ClaimAmbiguityOutput(
+                text="The price interpretation does not name a trading session.",
+                claim_ref=ambiguity_owner,
+            )
+        ],
+        candidate_sources=[
+            CandidateSource(
+                source_ref=source_ref,
+                url="https://records.example/meta-price",
+                domain="records.example",
+                source_type=source_type,
+                selection_reason="published market record",
+            )
+        ],
+        passages=passages,
+        source_dependency_multipliers={source_ref: multiplier},
+        evidence=evidence,
+    )
+
+
+def test_owned_ambiguity_is_non_blocking_for_adequate_unopposed_support():
+    first = asyncio.run(DeterministicScoringService().process(_ambiguity_fixture()))
+    equivalent = asyncio.run(
+        DeterministicScoringService().process(
+            _ambiguity_fixture(claim_text="Meta stock surpasses $600")
+        )
+    )
+
+    assert first.claim_scores[0].final_label == "Supported"
+    assert first.scores.final_label == "Supported"
+    assert equivalent.claim_scores[0].final_label == first.claim_scores[0].final_label
+    assert equivalent.scores.final_label == first.scores.final_label
+    assert first.claim_scores[0].gates["confidence_issues"] == [
+        "essential_term_ambiguous",
+        "single_information_cluster",
+    ]
+    ambiguity_gate = next(
+        row for row in first.calculations
+        if row.formula_name == "ambiguity_gate" and row.claim_ref == "meta"
+    )
+    assert ambiguity_gate.audit_status == "non_blocking"
+    assert ambiguity_gate.result == {
+        "adequate_accepted_evidence": True,
+        "has_accepted_support": True,
+        "no_accepted_material_contradiction": True,
+        "non_blocking": True,
+        "unresolved_key_facts": False,
+    }
+    assert ambiguity_gate.inputs["scoring_version"] == "1.1-ambiguity-gate"
+    assert "The price interpretation" not in str(ambiguity_gate.inputs)
+    assert "reasoning" not in ambiguity_gate.inputs
+
+
+@pytest.mark.parametrize(
+    ("fixture", "expected_claim_label"),
+    [
+        (_ambiguity_fixture(contradiction=True), "Insufficient evidence"),
+        (_ambiguity_fixture(multiplier=Decimal("0.35")), "Insufficient evidence"),
+        (_ambiguity_fixture(source_type="OFFICIAL_SELF_REPORT"), "Insufficient evidence"),
+    ],
+)
+def test_owned_ambiguity_keeps_existing_claim_safety_gates(
+    fixture: VerificationState, expected_claim_label: str
+):
+    result = asyncio.run(DeterministicScoringService().process(fixture))
+
+    assert result.claim_scores[0].final_label == expected_claim_label
+
+
+def test_owned_minor_claim_ambiguity_does_not_downgrade_essential_claim_or_article():
+    result = asyncio.run(
+        DeterministicScoringService().process(_ambiguity_fixture(ambiguity_owner="minor"))
+    )
+
+    essential = next(row for row in result.claim_scores if row.claim_ref == "meta")
+    minor = next(row for row in result.claim_scores if row.claim_ref == "minor")
+    assert essential.final_label == "Supported"
+    assert result.scores.final_label == "Supported"
+    assert minor.final_label == "Insufficient evidence"
 
 
 def test_scoring_records_are_persisted_with_decimal_audit_metadata():

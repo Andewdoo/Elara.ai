@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from agents.deepseek_client import CallMetadata
 from agents.schemas import (
     AtomicClaimOutput,
+    ClaimAmbiguityOutput,
     CitationAuditOutput,
     EvidenceClassificationItemOutput,
     IntakeClassificationOutput,
@@ -95,6 +96,10 @@ class CandidateSource(StateModel):
     evidence_intents: list[EvidenceIntentValue] = Field(default_factory=list)
     title: str | None = Field(default=None, max_length=1000)
     source_type: SourceTypeValue = "UNKNOWN"
+    # This is deterministic intake provenance, not a claim about the source's
+    # evidentiary weight.  It keeps a user-submitted URL distinct from the
+    # supplementary Brave discovery candidates used to research the claim.
+    source_origin: Literal["submitted_url", "brave_discovery"] = "brave_discovery"
     selection_reason: str = Field(min_length=1)
     priority: UnitDecimal = Decimal("0")
 
@@ -291,6 +296,10 @@ class VerificationState(StateModel):
     workflow_version: str = Field(default="step-10", min_length=1, max_length=100)
     parser_versions: dict[str, str] = Field(default_factory=dict)
     claims: list[AtomicClaimOutput] = Field(default_factory=list)
+    # Typed claim ownership is required before a scoring gate may use an ambiguity.
+    claim_ambiguities: list[ClaimAmbiguityOutput] = Field(default_factory=list)
+    # Legacy/global strings stay durable report limitations and are never assigned
+    # to a claim by the workflow state.
     unresolved_ambiguities: list[str] = Field(default_factory=list)
     objectives: list[ResearchObjectiveOutput] = Field(default_factory=list)
     queries: list[SearchQueryOutput] = Field(default_factory=list)

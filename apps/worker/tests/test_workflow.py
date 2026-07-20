@@ -20,15 +20,21 @@ from agents.deepseek_client import (
 from agents.decomposition import normalize_decomposition
 from agents.evidence_classification import build_classification_tasks, classification_task_ref
 from agents.schemas import (
+    AtomicClaimOutput,
     CitedReportSentenceOutput,
     CitationAuditOutput,
+    ClaimAmbiguityOutput,
+    ClaimKind,
     DecompositionDraftOutput,
     DecompositionOutput,
     EvidenceClassificationItemOutput,
+    FactCheckability,
+    Importance,
     InputKind,
     IntakeClassificationOutput,
     PlanningOutput,
     SynthesisOutput,
+    SynthesisDraftOutput,
 )
 from agents.validation import validate_research_plan
 from app.database.base import Base
@@ -50,7 +56,9 @@ from app.models import (
 from app.services.reports import build_report
 from app.services.run_lifecycle import persist_completed_run
 from graph.state import (
+    CalculationRecord,
     CandidateSource,
+    ClaimScoreRecord,
     PassageRecord,
     ResearchDepth,
     ScoreBundle,
@@ -64,6 +72,7 @@ from graph.workflow import (
     WorkflowNodes,
     WorkflowServices,
     _guard_citation_audit,
+    _build_deterministic_report,
     build_workflow,
 )
 from research.extension_errors import WorkflowExtensionError
@@ -147,6 +156,83 @@ def state() -> VerificationState:
         research_depth=ResearchDepth.STANDARD,
         methodology_version="1.0",
     )
+
+
+def test_report_states_supported_with_an_unresolved_interpretation_without_model_text():
+    value = state().model_copy(
+        update={
+            "claims": [
+                AtomicClaimOutput(
+                    claim_ref="meta",
+                    text="Meta stock price surpasses $600",
+                    claim_kind=ClaimKind.NUMERICAL,
+                    importance=Importance.ESSENTIAL,
+                    importance_weight=3,
+                    fact_checkability=FactCheckability.FACT_CHECKABLE,
+                    verification_scope="Verify the price milestone.",
+                )
+            ],
+            "claim_ambiguities": [
+                ClaimAmbiguityOutput(
+                    claim_ref="meta",
+                    text="raw model ambiguity that must not enter the report wording",
+                )
+            ],
+            "claim_scores": [
+                ClaimScoreRecord(
+                    claim_ref="meta",
+                    supporting_weight=Decimal("1"),
+                    contradicting_weight=Decimal("0"),
+                    total_adjusted_evidence=Decimal("1"),
+                    evidence_support=100,
+                    evidence_consistency=100,
+                    verdict_confidence=75,
+                    context_completeness=100,
+                    average_quality=100,
+                    adequate_evidence=True,
+                    final_label="Supported",
+                )
+            ],
+            "calculations": [
+                CalculationRecord(
+                    calculation_ref="ambiguity-gate-meta",
+                    formula_name="ambiguity_gate",
+                    formula_text="test gate",
+                    inputs={},
+                    result={"non_blocking": True},
+                    units="gate_decision",
+                    decimal_context={"precision": 28, "rounding": "ROUND_HALF_UP"},
+                    audit_status="non_blocking",
+                    claim_ref="meta",
+                )
+            ],
+        }
+    )
+    report = _build_deterministic_report(
+        value,
+        SynthesisDraftOutput.model_validate(
+            {
+                "summary_sentences": [
+                    {
+                        "sentence_ref": "summary-1",
+                        "text": "Approved evidence supports the price milestone.",
+                        "passage_ids": ["passage-1"],
+                    }
+                ]
+            }
+        ),
+        approved_passage_ids={"passage-1"},
+        evidence_reviewed_at=datetime(2026, 7, 19, tzinfo=UTC),
+        evidence_timestamp="Evidence reviewed as of 2026-07-19T00:00:00+00:00.",
+        model_versions={},
+        prompt_versions={},
+    )
+
+    assert report.limitations[1] == (
+        "Claim meta is supported with an unresolved interpretation "
+        "(1 claim-local limitation(s)); accepted evidence was adequate and unopposed."
+    )
+    assert "raw model ambiguity" not in " ".join(report.limitations)
 
 
 INTAKE = {
@@ -581,7 +667,7 @@ def test_planning_workflow_is_typed_and_persists_public_progress():
     ]
     assert [call["prompt_version"] for call in model.calls] == [
         "intake-v2",
-        "decomposition-v2",
+        "decomposition-v3",
         "planner-v2",
     ]
     assert len(writer.saved) == 3

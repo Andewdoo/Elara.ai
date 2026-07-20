@@ -9,11 +9,17 @@ import fitz
 import httpx
 import pytest
 
-from agents.schemas import EvidenceIntent, SearchQueryOutput
+from agents.schemas import (
+    EvidenceIntent,
+    FactCheckability,
+    InputKind,
+    IntakeClassificationOutput,
+    SearchQueryOutput,
+)
 from extraction.service import ExtractionService
 from graph.state import CandidateSource, ResearchDepth, SnapshotRecord, VerificationState
 from research.extension_errors import WorkflowExtensionError
-from research.fetcher import FetchError
+from research.fetcher import FetchError, FetchResult
 from research.pipeline import RetrievalPipeline
 from research.ranking import RankingSignals, priority_score, select_diverse
 from research.search import (
@@ -184,6 +190,136 @@ def test_discovery_raises_typed_error_when_brave_returns_no_candidates():
         "query_count": 1,
         "search_result_count": 0,
     }
+
+
+def test_submitted_article_url_is_a_retrieval_seed_when_brave_has_no_results():
+    class EmptySearch:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        async def search(self, query: str, *, count: int = 10):
+            del query, count
+            self.calls += 1
+            return []
+
+    search = EmptySearch()
+    state = VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.0",
+        normalized_input=IntakeClassificationOutput(
+            input_kind=InputKind.ARTICLE_URL,
+            normalized_text="https://publisher.example/report?utm_source=shared",
+            detected_language="en",
+            fact_checkability=FactCheckability.FACT_CHECKABLE,
+        ),
+        queries=[
+            SearchQueryOutput(
+                query="the independently verifiable claim",
+                objective_ref="objective-1",
+                intent=EvidenceIntent.SUPPORT,
+                priority=1,
+            )
+        ],
+    )
+    pipeline = RetrievalPipeline(search=search, fetcher=object())  # type: ignore[arg-type]
+
+    result = run(pipeline.discover(state))
+
+    assert search.calls == 1
+    assert result.query_result_counts == {"objective-1:the independently verifiable claim": 0}
+    assert len(result.candidate_sources) == 1
+    source = result.candidate_sources[0]
+    assert source.source_origin == "submitted_url"
+    assert source.canonical_url == "https://publisher.example/report"
+    assert source.selection_reason == "Submitted article URL retrieval seed"
+
+
+def test_submitted_google_news_wrapper_records_validated_publisher_final_url():
+    class NoSearch:
+        async def search(self, query: str, *, count: int = 10):
+            del query, count
+            return []
+
+    class RedirectingFetcher:
+        async def fetch(self, url: str) -> FetchResult:
+            assert url == "https://news.google.com/articles/example"
+            return FetchResult(
+                requested_url="https://news.google.com/articles/example",
+                final_url="https://publisher.example/story?a=1&b=2",
+                status_code=200,
+                content_type="text/html",
+                content_length=12,
+                content_hash="a" * 64,
+                storage_path="fixture.html",
+                redirect_chain=("https://news.google.com/articles/example",),
+                origin_fetched_at="2026-07-19T00:00:00+00:00",
+            )
+
+    state = VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.0",
+        normalized_input=IntakeClassificationOutput(
+            input_kind=InputKind.ARTICLE_URL,
+            normalized_text="https://news.google.com/articles/example",
+            detected_language="en",
+            fact_checkability=FactCheckability.FACT_CHECKABLE,
+        ),
+    )
+    pipeline = RetrievalPipeline(search=NoSearch(), fetcher=RedirectingFetcher())  # type: ignore[arg-type]
+
+    discovered = run(pipeline.discover(state))
+    retrieved = run(pipeline.retrieve(discovered))
+
+    assert retrieved.candidate_sources[0].canonical_url == "https://publisher.example/story?a=1&b=2"
+    assert retrieved.candidate_sources[0].domain == "publisher.example"
+    assert retrieved.snapshots[0].metadata["requested_url"] == "https://news.google.com/articles/example"
+    assert retrieved.snapshots[0].metadata["final_url"] == "https://publisher.example/story?a=1&b=2"
+    assert retrieved.snapshots[0].metadata["redirect_chain"] == [
+        "https://news.google.com/articles/example"
+    ]
+
+
+def test_submitted_url_temporary_failure_is_a_safe_nonfatal_source_limitation():
+    class MixedFetcher:
+        async def fetch(self, url: str) -> FetchResult:
+            if url == "https://submitted.example/article":
+                raise FetchError("upstream transport trace", retryable=True)
+            return FetchResult(
+                requested_url=url,
+                final_url=url,
+                status_code=200,
+                content_type="text/html",
+                content_length=12,
+                content_hash="b" * 64,
+                storage_path="fixture.html",
+                redirect_chain=(),
+                origin_fetched_at="2026-07-19T00:00:00+00:00",
+            )
+
+    state = _pipeline_source_state()
+    submitted = CandidateSource(
+        source_ref="submitted-url",
+        url="https://submitted.example/article",
+        canonical_url="https://submitted.example/article",
+        domain="submitted.example",
+        source_origin="submitted_url",
+        selection_reason="Submitted article URL retrieval seed",
+        priority=Decimal("1"),
+    )
+    state = state.model_copy(update={"candidate_sources": [submitted, *state.candidate_sources]})
+    pipeline = RetrievalPipeline(search=object(), fetcher=MixedFetcher())  # type: ignore[arg-type]
+
+    retrieved = run(pipeline.retrieve(state))
+
+    limitation = retrieved.snapshots[0]
+    assert limitation.access_status == "INACCESSIBLE"
+    assert limitation.failure_reason == "The submitted URL was temporarily unavailable."
+    assert limitation.metadata["inaccessible_reason_code"] == "SUBMITTED_URL_INACCESSIBLE"
+    assert "trace" not in limitation.failure_reason
 
 
 def test_workflow_extension_error_accepts_only_safe_primitive_details():
@@ -362,6 +498,31 @@ def test_retrieval_raises_no_accessible_sources_after_per_source_failures():
 
     assert caught.value.code == "NO_ACCESSIBLE_SOURCES"
     assert caught.value.details == {"candidate_count": 1, "snapshot_count": 1}
+
+
+def test_retrieval_uses_a_precise_failure_for_an_inaccessible_submitted_url_without_evidence():
+    class InaccessibleFetcher:
+        async def fetch(self, _url: str):
+            raise FetchError("submitted URL was blocked", access_status="BOT_BLOCKED")
+
+    submitted = CandidateSource(
+        source_ref="submitted-url",
+        url="https://submitted.example/article",
+        canonical_url="https://submitted.example/article",
+        domain="submitted.example",
+        source_origin="submitted_url",
+        selection_reason="Submitted article URL retrieval seed",
+        priority=Decimal("1"),
+    )
+    state = _pipeline_source_state().model_copy(update={"candidate_sources": [submitted]})
+    pipeline = RetrievalPipeline(search=object(), fetcher=InaccessibleFetcher())  # type: ignore[arg-type]
+
+    with pytest.raises(WorkflowExtensionError) as caught:
+        run(pipeline.retrieve(state))
+
+    assert caught.value.code == "SUBMITTED_URL_INACCESSIBLE"
+    assert caught.value.public_message == "The submitted URL could not be retrieved safely."
+    assert caught.value.details == {"submitted_url_count": 1, "snapshot_count": 1}
 
 
 def test_retrieval_converts_retryable_fetch_error_to_safe_workflow_failure():
