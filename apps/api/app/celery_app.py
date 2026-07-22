@@ -34,7 +34,12 @@ def create_celery_app() -> Celery:
         # Celery itself must not wait forever for an unavailable Redis broker.
         broker_connection_retry_on_startup=False,
         broker_connection_retry=False,
-        broker_transport_options={"visibility_timeout": 7_200},
+        # A Redis-broker task that is lost with its worker becomes visible again
+        # shortly after its hard execution limit.  This avoids stranding a run for
+        # two hours while still exceeding the maximum legitimate task duration.
+        broker_transport_options={
+            "visibility_timeout": settings.celery_task_time_limit_seconds + 60
+        },
         task_soft_time_limit=settings.celery_task_soft_time_limit_seconds,
         task_time_limit=settings.celery_task_time_limit_seconds,
         timezone="UTC",

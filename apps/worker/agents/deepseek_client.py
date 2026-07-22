@@ -32,6 +32,11 @@ _STRUCTURED_REPAIR_INSTRUCTION = (
     "The previous response failed schema validation. Regenerate the complete response "
     "to conform exactly to the JSON Schema. Return only one JSON object."
 )
+_STRUCTURED_FINAL_REPAIR_INSTRUCTION = (
+    "The previous repair response still did not satisfy the JSON Schema. This is the final "
+    "schema-repair pass: regenerate the complete response as one JSON object that conforms "
+    "exactly to the supplied JSON Schema."
+)
 
 
 class DeepSeekConfigurationError(RuntimeError):
@@ -120,7 +125,7 @@ class CallMetadata(BaseModel):
     response_id: str | None = None
     finish_reason: str | None = None
     usage: TokenUsage = Field(default_factory=TokenUsage)
-    attempt_count: int = Field(default=1, ge=1, le=2)
+    attempt_count: int = Field(default=1, ge=1, le=3)
 
 
 class StructuredResponse(BaseModel, Generic[OutputT]):
@@ -148,7 +153,7 @@ class ProviderErrorMetadata(BaseModel):
     status_code: int | None = None
     error_code: str | None = None
     retryable: bool = False
-    attempt_count: int = Field(default=1, ge=1, le=2)
+    attempt_count: int = Field(default=1, ge=1, le=3)
 
 
 class DeepSeekError(RuntimeError):
@@ -315,7 +320,7 @@ class DeepSeekClient:
         max_tokens: int | None = None,
         repair_invalid_response: bool = False,
     ) -> StructuredResponse[OutputT]:
-        """Generate a schema-valid response, optionally repairing one malformed result.
+        """Generate a schema-valid response, optionally repairing two malformed results.
 
         The repair request repeats only the original trusted messages and schema plus a
         fixed instruction. It deliberately never includes malformed model content or
@@ -358,11 +363,15 @@ class DeepSeekClient:
             base_payload["max_tokens"] = max_tokens
 
         trusted_messages = [schema_instruction, *self._validate_messages(messages)]
-        for attempt_count in range(1, 3):
+        for attempt_count in range(1, 4):
             request_messages = list(trusted_messages)
             if attempt_count == 2:
                 request_messages.append(
                     {"role": "system", "content": _STRUCTURED_REPAIR_INSTRUCTION}
+                )
+            elif attempt_count == 3:
+                request_messages.append(
+                    {"role": "system", "content": _STRUCTURED_FINAL_REPAIR_INSTRUCTION}
                 )
             response, latency_ms = await self._post_structured(
                 payload={**base_payload, "messages": request_messages},
@@ -400,7 +409,7 @@ class DeepSeekClient:
                     "DeepSeek returned an invalid structured response",
                     extra=metadata.model_dump(),
                 )
-                if not repair_invalid_response or attempt_count == 2:
+                if not repair_invalid_response or attempt_count == 3:
                     raise DeepSeekResponseError(
                         "DeepSeek returned an invalid structured response", metadata=metadata
                     ) from None

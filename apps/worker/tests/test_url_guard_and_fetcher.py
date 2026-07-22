@@ -360,6 +360,22 @@ def test_s3_store_returns_private_object_key_and_verifies_download_hash(tmp_path
     assert client.last_extra_args["CacheControl"] == "private, no-store"
 
 
+def test_s3_store_can_use_local_minio_without_kms(tmp_path):
+    client = FakeS3Client()
+    store = S3SnapshotStore(
+        client=client,
+        bucket="private-evidence",
+        staging=SnapshotFileStore(tmp_path / "staging"),
+        server_side_encryption=None,
+    )
+
+    content = b"durable local source snapshot"
+    store.write(content, content_hash=hashlib.sha256(content).hexdigest(), suffix=".html")
+
+    assert "ServerSideEncryption" not in client.last_extra_args
+    assert client.last_extra_args["CacheControl"] == "private, no-store"
+
+
 class MemoryCache:
     def __init__(self):
         self.values: dict[str, str] = {}

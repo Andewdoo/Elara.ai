@@ -54,14 +54,16 @@ class S3ObjectStorage:
 
     def put_private_object(self, *, key: str, body: bytes, content_type: str) -> None:
         _validate_object_key(key)
-        self.client.put_object(
-            Bucket=self.bucket,
-            Key=key,
-            Body=body,
-            ContentType=content_type,
-            CacheControl="private, no-store",
-            ServerSideEncryption=self.encryption,
-        )
+        arguments: dict[str, object] = {
+            "Bucket": self.bucket,
+            "Key": key,
+            "Body": body,
+            "ContentType": content_type,
+            "CacheControl": "private, no-store",
+        }
+        if self.encryption:
+            arguments["ServerSideEncryption"] = self.encryption
+        self.client.put_object(**arguments)
 
     def assert_private_bucket(self) -> None:
         public = self.client.get_public_access_block(Bucket=self.bucket)["PublicAccessBlockConfiguration"]
@@ -71,6 +73,8 @@ class S3ObjectStorage:
         status = self.client.get_bucket_policy_status(Bucket=self.bucket).get("PolicyStatus", {})
         if status.get("IsPublic") is not False:
             raise RuntimeError("Object-storage bucket policy is public or unverifiable")
+        if self.encryption is None:
+            return
         rules = self.client.get_bucket_encryption(Bucket=self.bucket)["ServerSideEncryptionConfiguration"]["Rules"]
         algorithms = {rule.get("ApplyServerSideEncryptionByDefault", {}).get("SSEAlgorithm") for rule in rules}
         if self.encryption not in algorithms:

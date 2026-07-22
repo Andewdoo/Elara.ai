@@ -31,7 +31,10 @@ class Settings(BaseSettings):
     redis_progress_max_events: int = Field(default=1_000, ge=100, le=100_000)
     redis_progress_ttl_seconds: int = Field(default=86_400, ge=300)
     redis_cancellation_ttl_seconds: int = Field(default=86_400, ge=300)
-    redis_lock_ttl_seconds: int = Field(default=3_600, ge=60)
+    # Align the run lease with the Redis broker redelivery window: a lost task
+    # becomes eligible to continue after its hard time limit rather than leaving
+    # an abandoned ownership lock for an hour.
+    redis_lock_ttl_seconds: int = Field(default=1_020, ge=60)
     worker_liveness_ttl_seconds: int = Field(default=60, ge=15, le=300)
     sse_heartbeat_seconds: int = Field(default=20, ge=15, le=30)
     web_app_url: str = "http://localhost:3000"
@@ -77,7 +80,7 @@ class Settings(BaseSettings):
     upload_max_bytes: int = Field(default=25_000_000, ge=100_000, le=100_000_000)
     unclaimed_upload_retention_hours: int = Field(default=24, ge=1, le=168)
     orphan_snapshot_retention_days: int = Field(default=30, ge=7, le=365)
-    s3_server_side_encryption: Literal["AES256", "aws:kms"] = "AES256"
+    s3_server_side_encryption: Literal["AES256", "aws:kms"] | None = "AES256"
     celery_task_soft_time_limit_seconds: int = Field(default=900, ge=60, le=3600)
     celery_task_time_limit_seconds: int = Field(default=960, ge=90, le=3900)
 
@@ -192,6 +195,13 @@ class Settings(BaseSettings):
     def restore_private_key_newlines(cls, value: str | None) -> str | None:
         return value.replace("\\n", "\n") if value else value
 
+    @field_validator("s3_server_side_encryption", mode="before")
+    @classmethod
+    def allow_local_s3_encryption_opt_out(cls, value: object) -> object:
+        if isinstance(value, str) and value.strip().casefold() in {"", "none"}:
+            return None
+        return value
+
     @field_validator("langsmith_endpoint")
     @classmethod
     def validate_langsmith_endpoint(cls, value: str | None) -> str | None:
@@ -215,6 +225,14 @@ class Settings(BaseSettings):
         if self.deepseek_request_timeout_seconds >= self.celery_task_soft_time_limit_seconds:
             raise ValueError(
                 "DEEPSEEK_REQUEST_TIMEOUT_SECONDS must be below the Celery soft time limit"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def run_lock_outlives_the_hard_task_limit(self) -> "Settings":
+        if self.redis_lock_ttl_seconds < self.celery_task_time_limit_seconds + 60:
+            raise ValueError(
+                "REDIS_LOCK_TTL_SECONDS must exceed the Celery hard time limit by at least 60 seconds"
             )
         return self
 

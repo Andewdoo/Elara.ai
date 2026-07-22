@@ -702,6 +702,7 @@ def test_intake_sends_immutable_expected_input_kind_and_accepts_matching_kind():
     payload = json.loads(model.calls[0]["messages"][1]["content"])
     system_prompt = " ".join(model.calls[0]["messages"][0]["content"].split())
     assert model.calls[0]["prompt_version"] == "intake-v2"
+    assert model.calls[0]["repair_invalid_response"] is True
     assert payload == {"submitted_input": "A claim", "expected_input_kind": "claim"}
     assert "expected_input_kind is immutable task context" in system_prompt
     assert result.normalized_input is not None
@@ -949,7 +950,7 @@ def _classification_judgment(task_ref: str) -> dict[str, object]:
     }
 
 
-def test_evidence_classification_requires_exact_task_coverage_and_uses_v2_payload():
+def test_evidence_classification_requires_exact_task_coverage_and_uses_v3_payload():
     passage_text = "The Q1 filing reports net income of 20, compared with 10."
     value = VerificationState.model_validate(
         {
@@ -989,7 +990,7 @@ def test_evidence_classification_requires_exact_task_coverage_and_uses_v2_payloa
     )
 
     payload = json.loads(model.calls[0]["messages"][1]["content"])
-    assert model.calls[0]["prompt_version"] == "evidence-classification-v2"
+    assert model.calls[0]["prompt_version"] == "evidence-classification-v3"
     assert set(payload) == {"tasks"}
     assert [task["task_ref"] for task in payload["tasks"]] == [task.task_ref for task in tasks]
     assert {(item.claim_ref, item.passage_id) for item in result.evidence} == {
@@ -1099,6 +1100,54 @@ def test_evidence_guard_applies_deterministic_rejection_thresholds():
     assert result.evidence[0].quality.extraction_certainty == 0.60
 
 
+def test_evidence_guard_accepts_an_explicit_grounded_contradiction_without_literal_entity_match():
+    value = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+            "passages": [
+                {
+                    "passage_id": "passage-1",
+                    "source_ref": "source-1",
+                    "snapshot_id": "snapshot-1",
+                    "text": "The authority reports that no universal cure has been found.",
+                    "text_hash": "hash-1",
+                    "extraction_certainty": "0.95",
+                }
+            ],
+        }
+    )
+    classification = {
+        "classifications": [
+            {
+                "task_ref": classification_task_ref("claim-1", "passage-1"),
+                "stance": "strongly_contradicts",
+                "quality": {
+                    "relevance": 0.9,
+                    "directness": 0.8,
+                    "claim_specific_authority": 0.9,
+                    "transparency": 0.9,
+                    "temporal_fit": 0.9,
+                    "extraction_certainty": 0.95,
+                },
+                "explicit_contradiction": "No universal cure has been found.",
+                "entity_match": False,
+                "time_period_match": True,
+                "quotation_or_number_located": True,
+            }
+        ]
+    }
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=FakeModel([classification]), submitted_input="unused")
+        ).evidence_classification(value)
+    )
+
+    assert result.evidence[0].recommended_rejection_reasons == []
+
+
 def test_evidence_guard_ignores_free_form_model_rejection_recommendations():
     value = VerificationState.model_validate(
         {
@@ -1124,6 +1173,56 @@ def test_evidence_guard_ignores_free_form_model_rejection_recommendations():
     )).evidence_classification(value))
 
     assert result.evidence[0].recommended_rejection_reasons == []
+
+
+def test_synthesis_sends_only_deterministically_approved_evidence_to_the_model():
+    def evidence(passage_id: str, rejection_reasons: list[str]):
+        return EvidenceClassificationItemOutput.model_validate({
+            "claim_ref": "claim-1",
+            "passage_id": passage_id,
+            "stance": "strongly_supports",
+            "quality": {"relevance": 1, "directness": 1,
+                "claim_specific_authority": 1, "transparency": 1,
+                "temporal_fit": 1, "extraction_certainty": 1},
+            "entity_match": True,
+            "time_period_match": True,
+            "recommended_rejection_reasons": rejection_reasons,
+        })
+
+    value = state().model_copy(update={
+        "claims": [
+            AtomicClaimOutput.model_validate(DECOMPOSITION["atomic_claims"][0])
+        ],
+        "snapshots": [SnapshotRecord(snapshot_id="snapshot-1", source_ref="source-1",
+            access_status="FETCHED", retrieved_at=datetime(2026, 7, 4, tzinfo=UTC))],
+        "passages": [
+            PassageRecord(passage_id="approved-passage", source_ref="source-1",
+                snapshot_id="snapshot-1", text="Approved supporting passage.",
+                text_hash="approved", extraction_certainty=Decimal("1")),
+            PassageRecord(passage_id="rejected-passage", source_ref="source-1",
+                snapshot_id="snapshot-1", text="Rejected unrelated passage.",
+                text_hash="rejected", extraction_certainty=Decimal("1")),
+        ],
+        "evidence": [
+            evidence("approved-passage", []),
+            evidence("rejected-passage", ["entity_mismatch"]),
+        ],
+        "scores": ScoreBundle(evidence_support=100, verdict_confidence=90,
+            source_independence=80, context_completeness=90, final_label="supported",
+            methodology_version="1.0"),
+    })
+    model = FakeModel([{"summary_sentences": [{"sentence_ref": "summary-1",
+        "text": "Approved evidence supports the claim.", "passage_ids": ["approved-passage"]}]}])
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=model, submitted_input="unused")).synthesis(value)
+    )
+
+    payload = json.loads(model.calls[0]["messages"][1]["content"])
+    assert model.calls[0]["prompt_version"] == "synthesis-v3"
+    assert [item["passage_id"] for item in payload["approved_evidence"]] == ["approved-passage"]
+    assert [item["passage_id"] for item in payload["approved_passages"]] == ["approved-passage"]
+    assert result.report_draft is not None
 
 
 def test_extension_outputs_are_revalidated():
@@ -1422,40 +1521,28 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
                         "passage_ids": ["passage-1"],
                     }
                 ],
-            }
+            },
+            {
+                "sentence_audits": [
+                    {
+                        "sentence_ref": "summary-1-revised",
+                        "passage_id": "passage-1",
+                        "entailment": "entailed",
+                        "support_explanation": "The wording matches the passage.",
+                    }
+                ],
+                "needs_revision": False,
+            },
         ]
     )
-    revised = asyncio.run(
+    audited = asyncio.run(
         WorkflowNodes(
             WorkflowServices(model=revision_model, submitted_input="unused")
         ).citation_revision(value)
     )
-    assert revised.citation_revision_count == 1
-    assert revised.citation_audit is None
-    assert WorkflowStage.CITATION_AUDIT not in revised.completed_stages
-
-    audited = asyncio.run(
-        WorkflowNodes(
-            WorkflowServices(
-                model=FakeModel(
-                    [
-                        {
-                            "sentence_audits": [
-                                {
-                                    "sentence_ref": "summary-1-revised",
-                                    "passage_id": "passage-1",
-                                    "entailment": "entailed",
-                                    "support_explanation": "The wording matches the passage.",
-                                }
-                            ],
-                            "needs_revision": False,
-                        }
-                    ]
-                ),
-                submitted_input="unused",
-            )
-        ).citation_audit(revised)
-    )
+    assert audited.citation_revision_count == 1
+    assert audited.citation_audit is not None
+    assert WorkflowStage.CITATION_AUDIT in audited.completed_stages
     assert audited.ready_for_completion is True
 
 

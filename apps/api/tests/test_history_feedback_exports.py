@@ -348,6 +348,10 @@ def test_s3_uses_internal_endpoint_for_storage_and_public_endpoint_for_signing(m
     storage.put_private_object(key="uploads/a/source.txt", body=b"private", content_type="text/plain")
     assert writes[0]["ServerSideEncryption"] == "AES256"
     assert writes[0]["CacheControl"] == "private, no-store"
+    storage.encryption = None
+    storage.assert_private_bucket()
+    storage.put_private_object(key="uploads/a/local.txt", body=b"private", content_type="text/plain")
+    assert "ServerSideEncryption" not in writes[-1]
     with pytest.raises(ValueError, match="content type"):
         storage.signed_download_url(
             key="exports/a.json",

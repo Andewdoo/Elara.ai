@@ -286,7 +286,39 @@ def test_schema_invalid_json_is_repaired_once():
     assert call_count == 2
 
 
-def test_second_schema_invalid_response_is_terminal_after_one_repair():
+def test_second_schema_invalid_response_is_repaired_one_final_time():
+    call_count = 0
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        nonlocal call_count
+        call_count += 1
+        content = '{"unexpected":"field"}' if call_count < 3 else '{"answer":"valid"}'
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": content}}]},
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "trusted task context"}],
+                output_schema=ExampleOutput,
+                prompt_version="planner-v2",
+                repair_invalid_response=True,
+            )
+        finally:
+            await http_client.aclose()
+
+    result = run(exercise())
+
+    assert result.output.answer == "valid"
+    assert result.metadata.attempt_count == 3
+    assert call_count == 3
+
+
+def test_third_schema_invalid_response_is_terminal_after_two_repairs():
     call_count = 0
 
     def handler(_request: httpx.Request) -> httpx.Response:
@@ -313,9 +345,9 @@ def test_second_schema_invalid_response_is_terminal_after_one_repair():
     with pytest.raises(DeepSeekResponseError) as exc_info:
         run(exercise())
 
-    assert call_count == 2
+    assert call_count == 3
     assert exc_info.value.metadata.error_code == "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED"
-    assert exc_info.value.metadata.attempt_count == 2
+    assert exc_info.value.metadata.attempt_count == 3
     assert not isinstance(exc_info.value, TransientProviderError)
 
 

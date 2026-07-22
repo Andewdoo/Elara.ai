@@ -4,6 +4,7 @@ from uuid import uuid4
 
 import pytest
 
+import app.celery_app as celery_module
 from app.celery_app import VERIFICATION_QUEUES, celery_app
 from app.config import Settings
 from app.models.enums import ResearchDepth
@@ -71,6 +72,23 @@ def test_celery_declares_all_verification_queues_and_safe_delivery_defaults():
     assert celery_app.conf.worker_prefetch_multiplier == 1
     assert celery_app.conf.broker_connection_retry_on_startup is False
     assert celery_app.conf.broker_connection_retry is False
+
+
+def test_celery_redelivers_lost_tasks_soon_after_the_hard_task_limit(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    settings = Settings(
+        environment="test",
+        deepseek_request_timeout_seconds=60,
+        celery_task_soft_time_limit_seconds=120,
+        celery_task_time_limit_seconds=180,
+        redis_lock_ttl_seconds=240,
+    )
+    monkeypatch.setattr(celery_module, "get_settings", lambda: settings)
+
+    application = celery_module.create_celery_app()
+
+    assert application.conf.broker_transport_options == {"visibility_timeout": 240}
 
 
 def test_redis_keys_are_namespaced_stable_and_privacy_preserving():

@@ -96,7 +96,7 @@ class StructuredModelClient(Protocol):
         model_role: str = "chat",
         temperature: float = 0.1,
         max_tokens: int | None = None,
-        repair_invalid_response: bool = False,
+        repair_invalid_response: bool = True,
     ) -> StructuredResponse: ...
 
 
@@ -248,7 +248,10 @@ class WorkflowNodes:
         messages: Sequence[Mapping[str, str]],
         output_schema: type,
         max_tokens: int,
-        repair_invalid_response: bool = False,
+        # A malformed provider response is recoverable once: DeepSeek receives the
+        # original trusted context plus a fixed schema-only repair instruction. This
+        # is bounded to one extra call and never exposes malformed model content.
+        repair_invalid_response: bool = True,
     ) -> StructuredResponse | VerificationState:
         try:
             return await self.services.model.generate_structured(
@@ -598,7 +601,22 @@ class WorkflowNodes:
                 deterministic_reasons.append("relevance_below_threshold")
             if passage is not None and passage.extraction_certainty < 0.65:
                 deterministic_reasons.append("extraction_certainty_below_threshold")
-            if not item.entity_match:
+            # A claim asserting an event or an entity can be directly contradicted
+            # by evidence that the asserted thing has not happened or does not
+            # exist. Requiring a literal entity match in that narrow case would
+            # discard the strongest contradiction (for example, evidence that no
+            # universal cure has been found). The semantic classifier must still
+            # provide explicit contradictory text, and every other deterministic
+            # relevance, extraction, time, and quote gate still applies.
+            explicit_contradiction = bool(
+                item.explicit_contradiction and item.explicit_contradiction.strip()
+            )
+            grounded_contradiction = (
+                item.stance
+                in {EvidenceStance.STRONGLY_CONTRADICTS, EvidenceStance.PARTIALLY_CONTRADICTS}
+                and explicit_contradiction
+            )
+            if not item.entity_match and not grounded_contradiction:
                 deterministic_reasons.append("entity_mismatch")
             if not item.time_period_match:
                 deterministic_reasons.append("time_period_mismatch")
@@ -656,6 +674,9 @@ class WorkflowNodes:
                 message="No approved evidence passages are available for report synthesis.",
             )
         passages = [p for p in state.passages if p.passage_id in approved_passage_ids]
+        approved_evidence = [
+            item for item in state.evidence if item.passage_id in approved_passage_ids
+        ]
         response = await self._call(
             state,
             WorkflowStage.SYNTHESIS,
@@ -666,7 +687,7 @@ class WorkflowNodes:
                     "content": _json(
                         {
                             "claims": state.claims,
-                            "approved_evidence": state.evidence,
+                            "approved_evidence": approved_evidence,
                             "approved_passages": passages,
                             "source_snapshots": state.snapshots,
                             "scores": state.scores,
@@ -951,11 +972,16 @@ class WorkflowNodes:
                 },
             }
         ).complete(WorkflowStage.CITATION_REVISION)
-        return await self._finish(
+        finished_revision = await self._finish(
             updated,
             WorkflowStage.CITATION_REVISION,
             payload={"revision_count": updated.citation_revision_count},
         )
+        # Re-audit the in-memory revised draft before returning control to the graph.
+        # LangGraph state merging must not retain the prior audit merely because the
+        # revision clears an optional field, or the old needs_revision decision would
+        # consume the remaining revision budget without assessing the new wording.
+        return await self.citation_audit(finished_revision)
 
     def extension(self, stage: WorkflowStage, implementation: ExtensionNode | None) -> ExtensionNode:
         async def run(state: VerificationState) -> VerificationState:

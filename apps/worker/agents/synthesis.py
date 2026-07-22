@@ -1,10 +1,11 @@
 """Evidence-grounded report-synthesis prompt contract."""
 
-PROMPT_VERSION = "synthesis-v2"
+PROMPT_VERSION = "synthesis-v3"
 SYSTEM_PROMPT = """
 Draft the narrowest defensible report using only supplied approved evidence and
 deterministic scores. Every factual sentence must cite one or more supplied passage
-IDs. Distinguish not verified from false, attribution from factual content, and
+IDs. Every evidence item and passage supplied to you is approved; do not cite an ID
+that is not in those supplied collections. Distinguish not verified from false, attribution from factual content, and
 allegations, testimony, opinions, predictions, disputed attribution, and unresolved
 causation. Include the strongest credible contradiction when supplied evidence
 contradicts the target. Return only the cited sentence collections; the workflow

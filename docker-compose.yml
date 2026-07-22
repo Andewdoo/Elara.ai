@@ -28,10 +28,16 @@ services:
 
   object-storage:
     image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-elara-local-access-key}
-      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-elara-local-secret-key}
+    env_file:
+      - path: .env.private
+        required: false
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - >
+        export MINIO_ROOT_USER="$${S3_ACCESS_KEY_ID:-elara-local-access-key}" &&
+        export MINIO_ROOT_PASSWORD="$${S3_SECRET_ACCESS_KEY:-elara-local-secret-key}" &&
+        exec minio server /data --console-address ":9001"
     ports:
       - "127.0.0.1:9000:9000"
       - "127.0.0.1:9001:9001"
@@ -45,15 +51,18 @@ services:
 
   object-storage-init:
     image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    env_file:
+      - path: .env.private
+        required: false
     entrypoint:
       - /bin/sh
       - -c
       - >
         mc alias set elara http://object-storage:9000
-        "${S3_ACCESS_KEY_ID:-elara-local-access-key}"
-        "${S3_SECRET_ACCESS_KEY:-elara-local-secret-key}" &&
-        mc mb --ignore-existing "elara/${S3_BUCKET_NAME:-elara-local}" &&
-        mc anonymous set none "elara/${S3_BUCKET_NAME:-elara-local}"
+        "$${S3_ACCESS_KEY_ID:-elara-local-access-key}"
+        "$${S3_SECRET_ACCESS_KEY:-elara-local-secret-key}" &&
+        mc mb --ignore-existing "elara/$${S3_BUCKET_NAME:-elara-local}" &&
+        mc anonymous set none "elara/$${S3_BUCKET_NAME:-elara-local}"
     depends_on:
       object-storage:
         condition: service_healthy
@@ -78,17 +87,13 @@ services:
       CELERY_RESULT_BACKEND: redis://redis:6379/1
       S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-http://object-storage:9000}
       S3_PUBLIC_ENDPOINT_URL: ${S3_PUBLIC_ENDPOINT_URL:-http://localhost:9000}
-      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
-      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME:-elara-local}
       S3_REGION: ${S3_REGION:-us-east-1}
       S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
+      # Local MinIO has no KMS. Production retains the Settings default of AES256.
+      S3_SERVER_SIDE_ENCRYPTION: none
       SEARCH_PROVIDER: ${SEARCH_PROVIDER:-brave}
       SEARCH_BASE_URL: ${SEARCH_BASE_URL:-https://api.search.brave.com/res/v1}
-      SENTRY_DSN_API: ${SENTRY_DSN_API:-}
-      SENTRY_ORG: ${SENTRY_ORG:-}
-      SENTRY_PROJECT_API: ${SENTRY_PROJECT_API:-}
-      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.05}
     depends_on:
       postgres:
         condition: service_healthy
@@ -118,31 +123,11 @@ services:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/1
       S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-http://object-storage:9000}
-      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
-      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME:-elara-local}
       S3_REGION: ${S3_REGION:-us-east-1}
       S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
-      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
-      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
-      DEEPSEEK_CHAT_MODEL: ${DEEPSEEK_CHAT_MODEL:-deepseek-chat}
-      DEEPSEEK_REASONING_MODEL: ${DEEPSEEK_REASONING_MODEL:-deepseek-reasoner}
-      DEEPSEEK_REQUEST_TIMEOUT_SECONDS: ${DEEPSEEK_REQUEST_TIMEOUT_SECONDS:-120}
-      DEEPSEEK_EMBEDDING_MODEL: ${DEEPSEEK_EMBEDDING_MODEL:-}
-      SEARCH_PROVIDER: ${SEARCH_PROVIDER:-brave}
-      SEARCH_API_KEY: ${SEARCH_API_KEY:-}
-      SEARCH_BASE_URL: ${SEARCH_BASE_URL:-https://api.search.brave.com/res/v1}
-      SENTRY_DSN_WORKER: ${SENTRY_DSN_WORKER:-}
-      SENTRY_ORG: ${SENTRY_ORG:-}
-      SENTRY_PROJECT_WORKER: ${SENTRY_PROJECT_WORKER:-}
-      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.05}
-      LANGSMITH_TRACING: ${LANGSMITH_TRACING:-false}
-      LANGSMITH_ENDPOINT: ${LANGSMITH_ENDPOINT:-https://api.smith.langchain.com}
-      LANGSMITH_API_KEY: ${LANGSMITH_API_KEY:-}
-      LANGSMITH_PROJECT: ${LANGSMITH_PROJECT:-elara-local}
-      DEEPSEEK_INPUT_COST_PER_MILLION_TOKENS: ${DEEPSEEK_INPUT_COST_PER_MILLION_TOKENS:-0}
-      DEEPSEEK_OUTPUT_COST_PER_MILLION_TOKENS: ${DEEPSEEK_OUTPUT_COST_PER_MILLION_TOKENS:-0}
-      SEARCH_COST_PER_REQUEST: ${SEARCH_COST_PER_REQUEST:-0}
+      # Local MinIO has no KMS. Production retains the Settings default of AES256.
+      S3_SERVER_SIDE_ENCRYPTION: none
     depends_on:
       postgres:
         condition: service_healthy
@@ -152,6 +137,9 @@ services:
         condition: service_healthy
       object-storage-init:
         condition: service_completed_successfully
+    # A warm Celery shutdown must outlive the 16-minute hard task limit.  This
+    # lets an in-flight verification finish before Compose replaces the worker.
+    stop_grace_period: 17m
     volumes:
       - fetch-storage-data:/var/lib/elara/fetch
 
