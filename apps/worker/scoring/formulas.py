@@ -8,7 +8,7 @@ from typing import Iterable, Mapping
 
 
 DECIMAL_CONTEXT = Context(prec=28, rounding=ROUND_HALF_UP)
-SCORING_VERSION = "1.1-ambiguity-gate"
+SCORING_VERSION = "1.2-citation-partial-penalty"
 ZERO = Decimal("0")
 ONE = Decimal("1")
 HUNDRED = Decimal("100")

@@ -27,7 +27,7 @@ from app.models import (
     VerificationRun,
 )
 from app.redis_client import cancellation_key, progress_stream_key, publish_progress_event
-from app.services.run_lifecycle import persist_progress
+from app.services.run_lifecycle import persist_completed_run, persist_progress
 from app.services.reports import build_report
 from elara_worker.errors import TransientFetchError, TransientProviderError
 from elara_worker.tasks import verification as task_module
@@ -63,7 +63,7 @@ class FakeRedis:
         return int(key in self.values)
 
 
-def persist_audited_report(factory, run_id):
+def persist_audited_report(factory, run_id, *, audit_status="passed"):
     with factory() as db:
         run = db.get(VerificationRun, run_id)
         assert run is not None
@@ -107,12 +107,23 @@ def persist_audited_report(factory, run_id):
                 report_section="summary",
                 sentence_text="The controlled filing supports the narrow claim.",
                 passage_id=passage.id,
-                audit_status="passed",
+                audit_status=audit_status,
                 audit_note="Direct support.",
             )
         )
         db.commit()
         return str(passage.id)
+
+
+def test_partial_citation_audit_can_complete_a_durable_report():
+    factory, run = make_run()
+    persist_audited_report(factory, run.id, audit_status="partial")
+
+    with factory() as db:
+        persist_completed_run(db, run_id=run.id, expected_citation_count=1)
+        durable = db.get(VerificationRun, run.id)
+
+    assert durable is not None and durable.status == RunStatus.COMPLETED
 
 
 def ready_state(run, passage_id: str) -> VerificationState:

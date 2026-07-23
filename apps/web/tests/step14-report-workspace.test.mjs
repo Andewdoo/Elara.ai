@@ -13,11 +13,12 @@ test("report route uses authenticated API-backed TanStack queries", async () => 
   assert.match(hook, /authenticatedApiFetch/);
 });
 
-test("workspace exposes mobile tabs, exact passages, graph, and calculation-only charts", async () => {
+test("workspace exposes user-facing tabs, exact passages, graph, and score charts", async () => {
   const workspace = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
   const charts = await readFile(join(root, "components", "report", "score-charts.tsx"), "utf8");
   const graph = await readFile(join(root, "components", "report", "source-graph.tsx"), "utf8");
-  for (const label of ["Overview", "Claims", "Evidence", "Graph", "Calculations", "Methodology", "Exact passage"]) assert.match(workspace, new RegExp(label));
+  for (const label of ["Overview", "Claims", "Evidence", "Graph", "Methodology", "Exact passage"]) assert.match(workspace, new RegExp(label));
+  for (const internalDetail of ['id: "calculations"', 'activeReportTab === "calculations"', "Server calculation records", 'title="Methodology"', 'title="Retrieval"', 'title="Models"', 'title="Parsers"']) assert.doesNotMatch(workspace, new RegExp(internalDetail));
   assert.match(workspace, /SourceDrawer/);
   assert.match(charts, /report\.calculations/);
   assert.doesNotMatch(charts, /report\.scores/);
@@ -26,4 +27,9 @@ test("workspace exposes mobile tabs, exact passages, graph, and calculation-only
   for (const filter of ["atomic claim", "relationship", "source role", "access status", "cluster"]) assert.match(graph, new RegExp(filter));
   assert.match(graph, /evidenceUsed/);
   assert.match(charts, /research_coverage/);
+});
+
+test("workspace assigns distinct keys to duplicate limitation text", async () => {
+  const workspace = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
+  assert.match(workspace, /limitations\.map\(\(item, index\) => <p key=\{`\$\{item\}-\$\{index\}`\}/);
 });

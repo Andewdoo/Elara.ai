@@ -38,6 +38,8 @@ const FirebaseAuthContext = createContext<FirebaseAuthContextValue>({
   signOut: async () => undefined,
 });
 
+const AUTH_STATE_TIMEOUT_MS = 5_000;
+
 export function FirebaseAuthProvider({ children, publicFirebaseConfig }: { children: ReactNode; publicFirebaseConfig: PublicFirebaseConfig }) {
   const configured = hasPublicFirebaseConfig(publicFirebaseConfig);
   const [user, setUser] = useState<User | null>(null);
@@ -45,18 +47,50 @@ export function FirebaseAuthProvider({ children, publicFirebaseConfig }: { child
 
   useEffect(() => {
     if (!configured) {
+      setLoading(false);
       return;
     }
 
-    const auth = getFirebaseAuth(publicFirebaseConfig);
-    if (!auth) {
-      return;
-    }
+    let active = true;
+    let timeout: number | undefined;
+    let unsubscribe: (() => void) | undefined;
 
-    return onAuthStateChanged(auth, (nextUser) => {
+    const complete = (nextUser: User | null) => {
+      if (!active) {
+        return;
+      }
+      if (timeout !== undefined) {
+        window.clearTimeout(timeout);
+      }
       setUser(nextUser);
       setLoading(false);
-    });
+    };
+
+    setLoading(true);
+    timeout = window.setTimeout(() => {
+      complete(null);
+    }, AUTH_STATE_TIMEOUT_MS);
+
+    try {
+      const auth = getFirebaseAuth(publicFirebaseConfig);
+      if (!auth) {
+        complete(null);
+      } else {
+        unsubscribe = onAuthStateChanged(auth, complete, () => {
+          complete(null);
+        });
+      }
+    } catch {
+      complete(null);
+    }
+
+    return () => {
+      active = false;
+      if (timeout !== undefined) {
+        window.clearTimeout(timeout);
+      }
+      unsubscribe?.();
+    };
   }, [configured, publicFirebaseConfig]);
 
   const value = useMemo(

@@ -68,7 +68,8 @@ def build_planner_payload(state: VerificationState) -> dict[str, object]:
         "claims": [claim.model_dump(mode="json") for claim in state.claims],
         "allowed_claim_refs": [claim.claim_ref for claim in state.claims],
         "research_depth": state.research_depth.value,
-        "max_query_count": max_query_count(state.research_depth.value),
+        "max_query_count": max_query_count(state.research_depth.value)
+        - (1 if state.normalized_input and state.normalized_input.input_kind == InputKind.ARTICLE_TITLE else 0),
         "required_intents_by_claim": required_intents_by_claim,
         "requires_attribution_check": requires_attribution_check,
     }

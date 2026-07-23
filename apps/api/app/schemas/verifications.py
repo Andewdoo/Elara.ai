@@ -12,12 +12,13 @@ class VerificationCreateRequest(BaseModel):
     input_type: InputType
     research_depth: ResearchDepth = ResearchDepth.STANDARD
     text: str | None = Field(default=None, max_length=50_000)
+    article_title: str | None = Field(default=None, max_length=500)
     url: AnyHttpUrl | None = None
     quote: str | None = Field(default=None, max_length=10_000)
     speaker: str | None = Field(default=None, max_length=500)
     upload_id: UUID | None = None
 
-    @field_validator("text", "quote", "speaker", mode="before")
+    @field_validator("text", "article_title", "quote", "speaker", mode="before")
     @classmethod
     def normalize_optional_text(cls, value: object) -> object:
         if isinstance(value, str):
@@ -28,10 +29,12 @@ class VerificationCreateRequest(BaseModel):
     @model_validator(mode="after")
     def validate_input_payload(self) -> Self:
         text_types = {InputType.CLAIM, InputType.ARTICLE_TEXT, InputType.PARAPHRASE}
+        if self.input_type == InputType.ARTICLE_URL:
+            raise ValueError("Article URL submissions are no longer supported; submit the article title instead")
         if self.input_type in text_types and not self.text:
             raise ValueError("text is required for this input type")
-        if self.input_type == InputType.ARTICLE_URL and not self.url:
-            raise ValueError("url is required for ARTICLE_URL")
+        if self.input_type == InputType.ARTICLE_TITLE and not self.article_title:
+            raise ValueError("article_title is required for ARTICLE_TITLE")
         if self.input_type == InputType.QUOTE and not self.quote:
             raise ValueError("quote is required for QUOTE")
         if self.input_type == InputType.UPLOADED_DOCUMENT and not self.upload_id:
@@ -39,6 +42,7 @@ class VerificationCreateRequest(BaseModel):
         expected_field = {
             InputType.CLAIM: "text",
             InputType.ARTICLE_URL: "url",
+            InputType.ARTICLE_TITLE: "article_title",
             InputType.ARTICLE_TEXT: "text",
             InputType.QUOTE: "quote",
             InputType.PARAPHRASE: "text",
@@ -48,6 +52,7 @@ class VerificationCreateRequest(BaseModel):
             name
             for name, value in {
                 "text": self.text,
+                "article_title": self.article_title,
                 "url": self.url,
                 "quote": self.quote,
                 "upload_id": self.upload_id,

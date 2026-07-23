@@ -99,7 +99,6 @@ test("report workspace includes the required evidence-reviewed timestamp languag
   assert.match(reportSource, /Evidence reviewed as of/);
   assert.match(reportSource, /New evidence or corrections may change this assessment\./);
   assert.match(reportSource, /limitations/);
-  assert.match(reportSource, /calculations/);
   assert.match(reportSource, /methodology/);
   assert.match(reportSource, /Attribution support/);
   assert.match(reportSource, /Quote fidelity/);

@@ -84,6 +84,33 @@ def test_history_filters_save_and_unsave(client, session_factory, owner):
     assert invalid_range.status_code == 422
 
 
+def test_history_supports_date_and_confidence_sort_directions(client, session_factory, owner):
+    older_id = create_run(session_factory, owner, title="Older report")
+    newer_id = create_run(session_factory, owner, title="Newer report")
+    with session_factory() as db:
+        older = db.get(VerificationRun, older_id)
+        newer = db.get(VerificationRun, newer_id)
+        assert older is not None and newer is not None
+        older.created_at = datetime(2026, 7, 1, 12, tzinfo=UTC)
+        older.verdict_confidence = 20
+        newer.created_at = datetime(2026, 7, 3, 12, tzinfo=UTC)
+        newer.verdict_confidence = 90
+        db.commit()
+
+    expected_first = {
+        "date_asc": older_id,
+        "date_desc": newer_id,
+        "confidence_asc": older_id,
+        "confidence_desc": newer_id,
+    }
+    for sort, run_id in expected_first.items():
+        response = client.get("/v1/history", params={"sort": sort})
+        assert response.status_code == 200
+        assert response.json()["items"][0]["run_id"] == str(run_id)
+
+    assert client.get("/v1/history", params={"sort": "unsupported"}).status_code == 422
+
+
 def test_feedback_categories_are_typed_and_persist_submitter(client, session_factory, owner):
     run_id = create_run(session_factory, owner)
     response = client.post(

@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Protocol
 from urllib.parse import urlsplit
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from langgraph.graph import END, START, StateGraph
 
@@ -36,6 +37,7 @@ from agents.schemas import (
     CitationAuditOutput,
     DecompositionDraftOutput,
     Entailment,
+    EvidenceIntent,
     EvidenceClassificationOutput,
     EvidenceClassificationItemOutput,
     EvidenceStance,
@@ -43,6 +45,7 @@ from agents.schemas import (
     IntakeClassificationOutput,
     PlanningDraftOutput,
     PlanningOutput,
+    SearchQueryOutput,
     SentenceCitationAuditOutput,
     SynthesisDraftOutput,
     SynthesisOutput,
@@ -55,7 +58,7 @@ from agents.validation import (
     summarize_violation_codes,
     validate_research_plan,
 )
-from graph.state import RecoverableError, VerificationState, WorkflowStage
+from graph.state import CalculationRecord, RecoverableError, VerificationState, WorkflowStage
 from graph.transitions import (
     citation_audit_ready,
     evidence_ready,
@@ -74,6 +77,12 @@ PROMPT_VERSIONS = {
     WorkflowStage.CITATION_REVISION: SYNTHESIS_PROMPT_VERSION,
     WorkflowStage.CITATION_AUDIT: CITATION_AUDIT_PROMPT_VERSION,
 }
+
+
+PARTIAL_CITATION_EVIDENCE_SUPPORT_PENALTY = 5
+PARTIAL_CITATION_CONFIDENCE_PENALTY = 7
+MAX_PARTIAL_CITATION_EVIDENCE_SUPPORT_PENALTY = 20
+MAX_PARTIAL_CITATION_CONFIDENCE_PENALTY = 25
 
 _STAGE_NUMBERS: dict[WorkflowStage, int] = {
     stage: index
@@ -352,6 +361,16 @@ class WorkflowNodes:
                     message="The submitted article URL could not be normalized safely.",
                 )
             output = output.model_copy(update={"normalized_text": submitted_url})
+        if output.input_kind == InputKind.ARTICLE_TITLE:
+            submitted_title = " ".join(self.services.submitted_input.split())
+            if not submitted_title or len(submitted_title) > 500:
+                return await self._failure(
+                    state,
+                    WorkflowStage.INTAKE,
+                    code="INVALID_ARTICLE_TITLE",
+                    message="The submitted article title could not be normalized safely.",
+                )
+            output = output.model_copy(update={"normalized_text": submitted_title})
         updated = state.complete(
             WorkflowStage.INTAKE,
             normalized_input=output,
@@ -686,6 +705,11 @@ class WorkflowNodes:
                     "role": "user",
                     "content": _json(
                         {
+                            "submitted_target": (
+                                state.normalized_input.normalized_text
+                                if state.normalized_input is not None
+                                else None
+                            ),
                             "claims": state.claims,
                             "approved_evidence": approved_evidence,
                             "approved_passages": passages,
@@ -847,6 +871,8 @@ class WorkflowNodes:
             citation_audit=guarded,
             model_calls={**state.model_calls, WorkflowStage.CITATION_AUDIT.value: response.metadata},
         )
+        if not guarded.needs_revision:
+            updated = _apply_partial_citation_penalty(updated)
         return await self._finish(
             updated,
             WorkflowStage.CITATION_AUDIT,
@@ -1164,7 +1190,36 @@ def _validate_planner_output(
                 field="objectives.claim_ref",
             ),
         )
+    output = _with_article_title_query(state, output)
     return output, validate_research_plan(state, output)
+
+
+def _with_article_title_query(state: VerificationState, output: PlanningOutput) -> PlanningOutput:
+    """Ensure a title submission starts discovery with an exact Brave query."""
+    normalized_input = state.normalized_input
+    if normalized_input is None or normalized_input.input_kind != InputKind.ARTICLE_TITLE:
+        return output
+    article_title = normalized_input.normalized_text
+    canonical_title = " ".join(article_title.casefold().split())
+    if any(
+        query.intent == EvidenceIntent.PRIMARY
+        and " ".join(query.query.casefold().split()) == canonical_title
+        for query in output.queries
+    ):
+        return output
+    primary_objective = next(
+        (objective for objective in output.objectives if objective.intent == EvidenceIntent.PRIMARY),
+        None,
+    )
+    if primary_objective is None:
+        return output
+    title_query = SearchQueryOutput(
+        query=article_title,
+        objective_ref=primary_objective.objective_ref,
+        intent=EvidenceIntent.PRIMARY,
+        priority=1.0,
+    )
+    return output.model_copy(update={"queries": [title_query, *output.queries]})
 
 
 def _planner_repair_instruction(
@@ -1264,6 +1319,43 @@ def _deterministic_ambiguity_limitations(state: VerificationState) -> list[str]:
     ]
 
 
+_GENERIC_REPORT_TITLES = {
+    "assessment",
+    "evidence assessment",
+    "report",
+    "untitled verification",
+    "verification",
+    "verification report",
+}
+_REPORT_TITLE_MAX_LENGTH = 96
+
+
+def _normalize_report_title(value: str | None) -> str | None:
+    if not value:
+        return None
+    title = re.sub(r"[\x00-\x1f\x7f]", "", " ".join(value.split())).strip()
+    if not title or title.casefold() in _GENERIC_REPORT_TITLES:
+        return None
+    if len(title) <= _REPORT_TITLE_MAX_LENGTH:
+        return title
+    boundary = title.rfind(" ", 0, _REPORT_TITLE_MAX_LENGTH - 1)
+    return f"{title[:boundary if boundary > 24 else _REPORT_TITLE_MAX_LENGTH - 1].rstrip(' ,;:—-')}…"
+
+
+def _report_title(state: VerificationState, suggested_title: str | None) -> str:
+    """Prefer the constrained model paraphrase, with a deterministic target fallback."""
+
+    if title := _normalize_report_title(suggested_title):
+        return title
+    submitted_target = (
+        state.normalized_input.normalized_text
+        if state.normalized_input is not None
+        else None
+    )
+    first_claim = state.claims[0].text if state.claims else None
+    return _normalize_report_title(submitted_target) or _normalize_report_title(first_claim) or "Verification report"
+
+
 def _build_deterministic_report(
     state: VerificationState,
     draft: SynthesisDraftOutput,
@@ -1275,7 +1367,7 @@ def _build_deterministic_report(
     prompt_versions: dict[str, str],
 ) -> SynthesisOutput:
     return SynthesisOutput(
-        title="Evidence assessment",
+        title=_report_title(state, draft.report_title),
         summary_sentences=draft.summary_sentences,
         factual_sentences=draft.factual_sentences,
         strongest_credible_contradiction=draft.strongest_credible_contradiction,
@@ -1324,15 +1416,89 @@ def _guard_citation_audit(
             if item.entailment in {Entailment.NOT_ENTAILED, Entailment.INSUFFICIENT}
         }
     )
-    partial = {item.sentence_ref for item in audit.sentence_audits if item.entailment == Entailment.PARTIAL}
     missing = sorted(ref for ref, sentence in sentences.items() if not sentence.passage_ids)
-    needs_revision = bool(unsupported or partial or missing)
+    needs_revision = bool(unsupported or missing)
     return CitationAuditOutput(
         sentence_audits=[SentenceCitationAuditOutput.model_validate(item) for item in audit.sentence_audits],
         unsupported_sentence_refs=unsupported,
         missing_citation_sentence_refs=missing,
         needs_revision=needs_revision,
     )
+
+
+def _apply_partial_citation_penalty(state: VerificationState) -> VerificationState:
+    """Keep narrowly supported prose publishable with deterministic capped deductions."""
+    if state.scores is None or state.citation_audit is None:
+        return state
+    partial_sentence_refs = {
+        item.sentence_ref
+        for item in state.citation_audit.sentence_audits
+        if item.entailment == Entailment.PARTIAL
+    }
+    if not partial_sentence_refs:
+        return state
+    count = len(partial_sentence_refs)
+    evidence_support_penalty = min(
+        MAX_PARTIAL_CITATION_EVIDENCE_SUPPORT_PENALTY,
+        PARTIAL_CITATION_EVIDENCE_SUPPORT_PENALTY * count,
+    )
+    confidence_penalty = min(
+        MAX_PARTIAL_CITATION_CONFIDENCE_PENALTY,
+        PARTIAL_CITATION_CONFIDENCE_PENALTY * count,
+    )
+
+    def penalize(value: int | None, penalty: int) -> int | None:
+        return max(0, value - penalty) if value is not None else None
+
+    scores = state.scores.model_copy(
+        update={
+            "evidence_support": penalize(
+                state.scores.evidence_support, evidence_support_penalty
+            ),
+            "verdict_confidence": penalize(
+                state.scores.verdict_confidence, confidence_penalty
+            ),
+        }
+    )
+    calculations: list[CalculationRecord] = []
+    for calculation in state.calculations:
+        inputs = dict(calculation.inputs)
+        result = dict(calculation.result)
+        if calculation.claim_ref is None and calculation.formula_name == "article_factual_accuracy":
+            result["score"] = str(
+                penalize(
+                    int(float(result["score"])), evidence_support_penalty
+                )
+            ) if result.get("score") is not None else None
+            inputs["citation_partial_support_penalty"] = str(evidence_support_penalty)
+        elif calculation.claim_ref is None and calculation.formula_name == "verdict_confidence":
+            result["score"] = str(scores.verdict_confidence) if scores.verdict_confidence is not None else None
+            penalties = inputs.get("penalties")
+            inputs["penalties"] = {
+                **(penalties if isinstance(penalties, dict) else {}),
+                "citation_partial_support": str(confidence_penalty),
+            }
+        calculations.append(calculation.model_copy(update={"inputs": inputs, "result": result}))
+    calculations.append(
+        CalculationRecord(
+            calculation_ref=str(uuid4()),
+            formula_name="citation_partial_support_penalty",
+            formula_text="reported score = clamp(original score - partial citation penalty, 0, 100)",
+            inputs={
+                "partial_sentence_count": count,
+                "evidence_support_penalty": str(evidence_support_penalty),
+                "verdict_confidence_penalty": str(confidence_penalty),
+            },
+            result={
+                "evidence_support": scores.evidence_support,
+                "verdict_confidence": scores.verdict_confidence,
+            },
+            units="score_0_100",
+            decimal_context={"precision": 28, "rounding": "ROUND_HALF_UP"},
+            audit_status="passed",
+        )
+    )
+    return state.model_copy(update={"scores": scores, "calculations": calculations})
 
 
 _START_MESSAGES = {stage: f"Starting {stage.value.replace('_', ' ')}." for stage in WorkflowStage}

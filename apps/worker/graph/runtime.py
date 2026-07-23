@@ -178,6 +178,8 @@ class SqlWorkflowStateWriter:
                 run.title = state.report_draft.title
                 run.evidence_reviewed_at = state.evidence_reviewed_at
             elif stage == WorkflowStage.CITATION_AUDIT and state.citation_audit is not None:
+                if state.scores is not None:
+                    self._persist_scoring(db, run, state)
                 self._persist_citation_audit(db, run, state)
             self._persist_model_metadata(run, state)
             db.commit()
@@ -546,6 +548,7 @@ class SqlWorkflowStateWriter:
             if row.citation_status != "rejected":
                 row.citation_status = "pending"
         accepted_passages: set[UUID] = set()
+        partially_supported_passages: set[UUID] = set()
         for audit in state.citation_audit.sentence_audits:
             try:
                 passage_id = UUID(audit.passage_id)
@@ -555,6 +558,8 @@ class SqlWorkflowStateWriter:
             passed = audit.entailment == Entailment.ENTAILED
             if passed:
                 accepted_passages.add(passage_id)
+            elif audit.entailment == Entailment.PARTIAL:
+                partially_supported_passages.add(passage_id)
             db.add(
                 ReportCitation(
                     run_id=run.id,
@@ -568,6 +573,11 @@ class SqlWorkflowStateWriter:
         for row in evidence_rows:
             if row.passage_id in accepted_passages and row.citation_status != "rejected":
                 row.citation_status = "accepted"
+            elif (
+                row.passage_id in partially_supported_passages
+                and row.citation_status != "rejected"
+            ):
+                row.citation_status = "partial"
 
 
 def execute_verification_workflow(
@@ -812,6 +822,7 @@ def execute_planning_workflow(*args, **kwargs) -> VerificationState | None:
 _INPUT_KINDS = {
     InputType.CLAIM: InputKind.CLAIM,
     InputType.ARTICLE_URL: InputKind.ARTICLE_URL,
+    InputType.ARTICLE_TITLE: InputKind.ARTICLE_TITLE,
     InputType.ARTICLE_TEXT: InputKind.ARTICLE_TEXT,
     InputType.QUOTE: InputKind.QUOTE,
     InputType.PARAPHRASE: InputKind.PARAPHRASE,

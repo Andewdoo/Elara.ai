@@ -1,16 +1,16 @@
-# Graph Report - Elara.ai  (2026-07-22)
+# Graph Report - Elara.ai  (2026-07-23)
 
 ## Corpus Check
-- 297 files · ~174,269 words
+- 300 files · ~175,890 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2932 nodes · 7592 edges · 241 communities (152 shown, 89 thin omitted)
-- Extraction: 69% EXTRACTED · 31% INFERRED · 0% AMBIGUOUS · INFERRED: 2359 edges (avg confidence: 0.63)
+- 2957 nodes · 7671 edges · 239 communities (148 shown, 91 thin omitted)
+- Extraction: 69% EXTRACTED · 31% INFERRED · 0% AMBIGUOUS · INFERRED: 2406 edges (avg confidence: 0.63)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2a6d3825`
+- Built from commit: `561e61dd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -99,16 +99,12 @@
 - [[_COMMUNITY_AGENTS|AGENTS.md]]
 - [[_COMMUNITY_Lite Mode Side-Project Demo Runbook|Lite Mode Side-Project Demo Runbook]]
 - [[_COMMUNITY_README|README.md]]
-- [[_COMMUNITY_dataset_split|dataset_split]]
 - [[_COMMUNITY_AGENTS|AGENTS.md]]
-- [[_COMMUNITY_score-charts.tsx|score-charts.tsx]]
 - [[_COMMUNITY_README|README.md]]
 - [[_COMMUNITY_SecureFetcher|SecureFetcher]]
-- [[_COMMUNITY_queueing.py|queueing.py]]
 - [[_COMMUNITY_GitHub Actions|GitHub Actions]]
 - [[_COMMUNITY_schemas.ts|schemas.ts]]
 - [[_COMMUNITY_verify_run|verify_run]]
-- [[_COMMUNITY_passage_retrieval.py|passage_retrieval.py]]
 - [[_COMMUNITY_README|README.md]]
 - [[_COMMUNITY_case.schema.json|case.schema.json]]
 - [[_COMMUNITY_pendingAnnotation|pendingAnnotation]]
@@ -151,7 +147,6 @@
 - [[_COMMUNITY_expected_labels|expected_labels]]
 - [[_COMMUNITY_primary_sources|primary_sources]]
 - [[_COMMUNITY___init__.py|__init__.py]]
-- [[_COMMUNITY_button.tsx|button.tsx]]
 - [[_COMMUNITY_2. Phase 1 Infrastructure and Data Persistence|2. Phase 1: Infrastructure and Data Persistence]]
 - [[_COMMUNITY_Intake|Intake]]
 - [[_COMMUNITY_LangGraph Workflow|LangGraph Workflow]]
@@ -168,7 +163,6 @@
 - [[_COMMUNITY_Trafilatura Extractor|Trafilatura Extractor]]
 - [[_COMMUNITY_Elara.ai Web Application Architecture and Technical Blueprint PDF|Elara.ai Web Application Architecture and Technical Blueprint PDF]]
 - [[_COMMUNITY_Elara.ai Verification and Targeted Retrieval Methodology PDF|Elara.ai Verification and Targeted Retrieval Methodology PDF]]
-- [[_COMMUNITY_ValueError|ValueError]]
 - [[_COMMUNITY_cluster_sources|cluster_sources]]
 - [[_COMMUNITY_packagesapi-clientREADME|packages/api-client/README.md]]
 - [[_COMMUNITY_packagesdesign-tokensREADME|packages/design-tokens/README.md]]
@@ -189,8 +183,8 @@
 - [[_COMMUNITY_Governance Controls (Step 24B)|Governance Controls (Step 24B)]]
 - [[_COMMUNITY_README|README.md]]
 - [[_COMMUNITY_4. Phase 3 Verification Worker and LangGraph Workflow|4. Phase 3: Verification Worker and LangGraph Workflow]]
+- [[_COMMUNITY_get_session_factory|get_session_factory]]
 - [[_COMMUNITY_Step 24B Governance Controls|Step 24B Governance Controls]]
-- [[_COMMUNITY_get_or_create_firebase_user|get_or_create_firebase_user]]
 - [[_COMMUNITY_AWS and Vercel demo topology|AWS and Vercel demo topology]]
 - [[_COMMUNITY_Minimum demo boundaries|Minimum demo boundaries]]
 - [[_COMMUNITY_Hosted-Demo Completion Plan|Hosted-Demo Completion Plan]]
@@ -201,7 +195,6 @@
 - [[_COMMUNITY_Demo privacy and report-integrity controls|Demo privacy and report-integrity controls]]
 - [[_COMMUNITY_RecordingStorage|RecordingStorage]]
 - [[_COMMUNITY_Vercel|Vercel]]
-- [[_COMMUNITY__counts|_counts]]
 - [[_COMMUNITY_test_firebase_gateway.py|test_firebase_gateway.py]]
 - [[_COMMUNITY_VerificationCreateRequest|VerificationCreateRequest]]
 - [[_COMMUNITY_smoke_gate.py|smoke_gate.py]]
@@ -211,7 +204,6 @@
 - [[_COMMUNITY_register|register]]
 - [[_COMMUNITY_RetrievalPipeline|RetrievalPipeline]]
 - [[_COMMUNITY_test_durable_status_transitions_cannot_move_backward|test_durable_status_transitions_cannot_move_backward]]
-- [[_COMMUNITY_terminal_database_event|terminal_database_event]]
 - [[_COMMUNITY_Step 25C Hosted-Demo Validation Evidence|Step 25C Hosted-Demo Validation Evidence]]
 - [[_COMMUNITY_Base|Base]]
 - [[_COMMUNITY_step9-lite-default-page.test.mjs|step9-lite-default-page.test.mjs]]
@@ -221,6 +213,7 @@
 - [[_COMMUNITY_2026-07-16 Prompt 11 authorized attempt|2026-07-16 Prompt 11 authorized attempt]]
 - [[_COMMUNITY_Q Create a sub-agent optimization implementation plan and step-by-step sub-agent prompt file for the Elara worker failure without changing the stack.|Q: Create a sub-agent optimization implementation plan and step-by-step sub-agent prompt file for the Elara worker failure without changing the stack.]]
 - [[_COMMUNITY_step11-lite-progress-ux.test.mjs|step11-lite-progress-ux.test.mjs]]
+- [[_COMMUNITY_SourceDependencyAnalyzer|SourceDependencyAnalyzer]]
 - [[_COMMUNITY_2026-07-17 approved GitRef update and paired-deployment verification attempt|2026-07-17 approved GitRef update and paired-deployment verification attempt]]
 - [[_COMMUNITY_step10-lite-report-adapter.test.mjs|step10-lite-report-adapter.test.mjs]]
 - [[_COMMUNITY_Q is the backend stack impossible to host thorugh free tier|Q: is the backend stack impossible to host thorugh free tier?]]
@@ -232,25 +225,30 @@
 - [[_COMMUNITY_2026-07-17 authorized Prompt 11 change-set diagnosis attempt|2026-07-17 authorized Prompt 11 change-set diagnosis attempt]]
 - [[_COMMUNITY_atomic_claims|atomic_claims]]
 - [[_COMMUNITY_SecureFetcher|SecureFetcher]]
+- [[_COMMUNITY_GuardedUrl|GuardedUrl]]
 - [[_COMMUNITY_sentry.py|sentry.py]]
-- [[_COMMUNITY_VerificationCreateRequest|VerificationCreateRequest]]
-- [[_COMMUNITY_report-route.tsx|report-route.tsx]]
 - [[_COMMUNITY_2026-07-17 authorized Prompt 11 timeout-remediation attempt|2026-07-17 authorized Prompt 11 timeout-remediation attempt]]
-- [[_COMMUNITY_cluster_sources|cluster_sources]]
-- [[_COMMUNITY_enforce_verification_rate_limit|enforce_verification_rate_limit]]
 - [[_COMMUNITY_get_authenticated_session|get_authenticated_session]]
+- [[_COMMUNITY_enforce_verification_rate_limit|enforce_verification_rate_limit]]
+- [[_COMMUNITY_test_auth_routes.py|test_auth_routes.py]]
+- [[_COMMUNITY_get_authenticated_session|get_authenticated_session]]
+- [[_COMMUNITY_verify-page-content.test.mjs|verify-page-content.test.mjs]]
+- [[_COMMUNITY_cluster_sources|cluster_sources]]
+- [[_COMMUNITY_article-title-input.test.mjs|article-title-input.test.mjs]]
 - [[_COMMUNITY_dataset_split|dataset_split]]
+- [[_COMMUNITY_attribution_expectations|attribution_expectations]]
 - [[_COMMUNITY_2026-07-18 authorized Prompt 11 preflight|2026-07-18 authorized Prompt 11 preflight]]
 - [[_COMMUNITY_2026-07-19 authorized Prompt 11 current preflight|2026-07-19 authorized Prompt 11 current preflight]]
+- [[_COMMUNITY_acceptable_passages|acceptable_passages]]
 - [[_COMMUNITY_2026-07-16 fresh SSM and source-transport diagnosis attempt|2026-07-16 fresh SSM and source-transport diagnosis attempt]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `VerificationState` - 148 edges
+1. `VerificationState` - 152 edges
 2. `Settings` - 141 edges
 3. `SqlWorkflowStateWriter` - 79 edges
-4. `FakeModel` - 71 edges
-5. `WorkflowNodes` - 70 edges
-6. `WorkflowServices` - 64 edges
+4. `WorkflowNodes` - 74 edges
+5. `FakeModel` - 72 edges
+6. `WorkflowServices` - 68 edges
 7. `DurableProgressWriter` - 55 edges
 8. `RunCancellationChecker` - 55 edges
 9. `WorkflowExtensionError` - 50 edges
@@ -259,59 +257,59 @@
 ## Surprising Connections (you probably didn't know these)
 - `_counts()` --indirect_call--> `AgentEvent`  [INFERRED]
   acceptance/test_full_stack.py → apps/api/app/models/agent_event.py
-- `test_deterministic_full_stack_acceptance()` --indirect_call--> `SourceSnapshot`  [INFERRED]
-  acceptance/test_full_stack.py → apps/api/app/models/sources.py
 - `_counts()` --indirect_call--> `AtomicClaim`  [INFERRED]
   acceptance/test_full_stack.py → apps/api/app/models/claims.py
 - `_counts()` --indirect_call--> `SearchQuery`  [INFERRED]
   acceptance/test_full_stack.py → apps/api/app/models/claims.py
 - `_counts()` --indirect_call--> `EvidenceItem`  [INFERRED]
   acceptance/test_full_stack.py → apps/api/app/models/evidence.py
+- `_counts()` --indirect_call--> `InformationCluster`  [INFERRED]
+  acceptance/test_full_stack.py → apps/api/app/models/provenance.py
 
 ## Import Cycles
-- None detected.
+- 1-file cycle: `apps/web/lib/auth.ts -> apps/web/lib/auth.ts`
 
 ## Hyperedges (group relationships)
 - **LangGraph Verification Workflow Steps** — concept_intake, concept_decomposition, concept_planner, concept_discovery, concept_secure_retrieval, concept_extraction_pipeline, concept_passage_segmentation, concept_provenance_analysis, concept_evidence_classification, concept_deterministic_scoring, concept_numerical_audit, concept_report_synthesis, concept_citation_audit [EXTRACTED 1.00]
 - **Deployment Targets** — vercel, docker, github_actions, supabase [INFERRED 0.80]
 
-## Communities (241 total, 89 thin omitted)
+## Communities (239 total, 91 thin omitted)
 
 ### Community 0 - "formulas.py"
-Cohesion: 0.09
+Cohesion: 0.10
 Nodes (36): adjusted_evidence_weight(), article_factual_accuracy(), _bounded(), clamp_score(), context_completeness(), _decimal(), decimal_context_record(), evidence_balance() (+28 more)
 
 ### Community 1 - "WorkflowNodes"
-Cohesion: 0.09
-Nodes (16): PlaywrightLimits, extractor_for(), FakeBrowser, FakeContext, FakePage, FakeRequest, FakeResponse, FakeRoute (+8 more)
+Cohesion: 0.07
+Nodes (28): ExtractedDocument, PlaywrightExtractionError, PlaywrightExtractor, PlaywrightLimits, Any, Isolated, policy-enforced Playwright fallback for important HTML sources., ExtractionOutcome, canonicalize_url() (+20 more)
 
 ### Community 2 - "AgentEvent"
-Cohesion: 0.15
-Nodes (28): AgentEvent, A source fetch may succeed when retried within the task budget., TransientFetchError, FakeRedis, make_run(), Exception, LogCaptureFixture, MonkeyPatch (+20 more)
+Cohesion: 0.14
+Nodes (31): AgentEvent, A source fetch may succeed when retried within the task budget., TransientFetchError, FakeRedis, make_run(), persist_audited_report(), Exception, LogCaptureFixture (+23 more)
 
 ### Community 3 - "dependencies"
 Cohesion: 0.05
 Nodes (38): dependencies, clsx, firebase, @hookform/resolvers, lucide-react, next, react, react-dom (+30 more)
 
 ### Community 4 - "Alembic"
-Cohesion: 0.10
+Cohesion: 0.09
 Nodes (4): Alembic, _embedding_dimension(), Create durable verification, evidence, provenance, and version schema.  Revision, upgrade()
 
 ### Community 5 - "RunStatus"
-Cohesion: 0.11
-Nodes (51): DecompositionNormalizationError, A stable deterministic rejection for a model-produced claim draft., DeepSeekError, Base provider failure carrying only redacted operational metadata., StructuredResponse, Raised when a draft selects a claim reference outside workflow state., UnknownPlanningDraftClaimRefError, AgentOutput (+43 more)
+Cohesion: 0.17
+Nodes (18): _acceptable(), extract_with_beautiful_soup(), extract_with_trafilatura(), _meta(), _normalize(), _parse_date(), datetime, _quality() (+10 more)
 
 ### Community 6 - "state.py"
-Cohesion: 0.14
-Nodes (47): Any, BaseModel, CallMetadata, DeepSeekUnavailableError, ProviderErrorMetadata, AtomicClaimOutput, CitationAuditOutput, CitedReportSentenceOutput (+39 more)
+Cohesion: 0.18
+Nodes (39): CallMetadata, ProviderErrorMetadata, AtomicClaimOutput, CitationAuditOutput, ClaimAmbiguityOutput, EvidenceClassificationItemOutput, IntakeClassificationOutput, PlanningOutput (+31 more)
 
 ### Community 7 - "NumericalAuditor"
-Cohesion: 0.12
-Nodes (26): Deterministic audit services., AuditStatus, _convert(), _formula(), NumericalAuditor, NumericalCandidate, NumericalInput, Any (+18 more)
+Cohesion: 0.13
+Nodes (25): Deterministic audit services., _convert(), _formula(), NumericalAuditor, NumericalCandidate, NumericalInput, Any, Decimal (+17 more)
 
 ### Community 8 - "FakeModel"
-Cohesion: 0.14
-Nodes (49): classification_task_ref(), Return the stable identifier for a claim/passage classification task., build_workflow(), _conditional(), Compile the controlled graph; planning-only is the Step 8 production handoff., WorkflowNodes, WorkflowServices, _classification_judgment() (+41 more)
+Cohesion: 0.13
+Nodes (51): classification_task_ref(), Return the stable identifier for a claim/passage classification task., CitedReportSentenceOutput, execute_planning_workflow(), Compatibility wrapper for callers that intentionally stop after planning., WorkflowNodes, WorkflowServices, _classification_judgment() (+43 more)
 
 ### Community 9 - "SqlWorkflowStateWriter"
 Cohesion: 0.16
@@ -319,27 +317,27 @@ Nodes (13): get_history(), datetime, HistoryResponse, ResearchDepth, RunStatus, 
 
 ### Community 10 - "deepseek.ts"
 Cohesion: 0.08
-Nodes (25): buildMetadata(), createLiteLexicalMetadataFallback(), DeepSeekChatResponseBody, DeepSeekClient, DeepSeekEmbeddingResponseBody, DeepSeekUsage, isFiniteVector(), LiteDeepSeekConfig (+17 more)
+Nodes (27): buildMetadata(), createLiteLexicalMetadataFallback(), DeepSeekChatResponseBody, DeepSeekClient, DeepSeekEmbeddingResponseBody, DeepSeekUsage, isFiniteVector(), LiteDeepSeekConfig (+19 more)
 
 ### Community 11 - "schemas.py"
 Cohesion: 0.06
 Nodes (33): 2026-07-13 Approved Checkout-Restoration Attempt, 2026-07-13 Authorized Phase 25B Continuation, 2026-07-13 Authorized-Session Follow-up, 2026-07-13 AWS Console and SSM Validation Attempt, 2026-07-13 Bounded Source-Transport Diagnosis, 2026-07-13 Read-Only Source Credential Setup, 2026-07-13 Side-Project Scope Update, 2026-07-13 Source Credential and Durable Bootstrap Remediation (+25 more)
 
 ### Community 12 - "lite-workspace.tsx"
-Cohesion: 0.12
-Nodes (10): LiteInputHint, liteProgressStages, LiteProgressStatus, LiteResultPanel(), LiteStageStatus, LiteSubmission, LiteWorkspace(), progressValue() (+2 more)
+Cohesion: 0.10
+Nodes (13): LiteInputHint, liteProgressStages, LiteProgressStatus, LiteResultPanel(), LiteStageStatus, LiteSubmission, LiteWorkspace(), progressValue() (+5 more)
 
 ### Community 13 - "supabase.ts"
 Cohesion: 0.06
-Nodes (42): loadLiteDeepSeekConfig(), LitePrepareCorpusOptions, loadLiteSupabaseIngestionConfig(), isLiteRunPersistenceConfigured(), isUuid(), LitePersistRunOptions, LiteRunPersistenceError, mapAuditStatus() (+34 more)
+Nodes (41): LitePrepareCorpusOptions, loadLiteSupabaseIngestionConfig(), RankedCandidate, isLiteRunPersistenceConfigured(), isUuid(), LitePersistRunOptions, LiteRunPersistenceError, mapAuditStatus() (+33 more)
 
 ### Community 14 - "FirebasePrincipal"
-Cohesion: 0.07
-Nodes (40): App, get_authenticated_bearer(), get_authenticated_session(), _load_user(), Request, Session, _unauthorized(), DeterministicFirebaseGateway (+32 more)
+Cohesion: 0.13
+Nodes (16): App, DeterministicFirebaseGateway, FirebaseAuthenticationError, FirebaseConfigurationError, FirebaseGateway, get_firebase_gateway(), Any, Credential-free Firebase boundary double for the container acceptance stack. (+8 more)
 
 ### Community 15 - "redis_client.py"
-Cohesion: 0.16
-Nodes (28): acquired_lock(), cancellation_key(), _digest(), domain_rate_limit_key(), extract_cache_key(), fetch_lock(), fetch_lock_key(), has_cancellation_flag() (+20 more)
+Cohesion: 0.11
+Nodes (34): acquired_lock(), cancellation_key(), _digest(), domain_rate_limit_key(), extract_cache_key(), fetch_lock(), fetch_lock_key(), get_redis_client() (+26 more)
 
 ### Community 16 - "WorkflowExtensions"
 Cohesion: 0.33
@@ -347,19 +345,19 @@ Nodes (5): atomic_claim(), The workflow's redundant unknown-objective guard is u
 
 ### Community 17 - "dependencies.py"
 Cohesion: 0.09
-Nodes (35): cluster_sources(), _origin_type(), Deterministic information-origin clustering., _add_edge(), _canonical_url(), dependency_multipliers(), _features(), _normalize() (+27 more)
+Nodes (36): _add_edge(), _canonical_url(), dependency_multipliers(), _features(), _normalize(), _normalize_number(), _ordered(), _ordered_paragraph_similarity() (+28 more)
 
 ### Community 18 - "UrlGuard"
-Cohesion: 0.26
-Nodes (18): cancellation_requested(), DurableProgressEvent, InvalidRunTransitionError, _load_locked_run(), mirror_progress(), _next_sequence(), persist_completed_run(), persist_progress() (+10 more)
+Cohesion: 0.17
+Nodes (27): cancellation_requested(), DurableProgressEvent, InvalidRunTransitionError, _load_locked_run(), mirror_progress(), _next_sequence(), persist_completed_run(), persist_progress() (+19 more)
 
 ### Community 19 - "config.py"
-Cohesion: 0.10
-Nodes (21): build_acceptance_adapters(), ControlledSnapshotFetcher, DeterministicBraveDouble, DeterministicDeepSeekDouble, Provider-independent DeepSeek, Brave, and controlled-source acceptance doubles., Schema-aware language-step double; deterministic gates remain production code., Stable Brave-shaped search results without provider credentials., Retrieves immutable fixture bytes into the normal private snapshot store. (+13 more)
+Cohesion: 0.08
+Nodes (23): build_acceptance_adapters(), ControlledSnapshotFetcher, DeterministicBraveDouble, DeterministicDeepSeekDouble, Provider-independent DeepSeek, Brave, and controlled-source acceptance doubles., Schema-aware language-step double; deterministic gates remain production code., Stable Brave-shaped search results without provider credentials., Retrieves immutable fixture bytes into the normal private snapshot store. (+15 more)
 
 ### Community 20 - "ExtractedBlockRecord"
-Cohesion: 0.07
-Nodes (65): _counts(), Base, AtomicClaim, SearchQuery, AccessStatus, DependencyRelationship, EvidenceStance, SourceType (+57 more)
+Cohesion: 0.05
+Nodes (71): _counts(), _headers(), Session, UUID, _submit(), test_deterministic_full_stack_acceptance(), _wait_for_status(), Base (+63 more)
 
 ### Community 21 - "ObjectStorage"
 Cohesion: 0.11
@@ -370,7 +368,7 @@ Cohesion: 0.20
 Nodes (22): _accuracy(), _brier_score(), _cluster_f1(), _cluster_pairs(), evaluate(), EvaluationResult, _field_accuracy(), load_cases() (+14 more)
 
 ### Community 23 - "Settings"
-Cohesion: 0.23
+Cohesion: 0.26
 Nodes (14): session_factory(), create_run(), FakeStorage, test_active_report_cannot_be_saved_exported_or_deleted(), test_delete_cleanup_failure_leaves_durable_retryable_request(), test_delete_hides_report_and_removes_export_objects(), test_failed_database_commit_removes_uploaded_export(), test_feedback_categories_are_typed_and_persist_submitter() (+6 more)
 
 ### Community 24 - "TestTransientStore"
@@ -387,23 +385,23 @@ Nodes (21): compilerOptions, allowJs, baseUrl, esModuleInterop, ignoreDeprecatio
 
 ### Community 27 - "DeterministicDeepSeekDouble"
 Cohesion: 0.10
-Nodes (35): Coordinate origin fetches without making Redis durable truth., RetrievalCache, FetchError, Bounded httpx fetcher with DNS pinning and redirect revalidation., SecureFetcher, SnapshotFileStore, SnapshotStore, canonicalize_url() (+27 more)
+Nodes (32): Coordinate origin fetches without making Redis durable truth., RetrievalCache, FetchError, Path, Private S3-compatible snapshot storage backed by safe local staging., S3SnapshotStore, SecureFetcher, SnapshotFileStore (+24 more)
 
 ### Community 28 - "FakeRedis"
-Cohesion: 0.19
-Nodes (6): FetchResult, Path, Response, Private S3-compatible snapshot storage backed by safe local staging., S3SnapshotStore, GuardedUrl
+Cohesion: 0.10
+Nodes (17): categories, FeedbackControls(), FeedbackFormValues, feedbackSchema, ReportHeaderActions(), Button, ButtonProps, ButtonSize (+9 more)
 
 ### Community 29 - "FakePage"
-Cohesion: 0.08
-Nodes (21): get_settings(), get_db(), get_engine(), get_session_factory(), Session, sessionmaker, get_redis_client(), get_object_storage() (+13 more)
+Cohesion: 0.07
+Nodes (24): get_settings(), get_db(), get_engine(), get_session_factory(), Session, sessionmaker, create_app(), create_session() (+16 more)
 
 ### Community 30 - "retrieval.ts"
 Cohesion: 0.09
 Nodes (32): extractLiteLexicalTerms(), boundInteger(), buildLexicalTerms(), buildLiteRetrievalQueries(), clampScore(), dedupeRankedCandidates(), exactQueryFragment(), exactSignalBoost() (+24 more)
 
 ### Community 31 - "DeepSeekClient"
-Cohesion: 0.15
-Nodes (10): DeepSeekClient, DeepSeekTimeoutError, Any, Response, Make low-temperature, structured calls without exposing source content., Generate vectors only through the configured DeepSeek-compatible route., Generate a schema-valid response, optionally repairing two malformed results., Compatibility alias for workflow nodes that use completion terminology. (+2 more)
+Cohesion: 0.14
+Nodes (8): DeepSeekClient, Any, Response, Make low-temperature, structured calls without exposing source content., Generate a schema-valid response, optionally repairing two malformed results., Compatibility alias for workflow nodes that use completion terminology., ModelRole, OutputT
 
 ### Community 32 - "service.py"
 Cohesion: 0.14
@@ -414,20 +412,20 @@ Cohesion: 0.20
 Nodes (8): Deployment and observability, Elara Infrastructure, Elara Side-Project Demo Scope, Hosted-demo success bar, Keep these minimum demo boundaries, Optimize for, Terminology, AWS Side-Project Demo Deployment
 
 ### Community 34 - "route.ts"
-Cohesion: 0.18
-Nodes (17): consumeLiteRateLimit(), createRouteRunId(), handleLiteAnswerRequest(), isAbusiveLiteInput(), isJsonRequest(), jsonLiteResponse(), LITE_ROUTE_RATE_LIMIT_BUCKETS, LiteAnswerPipeline (+9 more)
+Cohesion: 0.16
+Nodes (18): consumeLiteRateLimit(), createRouteRunId(), handleLiteAnswerRequest(), isAbusiveLiteInput(), isJsonRequest(), jsonLiteResponse(), LITE_ROUTE_RATE_LIMIT_BUCKETS, LiteAnswerPipeline (+10 more)
 
 ### Community 35 - "test_worker_observability.py"
-Cohesion: 0.18
-Nodes (13): before_send(), _initialize(), initialize_worker_sentry(), Any, Worker-only Sentry setup with aggressive payload scrubbing., _scrub(), _metadata(), Content-free LangSmith-compatible traces for worker and DeepSeek operations. (+5 more)
+Cohesion: 0.13
+Nodes (21): build_run_metrics(), emit_metrics(), MetricPoint, Any, queue_length(), _ratio(), Deterministic, content-free operational and provider usage metrics., before_send() (+13 more)
 
 ### Community 36 - "report-adapter.ts"
-Cohesion: 0.11
-Nodes (22): Filters, initialFilters, option(), SourceGraph(), AdaptableLiteResponse, liteResponseToReportWorkspace(), sourceId(), toEvidence() (+14 more)
+Cohesion: 0.13
+Nodes (21): Filters, initialFilters, option(), SourceGraph(), VerificationRun, AdaptableLiteResponse, liteResponseToReportWorkspace(), sourceId() (+13 more)
 
 ### Community 37 - "VerificationRun"
-Cohesion: 0.18
-Nodes (4): CacheBackend, Any, Namespaced Redis cache helpers; durable evidence remains in PostgreSQL., RetrievalRateLimiter
+Cohesion: 0.33
+Nodes (9): ExtractedBlock, A source-native unit retained for traceable passage segmentation., extract_pdf(), _pdf_date(), PdfExtractionLimits, _PdfLimitExceeded, datetime, test_pymupdf_extraction_rejects_page_budget_before_expansion() (+1 more)
 
 ### Community 38 - "test_deepseek_client.py"
 Cohesion: 0.23
@@ -442,44 +440,44 @@ Cohesion: 0.14
 Nodes (14): 4.4 LangGraph Nodes, Citation Audit, Decomposition, Discovery and Source Selection, Evidence Classification, Extraction, Intake, Numerical Audit (+6 more)
 
 ### Community 41 - "PlaywrightExtractor"
-Cohesion: 0.11
-Nodes (38): GovernanceDecision, ReportShare, enum_column(), datetime, utc_now(), Upload, User, adjudicate_feedback() (+30 more)
+Cohesion: 0.17
+Nodes (25): ReportShare, enum_column(), datetime, utc_now(), Upload, revoke_share(), cleanup_expired_unclaimed_uploads(), Session (+17 more)
 
 ### Community 42 - "observability.py"
-Cohesion: 0.12
-Nodes (18): metadata, AppShell(), navItems, AuthControls(), inputTypes, VerificationCreateResponse, VerificationFormValues, verificationSchema (+10 more)
+Cohesion: 0.14
+Nodes (13): metadata, AppShell(), navItems, AuthControls(), inputTypes, VerificationCreateResponse, VerificationFormValues, verificationSchema (+5 more)
 
 ### Community 43 - "test_operations_readiness.py"
 Cohesion: 0.22
 Nodes (4): globalRecord(), labels, ScoreCharts(), CalculationRecord
 
 ### Community 44 - "pipeline.ts"
-Cohesion: 0.18
-Nodes (20): createDeepSeekClient(), answerLiteClaim(), answerResponse(), auditAndReviseLiteSynthesis(), baseResponse(), clampScore(), classifyPipelineError(), contextRank() (+12 more)
+Cohesion: 0.17
+Nodes (21): createDeepSeekClient(), answerLiteClaim(), answerResponse(), auditAndReviseLiteSynthesis(), baseResponse(), clampScore(), classifyPipelineError(), contextRank() (+13 more)
 
 ### Community 46 - "ingestion.ts"
 Cohesion: 0.07
-Nodes (35): LiteDeepSeekCallMetadata, blocksToChunkUnits(), blockToCanonicalText(), ChunkUnit, chunkUnits(), createDeterministicFixtureEmbedding(), firstMarkdownHeading(), generateLiteChunkEmbeddings() (+27 more)
+Nodes (36): LiteDeepSeekCallMetadata, blocksToChunkUnits(), blockToCanonicalText(), ChunkUnit, chunkUnits(), createDeterministicFixtureEmbedding(), firstMarkdownHeading(), generateLiteChunkEmbeddings() (+28 more)
 
 ### Community 47 - "firebase-auth-provider.tsx"
-Cohesion: 0.20
-Nodes (19): FirebaseAuthContext, FirebaseAuthContextValue, FirebaseAuthProvider(), ExportRecord, FeedbackRecord, apiErrorMessage(), authenticatedApiFetch(), clearApiSession() (+11 more)
+Cohesion: 0.27
+Nodes (16): FirebaseAuthContext, FirebaseAuthContextValue, FirebaseAuthProvider(), apiErrorMessage(), clearApiSession(), createApiSession(), requireFirebaseAuth(), rollbackFailedSignIn() (+8 more)
 
 ### Community 48 - "utc_now"
-Cohesion: 0.24
-Nodes (42): ExportFormat, FeedbackCategory, InputType, ResearchDepth, RunStatus, AtomicClaimResponse, CalculationResponse, DeleteReportResponse (+34 more)
+Cohesion: 0.06
+Nodes (108): AuthenticatedUser, ExportFormat, FeedbackCategory, InputType, ResearchDepth, RunStatus, Export, UserFeedback (+100 more)
 
 ### Community 49 - "ExtractionService"
 Cohesion: 0.35
-Nodes (13): VerificationRun, Session, sessionmaker, TestClient, test_active_run_cancellation_is_idempotent(), test_active_run_limit_is_enforced_before_persistence(), test_broker_failure_is_durable_and_uses_a_concise_public_code(), test_cancel_queued_run_sets_durable_and_transient_flags() (+5 more)
+Nodes (14): VerificationRun, Session, sessionmaker, TestClient, test_active_run_cancellation_is_idempotent(), test_active_run_limit_is_enforced_before_persistence(), test_broker_failure_is_durable_and_uses_a_concise_public_code(), test_cancel_queued_run_sets_durable_and_transient_flags() (+6 more)
 
 ### Community 50 - "TestTransientStore"
-Cohesion: 0.09
-Nodes (34): _acceptable(), extract_with_beautiful_soup(), extract_with_trafilatura(), _meta(), _normalize(), _parse_date(), datetime, _quality() (+26 more)
+Cohesion: 0.29
+Nodes (5): HybridPassageSearchService, PassageSearchResponse, DeepSeekClient, Session, Generate a query vector through DeepSeek when available, then rank safely.
 
 ### Community 51 - "properties"
 Cohesion: 0.13
-Nodes (15): $ref, $ref, $ref, $ref, $ref, $ref, properties, attribution_expectations (+7 more)
+Nodes (15): $ref, $ref, enum, $ref, $ref, $ref, properties, citation_entailment (+7 more)
 
 ### Community 52 - "step8-lite-api-route.test.mjs"
 Cohesion: 0.20
@@ -494,20 +492,20 @@ Cohesion: 0.25
 Nodes (15): _canonical_content(), _canonical_text(), _claim_ref(), _has_parent_index_cycle(), normalize_decomposition(), Any, Atomic-claim decomposition prompt contract and deterministic normalizer., Assign trusted refs and validate a model-owned decomposition draft. (+7 more)
 
 ### Community 55 - "build_report"
-Cohesion: 0.06
-Nodes (48): Select, build_classification_tasks(), EvidenceClassificationTask, Evidence-classification prompt contract., Immutable, model-facing context for one bounded classification judgment., Build the complete bounded task set before asking the language model., hash_passage_text(), _limited_overlap() (+40 more)
+Cohesion: 0.12
+Nodes (29): Select, build_classification_tasks(), EvidenceClassificationTask, Evidence-classification prompt contract., Immutable, model-facing context for one bounded classification judgment., Build the complete bounded task set before asking the language model., ClassificationClaim, ClassificationPassage (+21 more)
 
 ### Community 56 - "step12-lite-security-boundaries.test.mjs"
 Cohesion: 0.14
 Nodes (18): answerResponse(), chunk(), compileLiteModules(), compileRouteModule(), findClientFiles(), listFiles(), liteModules, model() (+10 more)
 
 ### Community 57 - "test_database_schema.py"
-Cohesion: 0.25
-Nodes (32): AuthenticatedUser, cancel_verification(), create_export(), create_feedback(), create_share(), create_verification(), decide_feedback(), delete_share() (+24 more)
+Cohesion: 0.07
+Nodes (42): EvidenceQualityOutput, AuditStatus, NumericalOperation, hash_passage_text(), _limited_overlap(), PassageEmbeddingService, PassagePipeline, PassageSegmenter (+34 more)
 
 ### Community 58 - "verify-form.tsx"
 Cohesion: 0.14
-Nodes (13): principles, sections, HistoryItem, HistoryList(), HistoryResponse, elapsedLabel(), LiveResearchView(), stageLabels (+5 more)
+Nodes (16): principles, sections, conciseHistoryTitle(), GENERIC_REPORT_TITLES, HistoryItem, HistoryList(), historyReportTitle(), HistoryResponse (+8 more)
 
 ### Community 59 - "RetrievalCache"
 Cohesion: 0.67
@@ -530,32 +528,32 @@ Cohesion: 0.10
 Nodes (30): build_planner_payload(), _canonicalize(), _exact_quote(), max_query_count(), normalize_research_plan(), _objective_ref(), Research-planning prompt contract and deterministic draft normalization., Convert a model-facing draft into the persisted planning contract.      Referenc (+22 more)
 
 ### Community 64 - "report-actions.tsx"
-Cohesion: 0.29
+Cohesion: 0.27
 Nodes (9): lexical_overlap(), priority_score(), Decimal, RankingSignals, Deterministic usefulness ranking; never a credibility or truth score., select_diverse(), _terms(), test_priority_formula_is_exact_and_deterministic() (+1 more)
 
 ### Community 66 - "S3ObjectStorage"
-Cohesion: 0.50
-Nodes (4): create_upload(), Redis, Session, UploadFile
+Cohesion: 0.15
+Nodes (20): GovernanceDecision, User, adjudicate_feedback(), decide_publication(), GovernanceConflictError, Session, UUID, VerificationRun (+12 more)
 
 ### Community 67 - "ingest-lite-corpus.mjs"
 Cohesion: 0.33
 Nodes (5): args, compileLiteIngestionModules(), require, root, tempRoot
 
 ### Community 68 - "get_or_create_firebase_user"
-Cohesion: 0.27
-Nodes (5): RecordingStorage, test_cross_user_upload_id_is_not_disclosed(), test_upload_endpoint_rejects_disguised_executable_without_storage_write(), test_upload_endpoint_stores_validated_bytes_privately_and_returns_no_url(), test_validated_upload_is_owner_scoped_and_single_use()
+Cohesion: 0.31
+Nodes (4): RecordingStorage, test_upload_endpoint_rejects_disguised_executable_without_storage_write(), test_upload_endpoint_stores_validated_bytes_privately_and_returns_no_url(), test_validated_upload_is_owner_scoped_and_single_use()
 
 ### Community 69 - "step3-lite-schemas.test.mjs"
 Cohesion: 0.12
 Nodes (16): baseResponse, chunk, citedSentence, classification, judgment, model, passedAudit, queryPlan (+8 more)
 
 ### Community 70 - "ambiguities"
-Cohesion: 0.09
-Nodes (27): Sentence-to-passage citation-audit prompt contract., Claim-intake prompt contract., iter_auditable_sentences(), Yield every model-authored factual sentence in its durable report section., Evidence-grounded report-synthesis prompt contract., Controlled LangGraph workflow for Elara verification runs., WorkflowStage, _approved_passage_ids() (+19 more)
+Cohesion: 0.15
+Nodes (12): iter_auditable_sentences(), Yield every model-authored factual sentence in its durable report section., WorkflowStage, _apply_partial_citation_penalty(), _approved_passage_ids(), _guard_citation_audit(), _json(), UUID (+4 more)
 
 ### Community 72 - "RecordingStorage"
-Cohesion: 0.33
-Nodes (8): before_send(), _initialize(), initialize_api_sentry(), Any, Privacy-safe API error and performance monitoring., _scrub(), test_sentry_event_drops_exception_breadcrumb_and_url_content(), test_sentry_event_scrubs_credentials_and_request_bodies()
+Cohesion: 0.39
+Nodes (7): Bounded upload validation; uploaded bytes are never interpreted or executed by t, UploadValidationError, validate_upload(), ValidatedUpload, test_upload_validation_accepts_only_bounded_supported_content(), test_upload_validation_rejects_executable_mismatched_and_unsafe_files(), ValueError
 
 ### Community 73 - "Elara API"
 Cohesion: 0.50
@@ -570,8 +568,8 @@ Cohesion: 0.20
 Nodes (8): chunk(), compileLiteModules(), modules, request, require, retrievalStrategy(), root, tempRoot
 
 ### Community 76 - "_counts"
-Cohesion: 0.09
-Nodes (36): ExtractionService, A deterministic extension failure safe to retain in workflow state.      Details, WorkflowExtensionError, __getattr__(), Any, Server-only targeted discovery and secure retrieval services., _inaccessible_reason_code(), Typed Step 9 LangGraph extensions for discovery, fetching, and extraction. (+28 more)
+Cohesion: 0.18
+Nodes (24): ExtractionService, RetrievalPipeline, BraveSearchClient, test_controlled_brave_retrieval_persists_and_extracts_fixture_bytes(), _pipeline_source_state(), run(), test_article_title_is_searched_on_brave_without_a_submitted_url_seed(), test_brave_search_requires_key_but_no_engine_id() (+16 more)
 
 ### Community 77 - "6. Implementation steps"
 Cohesion: 0.09
@@ -585,33 +583,17 @@ Nodes (10): format, type, properties, required, type, as_of, input, submitted_te
 Cohesion: 0.25
 Nodes (8): 5.1 Next.js App Router Structure, 5.2 Frontend State Strategy, 5.3 Forms and Validation, 5.4 Real-Time UI, 5.5 Report Workspace, 5.6 React Flow Source Graph, 5.7 Recharts Visualizations, 5. Phase 4: Frontend Application
 
-### Community 84 - "dataset_split"
-Cohesion: 0.50
-Nodes (4): _as_utc(), datetime, Durable, authorized report projection with transparent calculation audits., _retrieval_versions()
-
-### Community 86 - "score-charts.tsx"
-Cohesion: 0.53
-Nodes (8): create_run(), Session, sessionmaker, TestClient, UUID, test_durable_status_transitions_cannot_move_backward(), test_public_events_reject_private_reasoning_fields(), test_terminal_runs_reject_late_progress()
-
 ### Community 88 - "SecureFetcher"
 Cohesion: 0.24
 Nodes (7): _load_smoke_gate(), test_smoke_gate_checks_api_health_and_web_origin(), test_smoke_gate_fails_when_required_urls_are_missing(), test_smoke_gate_rejects_non_https_urls(), test_staging_allows_internal_compose_redis_and_instance_role_s3(), test_staging_and_production_require_release_revision(), test_staging_rejects_plaintext_remote_redis()
 
-### Community 89 - "queueing.py"
-Cohesion: 0.14
-Nodes (18): Export, UserFeedback, Small no-network store for API boundary tests., TestTransientStore, ObjectStorage, create_json_export(), delete_report(), export_response() (+10 more)
-
 ### Community 91 - "schemas.ts"
 Cohesion: 0.05
-Nodes (73): LiteDeepSeekMessage, LitePipelineState, assertLitePromptBudget(), buildBoundedLitePayload(), callLiteStructuredStage(), estimateLitePromptTokens(), LitePromptBudget, LitePromptBudgetError (+65 more)
+Nodes (71): LiteDeepSeekMessage, LitePipelineState, assertLitePromptBudget(), buildBoundedLitePayload(), callLiteStructuredStage(), estimateLitePromptTokens(), LitePromptBudget, LitePromptBudgetError (+63 more)
 
 ### Community 92 - "verify_run"
 Cohesion: 0.36
 Nodes (19): _backfill_progress(), _cancel_if_requested(), _has_durable_event(), _is_cancelled(), _load_run(), _mark_failure_safely(), prepare_run(), _public_failure_payload() (+11 more)
-
-### Community 93 - "passage_retrieval.py"
-Cohesion: 0.10
-Nodes (19): create_app(), create_session(), delete_session(), Response, SessionResponse, Request, Response, Small, deterministic HTTP hardening controls for the API boundary. (+11 more)
 
 ### Community 95 - "case.schema.json"
 Cohesion: 0.29
@@ -626,8 +608,8 @@ Cohesion: 0.50
 Nodes (4): 2026-07-14 authenticated Full Mode attempt, Required handoff, Result and remaining limitation, Sanitized evidence
 
 ### Community 100 - "report-workspace.tsx"
-Cohesion: 0.11
-Nodes (12): ReportWorkspace(), SourceDrawer(), tabs, Badge(), BadgeTone, tones, cn(), EvidenceFilter (+4 more)
+Cohesion: 0.10
+Nodes (10): ReportRoute(), ReportWorkspace(), SourceDrawer(), tabs, useReportData(), EvidenceFilter, GraphLayoutMode, ReportTab (+2 more)
 
 ### Community 102 - "Hosted Demo Operations"
 Cohesion: 0.40
@@ -662,16 +644,16 @@ Cohesion: 0.25
 Nodes (8): Before each demo, Configure Vercel, Current AWS runtime, HTTPS API address, Minimum demo gate, Side-Project Demo Deployment Runbook, Start or update the backend, Topology
 
 ### Community 136 - "attribution_expectations"
-Cohesion: 0.50
-Nodes (3): cleanup_orphan_snapshots(), Idempotent retention cleanup with completed-report snapshot preservation., test_retention_never_deletes_completed_report_snapshot()
+Cohesion: 0.07
+Nodes (17): _as_utc(), datetime, Redis, Production adapters connecting typed graph nodes to durable run services., CacheBackend, Any, Namespaced Redis cache helpers; durable evidence remains in PostgreSQL., RetrievalRateLimiter (+9 more)
 
 ### Community 137 - "Lite Mode Side-Project Demo Runbook"
 Cohesion: 0.25
 Nodes (8): Curated corpus ingestion, Deferred Full Mode response cache, Environment variables, Lite Mode Side-Project Demo Runbook, Lite Mode versus Full Mode, Public demo limitations, Supabase pgvector setup, Vercel project setup
 
-### Community 142 - "button.tsx"
-Cohesion: 0.15
-Nodes (9): VerifyForm(), categories, FeedbackControls(), FeedbackFormValues, feedbackSchema, ReportHeaderActions(), FeedbackCategory, useReportActions() (+1 more)
+### Community 138 - "list_history"
+Cohesion: 0.11
+Nodes (56): DecompositionNormalizationError, A stable deterministic rejection for a model-produced claim draft., DeepSeekError, Base provider failure carrying only redacted operational metadata., StructuredResponse, Raised when a draft selects a claim reference outside workflow state., UnknownPlanningDraftClaimRefError, AgentOutput (+48 more)
 
 ### Community 143 - "2. Phase 1: Infrastructure and Data Persistence"
 Cohesion: 0.29
@@ -701,6 +683,10 @@ Nodes (4): Answer, Outcome, Q: Which prompt steps should be replaced with the AW
 Cohesion: 0.40
 Nodes (5): 4.1 Worker Package Layout, 4.2 DeepSeek Client, 4.3 LangGraph State, 4.5 Prompt-Injection Boundary, 4. Phase 3: Verification Worker and LangGraph Workflow
 
+### Community 186 - "get_session_factory"
+Cohesion: 0.06
+Nodes (38): Sentence-to-passage citation-audit prompt contract., Claim-intake prompt contract., Evidence-grounded report-synthesis prompt contract., Controlled LangGraph workflow for Elara verification runs., citation_audit_ready(), evidence_ready(), Deterministic routing decisions for the verification graph., Stop on cancellation or a failure in the most recently attempted node. (+30 more)
+
 ### Community 187 - "Step 24B Governance Controls"
 Cohesion: 0.50
 Nodes (3): Awaiting human approval, Implemented and enforced, Step 24B Governance Controls
@@ -708,10 +694,6 @@ Nodes (3): Awaiting human approval, Implemented and enforced, Step 24B Governanc
 ### Community 197 - "RecordingStorage"
 Cohesion: 0.38
 Nodes (5): DeepSeekConfigurationError, AsyncClient, Required server-side provider configuration is missing or invalid., test_environment_loads_optional_embedding_model_and_validates_base_url(), test_environment_validation_requires_only_deepseek_server_settings()
-
-### Community 199 - "_counts"
-Cohesion: 0.54
-Nodes (7): _headers(), Session, UUID, _submit(), test_deterministic_full_stack_acceptance(), _wait_for_status(), Client
 
 ### Community 200 - "test_firebase_gateway.py"
 Cohesion: 0.50
@@ -734,16 +716,12 @@ Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: how can the planner failure be fixed and could other agent roles have similar issues, Source Nodes
 
 ### Community 207 - "RetrievalPipeline"
-Cohesion: 0.23
-Nodes (13): DeepSeekAuthenticationError, DeepSeekConfig, DeepSeekEmbeddingUnavailableError, DeepSeekProviderError, DeepSeekRateLimitError, DeepSeekResponseError, Server-side DeepSeek client with typed JSON responses and safe telemetry., Typed language-agent contracts and server-side provider integrations. (+5 more)
+Cohesion: 0.16
+Nodes (20): Any, BaseModel, DeepSeekAuthenticationError, DeepSeekConfig, DeepSeekEmbeddingUnavailableError, DeepSeekProviderError, DeepSeekRateLimitError, DeepSeekResponseError (+12 more)
 
 ### Community 208 - "test_durable_status_transitions_cannot_move_backward"
 Cohesion: 0.50
 Nodes (4): 2026-07-16 fresh authorized Prompt 11 source-deployment attempt, Approved prerequisites and sanitized deployment evidence, Prompt 11 result matrix, Remaining handoff and EC2 state
-
-### Community 209 - "terminal_database_event"
-Cohesion: 0.31
-Nodes (10): _durable_terminal_event(), VerificationRun, encode_sse(), public_event_data(), Any, datetime, RunStatus, UUID (+2 more)
 
 ### Community 210 - "Step 25C Hosted-Demo Validation Evidence"
 Cohesion: 0.12
@@ -773,6 +751,10 @@ Nodes (4): 2026-07-16 Prompt 11 authorized attempt, Remaining handoff, Results n
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Create a sub-agent optimization implementation plan and step-by-step sub-agent prompt file for the Elara worker failure without changing the stack., Source Nodes
 
+### Community 219 - "SourceDependencyAnalyzer"
+Cohesion: 0.31
+Nodes (9): _firebase_email(), get_or_create_firebase_user(), InactiveUserError, Session, UserProvisioningConflictError, Session, sessionmaker, test_firebase_identity_loads_or_creates_one_user() (+1 more)
+
 ### Community 220 - "2026-07-17 approved GitRef update and paired-deployment verification attempt"
 Cohesion: 0.67
 Nodes (3): 2026-07-17 approved GitRef update and paired-deployment verification attempt, Prompt 11 result matrix, Required handoff and EC2 state
@@ -789,9 +771,13 @@ Nodes (4): Answer, Outcome, Q: Which project guidance currently treats Elara as 
 Cohesion: 0.67
 Nodes (3): 2026-07-17 authorized Prompt 11 hosted Full Mode attempt, Handoff, EC2, and remaining limitation, Prompt 11 result matrix
 
+### Community 225 - "atomic_claims"
+Cohesion: 0.33
+Nodes (8): before_send(), _initialize(), initialize_api_sentry(), Any, Privacy-safe API error and performance monitoring., _scrub(), test_sentry_event_drops_exception_breadcrumb_and_url_content(), test_sentry_event_scrubs_credentials_and_request_bodies()
+
 ### Community 226 - "__init__.py"
-Cohesion: 0.15
-Nodes (11): ReportRoute(), useReportData(), ConnectionState, isTerminal(), RunProgressEvent, RunStatus, TerminalRunStatus, terminalRunStatuses (+3 more)
+Cohesion: 0.20
+Nodes (11): elapsedLabel(), LiveResearchView(), stageLabels, ConnectionState, isTerminal(), RunProgressEvent, RunStatus, TerminalRunStatus (+3 more)
 
 ### Community 227 - "2026-07-17 authorized Prompt 11 pre-deployment gate"
 Cohesion: 0.67
@@ -801,25 +787,21 @@ Nodes (3): 2026-07-17 authorized Prompt 11 pre-deployment gate, Prompt 11 result
 Cohesion: 0.60
 Nodes (5): _environment_value(), Compose's explicit environment mapping wins over values loaded by env_file., _service_definition(), test_api_and_worker_use_fixed_compose_redis_service_urls(), test_compose_environment_overrides_private_host_redis_urls_for_containers()
 
-### Community 237 - "VerificationCreateRequest"
-Cohesion: 0.31
-Nodes (6): VerificationCreateRequest, test_verification_request_accepts_the_required_payload(), test_verification_request_rejects_unsafe_direct_urls(), test_verification_request_rejects_whitespace_and_conflicting_targets(), test_verification_request_requires_matching_payload(), Self
-
-### Community 238 - "report-route.tsx"
-Cohesion: 0.36
-Nodes (8): build_run_metrics(), emit_metrics(), MetricPoint, Any, queue_length(), _ratio(), Deterministic, content-free operational and provider usage metrics., test_run_metrics_cover_required_operational_signals_without_content()
-
 ### Community 239 - "2026-07-17 authorized Prompt 11 timeout-remediation attempt"
 Cohesion: 0.67
 Nodes (3): 2026-07-17 authorized Prompt 11 timeout-remediation attempt, Handoff, EC2, and remaining limitation, Prompt 11 result matrix
 
-### Community 240 - "cluster_sources"
-Cohesion: 0.08
-Nodes (31): EvidenceQualityOutput, NumericalOperation, datetime, No prompts, raw provider responses, or chain-of-thought belong here., Deterministic gate: citation revision must finish before COMPLETED., VerificationState, citation_audit_ready(), evidence_ready() (+23 more)
+### Community 240 - "get_authenticated_session"
+Cohesion: 0.46
+Nodes (7): get_authenticated_bearer(), get_authenticated_session(), _load_user(), Request, Session, _unauthorized(), HTTPAuthorizationCredentials
 
 ### Community 241 - "enforce_verification_rate_limit"
 Cohesion: 0.06
 Nodes (27): Settings, enforce_action_rate_limit(), enforce_verification_rate_limit(), _Limit, Redis, RateLimitExceededError, RateLimitUnavailableError, Redis-backed fixed-window limits enforced before expensive jobs are queued. (+19 more)
+
+### Community 243 - "test_auth_routes.py"
+Cohesion: 0.60
+Nodes (4): FakeFirebaseGateway, TestClient, test_session_delete_clears_cookie(), test_session_exchange_sets_secure_http_only_cookie()
 
 ### Community 244 - "get_authenticated_session"
 Cohesion: 0.50
@@ -834,9 +816,9 @@ Cohesion: 0.67
 Nodes (3): 2026-07-19 authorized Prompt 11 current preflight, Prompt 11 result matrix, Required handoff and EC2 state
 
 ## Knowledge Gaps
-- **594 isolated node(s):** `elara-api`, `LITE_ROUTE_RATE_LIMIT_BUCKETS`, `LiteAnswerPipeline`, `LiteRunPersistence`, `LiteAnswerRouteDependencies` (+589 more)
+- **599 isolated node(s):** `elara-api`, `LITE_ROUTE_RATE_LIMIT_BUCKETS`, `LiteAnswerPipeline`, `LiteRunPersistence`, `LiteAnswerRouteDependencies` (+594 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **89 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **91 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Work-memory lessons
 
@@ -851,16 +833,16 @@ Nodes (3): 2026-07-19 authorized Prompt 11 current preflight, Prompt 11 result m
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `candidate()` connect `NumericalAuditor` to `retrieval.ts`?**
-  _High betweenness centrality (0.085) - this node is a cross-community bridge._
+  _High betweenness centrality (0.094) - this node is a cross-community bridge._
 - **Why does `dedupeRankedCandidates()` connect `retrieval.ts` to `NumericalAuditor`?**
-  _High betweenness centrality (0.084) - this node is a cross-community bridge._
-- **Why does `VerificationState` connect `cluster_sources` to `report-actions.tsx`, `formulas.py`, `AgentEvent`, `RunStatus`, `state.py`, `NumericalAuditor`, `ambiguities`, `FakeModel`, `_counts`, `dependencies.py`, `config.py`, `ExtractedBlockRecord`, `User`, `build_report`, `verify_run`, `test_security_hardening.py`?**
-  _High betweenness centrality (0.071) - this node is a cross-community bridge._
+  _High betweenness centrality (0.094) - this node is a cross-community bridge._
+- **Why does `Select` connect `build_report` to `observability.py`, `lite-workspace.tsx`?**
+  _High betweenness centrality (0.088) - this node is a cross-community bridge._
 - **Are the 53 inferred relationships involving `VerificationState` (e.g. with `UnknownPlanningDraftClaimRefError` and `AgentContractViolation`) actually correct?**
   _`VerificationState` has 53 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 83 inferred relationships involving `Settings` (e.g. with `AuthenticatedUser` and `DeterministicFirebaseGateway`) actually correct?**
   _`Settings` has 83 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 64 inferred relationships involving `SqlWorkflowStateWriter` (e.g. with `Settings` and `AtomicClaim`) actually correct?**
   _`SqlWorkflowStateWriter` has 64 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 35 inferred relationships involving `FakeModel` (e.g. with `Settings` and `Base`) actually correct?**
-  _`FakeModel` has 35 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 59 inferred relationships involving `WorkflowNodes` (e.g. with `DecompositionNormalizationError` and `DeepSeekError`) actually correct?**
+  _`WorkflowNodes` has 59 INFERRED edges - model-reasoned connections that need verification._

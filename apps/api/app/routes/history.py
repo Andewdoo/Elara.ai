@@ -21,7 +21,10 @@ def get_history(
     saved_only: bool = False,
     created_from: datetime | None = None,
     created_to: datetime | None = None,
-    sort: str = Query(default="recent", pattern="^(recent|oldest|confidence)$"),
+    sort: str = Query(
+        default="date_desc",
+        pattern="^(date_desc|date_asc|confidence_desc|confidence_asc|recent|oldest|confidence)$",
+    ),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
     authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),

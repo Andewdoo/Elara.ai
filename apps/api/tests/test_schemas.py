@@ -10,9 +10,9 @@ from app.schemas.verifications import InputType, VerificationCreateRequest
     ("input_type", "field", "value"),
     [
         (InputType.CLAIM, "text", "A testable claim"),
+        (InputType.ARTICLE_TITLE, "article_title", "A source-independent article title"),
         (InputType.ARTICLE_TEXT, "text", "Article body"),
         (InputType.PARAPHRASE, "text", "A paraphrased statement"),
-        (InputType.ARTICLE_URL, "url", "https://example.com/story"),
         (InputType.QUOTE, "quote", "An exact quote"),
         (InputType.UPLOADED_DOCUMENT, "upload_id", uuid4()),
     ],
@@ -32,8 +32,8 @@ def test_verification_request_accepts_the_required_payload(input_type, field, va
         "https://example.com:8443/story",
     ],
 )
-def test_verification_request_rejects_unsafe_direct_urls(url: str):
-    with pytest.raises(ValidationError):
+def test_verification_request_rejects_article_url_submissions(url: str):
+    with pytest.raises(ValidationError, match="Article URL submissions are no longer supported"):
         VerificationCreateRequest(input_type=InputType.ARTICLE_URL, url=url)
 
 
@@ -47,7 +47,7 @@ def test_verification_request_rejects_whitespace_and_conflicting_targets():
         VerificationCreateRequest(input_type=InputType.CLAIM, text="   ")
     with pytest.raises(ValidationError):
         VerificationCreateRequest(
-            input_type=InputType.ARTICLE_URL,
-            url="https://example.com/story",
+            input_type=InputType.ARTICLE_TITLE,
+            article_title="An article title",
             text="unrelated hidden text",
         )

@@ -48,6 +48,31 @@ def test_create_verification_persists_run_and_first_event(
         assert fake_redis.streams[progress_stream_key(run.id)][0]["event_type"] == "run.queued"
 
 
+def test_create_article_title_persists_the_title_for_brave_discovery(
+    client: TestClient,
+    session_factory: sessionmaker[Session],
+):
+    article_title = "Gordie Howe bridge deal appears to contradict Carney's description of pact with U.S."
+
+    response = client.post(
+        "/v1/verifications",
+        json={
+            "input_type": "ARTICLE_TITLE",
+            "research_depth": "STANDARD",
+            "article_title": article_title,
+        },
+    )
+
+    assert response.status_code == 202
+    with session_factory() as db:
+        run = db.scalar(select(VerificationRun))
+        assert run is not None
+        assert run.input_type.value == "ARTICLE_TITLE"
+        assert run.submitted_text == article_title
+        assert run.submitted_url is None
+        assert run.normalized_target == {"article_title": article_title}
+
+
 def test_owned_run_lookup_does_not_cross_user_boundary(
     session_factory: sessionmaker[Session], owner: User
 ):

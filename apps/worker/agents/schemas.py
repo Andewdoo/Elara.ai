@@ -22,6 +22,7 @@ class AgentOutput(BaseModel):
 class InputKind(StrEnum):
     CLAIM = "claim"
     ARTICLE_URL = "article_url"
+    ARTICLE_TITLE = "article_title"
     ARTICLE_TEXT = "article_text"
     QUOTE = "quote"
     PARAPHRASE = "paraphrase"
@@ -379,6 +380,7 @@ class CitedReportSentenceOutput(AgentOutput):
 class SynthesisDraftOutput(AgentOutput):
     """The model-authored portion of a report, limited to cited assertions."""
 
+    report_title: str | None = Field(default=None, min_length=1, max_length=96)
     summary_sentences: list[CitedReportSentenceOutput] = Field(min_length=1)
     factual_sentences: list[CitedReportSentenceOutput] = Field(default_factory=list)
     strongest_credible_contradiction: CitedReportSentenceOutput | None = None

@@ -47,11 +47,12 @@ test("reconnect, retry, refresh, cancellation, route recovery, and partial repor
   assert.match(boundary, /reset/);
 });
 
-test("report renders every sentence role, reproducibility metadata, durable histories, and empty states", async () => {
+test("report renders every sentence role, user-facing report details, durable histories, and empty states", async () => {
   const workspace = await read("components", "report", "report-workspace.tsx");
   const actions = await read("components", "report", "report-actions.tsx");
   const hook = await read("hooks", "use-report-actions.ts");
-  for (const token of ["factual_finding", "attribution", "strongest_contradiction", "retrieval_versions", "score_roles", "generated_at", "No inaccessible sources", "No server calculation records"]) assert.match(workspace, new RegExp(token));
+  for (const token of ["factual_finding", "attribution", "strongest_contradiction", "score_roles", "generated_at", "No inaccessible sources"]) assert.match(workspace, new RegExp(token));
+  for (const internalDetail of ['id: "calculations"', 'activeReportTab === "calculations"', "Server calculation records", 'title="Methodology"', 'title="Retrieval"', 'title="Models"', 'title="Parsers"']) assert.doesNotMatch(workspace, new RegExp(internalDetail));
   assert.match(actions, /Download prepared JSON/);
   assert.match(actions, /Feedback status history/);
   assert.match(hook, /queryKey: \["exports"/);

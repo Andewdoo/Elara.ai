@@ -45,25 +45,25 @@ The highest-confidence contract defect is that the model owns `objective_ref`, `
 
 ## 3. Current agent and deterministic-stage risk review
 
-| Stage or role | Intended responsibility | Current risk | Required direction |
-|---|---|---|---|
-| Intake agent | Normalize and classify the submitted target | `expected_input_kind` is checked after the call but is not included as an explicit allowed value in the model payload; drift becomes terminal `INPUT_TYPE_MISMATCH` | Send the expected kind as immutable task context and normalize only fields the model should own |
-| Decomposition agent | Produce atomic claims and parent relationships | The model creates `claim_ref`, `parent_claim_ref`, and `original_text_span`; the prompt does not specify deterministic reference construction or exact-substring rules | Use an index-based draft schema and generate stable claim references in Python; validate exact spans and parent graph separately |
-| Planner agent | Produce objectives and queries | Confirmed prompt/schema/guard mismatch; generic diagnostics; no bounded semantic repair | Use deterministic objective references, remove redundant query intent, return stable violation codes, and permit one corrective replan |
-| Discovery/source selection | Search Brave, canonicalize, rank, deduplicate | Zero search results with no provider error can yield an empty state that later stops generically | Emit an explicit typed `NO_DISCOVERY_RESULTS` failure after the bounded search policy is exhausted |
-| Secure retrieval | Fetch selected public sources safely | The URL/network boundary is strong; inaccessible sources can still leave no usable evidence | Preserve security controls and emit an explicit typed no-accessible-source outcome without weakening URL policy |
-| Extraction | Produce auditable source text and metadata | A broad `except Exception` in `research/pipeline.py` converts programming, state, and storage invariant errors into an inaccessible source | Catch only source/parser failures; propagate invariant and programming failures with sanitized typed codes |
-| Segmentation/embedding | Produce passages and optional vectors | Lexical fallback exists, but an empty passage result can cause a route stop and generic completion rejection | Preserve pgvector and fallback; emit `NO_USABLE_PASSAGES` with counts and retrieval mode |
-| Provenance/dependency analysis | Group derivative evidence and compute dependency structure | Model-independent, but bad or orphan endpoints can poison later weights | Validate every dependency endpoint, duplicate edge, and multiplier before stage completion |
-| Evidence-classification agent | Classify selected claim/passage tasks | The schema allows an empty list and the workflow checks only duplicate/unknown returned pairs, not missing required pairs | Build a bounded deterministic task list and require exactly one classification for every task |
-| Deterministic scoring | Calculate evidence weights and claim/report scores | Correctly deterministic; risk is incomplete evidence or provenance entering the service | Add explicit preconditions and reject incomplete inputs without model fallback |
-| Numerical audit | Validate Decimal arithmetic and units | Correctly deterministic; risk is missing candidate provenance or partial calculation sets | Require calculation/candidate linkage and precise audit failure codes |
-| Synthesis agent | Draft the evidence-grounded report | `limitations`, `inaccessible_source_notes`, and `evidence_gaps` are free-form strings outside `_sentences()` and therefore outside citation audit | Generate system-known notes deterministically; represent any model-authored factual note as an auditable cited sentence |
-| Citation-audit agent | Check every sentence/passage pair | Exact-set guard is strong, but it depends on `_sentences()` covering every factual field and has no shared structured-output repair | Expand auditable sentence coverage and use the bounded structured-response repair |
-| Citation revision agent | Revise unsupported sentences and re-audit | Already bounded, but it shares synthesis schemas and model-owned sentence references | Preserve the revision limit; use stable sentence references and exact-set revalidation |
-| Workflow extension wrapper | Run discovery through numerical audit | Catches all exceptions as `WORKFLOW_EXTENSION_FAILED` and exposes only a coarse `failure_kind` | Introduce typed stage exceptions and retain unexpected exceptions as internal worker errors |
-| LangGraph transitions | Decide whether the next node runs | `evidence_ready` and `synthesis_ready` can stop on empty state without appending a specific error | Convert missing prerequisites into a stage failure before routing; transitions should not silently terminate |
-| Celery completion handoff | Persist completed artifacts or fail safely | Strong durable completion gate; a silent route stop becomes generic `COMPLETION_GATE_REJECTED` | Keep the gate and eliminate silent stops upstream; do not relax completion conditions |
+| Stage or role                  | Intended responsibility                                    | Current risk                                                                                                                                                           | Required direction                                                                                                                     |
+| ------------------------------ | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Intake agent                   | Normalize and classify the submitted target                | `expected_input_kind` is checked after the call but is not included as an explicit allowed value in the model payload; drift becomes terminal `INPUT_TYPE_MISMATCH`    | Send the expected kind as immutable task context and normalize only fields the model should own                                        |
+| Decomposition agent            | Produce atomic claims and parent relationships             | The model creates `claim_ref`, `parent_claim_ref`, and `original_text_span`; the prompt does not specify deterministic reference construction or exact-substring rules | Use an index-based draft schema and generate stable claim references in Python; validate exact spans and parent graph separately       |
+| Planner agent                  | Produce objectives and queries                             | Confirmed prompt/schema/guard mismatch; generic diagnostics; no bounded semantic repair                                                                                | Use deterministic objective references, remove redundant query intent, return stable violation codes, and permit one corrective replan |
+| Discovery/source selection     | Search Brave, canonicalize, rank, deduplicate              | Zero search results with no provider error can yield an empty state that later stops generically                                                                       | Emit an explicit typed `NO_DISCOVERY_RESULTS` failure after the bounded search policy is exhausted                                     |
+| Secure retrieval               | Fetch selected public sources safely                       | The URL/network boundary is strong; inaccessible sources can still leave no usable evidence                                                                            | Preserve security controls and emit an explicit typed no-accessible-source outcome without weakening URL policy                        |
+| Extraction                     | Produce auditable source text and metadata                 | A broad `except Exception` in `research/pipeline.py` converts programming, state, and storage invariant errors into an inaccessible source                             | Catch only source/parser failures; propagate invariant and programming failures with sanitized typed codes                             |
+| Segmentation/embedding         | Produce passages and optional vectors                      | Lexical fallback exists, but an empty passage result can cause a route stop and generic completion rejection                                                           | Preserve pgvector and fallback; emit `NO_USABLE_PASSAGES` with counts and retrieval mode                                               |
+| Provenance/dependency analysis | Group derivative evidence and compute dependency structure | Model-independent, but bad or orphan endpoints can poison later weights                                                                                                | Validate every dependency endpoint, duplicate edge, and multiplier before stage completion                                             |
+| Evidence-classification agent  | Classify selected claim/passage tasks                      | The schema allows an empty list and the workflow checks only duplicate/unknown returned pairs, not missing required pairs                                              | Build a bounded deterministic task list and require exactly one classification for every task                                          |
+| Deterministic scoring          | Calculate evidence weights and claim/report scores         | Correctly deterministic; risk is incomplete evidence or provenance entering the service                                                                                | Add explicit preconditions and reject incomplete inputs without model fallback                                                         |
+| Numerical audit                | Validate Decimal arithmetic and units                      | Correctly deterministic; risk is missing candidate provenance or partial calculation sets                                                                              | Require calculation/candidate linkage and precise audit failure codes                                                                  |
+| Synthesis agent                | Draft the evidence-grounded report                         | `limitations`, `inaccessible_source_notes`, and `evidence_gaps` are free-form strings outside `_sentences()` and therefore outside citation audit                      | Generate system-known notes deterministically; represent any model-authored factual note as an auditable cited sentence                |
+| Citation-audit agent           | Check every sentence/passage pair                          | Exact-set guard is strong, but it depends on `_sentences()` covering every factual field and has no shared structured-output repair                                    | Expand auditable sentence coverage and use the bounded structured-response repair                                                      |
+| Citation revision agent        | Revise unsupported sentences and re-audit                  | Already bounded, but it shares synthesis schemas and model-owned sentence references                                                                                   | Preserve the revision limit; use stable sentence references and exact-set revalidation                                                 |
+| Workflow extension wrapper     | Run discovery through numerical audit                      | Catches all exceptions as `WORKFLOW_EXTENSION_FAILED` and exposes only a coarse `failure_kind`                                                                         | Introduce typed stage exceptions and retain unexpected exceptions as internal worker errors                                            |
+| LangGraph transitions          | Decide whether the next node runs                          | `evidence_ready` and `synthesis_ready` can stop on empty state without appending a specific error                                                                      | Convert missing prerequisites into a stage failure before routing; transitions should not silently terminate                           |
+| Celery completion handoff      | Persist completed artifacts or fail safely                 | Strong durable completion gate; a silent route stop becomes generic `COMPLETION_GATE_REJECTED`                                                                         | Keep the gate and eliminate silent stops upstream; do not relax completion conditions                                                  |
 
 ## 4. Target contract pattern
 
@@ -384,22 +384,22 @@ Once this passes, mark the hosted demo operational and stop. Do not run a produc
 
 ## 7. Focused test matrix
 
-| Area | Required cases |
-|---|---|
-| Planner validator | Every violation code independently; multiple violations sorted deterministically; valid plan accepted |
-| Planner normalization | Stable objective IDs; collision handling; inherited query intent; complete claim coverage; idempotent repeat |
-| Structured repair | Invalid JSON then valid; schema-invalid then valid; second invalid terminal; no raw output in logs/events |
-| Semantic repair | Invalid initial plan then valid corrective plan; two invalid plans terminal; nonretryable Celery behavior |
-| Intake | Expected kind included; matching result accepted; drift rejected precisely; URL controls unchanged |
-| Decomposition | Stable claim IDs; parent index conversion; duplicate claim; cycle; bad span; depth claim limit |
-| Classification | Exact task coverage; missing/extra/duplicate/unknown task; empty response; deterministic rejection reasons |
-| Discovery/retrieval | Zero results; provider failure; all inaccessible; SSRF/redirect/port controls unchanged |
-| Extraction/segmentation | Expected parser failure becomes inaccessible; invariant error propagates; no extracted text; no passages; lexical fallback |
-| Provenance/scoring | Unknown dependency endpoint; duplicate edge; invalid multiplier; missing scoring input; deterministic formulas unchanged |
-| Synthesis | Unapproved citation; contradiction omission; factual limitation/gap included in audit; deterministic inaccessible notes |
-| Citation audit | Exact pair coverage; missing/extra/duplicate pair; partial/not-entailed revision; revision exhaustion; no premature completion |
-| Persistence/Celery | Precise durable code; idempotent retry/redelivery; durable report and citation rows precede `COMPLETED` |
-| Hosted demo | Auth, API session, enqueue, live Celery, audited completion, refresh/SSE reconnect, same revision, private services |
+| Area                    | Required cases                                                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Planner validator       | Every violation code independently; multiple violations sorted deterministically; valid plan accepted                          |
+| Planner normalization   | Stable objective IDs; collision handling; inherited query intent; complete claim coverage; idempotent repeat                   |
+| Structured repair       | Invalid JSON then valid; schema-invalid then valid; second invalid terminal; no raw output in logs/events                      |
+| Semantic repair         | Invalid initial plan then valid corrective plan; two invalid plans terminal; nonretryable Celery behavior                      |
+| Intake                  | Expected kind included; matching result accepted; drift rejected precisely; URL controls unchanged                             |
+| Decomposition           | Stable claim IDs; parent index conversion; duplicate claim; cycle; bad span; depth claim limit                                 |
+| Classification          | Exact task coverage; missing/extra/duplicate/unknown task; empty response; deterministic rejection reasons                     |
+| Discovery/retrieval     | Zero results; provider failure; all inaccessible; SSRF/redirect/port controls unchanged                                        |
+| Extraction/segmentation | Expected parser failure becomes inaccessible; invariant error propagates; no extracted text; no passages; lexical fallback     |
+| Provenance/scoring      | Unknown dependency endpoint; duplicate edge; invalid multiplier; missing scoring input; deterministic formulas unchanged       |
+| Synthesis               | Unapproved citation; contradiction omission; factual limitation/gap included in audit; deterministic inaccessible notes        |
+| Citation audit          | Exact pair coverage; missing/extra/duplicate pair; partial/not-entailed revision; revision exhaustion; no premature completion |
+| Persistence/Celery      | Precise durable code; idempotent retry/redelivery; durable report and citation rows precede `COMPLETED`                        |
+| Hosted demo             | Auth, API session, enqueue, live Celery, audited completion, refresh/SSE reconnect, same revision, private services            |
 
 ## 8. Rollout and rollback
 
@@ -442,3 +442,9 @@ This plan is complete when:
 - No unbounded model repair or blanket Celery retry.
 - No high availability, multi-AZ services, autoscaling, WAF, Kubernetes, managed database/Redis requirement, separate staging/production infrastructure, formal on-call, enterprise release ceremony, or public-launch approval.
 - No production-release audit after the minimum hosted demo passes.
+
+Add research support mode
+fix live research view
+fix bounded citaiton review and cited a passage that was not approved as evidence
+upate history graph ui --> source dependency graph and graph summary
+revamp ui and color scheme

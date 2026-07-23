@@ -1,6 +1,6 @@
 "use client";
 
-import { Calculator, ExternalLink, FileWarning, Info, PanelRightClose, PanelRightOpen, X } from "lucide-react";
+import { ExternalLink, FileWarning, Info, PanelRightClose, PanelRightOpen, X } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { ScoreCharts } from "@/components/report/score-charts";
@@ -16,7 +16,7 @@ import { useReportUiStore, type ReportTab } from "@/stores/report-ui-store";
 const tabs: Array<{ id: ReportTab; label: string }> = [
   { id: "overview", label: "Overview" }, { id: "claims", label: "Claims" },
   { id: "evidence", label: "Evidence" }, { id: "graph", label: "Graph" },
-  { id: "calculations", label: "Calculations" }, { id: "methodology", label: "Methodology" },
+  { id: "methodology", label: "Methodology" },
 ];
 
 export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
@@ -73,7 +73,7 @@ export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
           <SentenceSection title="Attribution findings" sentences={attributionSentences} empty="No attribution finding applies to this report." onOpen={openEvidence}/>
           <SentenceSection title="Strongest credible contradiction" sentences={contradictionSentences} empty="No credible contradiction was identified in the reviewed evidence." onOpen={openEvidence}/>
           <SpecializedPanels report={report}/>
-          <div><p className="mb-2 text-sm font-semibold">Limitations</p>{report.limitations.length ? report.limitations.map((item) => <p key={item} className="mb-2 flex gap-2 rounded-md bg-muted p-3 text-sm"><Info className="mt-0.5 h-4 w-4 shrink-0 text-primary"/>{item}</p>) : <p className="text-sm text-muted-foreground">No limitations were recorded.</p>}</div>
+          <div><p className="mb-2 text-sm font-semibold">Limitations</p>{report.limitations.length ? report.limitations.map((item, index) => <p key={`${item}-${index}`} className="mb-2 flex gap-2 rounded-md bg-muted p-3 text-sm"><Info className="mt-0.5 h-4 w-4 shrink-0 text-primary"/>{item}</p>) : <p className="text-sm text-muted-foreground">No limitations were recorded.</p>}</div>
           {!isLite && <section aria-label="Feedback and correction controls"><FeedbackControls runId={run.run_id} /></section>}
         </CardContent></Card>{!isLite && <ScoreCharts report={report}/>}</>}
         {ui.activeReportTab === "claims" && <ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim} detailed/>}
@@ -81,8 +81,7 @@ export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
           {ui.evidenceFilter === "inaccessible" ? <InaccessibleSources sources={sources} onSelect={ui.selectSource}/> : <EvidenceColumns items={evidence} onOpen={openEvidence} mode={mode}/>}
         </CardContent></Card>}
         {ui.activeReportTab === "graph" && <Card><CardHeader><CardTitle>Source dependency graph</CardTitle></CardHeader><CardContent><SourceGraph graph={sourceGraph} claims={report.atomic_claims} onSourceSelect={ui.selectSource}/></CardContent></Card>}
-        {ui.activeReportTab === "calculations" && <Card><CardHeader><CardTitle>Server calculation records</CardTitle></CardHeader><CardContent className="grid gap-3">{report.calculations.map((row) => <article key={row.id} className="grid gap-2 rounded-md border p-4"><div className="flex items-center gap-2"><Calculator className="h-4 w-4 text-primary"/><strong>{row.formula_name}</strong><Badge tone={row.audit_status === "passed" ? "support" : "warning"}>{row.audit_status}</Badge></div><code className="rounded bg-muted p-2 text-xs">{row.formula_text}</code><div className="grid gap-2 md:grid-cols-3"><Json title="Inputs" value={row.inputs}/><Json title="Result" value={row.result}/><Json title="Decimal context" value={row.decimal_context}/></div></article>)}{report.calculations.length === 0 && <p className="text-sm text-muted-foreground">No server calculation records apply to this report.</p>}</CardContent></Card>}
-        {ui.activeReportTab === "methodology" && <Card><CardHeader><CardTitle>Methodology and reproducibility</CardTitle></CardHeader><CardContent className="grid gap-3"><Version title="Methodology" value={{ methodology_version: report.methodology_version, workflow_version: report.workflow_version }}/><Version title="Retrieval" value={report.retrieval_versions}/><Version title="Models" value={report.model_versions}/><Version title="Prompts" value={report.prompt_versions}/><Version title="Parsers" value={report.parser_versions}/><Version title="Score roles" value={report.score_roles}/></CardContent></Card>}
+        {ui.activeReportTab === "methodology" && <Card><CardHeader><CardTitle>Report details</CardTitle></CardHeader><CardContent className="grid gap-3"><Version title="AI Pipeline" value={report.prompt_versions}/><Version title="Score roles" value={report.score_roles}/></CardContent></Card>}
       </main>
       {ui.sourceDrawerOpen && <SourceDrawer mode={mode} mobileOpen={Boolean(ui.selectedSourceId)} source={selectedSource} passage={selectedPassage} onClose={() => ui.setSourceDrawerOpen(false)} onPassage={ui.selectEvidence}/>}
     </div>
@@ -127,7 +126,7 @@ function SpecializedPanels({ report }: { report: ReportWorkspaceData["report"] }
 }
 
 function ScorePanel({ title, record }: { title: string; record: ReportWorkspaceData["report"]["calculations"][number] }) {
-  return <div className="rounded-md border bg-white p-3"><p className="text-xs text-muted-foreground">{title}</p><p className="mt-1 text-2xl font-semibold">{String(record.result.score ?? "Not scored")}</p><p className="mt-1 text-xs text-muted-foreground">Calculation {record.id}</p></div>;
+  return <div className="rounded-md border bg-white p-3"><p className="text-xs text-muted-foreground">{title}</p><p className="mt-1 text-2xl font-semibold">{String(record.result.score ?? "Not scored")}</p></div>;
 }
 
 function SourceDrawer({ source, passage, mobileOpen, mode, onClose, onPassage }: { source?: SourceRecord; passage?: SourceRecord["passages"][number]; mobileOpen: boolean; mode: ReportWorkspaceData["mode"]; onClose: () => void; onPassage: (id: string | null) => void }) {
@@ -166,5 +165,4 @@ function SourceDrawer({ source, passage, mobileOpen, mode, onClose, onPassage }:
 }
 
 function stanceTone(stance: EvidenceStance) { return stance.includes("SUPPORTS") ? "support" : stance.includes("CONTRADICTS") ? "danger" : "neutral"; }
-function Json({ title, value }: { title: string; value: Record<string, unknown> }) { return <div><p className="mb-1 text-xs font-semibold">{title}</p><pre className="overflow-auto rounded bg-muted p-2 text-xs">{JSON.stringify(value, null, 2)}</pre></div>; }
 function Version({ title, value }: { title: string; value: Record<string, unknown> }) { const entries = Object.entries(value); return <div className="rounded-md border p-3"><p className="mb-2 text-sm font-semibold">{title}</p>{entries.length ? <dl className="grid gap-2 text-xs md:grid-cols-2">{entries.map(([key, item]) => <div key={key} className="rounded bg-muted p-2"><dt className="text-muted-foreground">{key}</dt><dd className="mt-1 break-all font-medium">{typeof item === "object" ? JSON.stringify(item) : String(item)}</dd></div>)}</dl> : <p className="text-xs text-muted-foreground">No {title.toLowerCase()} version metadata was recorded.</p>}</div>; }

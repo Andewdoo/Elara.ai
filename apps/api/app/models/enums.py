@@ -19,6 +19,7 @@ class RunStatus(StrEnum):
 class InputType(StrEnum):
     CLAIM = "CLAIM"
     ARTICLE_URL = "ARTICLE_URL"
+    ARTICLE_TITLE = "ARTICLE_TITLE"
     ARTICLE_TEXT = "ARTICLE_TEXT"
     QUOTE = "QUOTE"
     PARAPHRASE = "PARAPHRASE"

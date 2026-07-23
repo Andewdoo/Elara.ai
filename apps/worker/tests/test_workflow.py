@@ -71,8 +71,10 @@ from graph.workflow import (
     WorkflowExtensions,
     WorkflowNodes,
     WorkflowServices,
+    _apply_partial_citation_penalty,
     _guard_citation_audit,
     _build_deterministic_report,
+    _report_title,
     build_workflow,
 )
 from research.extension_errors import WorkflowExtensionError
@@ -235,6 +237,26 @@ def test_report_states_supported_with_an_unresolved_interpretation_without_model
     assert "raw model ambiguity" not in " ".join(report.limitations)
 
 
+def test_report_title_uses_model_paraphrase_and_rejects_generic_fallbacks():
+    title_state = state().model_copy(
+        update={
+            "normalized_input": IntakeClassificationOutput.model_validate(
+                {
+                    "input_kind": "claim",
+                    "normalized_text": "Company X doubled net income in Q1 2026 after acquiring a smaller rival.",
+                    "detected_language": "English",
+                    "fact_checkability": "fact_checkable",
+                }
+            )
+        }
+    )
+
+    assert _report_title(title_state, "Company X Q1 net-income growth") == "Company X Q1 net-income growth"
+    assert _report_title(title_state, "Evidence assessment") == (
+        "Company X doubled net income in Q1 2026 after acquiring a smaller rival."
+    )
+
+
 INTAKE = {
     "input_kind": "claim",
     "normalized_text": "Company X doubled net income in Q1 2026.",
@@ -384,6 +406,27 @@ def test_planner_sends_v2_contract_payload_without_exact_quote_when_inapplicable
     }
     assert payload["requires_attribution_check"] is False
     assert result.recoverable_errors == []
+
+
+def test_planner_prepends_an_exact_brave_query_for_an_article_title():
+    article_title = "Gordie Howe bridge deal appears to contradict Carney's description of pact with U.S."
+    workflow_state = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": {**INTAKE, "input_kind": "article_title", "normalized_text": article_title},
+            "claims": DECOMPOSITION["atomic_claims"],
+        }
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=FakeModel([DRAFT_PLAN]), submitted_input=article_title)).planner(
+            workflow_state
+        )
+    )
+
+    assert result.queries[0].query == article_title
+    assert result.queries[0].intent.value == "primary"
+    assert result.queries[0].priority == 1
 
 
 def test_planner_rejects_unknown_draft_claim_ref_with_stable_diagnostics():
@@ -1219,7 +1262,8 @@ def test_synthesis_sends_only_deterministically_approved_evidence_to_the_model()
     )
 
     payload = json.loads(model.calls[0]["messages"][1]["content"])
-    assert model.calls[0]["prompt_version"] == "synthesis-v3"
+    assert model.calls[0]["prompt_version"] == "synthesis-v4"
+    assert payload["submitted_target"] is None
     assert [item["passage_id"] for item in payload["approved_evidence"]] == ["approved-passage"]
     assert [item["passage_id"] for item in payload["approved_passages"]] == ["approved-passage"]
     assert result.report_draft is not None
@@ -1376,6 +1420,7 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
         ]
     }
     synthesis = {
+        "report_title": "Company X Q1 income growth",
         "summary_sentences": [
             {
                 "sentence_ref": "summary-1",
@@ -1434,6 +1479,87 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     assert result.ready_for_completion is True
 
 
+def test_partial_citation_is_completed_with_a_capped_score_penalty():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing proves the broader claim.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    )
+    guarded = _guard_citation_audit(
+        report,
+        {"passage-1": object()},
+        CitationAuditOutput.model_validate(
+            {
+                "sentence_audits": [
+                    {
+                        "sentence_ref": "summary-1",
+                        "passage_id": "passage-1",
+                        "entailment": "partial",
+                        "support_explanation": "Only the reported value is supported.",
+                        "suggested_revision": "The filing reports a value of 20.",
+                    }
+                ],
+                "needs_revision": True,
+            }
+        ),
+    )
+    assert guarded is not None and guarded.needs_revision is False
+    adjusted = _apply_partial_citation_penalty(
+        state().model_copy(
+            update={
+                "citation_audit": guarded,
+                "scores": ScoreBundle(
+                    evidence_support=100,
+                    verdict_confidence=90,
+                    methodology_version="1.0",
+                ),
+                "calculations": [
+                    CalculationRecord(
+                        calculation_ref="article-score",
+                        formula_name="article_factual_accuracy",
+                        formula_text="test",
+                        inputs={},
+                        result={"score": "100"},
+                        units="score_0_100",
+                        decimal_context={},
+                        audit_status="passed",
+                    ),
+                    CalculationRecord(
+                        calculation_ref="confidence-score",
+                        formula_name="verdict_confidence",
+                        formula_text="test",
+                        inputs={"penalties": {}},
+                        result={"score": "90"},
+                        units="score_0_100",
+                        decimal_context={},
+                        audit_status="passed",
+                    ),
+                ],
+                "completed_stages": [WorkflowStage.CITATION_AUDIT],
+            }
+        )
+    )
+    assert adjusted.ready_for_completion is True
+    assert adjusted.scores is not None
+    assert adjusted.scores.evidence_support == 95
+    assert adjusted.scores.verdict_confidence == 83
+    display_scores = {item.formula_name: item for item in adjusted.calculations}
+    assert display_scores["article_factual_accuracy"].result["score"] == "95"
+    assert display_scores["verdict_confidence"].inputs["penalties"] == {
+        "citation_partial_support": "7"
+    }
+    assert display_scores["citation_partial_support_penalty"].inputs[
+        "partial_sentence_count"
+    ] == 1
+
+
 def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
     report = SynthesisOutput.model_validate(
         {
@@ -1453,8 +1579,8 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
                 {
                     "sentence_ref": "summary-1",
                     "passage_id": "passage-1",
-                    "entailment": "partial",
-                    "support_explanation": "Only the reported value is supported.",
+                    "entailment": "not_entailed",
+                    "support_explanation": "The broader claim is not supported.",
                     "suggested_revision": "The filing reports a value of 20.",
                 }
             ],
@@ -1968,6 +2094,7 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
         ]
     }
     synthesis = {
+        "report_title": "Company X Q1 income report",
         "summary_sentences": [
             {
                 "sentence_ref": "summary-1",
@@ -2013,7 +2140,7 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
     ]
     with factory() as db:
         run = db.get(VerificationRun, run_id)
-        assert run is not None and run.title == "Evidence assessment"
+        assert run is not None and run.title == "Company X Q1 income report"
         assert db.scalar(select(func.count()).select_from(ReportCitation)) == 1
         persist_completed_run(db, run_id=run_id, expected_citation_count=1)
         report = build_report(db, run=run)

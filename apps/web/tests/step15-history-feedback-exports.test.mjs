@@ -9,7 +9,17 @@ test("history and saved pages use authorized server-owned data", async () => {
   const history = await readFile(join(root, "components", "app", "history-list.tsx"), "utf8");
   assert.match(history, /queryKey: \["history"/);
   assert.match(history, /authenticatedApiFetch/);
-  for (const filter of ["query", "status", "research_depth", "sort", "saved_only"]) assert.match(history, new RegExp(filter));
+  for (const filter of ["query", "status", "sort", "saved_only"]) assert.match(history, new RegExp(filter));
+  assert.match(history, /\["COMPLETED", "FAILED"\]/);
+  for (const removedControl of ["Filter history by research depth", "Filter verdict", "Created from", "Created to"]) assert.doesNotMatch(history, new RegExp(removedControl));
+  assert.match(history, /useState<SortField \| null>\(null\)/);
+  assert.match(history, /if \(sortField !== field\) \{\s+setSortField\(field\);/);
+  assert.match(history, /bg-green-700 text-white hover:bg-green-800/);
+  assert.match(history, /GENERIC_REPORT_TITLES/);
+  assert.match(history, /function conciseHistoryTitle/);
+  assert.match(history, /historyReportTitle\(item\)/);
+  assert.match(history, /Date \{dateDirection === "desc" \? "↓" : "↑"\}/);
+  assert.match(history, /Confidence \{confidenceDirection === "desc" \? "↓" : "↑"\}/);
   assert.match(history, /\/save/);
   assert.match(history, /method: kind === "save" \? "POST" : "DELETE"/);
 });

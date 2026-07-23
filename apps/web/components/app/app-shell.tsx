@@ -7,8 +7,6 @@ import { Archive, BookOpenText, FileCheck2, History, Settings, ShieldCheck } fro
 import type { ReactNode } from "react";
 
 import { AuthControls } from "@/components/app/auth-controls";
-import { Badge } from "@/components/ui/badge";
-import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { cn } from "@/lib/utils";
 
 const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> = [
@@ -22,7 +20,6 @@ const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> =
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { configured } = useFirebaseAuth();
 
   return (
     <div className="min-h-screen">
@@ -57,9 +54,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             })}
           </nav>
           <div className="flex items-center gap-2">
-            <Badge tone={configured ? "support" : "warning"}>
-              {configured ? "Firebase web ready" : "Firebase web config missing"}
-            </Badge>
             <AuthControls />
           </div>
         </div>

@@ -236,6 +236,49 @@ def test_submitted_article_url_is_a_retrieval_seed_when_brave_has_no_results():
     assert source.selection_reason == "Submitted article URL retrieval seed"
 
 
+def test_article_title_is_searched_on_brave_without_a_submitted_url_seed():
+    article_title = "Gordie Howe bridge deal appears to contradict Carney's description of pact with U.S."
+
+    class TitleSearch:
+        def __init__(self) -> None:
+            self.queries: list[str] = []
+
+        async def search(self, query: str, *, count: int = 10):
+            del count
+            self.queries.append(query)
+            return [SearchResult("https://publisher.example/story", article_title, "Article result", 1)]
+
+    search = TitleSearch()
+    state = VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.STANDARD,
+        methodology_version="1.0",
+        normalized_input=IntakeClassificationOutput(
+            input_kind=InputKind.ARTICLE_TITLE,
+            normalized_text=article_title,
+            detected_language="en",
+            fact_checkability=FactCheckability.FACT_CHECKABLE,
+        ),
+        queries=[
+            SearchQueryOutput(
+                query=article_title,
+                objective_ref="objective-1",
+                intent=EvidenceIntent.PRIMARY,
+                priority=1,
+            )
+        ],
+    )
+    pipeline = RetrievalPipeline(search=search, fetcher=object())  # type: ignore[arg-type]
+
+    result = run(pipeline.discover(state))
+
+    assert search.queries == [article_title]
+    assert len(result.candidate_sources) == 1
+    assert result.candidate_sources[0].source_origin == "brave_discovery"
+    assert result.candidate_sources[0].canonical_url == "https://publisher.example/story"
+
+
 def test_submitted_google_news_wrapper_records_validated_publisher_final_url():
     class NoSearch:
         async def search(self, query: str, *, count: int = 10):

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/form-controls";
 
 export function AuthControls() {
-  const { configured, loading, user, signInWithEmail, signInWithGoogle, signOut, signUpWithEmail } = useFirebaseAuth();
+  const { configured, user, signInWithEmail, signInWithGoogle, signOut, signUpWithEmail } = useFirebaseAuth();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
@@ -26,8 +26,8 @@ export function AuthControls() {
     }
   }
 
-  if (!configured || loading) {
-    return <span className="text-xs text-muted-foreground">{loading ? "Checking sign-in…" : "Auth unavailable"}</span>;
+  if (!configured) {
+    return <span className="text-xs text-muted-foreground">Auth unavailable</span>;
   }
 
   if (user) {
