@@ -230,13 +230,22 @@ class PlaywrightExtractor:
                 raise PlaywrightExtractionError(str(exc)) from exc
             if final.hostname != document_host:
                 raise PlaywrightExtractionError("browser final URL did not match the validated navigation")
-            html = await page.content()
-            encoded = html.encode("utf-8", errors="replace")
+            try:
+                html = await page.content()
+                encoded = html.encode("utf-8", errors="replace")
+                node_count = int(await page.evaluate("document.getElementsByTagName('*').length"))
+            except Exception as exc:
+                # A client-side redirect can begin after DOMContentLoaded.  Treat
+                # that unstable rendered page as an inaccessible source rather
+                # than letting a Playwright transport error abort the full run.
+                raise PlaywrightExtractionError(
+                    "browser page changed while rendered content was captured",
+                    access_status="FAILED",
+                ) from exc
             if len(encoded) > self.limits.max_dom_bytes:
                 raise PlaywrightExtractionError(
                     "rendered DOM exceeds its size limit", access_status="UNSUPPORTED"
                 )
-            node_count = int(await page.evaluate("document.getElementsByTagName('*').length"))
             if node_count > self.limits.max_dom_nodes:
                 raise PlaywrightExtractionError(
                     "rendered DOM exceeds its node limit", access_status="UNSUPPORTED"

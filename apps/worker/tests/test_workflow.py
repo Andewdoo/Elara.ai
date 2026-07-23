@@ -80,6 +80,7 @@ from graph.workflow import (
 from research.extension_errors import WorkflowExtensionError
 from graph.runtime import (
     SqlWorkflowStateWriter,
+    _split_run_target,
     execute_planning_workflow,
     execute_verification_workflow,
 )
@@ -323,6 +324,20 @@ PLAN = {
         },
     ],
 }
+
+
+def test_retry_provenance_is_excluded_from_the_strict_intake_payload():
+    target, plan = _split_run_target(
+        {
+            **INTAKE,
+            "research_plan": PLAN,
+            "retried_from_run_id": "5736ed92-1da0-4786-bcda-4a8b197cdd1f",
+        }
+    )
+
+    assert plan == PLAN
+    assert "retried_from_run_id" not in target
+    assert IntakeClassificationOutput.model_validate(target).normalized_text == INTAKE["normalized_text"]
 
 
 DRAFT_PLAN = {

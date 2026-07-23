@@ -75,10 +75,18 @@ class FakeRoute:
 
 
 class FakePage:
-    def __init__(self, html: str, requests: list[tuple[str, bool, str, FakeResponse]], nodes: int) -> None:
+    def __init__(
+        self,
+        html: str,
+        requests: list[tuple[str, bool, str, FakeResponse]],
+        nodes: int,
+        *,
+        content_error: Exception | None = None,
+    ) -> None:
         self.html = html
         self.requests = requests
         self.nodes = nodes
+        self.content_error = content_error
         self.main_frame = object()
         self.url = requests[-1][0] if requests and requests[-1][1] else requests[0][0]
         self._route_handler = None
@@ -113,6 +121,8 @@ class FakePage:
         return None
 
     async def content(self) -> str:
+        if self.content_error is not None:
+            raise self.content_error
         return self.html
 
     async def evaluate(self, _expression: str) -> int:
@@ -295,6 +305,32 @@ def test_oversized_rendered_dom_is_rejected() -> None:
             )
         )
     assert error.value.access_status == "UNSUPPORTED"
+
+
+def test_navigation_race_during_rendered_capture_is_recorded_as_source_failure() -> None:
+    response = FakeResponse(body=b"<html><div id='app'></div><script>render()</script></html>")
+    page = FakePage(
+        readable_html(),
+        [("https://example.test/app", True, "document", response)],
+        8,
+        content_error=RuntimeError("page is navigating"),
+    )
+    browser_fallback, _browser = extractor_for(page)
+    service = ExtractionService(playwright_extractor=browser_fallback)
+
+    outcome = run(
+        service.extract_with_outcome(
+            response._body,
+            content_type="text/html",
+            url="https://example.test/app",
+            allow_browser_fallback=True,
+        )
+    )
+
+    assert outcome.document is None
+    assert outcome.fallback_attempted is True
+    assert outcome.inaccessible_status == "FAILED"
+    assert outcome.failure_reason == "browser page changed while rendered content was captured"
 
 
 def test_hostile_rendered_html_is_parsed_as_untrusted_evidence() -> None:

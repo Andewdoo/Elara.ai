@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 from datetime import UTC, datetime
 from decimal import Decimal
+from typing import Any
 from uuid import UUID
 from urllib.parse import urlsplit
 
@@ -608,8 +609,7 @@ def execute_verification_workflow(
             if run.methodology_version_id is not None
             else None
         )
-        target = dict(run.normalized_target)
-        plan_data = target.pop("research_plan", None)
+        target, plan_data = _split_run_target(run.normalized_target)
         normalized = IntakeClassificationOutput.model_validate(target) if target.get("input_kind") else None
         claim_rows = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
         row_refs = {row.id: str(row.gates.get("claim_ref")) for row in claim_rows}
@@ -806,6 +806,14 @@ def execute_verification_workflow(
                 await client.aclose()
 
     return asyncio.run(invoke())
+
+
+def _split_run_target(normalized_target: dict[str, Any]) -> tuple[dict[str, Any], Any | None]:
+    """Separate operational metadata from the strict intake-schema payload."""
+    target = dict(normalized_target)
+    plan_data = target.pop("research_plan", None)
+    target.pop("retried_from_run_id", None)
+    return target, plan_data
 
 
 def _build_deepseek_client(settings: Settings) -> DeepSeekClient:
