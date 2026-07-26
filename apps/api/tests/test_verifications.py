@@ -10,6 +10,7 @@ from app.redis_client import cancellation_key, progress_stream_key
 from app.schemas.verifications import RunStatus
 from app.services.run_lifecycle import persist_progress
 from app.services.verifications import RunNotFoundError, get_authorized_run, get_owned_run
+from app.services.queueing import BrokerUnavailableError, WorkerUnavailableError
 
 
 def test_create_verification_persists_run_and_first_event(
@@ -45,6 +46,31 @@ def test_create_verification_persists_run_and_first_event(
         assert db.scalar(select(func.count()).select_from(AgentEvent)) == 1
         assert dispatcher.calls == [(run.id, ResearchDepth.STANDARD)]
         assert fake_redis.streams[progress_stream_key(run.id)][0]["event_type"] == "run.queued"
+
+
+def test_create_article_title_persists_the_title_for_brave_discovery(
+    client: TestClient,
+    session_factory: sessionmaker[Session],
+):
+    article_title = "Gordie Howe bridge deal appears to contradict Carney's description of pact with U.S."
+
+    response = client.post(
+        "/v1/verifications",
+        json={
+            "input_type": "ARTICLE_TITLE",
+            "research_depth": "STANDARD",
+            "article_title": article_title,
+        },
+    )
+
+    assert response.status_code == 202
+    with session_factory() as db:
+        run = db.scalar(select(VerificationRun))
+        assert run is not None
+        assert run.input_type.value == "ARTICLE_TITLE"
+        assert run.submitted_text == article_title
+        assert run.submitted_url is None
+        assert run.normalized_target == {"article_title": article_title}
 
 
 def test_owned_run_lookup_does_not_cross_user_boundary(
@@ -140,10 +166,10 @@ def test_cancel_queued_run_sets_durable_and_transient_flags(
         assert [event.event_type for event in events] == ["run.queued", "run.cancelled"]
 
 
-def test_queue_failure_is_durable_and_uses_a_concise_public_code(
+def test_broker_failure_is_durable_and_uses_a_concise_public_code(
     client: TestClient, session_factory: sessionmaker[Session], dispatcher, fake_redis
 ):
-    dispatcher.failure = RuntimeError("private broker connection details")
+    dispatcher.failure = BrokerUnavailableError("private broker connection details")
 
     response = client.post(
         "/v1/verifications",
@@ -155,11 +181,33 @@ def test_queue_failure_is_durable_and_uses_a_concise_public_code(
         run = db.scalar(select(VerificationRun))
         events = db.scalars(select(AgentEvent).order_by(AgentEvent.sequence)).all()
     assert run is not None and run.status == RunStatus.FAILED
-    assert run.failure_code == "QUEUE_UNAVAILABLE"
+    assert run.failure_code == "BROKER_UNAVAILABLE"
     assert "private broker" not in (run.failure_message or "")
     assert [event.event_type for event in events] == ["run.queued", "run.failed"]
+    assert events[-1].payload == {"broker_connection_attempt_count": 1}
     stream = fake_redis.streams[progress_stream_key(run.id)]
     assert [event["event_type"] for event in stream] == ["run.queued", "run.failed"]
+
+
+def test_missing_worker_heartbeat_is_durable_and_uses_a_distinct_public_code(
+    client: TestClient, session_factory: sessionmaker[Session], dispatcher, fake_redis
+):
+    dispatcher.failure = WorkerUnavailableError("internal worker identity")
+
+    response = client.post(
+        "/v1/verifications",
+        json={"input_type": "CLAIM", "text": "A claim"},
+    )
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == "Verification worker is unavailable"
+    with session_factory() as db:
+        run = db.scalar(select(VerificationRun))
+        event = db.scalar(select(AgentEvent).order_by(AgentEvent.sequence.desc()))
+    assert run is not None and run.failure_code == "WORKER_UNAVAILABLE"
+    assert run.failure_message == "Verification worker is temporarily unavailable. Please try again."
+    assert event is not None and event.payload == {"worker_ready_count": 0}
+    assert "identity" not in run.failure_message
 
 
 def test_active_run_cancellation_is_idempotent(

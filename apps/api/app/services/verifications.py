@@ -73,11 +73,18 @@ def create_queued_verification(
 ) -> VerificationRun:
     enforce_verification_limits(db, owner=owner, request=request)
     now = utc_now()
-    submitted_text = request.quote if request.input_type == InputType.QUOTE else request.text
+    submitted_text = (
+        request.quote
+        if request.input_type == InputType.QUOTE
+        else request.article_title
+        if request.input_type == InputType.ARTICLE_TITLE
+        else request.text
+    )
     normalized_target = {
         key: value
         for key, value in {
             "quote": request.quote,
+            "article_title": request.article_title,
             "speaker": request.speaker,
             "upload_id": str(request.upload_id) if request.upload_id else None,
         }.items()

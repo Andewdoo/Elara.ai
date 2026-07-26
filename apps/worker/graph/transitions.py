@@ -16,21 +16,24 @@ def stop_requested(state: VerificationState) -> Route:
 
 
 def evidence_ready(state: VerificationState) -> Route:
+    """Route to classification so it can report missing claims or passages."""
     if state.cancelled or state.recoverable_errors:
         return "stop"
-    return "continue" if state.claims and state.passages else "stop"
+    return "continue"
 
 
 def synthesis_ready(state: VerificationState) -> Route:
+    """Route to synthesis so it can report missing evidence or scores."""
     if state.cancelled or state.recoverable_errors:
         return "stop"
-    return "continue" if state.evidence and state.scores is not None else "stop"
+    return "continue"
 
 
 def citation_audit_ready(state: VerificationState) -> Route:
+    """Route to citation audit so it can report a missing report draft."""
     if state.cancelled or state.recoverable_errors:
         return "stop"
-    return "continue" if state.report_draft is not None else "stop"
+    return "continue"
 
 
 __all__ = [

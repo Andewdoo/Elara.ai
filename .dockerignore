@@ -11,7 +11,9 @@ service-account*.json
 
 # JavaScript dependencies and build output
 node_modules/
-.next/
+.next
+apps/web/.next
+apps/web/.next/**
 out/
 dist/
 coverage/
@@ -29,6 +31,7 @@ __pycache__/
 graphify-out/
 
 # Local tooling and operating-system files
+.git/
 .turbo/
 .DS_Store
 Thumbs.db

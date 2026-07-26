@@ -31,5 +31,7 @@ class User(Base):
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     verification_runs: Mapped[list["VerificationRun"]] = relationship(  # noqa: F821
-        back_populates="user", cascade="all, delete-orphan"
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="VerificationRun.user_id",
     )

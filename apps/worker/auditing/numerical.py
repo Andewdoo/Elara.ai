@@ -27,6 +27,7 @@ from uuid import uuid4
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from graph.state import CalculationRecord, VerificationState
+from research.extension_errors import WorkflowExtensionError
 
 
 DECIMAL_CONTEXT = Context(prec=28, rounding=ROUND_HALF_UP)
@@ -262,6 +263,11 @@ class NumericalAuditor:
         )
 
     async def process(self, state: VerificationState) -> VerificationState:
+        if state.scores is None:
+            raise WorkflowExtensionError(
+                code="NUMERICAL_AUDIT_SCORES_REQUIRED",
+                public_message="Numerical audit requires deterministic scoring results.",
+            )
         calculations = list(state.calculations)
         candidates = list(state.numerical_candidates)
         # Extraction/model adapters may attach candidates to exact passages. They

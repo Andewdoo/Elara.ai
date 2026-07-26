@@ -69,6 +69,7 @@ class VerificationRun(Base):
     failed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     failure_code: Mapped[str | None] = mapped_column(String(100))
     failure_message: Mapped[str | None] = mapped_column(Text)
+    internal_failure_detail: Mapped[str | None] = mapped_column(Text)
     cancellation_requested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     evidence_reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     saved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
@@ -89,7 +90,10 @@ class VerificationRun(Base):
         DateTime(timezone=True), nullable=False, default=utc_now, onupdate=utc_now
     )
 
-    user: Mapped["User"] = relationship(back_populates="verification_runs")  # noqa: F821
+    user: Mapped["User"] = relationship(  # noqa: F821
+        back_populates="verification_runs",
+        foreign_keys=[user_id],
+    )
     events: Mapped[list["AgentEvent"]] = relationship(  # noqa: F821
         back_populates="run", cascade="all, delete-orphan", order_by="AgentEvent.sequence"
     )

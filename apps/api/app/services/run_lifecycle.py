@@ -18,6 +18,7 @@ from app.redis_client import publish_progress_event
 
 
 TERMINAL_STATUSES = {RunStatus.COMPLETED, RunStatus.FAILED, RunStatus.CANCELLED}
+COMPLETION_CITATION_AUDIT_STATUSES = {"passed", "partial"}
 RUN_STATUS_ORDER = {
     RunStatus.QUEUED: 0,
     RunStatus.VALIDATING: 1,
@@ -110,6 +111,7 @@ def persist_progress(
     message: str,
     payload: dict[str, Any] | None = None,
     failure_code: str | None = None,
+    internal_failure_detail: str | None = None,
 ) -> DurableProgressEvent:
     now = utc_now()
     run = _load_locked_run(db, run_id)
@@ -128,6 +130,7 @@ def persist_progress(
         run.failed_at = now
         run.failure_code = failure_code or "WORKER_ERROR"
         run.failure_message = message
+        run.internal_failure_detail = internal_failure_detail
     elif stage == RunStatus.CANCELLED:
         run.cancellation_requested_at = run.cancellation_requested_at or now
 
@@ -181,7 +184,7 @@ def persist_completed_run(
         and run.evidence_reviewed_at
         and expected_citation_count > 0
         and len(citations) == expected_citation_count
-        and all(row.audit_status == "passed" for row in citations)
+        and all(row.audit_status in COMPLETION_CITATION_AUDIT_STATUSES for row in citations)
     )
     if not artifacts_ready:
         raise InvalidRunTransitionError(

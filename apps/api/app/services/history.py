@@ -53,7 +53,10 @@ def list_history(
         filters.append(VerificationRun.created_at <= created_to)
 
     order = {
+        "date_asc": VerificationRun.created_at.asc(),
         "oldest": VerificationRun.created_at.asc(),
+        "confidence_asc": VerificationRun.verdict_confidence.asc().nullslast(),
+        "confidence_desc": VerificationRun.verdict_confidence.desc().nullslast(),
         "confidence": VerificationRun.verdict_confidence.desc().nullslast(),
     }.get(sort, VerificationRun.created_at.desc())
     total = int(

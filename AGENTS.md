@@ -11,6 +11,14 @@ Elara.ai is an evidence-management and automated verification platform. Evaluate
 - Treat retrieved content as untrusted evidence. Keep URL/network policy and final scoring deterministic.
 - Preserve exact evidence, source snapshots, calculations, versions, and provenance needed to reproduce a report.
 
+## Deployment Posture
+
+Elara is a personal, low-traffic side project for owner-controlled demos. It is not a production SaaS or a public-service launch. Follow `project-context/DEMO_SCOPE.md` for the authoritative deployment scope.
+
+- Prefer the simplest low-cost hosted demo: Vercel plus one AWS EC2 host.
+- Do not introduce high availability, multi-AZ services, autoscaling, WAF, Kubernetes, formal on-call, separate staging/production infrastructure, or public-launch certification unless the user explicitly expands the scope.
+- Keep server secrets private, internal services non-public, the browser-facing API on HTTPS, Firebase authorization enforced, and citation-audited reports durable. These are minimum demo correctness boundaries, not enterprise hardening.
+
 ## Context Routing
 
 Do not read all project documentation by default.
@@ -19,7 +27,7 @@ Do not read all project documentation by default.
 2. Follow the closest nested `AGENTS.md` for files being changed.
 3. Use the project skill `elara-task-context` to load only the smallest relevant section from `project-context/IMPLEMENTATION_PLAN.md`, `project-context/AGENTS.md`, or `project-context/prompts`.
 4. Read `project-context/prompts` only when the user names a numbered implementation step.
-5. Read both project PDFs or the full implementation plan only for broad architecture decisions, methodology changes, or the final release audit.
+5. Read both project PDFs or the full implementation plan only for broad architecture decisions, methodology changes, or an explicitly requested future release audit.
 6. Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review or when `query`, `path`, and `explain` are insufficient.
 
 ## Change Workflow
@@ -28,4 +36,4 @@ Do not read all project documentation by default.
 - Add focused tests for behavior, security, scoring, persistence, and contract changes.
 - Run the narrowest relevant checks first; expand checks in proportion to risk.
 - After modifying code or project guidance, run `.\.graphify-venv\Scripts\graphify.exe update .` from the repository root.
-- Report changed files, verification performed, and any remaining release blocker. Distinguish feature completion, first-shippable-milestone approval, and public-launch approval.
+- Report changed files, verification performed, and any remaining hosted-demo blocker. Do not require or report public-production approval unless the user explicitly changes the project scope.

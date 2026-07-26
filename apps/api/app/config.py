@@ -31,7 +31,11 @@ class Settings(BaseSettings):
     redis_progress_max_events: int = Field(default=1_000, ge=100, le=100_000)
     redis_progress_ttl_seconds: int = Field(default=86_400, ge=300)
     redis_cancellation_ttl_seconds: int = Field(default=86_400, ge=300)
-    redis_lock_ttl_seconds: int = Field(default=3_600, ge=60)
+    # Align the run lease with the Redis broker redelivery window: a lost task
+    # becomes eligible to continue after its hard time limit rather than leaving
+    # an abandoned ownership lock for an hour.
+    redis_lock_ttl_seconds: int = Field(default=1_020, ge=60)
+    worker_liveness_ttl_seconds: int = Field(default=60, ge=15, le=300)
     sse_heartbeat_seconds: int = Field(default=20, ge=15, le=30)
     web_app_url: str = "http://localhost:3000"
     cors_allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
@@ -56,6 +60,7 @@ class Settings(BaseSettings):
     langsmith_api_key: SecretStr | None = None
     langsmith_project: str = "elara-local"
     langsmith_endpoint: str | None = None
+    deepseek_request_timeout_seconds: float = Field(default=120.0, gt=0, le=600)
     deepseek_input_cost_per_million_tokens: float = Field(default=0, ge=0)
     deepseek_output_cost_per_million_tokens: float = Field(default=0, ge=0)
     search_cost_per_request: float = Field(default=0, ge=0)
@@ -75,7 +80,7 @@ class Settings(BaseSettings):
     upload_max_bytes: int = Field(default=25_000_000, ge=100_000, le=100_000_000)
     unclaimed_upload_retention_hours: int = Field(default=24, ge=1, le=168)
     orphan_snapshot_retention_days: int = Field(default=30, ge=7, le=365)
-    s3_server_side_encryption: Literal["AES256", "aws:kms"] = "AES256"
+    s3_server_side_encryption: Literal["AES256", "aws:kms"] | None = "AES256"
     celery_task_soft_time_limit_seconds: int = Field(default=900, ge=60, le=3600)
     celery_task_time_limit_seconds: int = Field(default=960, ge=90, le=3900)
 
@@ -190,6 +195,13 @@ class Settings(BaseSettings):
     def restore_private_key_newlines(cls, value: str | None) -> str | None:
         return value.replace("\\n", "\n") if value else value
 
+    @field_validator("s3_server_side_encryption", mode="before")
+    @classmethod
+    def allow_local_s3_encryption_opt_out(cls, value: object) -> object:
+        if isinstance(value, str) and value.strip().casefold() in {"", "none"}:
+            return None
+        return value
+
     @field_validator("langsmith_endpoint")
     @classmethod
     def validate_langsmith_endpoint(cls, value: str | None) -> str | None:
@@ -205,6 +217,22 @@ class Settings(BaseSettings):
         if self.langsmith_tracing and (not self.langsmith_api_key or not self.langsmith_project):
             raise ValueError(
                 "LANGSMITH_API_KEY and LANGSMITH_PROJECT are required when LANGSMITH_TRACING is true"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def deepseek_timeout_fits_within_the_worker_budget(self) -> "Settings":
+        if self.deepseek_request_timeout_seconds >= self.celery_task_soft_time_limit_seconds:
+            raise ValueError(
+                "DEEPSEEK_REQUEST_TIMEOUT_SECONDS must be below the Celery soft time limit"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def run_lock_outlives_the_hard_task_limit(self) -> "Settings":
+        if self.redis_lock_ttl_seconds < self.celery_task_time_limit_seconds + 60:
+            raise ValueError(
+                "REDIS_LOCK_TTL_SECONDS must exceed the Celery hard time limit by at least 60 seconds"
             )
         return self
 
@@ -233,9 +261,22 @@ class Settings(BaseSettings):
             "CELERY_BROKER_URL": self.effective_celery_broker_url,
             "CELERY_RESULT_BACKEND": self.effective_celery_result_backend,
         }
-        if any(urlsplit(value).scheme != "rediss" for value in redis_urls.values()):
+        insecure_redis = []
+        for name, value in redis_urls.items():
+            parsed = urlsplit(value)
+            if parsed.scheme == "rediss":
+                continue
+            if (
+                self.environment == "staging"
+                and parsed.scheme == "redis"
+                and parsed.hostname == "redis"
+            ):
+                continue
+            insecure_redis.append(name)
+        if insecure_redis:
             raise ValueError(
-                "Redis and Celery Redis URLs must use TLS (rediss://) outside development and test"
+                "Redis and Celery Redis URLs must use TLS (rediss://), except for the internal "
+                "Compose hostname redis in staging"
             )
         for name, value in {
             **redis_urls,
@@ -254,8 +295,6 @@ class Settings(BaseSettings):
             "FIREBASE_PROJECT_ID": self.firebase_project_id,
             "FIREBASE_CLIENT_EMAIL": self.firebase_client_email,
             "FIREBASE_PRIVATE_KEY": self.firebase_private_key,
-            "S3_ACCESS_KEY_ID": self.s3_access_key_id,
-            "S3_SECRET_ACCESS_KEY": self.s3_secret_access_key,
         }
         missing = [name for name, value in required.items() if not value or "replace-with" in value]
         if missing:

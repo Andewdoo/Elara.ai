@@ -69,3 +69,14 @@ def test_acceptance_mode_is_fail_closed_outside_test():
         Settings(environment="development", acceptance_test_mode=True)
 
     assert Settings(environment="test", acceptance_test_mode=True).acceptance_test_mode
+
+
+def test_deepseek_request_timeout_is_bounded_by_the_worker_soft_limit():
+    assert Settings(environment="test").deepseek_request_timeout_seconds == 120
+
+    with pytest.raises(ValidationError, match="DEEPSEEK_REQUEST_TIMEOUT_SECONDS"):
+        Settings(
+            environment="test",
+            deepseek_request_timeout_seconds=600,
+            celery_task_soft_time_limit_seconds=600,
+        )

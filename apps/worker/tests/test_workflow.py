@@ -1,4 +1,5 @@
 import asyncio
+import json
 from copy import deepcopy
 from datetime import UTC, datetime
 from decimal import Decimal
@@ -16,15 +17,26 @@ from agents.deepseek_client import (
     ProviderErrorMetadata,
     StructuredResponse,
 )
+from agents.decomposition import normalize_decomposition
+from agents.evidence_classification import build_classification_tasks, classification_task_ref
 from agents.schemas import (
+    AtomicClaimOutput,
+    CitedReportSentenceOutput,
     CitationAuditOutput,
+    ClaimAmbiguityOutput,
+    ClaimKind,
+    DecompositionDraftOutput,
     DecompositionOutput,
     EvidenceClassificationItemOutput,
+    FactCheckability,
+    Importance,
     InputKind,
     IntakeClassificationOutput,
     PlanningOutput,
     SynthesisOutput,
+    SynthesisDraftOutput,
 )
+from agents.validation import validate_research_plan
 from app.database.base import Base
 from app.config import Settings
 from app.models import (
@@ -44,7 +56,9 @@ from app.models import (
 from app.services.reports import build_report
 from app.services.run_lifecycle import persist_completed_run
 from graph.state import (
+    CalculationRecord,
     CandidateSource,
+    ClaimScoreRecord,
     PassageRecord,
     ResearchDepth,
     ScoreBundle,
@@ -52,17 +66,35 @@ from graph.state import (
     VerificationState,
     WorkflowStage,
 )
-from graph.workflow import WorkflowExtensions, WorkflowNodes, WorkflowServices, build_workflow
+from graph.transitions import citation_audit_ready, evidence_ready, synthesis_ready
+from graph.workflow import (
+    WorkflowExtensions,
+    WorkflowNodes,
+    WorkflowServices,
+    _apply_partial_citation_penalty,
+    _guard_citation_audit,
+    _build_deterministic_report,
+    _report_title,
+    build_workflow,
+)
+from research.extension_errors import WorkflowExtensionError
 from graph.runtime import (
     SqlWorkflowStateWriter,
+    _split_run_target,
     execute_planning_workflow,
     execute_verification_workflow,
 )
 
 
 class FakeModel:
-    def __init__(self, outputs: list[dict[str, object]]) -> None:
+    def __init__(
+        self,
+        outputs: list[dict[str, object]],
+        *,
+        attempt_counts: list[int] | None = None,
+    ) -> None:
         self.outputs = outputs
+        self.attempt_counts = attempt_counts or []
         self.calls: list[dict[str, object]] = []
 
     async def generate_structured(self, **kwargs):
@@ -75,6 +107,7 @@ class FakeModel:
                 prompt_version=kwargs["prompt_version"],
                 temperature=kwargs["temperature"],
                 latency_ms=5,
+                attempt_count=self.attempt_counts.pop(0) if self.attempt_counts else 1,
             ),
         )
 
@@ -128,6 +161,103 @@ def state() -> VerificationState:
     )
 
 
+def test_report_states_supported_with_an_unresolved_interpretation_without_model_text():
+    value = state().model_copy(
+        update={
+            "claims": [
+                AtomicClaimOutput(
+                    claim_ref="meta",
+                    text="Meta stock price surpasses $600",
+                    claim_kind=ClaimKind.NUMERICAL,
+                    importance=Importance.ESSENTIAL,
+                    importance_weight=3,
+                    fact_checkability=FactCheckability.FACT_CHECKABLE,
+                    verification_scope="Verify the price milestone.",
+                )
+            ],
+            "claim_ambiguities": [
+                ClaimAmbiguityOutput(
+                    claim_ref="meta",
+                    text="raw model ambiguity that must not enter the report wording",
+                )
+            ],
+            "claim_scores": [
+                ClaimScoreRecord(
+                    claim_ref="meta",
+                    supporting_weight=Decimal("1"),
+                    contradicting_weight=Decimal("0"),
+                    total_adjusted_evidence=Decimal("1"),
+                    evidence_support=100,
+                    evidence_consistency=100,
+                    verdict_confidence=75,
+                    context_completeness=100,
+                    average_quality=100,
+                    adequate_evidence=True,
+                    final_label="Supported",
+                )
+            ],
+            "calculations": [
+                CalculationRecord(
+                    calculation_ref="ambiguity-gate-meta",
+                    formula_name="ambiguity_gate",
+                    formula_text="test gate",
+                    inputs={},
+                    result={"non_blocking": True},
+                    units="gate_decision",
+                    decimal_context={"precision": 28, "rounding": "ROUND_HALF_UP"},
+                    audit_status="non_blocking",
+                    claim_ref="meta",
+                )
+            ],
+        }
+    )
+    report = _build_deterministic_report(
+        value,
+        SynthesisDraftOutput.model_validate(
+            {
+                "summary_sentences": [
+                    {
+                        "sentence_ref": "summary-1",
+                        "text": "Approved evidence supports the price milestone.",
+                        "passage_ids": ["passage-1"],
+                    }
+                ]
+            }
+        ),
+        approved_passage_ids={"passage-1"},
+        evidence_reviewed_at=datetime(2026, 7, 19, tzinfo=UTC),
+        evidence_timestamp="Evidence reviewed as of 2026-07-19T00:00:00+00:00.",
+        model_versions={},
+        prompt_versions={},
+    )
+
+    assert report.limitations[1] == (
+        "Claim meta is supported with an unresolved interpretation "
+        "(1 claim-local limitation(s)); accepted evidence was adequate and unopposed."
+    )
+    assert "raw model ambiguity" not in " ".join(report.limitations)
+
+
+def test_report_title_uses_model_paraphrase_and_rejects_generic_fallbacks():
+    title_state = state().model_copy(
+        update={
+            "normalized_input": IntakeClassificationOutput.model_validate(
+                {
+                    "input_kind": "claim",
+                    "normalized_text": "Company X doubled net income in Q1 2026 after acquiring a smaller rival.",
+                    "detected_language": "English",
+                    "fact_checkability": "fact_checkable",
+                }
+            )
+        }
+    )
+
+    assert _report_title(title_state, "Company X Q1 net-income growth") == "Company X Q1 net-income growth"
+    assert _report_title(title_state, "Evidence assessment") == (
+        "Company X doubled net income in Q1 2026 after acquiring a smaller rival."
+    )
+
+
 INTAKE = {
     "input_kind": "claim",
     "normalized_text": "Company X doubled net income in Q1 2026.",
@@ -149,6 +279,23 @@ DECOMPOSITION = {
         }
     ]
 }
+DECOMPOSITION_DRAFT = {
+    "atomic_claims": [
+        {
+            "text": "Company X doubled net income in Q1 2026.",
+            "claim_kind": "numerical",
+            "importance": "essential",
+            "importance_weight": 3,
+            "fact_checkability": "fact_checkable",
+            "verification_scope": "Compare Q1 net income with the same prior-period metric.",
+        }
+    ]
+}
+GENERATED_CLAIM_REF = normalize_decomposition(
+    DecompositionDraftOutput.model_validate(DECOMPOSITION_DRAFT),
+    normalized_text=INTAKE["normalized_text"],
+    claim_limit=25,
+).atomic_claims[0].claim_ref
 PLAN = {
     "objectives": [
         {
@@ -179,10 +326,384 @@ PLAN = {
 }
 
 
+def test_retry_provenance_is_excluded_from_the_strict_intake_payload():
+    target, plan = _split_run_target(
+        {
+            **INTAKE,
+            "research_plan": PLAN,
+            "retried_from_run_id": "5736ed92-1da0-4786-bcda-4a8b197cdd1f",
+        }
+    )
+
+    assert plan == PLAN
+    assert "retried_from_run_id" not in target
+    assert IntakeClassificationOutput.model_validate(target).normalized_text == INTAKE["normalized_text"]
+
+
+DRAFT_PLAN = {
+    "objectives": [
+        {
+            "claim_ref": "claim-1",
+            "intent": "primary",
+            "target": "Locate the original quarterly filing.",
+            "queries": [{"query": "Company X Q1 2026 net income filing"}],
+        },
+        {
+            "claim_ref": "claim-1",
+            "intent": "contradiction",
+            "target": "Locate corrections or contradictory records.",
+            "queries": [{"query": "Company X Q1 2026 net income correction"}],
+        },
+    ]
+}
+DRAFT_PLAN_FOR_GENERATED_CLAIMS = deepcopy(DRAFT_PLAN)
+for _objective in DRAFT_PLAN_FOR_GENERATED_CLAIMS["objectives"]:
+    _objective["claim_ref"] = GENERATED_CLAIM_REF
+
+
+def test_planner_normalizes_draft_and_validates_contract():
+    workflow_state = VerificationState.model_validate(
+        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=FakeModel([DRAFT_PLAN]), submitted_input="synthetic public claim")
+        ).planner(workflow_state)
+    )
+
+    assert result.recoverable_errors == []
+    assert result.objectives[0].objective_ref.startswith("obj-")
+    assert result.queries[0].objective_ref == result.objectives[0].objective_ref
+    assert result.queries[0].intent == result.objectives[0].intent
+    assert result.model_calls[WorkflowStage.PLANNER.value].prompt_version == "planner-v2"
+
+
+def test_planner_sends_v2_contract_payload_without_exact_quote_when_inapplicable():
+    workflow_state = VerificationState.model_validate(
+        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+    )
+    model = FakeModel([DRAFT_PLAN])
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=model, submitted_input="synthetic public claim")).planner(
+            workflow_state
+        )
+    )
+
+    call = model.calls[0]
+    payload = json.loads(call["messages"][1]["content"])
+    system_prompt = " ".join(call["messages"][0]["content"].split())
+    assert call["output_schema"].__name__ == "PlanningDraftOutput"
+    assert call["prompt_version"] == "planner-v2"
+    for phrase in (
+        "untrusted evidence/data",
+        "primary and contradiction",
+        "allowed_claim_refs",
+        "inherit that objective's intent",
+        "case-folding and collapsing whitespace",
+        "truth decisions, score, browse, request or use credentials, or provide private reasoning",
+    ):
+        assert phrase in system_prompt
+    assert set(payload) == {
+        "claims",
+        "allowed_claim_refs",
+        "research_depth",
+        "max_query_count",
+        "required_intents_by_claim",
+        "requires_attribution_check",
+    }
+    assert payload["allowed_claim_refs"] == ["claim-1"]
+    assert payload["research_depth"] == "STANDARD"
+    assert payload["max_query_count"] == 60
+    assert payload["required_intents_by_claim"] == {
+        "claim-1": ["primary", "contradiction"]
+    }
+    assert payload["requires_attribution_check"] is False
+    assert result.recoverable_errors == []
+
+
+def test_planner_prepends_an_exact_brave_query_for_an_article_title():
+    article_title = "Gordie Howe bridge deal appears to contradict Carney's description of pact with U.S."
+    workflow_state = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": {**INTAKE, "input_kind": "article_title", "normalized_text": article_title},
+            "claims": DECOMPOSITION["atomic_claims"],
+        }
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=FakeModel([DRAFT_PLAN]), submitted_input=article_title)).planner(
+            workflow_state
+        )
+    )
+
+    assert result.queries[0].query == article_title
+    assert result.queries[0].intent.value == "primary"
+    assert result.queries[0].priority == 1
+
+
+def test_planner_rejects_unknown_draft_claim_ref_with_stable_diagnostics():
+    invalid_draft = deepcopy(DRAFT_PLAN)
+    invalid_draft["objectives"][0]["claim_ref"] = "unknown-claim"
+    workflow_state = VerificationState.model_validate(
+        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([invalid_draft, invalid_draft]),
+                submitted_input="synthetic public claim",
+            )
+        ).planner(workflow_state)
+    )
+
+    assert result.recoverable_errors[-1].code == "AGENT_CONTRACT_REPAIR_EXHAUSTED"
+    assert result.recoverable_errors[-1].details == {
+        "primary_violation": "PLAN_UNKNOWN_CLAIM_REF",
+        "violation_count": 1,
+        "repair_attempted": True,
+        "semantic_validation_attempt_count": 2,
+        "semantic_repair_attempt_count": 1,
+        "violation_summary": "PLAN_UNKNOWN_CLAIM_REF",
+    }
+
+
+def test_planner_repairs_one_semantically_invalid_plan_without_replaying_model_content():
+    raw_response_marker = "planner-raw-response-marker-not-for-telemetry"
+    invalid_plan = deepcopy(DRAFT_PLAN)
+    invalid_plan["objectives"][0]["queries"][0]["query"] = raw_response_marker
+    invalid_plan["objectives"][1]["queries"][0]["query"] = raw_response_marker.upper()
+    workflow_state = VerificationState.model_validate(
+        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+    )
+    progress = RecordingProgress()
+    model = FakeModel([invalid_plan, DRAFT_PLAN], attempt_counts=[2, 1])
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=model,
+                submitted_input="synthetic public claim",
+                progress=progress,
+            )
+        ).planner(workflow_state)
+    )
+
+    assert result.recoverable_errors == []
+    assert len(model.calls) == 2
+    assert model.calls[0]["repair_invalid_response"] is True
+    assert model.calls[1]["repair_invalid_response"] is False
+    corrective_instruction = model.calls[1]["messages"][1]["content"]
+    assert "PLAN_DUPLICATE_QUERY" in corrective_instruction
+    assert "claim-1" in corrective_instruction
+    assert raw_response_marker not in corrective_instruction
+    assert progress.events[-1]["payload"].get("semantic_validation_attempt_count") == 2
+    assert progress.events[-1]["payload"].get("semantic_repair_attempt_count") == 1
+    assert raw_response_marker not in str(progress.events)
+
+
+def planner_contract_cases() -> list[tuple[str, dict[str, object], dict[str, object]]]:
+    """Pydantic-valid plans that characterize each workflow-only planner guard."""
+    cases: list[tuple[str, dict[str, object], dict[str, object]]] = [
+        ("valid_control", deepcopy(PLAN), {}),
+    ]
+
+    duplicate_objective = deepcopy(PLAN)
+    duplicate_objective["objectives"].insert(
+        1,
+        {
+            "objective_ref": "objective-1",
+            "claim_ref": "claim-1",
+            "intent": "primary",
+            "target": "Locate an additional original filing.",
+        },
+    )
+    cases.append(("duplicate_objective_ref", duplicate_objective, {}))
+
+    unknown_claim = deepcopy(PLAN)
+    unknown_claim["objectives"].append(
+        {
+            "objective_ref": "objective-3",
+            "claim_ref": "unknown-claim",
+            "intent": "support",
+            "target": "Locate a supporting record.",
+        }
+    )
+    unknown_claim["queries"].append(
+        {
+            "query": "Company X supporting record",
+            "objective_ref": "objective-3",
+            "intent": "support",
+        }
+    )
+    cases.append(("unknown_claim_ref", unknown_claim, {}))
+
+    missing_coverage = deepcopy(PLAN)
+    missing_claim = {
+        **DECOMPOSITION["atomic_claims"][0],
+        "claim_ref": "claim-2",
+        "text": "Company X renamed a product in Q1 2026.",
+        "fact_checkability": "not_fact_checkable",
+    }
+    cases.append(
+        (
+            "missing_claim_coverage",
+            missing_coverage,
+            {"claims": [*DECOMPOSITION["atomic_claims"], missing_claim]},
+        )
+    )
+
+    extra_coverage = deepcopy(unknown_claim)
+    cases.append(("extra_claim_coverage", extra_coverage, {}))
+
+    query_limit = deepcopy(PLAN)
+    query_limit["queries"].extend(
+        {
+            "query": f"Company X Q1 2026 primary filing {index}",
+            "objective_ref": "objective-1",
+            "intent": "primary",
+        }
+        for index in range(59)
+    )
+    cases.append(("query_limit", query_limit, {}))
+
+    duplicate_query = deepcopy(PLAN)
+    duplicate_query["queries"][1]["query"] = "  COMPANY x q1 2026 NET income FILING  "
+    cases.append(("duplicate_normalized_query", duplicate_query, {}))
+
+    primary_missing = deepcopy(PLAN)
+    primary_missing["objectives"][0]["intent"] = "support"
+    primary_missing["queries"][0]["intent"] = "support"
+    cases.append(("missing_primary_path", primary_missing, {}))
+
+    contradiction_missing = deepcopy(PLAN)
+    contradiction_missing["objectives"][1]["intent"] = "support"
+    contradiction_missing["queries"][1]["intent"] = "support"
+    cases.append(("missing_contradiction_path", contradiction_missing, {}))
+
+    attribution_missing = deepcopy(PLAN)
+    attribution_input = {**INTAKE, "requires_attribution_check": True}
+    cases.append(
+        ("missing_attribution_path", attribution_missing, {"normalized_input": attribution_input})
+    )
+
+    exact_quote_missing = deepcopy(PLAN)
+    quote_input = {
+        **INTAKE,
+        "input_kind": "quote",
+        "normalized_text": "This synthetic statement must be searched verbatim.",
+    }
+    cases.append(("missing_exact_quote", exact_quote_missing, {"normalized_input": quote_input}))
+
+    intent_mismatch = deepcopy(PLAN)
+    intent_mismatch["queries"].append(
+        {
+            "query": "Company X Q1 2026 supporting context",
+            "objective_ref": "objective-1",
+            "intent": "support",
+        }
+    )
+    cases.append(("query_objective_intent_mismatch", intent_mismatch, {}))
+    return cases
+
+
+@pytest.mark.skip(reason="Planning drafts cannot supply persisted objective references or query intents.")
+@pytest.mark.parametrize(("case_name", "plan", "updates"), planner_contract_cases())
+def test_planner_reports_stable_contract_diagnostics_for_pydantic_valid_plans(
+    case_name: str, plan: dict[str, object], updates: dict[str, object]
+):
+    """Freeze the generic v1 failure until Prompt 2 extracts precise validators."""
+    PlanningOutput.model_validate(plan)
+    workflow_state = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+            **updates,
+        }
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=FakeModel([plan]), submitted_input="synthetic public claim")
+        ).planner(workflow_state)
+    )
+
+    expected_primary_violations = {
+        "duplicate_objective_ref": "PLAN_DUPLICATE_OBJECTIVE_REF",
+        "unknown_claim_ref": "PLAN_EXTRA_CLAIM_COVERAGE",
+        "missing_claim_coverage": "PLAN_MISSING_CLAIM_COVERAGE",
+        "extra_claim_coverage": "PLAN_EXTRA_CLAIM_COVERAGE",
+        "query_limit": "PLAN_QUERY_LIMIT_EXCEEDED",
+        "duplicate_normalized_query": "PLAN_DUPLICATE_QUERY",
+        "missing_primary_path": "PLAN_PRIMARY_PATH_MISSING",
+        "missing_contradiction_path": "PLAN_CONTRADICTION_PATH_MISSING",
+        "missing_attribution_path": "PLAN_ATTRIBUTION_PATH_MISSING",
+        "missing_exact_quote": "PLAN_EXACT_QUOTE_PATH_MISSING",
+        "query_objective_intent_mismatch": "PLAN_INTENT_MISMATCH",
+    }
+    if case_name == "valid_control":
+        assert result.recoverable_errors == []
+        assert WorkflowStage.PLANNER in result.completed_stages
+    else:
+        assert result.recoverable_errors[-1].code == "INVALID_RESEARCH_PLAN"
+        assert result.recoverable_errors[-1].details["primary_violation"] == expected_primary_violations[case_name]
+        assert result.recoverable_errors[-1].details["violation_count"] == len(
+            validate_research_plan(workflow_state, PlanningOutput.model_validate(plan))
+        )
+        assert result.recoverable_errors[-1].details["repair_attempted"] is False
+        assert WorkflowStage.PLANNER not in result.completed_stages
+
+
+def test_planner_failure_event_contains_only_stable_diagnostics():
+    raw_claim = "Raw claim text must never appear in a planner failure event."
+    raw_query = "Raw query text must never appear in a planner failure event."
+    invalid_plan = deepcopy(DRAFT_PLAN)
+    invalid_plan["objectives"][0]["queries"].append(
+        {"query": f"  {raw_query.upper()}  "}
+    )
+    invalid_plan["objectives"][1]["queries"][0]["query"] = raw_query
+    workflow_state = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": {**INTAKE, "normalized_text": raw_claim},
+            "claims": DECOMPOSITION["atomic_claims"],
+        }
+    )
+    progress = RecordingProgress()
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([invalid_plan, invalid_plan]),
+                submitted_input=raw_claim,
+                progress=progress,
+            )
+        ).planner(workflow_state)
+    )
+
+    event = progress.events[-1]
+    details = event["payload"]["details"]
+    assert result.recoverable_errors[-1].code == "AGENT_CONTRACT_REPAIR_EXHAUSTED"
+    assert details == {
+        "primary_violation": "PLAN_DUPLICATE_QUERY",
+        "violation_count": 1,
+        "repair_attempted": True,
+        "semantic_validation_attempt_count": 2,
+        "semantic_repair_attempt_count": 1,
+        "violation_summary": "PLAN_DUPLICATE_QUERY",
+    }
+    assert raw_claim not in str(event)
+    assert raw_query not in str(event)
+
+
 def test_planning_workflow_is_typed_and_persists_public_progress():
     progress = RecordingProgress()
     writer = RecordingStateWriter()
-    model = FakeModel([INTAKE, DECOMPOSITION, PLAN])
+    model = FakeModel([INTAKE, DECOMPOSITION_DRAFT, DRAFT_PLAN_FOR_GENERATED_CLAIMS])
     workflow = build_workflow(
         WorkflowServices(
             model=model,
@@ -195,17 +716,17 @@ def test_planning_workflow_is_typed_and_persists_public_progress():
 
     result = VerificationState.model_validate(asyncio.run(workflow.ainvoke(state())))
 
-    assert result.claims[0].claim_ref == "claim-1"
-    assert result.queries[0].objective_ref == "objective-1"
+    assert result.claims[0].claim_ref == GENERATED_CLAIM_REF
+    assert result.queries[0].objective_ref.startswith("obj-")
     assert result.completed_stages == [
         WorkflowStage.INTAKE,
         WorkflowStage.DECOMPOSITION,
         WorkflowStage.PLANNER,
     ]
     assert [call["prompt_version"] for call in model.calls] == [
-        "intake-v1",
-        "decomposition-v1",
-        "planner-v1",
+        "intake-v2",
+        "decomposition-v3",
+        "planner-v2",
     ]
     assert len(writer.saved) == 3
     assert all("reasoning" not in str(event).lower() for event in progress.events)
@@ -224,7 +745,29 @@ def test_state_forbids_private_reasoning_fields():
         )
 
 
-def test_intake_rejects_model_input_type_drift():
+def test_intake_sends_immutable_expected_input_kind_and_accepts_matching_kind():
+    model = FakeModel([INTAKE])
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=model,
+                submitted_input="A claim",
+                expected_input_kind=InputKind.CLAIM,
+            )
+        ).intake(state())
+    )
+
+    payload = json.loads(model.calls[0]["messages"][1]["content"])
+    system_prompt = " ".join(model.calls[0]["messages"][0]["content"].split())
+    assert model.calls[0]["prompt_version"] == "intake-v2"
+    assert model.calls[0]["repair_invalid_response"] is True
+    assert payload == {"submitted_input": "A claim", "expected_input_kind": "claim"}
+    assert "expected_input_kind is immutable task context" in system_prompt
+    assert result.normalized_input is not None
+    assert result.normalized_input.input_kind == InputKind.CLAIM
+
+
+def test_intake_rejects_model_input_type_drift_with_stable_details():
     drifted = {**INTAKE, "input_kind": "article_text"}
     progress = RecordingProgress()
     result = asyncio.run(
@@ -240,7 +783,63 @@ def test_intake_rejects_model_input_type_drift():
 
     assert result.normalized_input is None
     assert result.recoverable_errors[0].code == "INPUT_TYPE_MISMATCH"
-    assert progress.events[-1]["payload"]["details"] == {}
+    assert progress.events[-1]["payload"]["details"] == {
+        "expected_input_kind": "claim",
+        "returned_input_kind": "article_text",
+    }
+
+
+@pytest.mark.parametrize(
+    "submitted_url",
+    [
+        "ftp://example.test/report",
+        "https:///missing-host",
+        "https://user:password@example.test/report",
+    ],
+)
+def test_intake_retains_deterministic_url_scheme_host_and_credential_guard(
+    submitted_url: str,
+):
+    article_url_output = {
+        **INTAKE,
+        "input_kind": "article_url",
+        "normalized_text": "https://model.example/rewritten",
+    }
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([article_url_output]),
+                submitted_input=submitted_url,
+                expected_input_kind=InputKind.ARTICLE_URL,
+            )
+        ).intake(state())
+    )
+
+    assert result.normalized_input is None
+    assert result.recoverable_errors[0].code == "INVALID_NORMALIZED_URL"
+
+
+def test_intake_retains_submitted_safe_article_url_after_model_normalization():
+    submitted_url = "https://example.test/report?year=2026"
+    article_url_output = {
+        **INTAKE,
+        "input_kind": "article_url",
+        "normalized_text": "https://model.example/rewritten",
+    }
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([article_url_output]),
+                submitted_input=submitted_url,
+                expected_input_kind=InputKind.ARTICLE_URL,
+            )
+        ).intake(state())
+    )
+
+    assert result.normalized_input is not None
+    assert result.normalized_input.normalized_text == submitted_url
 
 
 def test_provider_failure_metadata_is_public_and_recoverable():
@@ -267,10 +866,10 @@ def test_provider_failure_metadata_is_public_and_recoverable():
 
 
 def test_decomposition_rejects_parent_cycles():
-    cyclical = deepcopy(DECOMPOSITION)
+    cyclical = deepcopy(DECOMPOSITION_DRAFT)
     cyclical["atomic_claims"] = [
-        {**DECOMPOSITION["atomic_claims"][0], "claim_ref": "claim-1", "parent_claim_ref": "claim-2"},
-        {**DECOMPOSITION["atomic_claims"][0], "claim_ref": "claim-2", "parent_claim_ref": "claim-1"},
+        {**DECOMPOSITION_DRAFT["atomic_claims"][0], "parent_claim_index": 1},
+        {**DECOMPOSITION_DRAFT["atomic_claims"][0], "text": "Company X reported income in Q1 2026.", "parent_claim_index": 0},
     ]
     value = VerificationState.model_validate(
         {**state().model_dump(), "normalized_input": INTAKE}
@@ -282,7 +881,7 @@ def test_decomposition_rejects_parent_cycles():
         ).decomposition(value)
     )
 
-    assert result.recoverable_errors[0].code == "INVALID_CLAIM_GRAPH"
+    assert result.recoverable_errors[0].code == "DECOMPOSITION_CLAIM_CYCLE"
 
 
 def test_planner_requires_primary_and_contradiction_paths_per_claim():
@@ -291,20 +890,13 @@ def test_planner_requires_primary_and_contradiction_paths_per_claim():
         "claim_ref": "claim-2",
         "text": "Demand increased in Q1 2026.",
     }
-    incomplete_plan = deepcopy(PLAN)
+    incomplete_plan = deepcopy(DRAFT_PLAN)
     incomplete_plan["objectives"].append(
         {
-            "objective_ref": "objective-3",
             "claim_ref": "claim-2",
             "intent": "primary",
             "target": "Locate demand records.",
-        }
-    )
-    incomplete_plan["queries"].append(
-        {
-            "query": "Company X Q1 2026 demand records",
-            "objective_ref": "objective-3",
-            "intent": "primary",
+            "queries": [{"query": "Company X Q1 2026 demand records"}],
         }
     )
     value = VerificationState.model_validate(
@@ -317,11 +909,14 @@ def test_planner_requires_primary_and_contradiction_paths_per_claim():
 
     result = asyncio.run(
         WorkflowNodes(
-            WorkflowServices(model=FakeModel([incomplete_plan]), submitted_input="unused")
+            WorkflowServices(
+                model=FakeModel([incomplete_plan, incomplete_plan]),
+                submitted_input="unused",
+            )
         ).planner(value)
     )
 
-    assert result.recoverable_errors[0].code == "INVALID_RESEARCH_PLAN"
+    assert result.recoverable_errors[0].code == "AGENT_CONTRACT_REPAIR_EXHAUSTED"
 
 
 def test_cancellation_stops_before_model_call_and_is_persisted():
@@ -367,8 +962,7 @@ def test_evidence_guard_rejects_unknown_passage_reference():
             {
                 "classifications": [
                     {
-                        "claim_ref": "claim-1",
-                        "passage_id": "invented-passage",
+                        "task_ref": classification_task_ref("claim-1", "invented-passage"),
                         "stance": "strongly_supports",
                         "quality": {
                             "relevance": 1,
@@ -393,7 +987,121 @@ def test_evidence_guard_rejects_unknown_passage_reference():
     )
 
     assert result.evidence == []
-    assert result.recoverable_errors[0].code == "INVALID_EVIDENCE_REFERENCES"
+    assert result.recoverable_errors[0].code == "CLASSIFICATION_COVERAGE_MISMATCH"
+
+
+def _classification_judgment(task_ref: str) -> dict[str, object]:
+    return {
+        "task_ref": task_ref,
+        "stance": "strongly_supports",
+        "quality": {
+            "relevance": 1,
+            "directness": 1,
+            "claim_specific_authority": 1,
+            "transparency": 1,
+            "temporal_fit": 1,
+            "extraction_certainty": 1,
+        },
+        "entity_match": True,
+        "time_period_match": True,
+        "quotation_or_number_located": True,
+    }
+
+
+def test_evidence_classification_requires_exact_task_coverage_and_uses_v3_payload():
+    passage_text = "The Q1 filing reports net income of 20, compared with 10."
+    value = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+            "passages": [
+                {
+                    "passage_id": "passage-1",
+                    "source_ref": "source-1",
+                    "snapshot_id": "snapshot-1",
+                    "text": passage_text,
+                    "text_hash": "hash-1",
+                    "extraction_certainty": "0.95",
+                },
+                {
+                    "passage_id": "passage-2",
+                    "source_ref": "source-1",
+                    "snapshot_id": "snapshot-1",
+                    "text": "The filing is dated after the claim's reporting period.",
+                    "text_hash": "hash-2",
+                    "extraction_certainty": "0.95",
+                },
+            ],
+        }
+    )
+    tasks = build_classification_tasks(
+        value.claims, value.passages, research_depth=value.research_depth.value
+    )
+    model = FakeModel([{"classifications": [_classification_judgment(task.task_ref) for task in tasks]}])
+    progress = RecordingProgress()
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused", progress=progress)
+        ).evidence_classification(value)
+    )
+
+    payload = json.loads(model.calls[0]["messages"][1]["content"])
+    assert model.calls[0]["prompt_version"] == "evidence-classification-v3"
+    assert set(payload) == {"tasks"}
+    assert [task["task_ref"] for task in payload["tasks"]] == [task.task_ref for task in tasks]
+    assert {(item.claim_ref, item.passage_id) for item in result.evidence} == {
+        (task.claim_ref, task.passage_id) for task in tasks
+    }
+    assert passage_text not in repr(progress.events)
+
+
+@pytest.mark.parametrize(
+    ("returned_task_refs", "expected_details"),
+    [
+        ([], {"missing_task_count": 1, "duplicate_task_count": 0, "unknown_task_count": 0}),
+        ([("expected"), ("expected")], {"missing_task_count": 0, "duplicate_task_count": 1, "unknown_task_count": 0}),
+        ([("unknown")], {"missing_task_count": 1, "duplicate_task_count": 0, "unknown_task_count": 1}),
+        ([("expected"), ("unknown")], {"missing_task_count": 0, "duplicate_task_count": 0, "unknown_task_count": 1}),
+    ],
+    ids=["empty", "duplicate", "unknown", "extra"],
+)
+def test_evidence_classification_rejects_incomplete_or_undeclared_task_results(
+    returned_task_refs: list[str], expected_details: dict[str, int]
+):
+    value = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+            "passages": [
+                {
+                    "passage_id": "passage-1",
+                    "source_ref": "source-1",
+                    "snapshot_id": "snapshot-1",
+                    "text": "The Q1 filing reports net income of 20, compared with 10.",
+                    "text_hash": "hash-1",
+                    "extraction_certainty": "0.95",
+                }
+            ],
+        }
+    )
+    expected_ref = classification_task_ref("claim-1", "passage-1")
+    unknown_ref = classification_task_ref("claim-1", "undeclared-passage")
+    refs = [expected_ref if ref == "expected" else unknown_ref for ref in returned_task_refs]
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([{"classifications": [_classification_judgment(ref) for ref in refs]}]),
+                submitted_input="unused",
+            )
+        ).evidence_classification(value)
+    )
+
+    error = result.recoverable_errors[0]
+    assert error.code == "CLASSIFICATION_COVERAGE_MISMATCH"
+    assert {key: error.details[key] for key in expected_details} == expected_details
 
 
 def test_evidence_guard_applies_deterministic_rejection_thresholds():
@@ -417,8 +1125,7 @@ def test_evidence_guard_applies_deterministic_rejection_thresholds():
     classification = {
         "classifications": [
             {
-                "claim_ref": "claim-1",
-                "passage_id": "passage-1",
+                "task_ref": classification_task_ref("claim-1", "passage-1"),
                 "stance": "neutral_or_irrelevant",
                 "quality": {
                     "relevance": 0.4,
@@ -451,6 +1158,54 @@ def test_evidence_guard_applies_deterministic_rejection_thresholds():
     assert result.evidence[0].quality.extraction_certainty == 0.60
 
 
+def test_evidence_guard_accepts_an_explicit_grounded_contradiction_without_literal_entity_match():
+    value = VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+            "passages": [
+                {
+                    "passage_id": "passage-1",
+                    "source_ref": "source-1",
+                    "snapshot_id": "snapshot-1",
+                    "text": "The authority reports that no universal cure has been found.",
+                    "text_hash": "hash-1",
+                    "extraction_certainty": "0.95",
+                }
+            ],
+        }
+    )
+    classification = {
+        "classifications": [
+            {
+                "task_ref": classification_task_ref("claim-1", "passage-1"),
+                "stance": "strongly_contradicts",
+                "quality": {
+                    "relevance": 0.9,
+                    "directness": 0.8,
+                    "claim_specific_authority": 0.9,
+                    "transparency": 0.9,
+                    "temporal_fit": 0.9,
+                    "extraction_certainty": 0.95,
+                },
+                "explicit_contradiction": "No universal cure has been found.",
+                "entity_match": False,
+                "time_period_match": True,
+                "quotation_or_number_located": True,
+            }
+        ]
+    }
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=FakeModel([classification]), submitted_input="unused")
+        ).evidence_classification(value)
+    )
+
+    assert result.evidence[0].recommended_rejection_reasons == []
+
+
 def test_evidence_guard_ignores_free_form_model_rejection_recommendations():
     value = VerificationState.model_validate(
         {
@@ -462,8 +1217,8 @@ def test_evidence_guard_ignores_free_form_model_rejection_recommendations():
                 "text_hash": "hash-1", "extraction_certainty": "0.99"}],
         }
     )
-    classification = {"classifications": [{"claim_ref": "claim-1",
-        "passage_id": "passage-1", "stance": "strongly_supports",
+    classification = {"classifications": [{"task_ref": classification_task_ref("claim-1", "passage-1"),
+        "stance": "strongly_supports",
         "quality": {"relevance": 1, "directness": 1,
             "claim_specific_authority": 1, "transparency": 1,
             "temporal_fit": 1, "extraction_certainty": 1},
@@ -478,31 +1233,115 @@ def test_evidence_guard_ignores_free_form_model_rejection_recommendations():
     assert result.evidence[0].recommended_rejection_reasons == []
 
 
+def test_synthesis_sends_only_deterministically_approved_evidence_to_the_model():
+    def evidence(passage_id: str, rejection_reasons: list[str]):
+        return EvidenceClassificationItemOutput.model_validate({
+            "claim_ref": "claim-1",
+            "passage_id": passage_id,
+            "stance": "strongly_supports",
+            "quality": {"relevance": 1, "directness": 1,
+                "claim_specific_authority": 1, "transparency": 1,
+                "temporal_fit": 1, "extraction_certainty": 1},
+            "entity_match": True,
+            "time_period_match": True,
+            "recommended_rejection_reasons": rejection_reasons,
+        })
+
+    value = state().model_copy(update={
+        "claims": [
+            AtomicClaimOutput.model_validate(DECOMPOSITION["atomic_claims"][0])
+        ],
+        "snapshots": [SnapshotRecord(snapshot_id="snapshot-1", source_ref="source-1",
+            access_status="FETCHED", retrieved_at=datetime(2026, 7, 4, tzinfo=UTC))],
+        "passages": [
+            PassageRecord(passage_id="approved-passage", source_ref="source-1",
+                snapshot_id="snapshot-1", text="Approved supporting passage.",
+                text_hash="approved", extraction_certainty=Decimal("1")),
+            PassageRecord(passage_id="rejected-passage", source_ref="source-1",
+                snapshot_id="snapshot-1", text="Rejected unrelated passage.",
+                text_hash="rejected", extraction_certainty=Decimal("1")),
+        ],
+        "evidence": [
+            evidence("approved-passage", []),
+            evidence("rejected-passage", ["entity_mismatch"]),
+        ],
+        "scores": ScoreBundle(evidence_support=100, verdict_confidence=90,
+            source_independence=80, context_completeness=90, final_label="supported",
+            methodology_version="1.0"),
+    })
+    model = FakeModel([{"summary_sentences": [{"sentence_ref": "summary-1",
+        "text": "Approved evidence supports the claim.", "passage_ids": ["approved-passage"]}]}])
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=model, submitted_input="unused")).synthesis(value)
+    )
+
+    payload = json.loads(model.calls[0]["messages"][1]["content"])
+    assert model.calls[0]["prompt_version"] == "synthesis-v4"
+    assert payload["submitted_target"] is None
+    assert [item["passage_id"] for item in payload["approved_evidence"]] == ["approved-passage"]
+    assert [item["passage_id"] for item in payload["approved_passages"]] == ["approved-passage"]
+    assert result.report_draft is not None
+
+
 def test_extension_outputs_are_revalidated():
     async def invalid_extension(value: VerificationState) -> VerificationState:
         return value.model_copy(update={"candidate_sources": [{"source_ref": "incomplete"}]})
 
     node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
-    with pytest.warns(UserWarning, match="Pydantic serializer warnings"):
-        result = asyncio.run(node.extension(WorkflowStage.DISCOVERY, invalid_extension)(state()))
+    with pytest.warns(UserWarning, match="Pydantic serializer warnings"), pytest.raises(ValidationError):
+        asyncio.run(node.extension(WorkflowStage.DISCOVERY, invalid_extension)(state()))
 
-    assert result.candidate_sources == []
-    assert result.recoverable_errors[0].code == "WORKFLOW_EXTENSION_FAILED"
-
-
-def test_retryable_retrieval_extension_preserves_fetch_failure_kind():
-    class TemporaryFetchFailure(RuntimeError):
-        retryable = True
-
+def test_typed_extension_error_preserves_safe_failure_contract():
     async def unavailable(_value: VerificationState) -> VerificationState:
-        raise TemporaryFetchFailure("private detail")
+        raise WorkflowExtensionError(
+            code="NO_ACCESSIBLE_SOURCES",
+            public_message="No accessible sources were available after secure retrieval.",
+            retryable=True,
+            details={"candidate_count": 2, "failure_kind": "fetch"},
+        )
 
     node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
     result = asyncio.run(node.extension(WorkflowStage.RETRIEVAL, unavailable)(state()))
 
+    assert result.recoverable_errors[0].code == "NO_ACCESSIBLE_SOURCES"
+    assert (
+        result.recoverable_errors[0].public_message
+        == "No accessible sources were available after secure retrieval."
+    )
     assert result.recoverable_errors[0].retryable is True
-    assert result.recoverable_errors[0].details == {"failure_kind": "fetch"}
-    assert "private detail" not in result.recoverable_errors[0].public_message
+    assert result.recoverable_errors[0].details == {"candidate_count": 2, "failure_kind": "fetch"}
+
+
+def test_unexpected_extension_runtime_error_reaches_worker_boundary():
+    async def broken_extension(_value: VerificationState) -> VerificationState:
+        raise RuntimeError("programming invariant failed")
+
+    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
+    with pytest.raises(RuntimeError, match="programming invariant failed"):
+        asyncio.run(node.extension(WorkflowStage.RETRIEVAL, broken_extension)(state()))
+
+
+@pytest.mark.parametrize(
+    ("route", "stage", "node_name", "expected_code"),
+    [
+        (evidence_ready, WorkflowStage.EVIDENCE_CLASSIFICATION, "evidence_classification", "EVIDENCE_INPUTS_REQUIRED"),
+        (synthesis_ready, WorkflowStage.SYNTHESIS, "synthesis", "APPROVED_EVIDENCE_REQUIRED"),
+        (citation_audit_ready, WorkflowStage.CITATION_AUDIT, "citation_audit", "REPORT_DRAFT_REQUIRED"),
+    ],
+)
+def test_missing_transition_prerequisite_reaches_responsible_stage(
+    route, stage: WorkflowStage, node_name: str, expected_code: str
+):
+    value = state()
+    assert route(value) == "continue"
+
+    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
+    result = asyncio.run(getattr(node, node_name)(value))
+
+    assert result.recoverable_errors[-1].stage == stage
+    assert result.recoverable_errors[-1].code == expected_code
+    assert result.ready_for_completion is False
 
 
 def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
@@ -578,8 +1417,7 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     evidence = {
         "classifications": [
             {
-                "claim_ref": "claim-1",
-                "passage_id": "passage-1",
+                "task_ref": classification_task_ref(GENERATED_CLAIM_REF, "passage-1"),
                 "stance": "strongly_supports",
                 "quality": {
                     "relevance": 1,
@@ -597,7 +1435,7 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
         ]
     }
     synthesis = {
-        "title": "Assessment of Company X net income claim",
+        "report_title": "Company X Q1 income growth",
         "summary_sentences": [
             {
                 "sentence_ref": "summary-1",
@@ -621,7 +1459,7 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     }
     workflow = build_workflow(
         WorkflowServices(
-            model=FakeModel([INTAKE, DECOMPOSITION, PLAN, evidence, synthesis, audit]),
+            model=FakeModel([INTAKE, DECOMPOSITION_DRAFT, DRAFT_PLAN_FOR_GENERATED_CLAIMS, evidence, synthesis, audit]),
             submitted_input="Company X doubled net income in Q1 2026.",
             extensions=WorkflowExtensions(
                 discovery_source_selection=discovery,
@@ -656,6 +1494,87 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     assert result.ready_for_completion is True
 
 
+def test_partial_citation_is_completed_with_a_capped_score_penalty():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing proves the broader claim.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    )
+    guarded = _guard_citation_audit(
+        report,
+        {"passage-1": object()},
+        CitationAuditOutput.model_validate(
+            {
+                "sentence_audits": [
+                    {
+                        "sentence_ref": "summary-1",
+                        "passage_id": "passage-1",
+                        "entailment": "partial",
+                        "support_explanation": "Only the reported value is supported.",
+                        "suggested_revision": "The filing reports a value of 20.",
+                    }
+                ],
+                "needs_revision": True,
+            }
+        ),
+    )
+    assert guarded is not None and guarded.needs_revision is False
+    adjusted = _apply_partial_citation_penalty(
+        state().model_copy(
+            update={
+                "citation_audit": guarded,
+                "scores": ScoreBundle(
+                    evidence_support=100,
+                    verdict_confidence=90,
+                    methodology_version="1.0",
+                ),
+                "calculations": [
+                    CalculationRecord(
+                        calculation_ref="article-score",
+                        formula_name="article_factual_accuracy",
+                        formula_text="test",
+                        inputs={},
+                        result={"score": "100"},
+                        units="score_0_100",
+                        decimal_context={},
+                        audit_status="passed",
+                    ),
+                    CalculationRecord(
+                        calculation_ref="confidence-score",
+                        formula_name="verdict_confidence",
+                        formula_text="test",
+                        inputs={"penalties": {}},
+                        result={"score": "90"},
+                        units="score_0_100",
+                        decimal_context={},
+                        audit_status="passed",
+                    ),
+                ],
+                "completed_stages": [WorkflowStage.CITATION_AUDIT],
+            }
+        )
+    )
+    assert adjusted.ready_for_completion is True
+    assert adjusted.scores is not None
+    assert adjusted.scores.evidence_support == 95
+    assert adjusted.scores.verdict_confidence == 83
+    display_scores = {item.formula_name: item for item in adjusted.calculations}
+    assert display_scores["article_factual_accuracy"].result["score"] == "95"
+    assert display_scores["verdict_confidence"].inputs["penalties"] == {
+        "citation_partial_support": "7"
+    }
+    assert display_scores["citation_partial_support_penalty"].inputs[
+        "partial_sentence_count"
+    ] == 1
+
+
 def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
     report = SynthesisOutput.model_validate(
         {
@@ -675,8 +1594,8 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
                 {
                     "sentence_ref": "summary-1",
                     "passage_id": "passage-1",
-                    "entailment": "partial",
-                    "support_explanation": "Only the reported value is supported.",
+                    "entailment": "not_entailed",
+                    "support_explanation": "The broader claim is not supported.",
                     "suggested_revision": "The filing reports a value of 20.",
                 }
             ],
@@ -736,7 +1655,6 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
     revision_model = FakeModel(
         [
             {
-                "title": "Revised report",
                 "summary_sentences": [
                     {
                         "sentence_ref": "summary-1-revised",
@@ -744,41 +1662,171 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
                         "passage_ids": ["passage-1"],
                     }
                 ],
-            }
+            },
+            {
+                "sentence_audits": [
+                    {
+                        "sentence_ref": "summary-1-revised",
+                        "passage_id": "passage-1",
+                        "entailment": "entailed",
+                        "support_explanation": "The wording matches the passage.",
+                    }
+                ],
+                "needs_revision": False,
+            },
         ]
     )
-    revised = asyncio.run(
+    audited = asyncio.run(
         WorkflowNodes(
             WorkflowServices(model=revision_model, submitted_input="unused")
         ).citation_revision(value)
     )
-    assert revised.citation_revision_count == 1
-    assert revised.citation_audit is None
-    assert WorkflowStage.CITATION_AUDIT not in revised.completed_stages
-
-    audited = asyncio.run(
-        WorkflowNodes(
-            WorkflowServices(
-                model=FakeModel(
-                    [
-                        {
-                            "sentence_audits": [
-                                {
-                                    "sentence_ref": "summary-1-revised",
-                                    "passage_id": "passage-1",
-                                    "entailment": "entailed",
-                                    "support_explanation": "The wording matches the passage.",
-                                }
-                            ],
-                            "needs_revision": False,
-                        }
-                    ]
-                ),
-                submitted_input="unused",
-            )
-        ).citation_audit(revised)
-    )
+    assert audited.citation_revision_count == 1
+    assert audited.citation_audit is not None
+    assert WorkflowStage.CITATION_AUDIT in audited.completed_stages
     assert audited.ready_for_completion is True
+
+
+def test_citation_audit_requires_exact_unique_known_sentence_passage_pairs():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing reports a value of 20.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    )
+    complete = {
+        "sentence_ref": "summary-1",
+        "passage_id": "passage-1",
+        "entailment": "entailed",
+        "support_explanation": "The passage contains the reported value.",
+    }
+    assert _guard_citation_audit(
+        report,
+        {"passage-1": object()},
+        CitationAuditOutput.model_validate({"sentence_audits": [complete], "needs_revision": False}),
+    ) is not None
+
+    invalid_audits = [
+        [],
+        [complete, complete],
+        [{**complete, "sentence_ref": "unknown-1"}],
+        [{**complete, "passage_id": "unknown-passage"}],
+    ]
+    for audits in invalid_audits:
+        assert _guard_citation_audit(
+            report,
+            {"passage-1": object()},
+            CitationAuditOutput.model_validate(
+                {"sentence_audits": audits, "needs_revision": False}
+            ),
+        ) is None
+
+
+def test_citation_audit_preflight_rejects_duplicate_sentence_refs_without_model_call():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing reports a value of 20.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    ).model_copy(
+        update={
+            "factual_sentences": [
+                CitedReportSentenceOutput(
+                    sentence_ref="summary-1",
+                    text="The filing records the same value.",
+                    passage_ids=["passage-1"],
+                )
+            ]
+        }
+    )
+    model = FakeModel([])
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=model, submitted_input="unused")).citation_audit(
+            state().model_copy(update={"report_draft": report})
+        )
+    )
+
+    assert model.calls == []
+    assert result.recoverable_errors[-1].code == "DUPLICATE_REPORT_SENTENCE_REF"
+    assert result.ready_for_completion is False
+
+
+def test_citation_audit_rejects_a_report_pair_from_rejected_evidence():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing reports a value of 20.",
+                    "passage_ids": ["passage-1"],
+                }
+            ],
+        }
+    )
+    value = state().model_copy(
+        update={
+            "report_draft": report,
+            "snapshots": [
+                SnapshotRecord(
+                    snapshot_id="snapshot-1",
+                    source_ref="source-1",
+                    access_status="FETCHED",
+                    retrieved_at=datetime(2026, 7, 4, tzinfo=UTC),
+                )
+            ],
+            "passages": [
+                PassageRecord(
+                    passage_id="passage-1",
+                    source_ref="source-1",
+                    snapshot_id="snapshot-1",
+                    text="The filing reports a value of 20.",
+                    text_hash="hash-1",
+                    extraction_certainty=Decimal("1"),
+                )
+            ],
+            "evidence": [
+                EvidenceClassificationItemOutput.model_validate(
+                    {
+                        "claim_ref": "claim-1",
+                        "passage_id": "passage-1",
+                        "stance": "strongly_supports",
+                        "quality": {
+                            "relevance": 1,
+                            "directness": 1,
+                            "claim_specific_authority": 1,
+                            "transparency": 1,
+                            "temporal_fit": 1,
+                            "extraction_certainty": 1,
+                        },
+                        "entity_match": True,
+                        "time_period_match": True,
+                        "recommended_rejection_reasons": ["deterministic_gate"],
+                    }
+                )
+            ],
+        }
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused")).citation_audit(value)
+    )
+
+    assert result.recoverable_errors[-1].code == "REJECTED_EVIDENCE_CITED"
+    assert result.ready_for_completion is False
 
 
 def test_citation_revision_limit_exhaustion_fails_closed():
@@ -849,7 +1897,7 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
 
     metadata = CallMetadata(
         model="deepseek-chat",
-        prompt_version="planner-v1",
+        prompt_version="planner-v2",
         temperature=0,
         latency_ms=12,
     )
@@ -879,7 +1927,7 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
     assert durable_run is not None
     assert durable_run.normalized_target["research_plan"]["objectives"][0]["objective_ref"] == "objective-1"
     assert durable_run.model_versions["planner"]["provider"] == "deepseek"
-    assert durable_run.prompt_versions["planner"] == "planner-v1"
+    assert durable_run.prompt_versions["planner"] == "planner-v2"
     assert claim_count == 1
     assert query_count == 2
 
@@ -927,7 +1975,7 @@ def test_runtime_executes_and_persists_planning_handoff():
         run_id,
         record=record,
         is_cancelled=lambda *_args: False,
-        model=FakeModel([INTAKE, DECOMPOSITION, PLAN]),
+        model=FakeModel([INTAKE, DECOMPOSITION_DRAFT, DRAFT_PLAN_FOR_GENERATED_CLAIMS]),
     )
 
     assert result is not None
@@ -939,6 +1987,7 @@ def test_runtime_executes_and_persists_planning_handoff():
         assert durable_run is not None
         assert durable_run.normalized_target["input_kind"] == "claim"
         assert db.scalar(select(func.count()).select_from(AtomicClaim)) == 1
+        assert db.scalar(select(AtomicClaim.gates))["claim_ref"] == GENERATED_CLAIM_REF
         assert db.scalar(select(func.count()).select_from(SearchQuery)) == 2
 
 
@@ -1042,8 +2091,7 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
     evidence = {
         "classifications": [
             {
-                "claim_ref": "claim-1",
-                "passage_id": passage_id,
+                "task_ref": classification_task_ref(GENERATED_CLAIM_REF, passage_id),
                 "stance": "strongly_supports",
                 "quality": {
                     "relevance": 1,
@@ -1061,7 +2109,7 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
         ]
     }
     synthesis = {
-        "title": "Company X value assessment",
+        "report_title": "Company X Q1 income report",
         "summary_sentences": [
             {
                 "sentence_ref": "summary-1",
@@ -1089,7 +2137,7 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
         run_id,
         record=lambda *_args, **kwargs: public_events.append(kwargs),
         is_cancelled=lambda *_args: False,
-        model=FakeModel([INTAKE, DECOMPOSITION, PLAN, evidence, synthesis, audit]),
+        model=FakeModel([INTAKE, DECOMPOSITION_DRAFT, DRAFT_PLAN_FOR_GENERATED_CLAIMS, evidence, synthesis, audit]),
         workflow_extensions=WorkflowExtensions(
             discovery_source_selection=discovery,
             secure_retrieval=retrieval,
@@ -1107,7 +2155,7 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
     ]
     with factory() as db:
         run = db.get(VerificationRun, run_id)
-        assert run is not None and run.title == "Company X value assessment"
+        assert run is not None and run.title == "Company X Q1 income report"
         assert db.scalar(select(func.count()).select_from(ReportCitation)) == 1
         persist_completed_run(db, run_id=run_id, expected_citation_count=1)
         report = build_report(db, run=run)
@@ -1154,7 +2202,7 @@ def test_runtime_resumes_retryable_retrieval_from_extracting_status():
         run_id,
         record=lambda *_args, **_kwargs: None,
         is_cancelled=lambda *_args: False,
-        model=FakeModel([INTAKE, DECOMPOSITION, PLAN]),
+        model=FakeModel([INTAKE, DECOMPOSITION_DRAFT, DRAFT_PLAN_FOR_GENERATED_CLAIMS]),
     )
     with factory() as db:
         run = db.get(VerificationRun, run_id)
@@ -1179,9 +2227,12 @@ def test_runtime_resumes_retryable_retrieval_from_extracting_status():
             )
 
         async def retrieve(self, _value):
-            error = RuntimeError("temporary private storage failure")
-            error.retryable = True
-            raise error
+            raise WorkflowExtensionError(
+                code="RETRIEVAL_UNAVAILABLE",
+                public_message="A retrieval service was temporarily unavailable.",
+                retryable=True,
+                details={"failure_kind": "fetch"},
+            )
 
         async def extract(self, value):
             return value
@@ -1202,6 +2253,7 @@ def test_runtime_resumes_retryable_retrieval_from_extracting_status():
     assert result is not None
     assert pipeline.calls == 1
     assert result.recoverable_errors[-1].retryable is True
+    assert result.recoverable_errors[-1].code == "RETRIEVAL_UNAVAILABLE"
     assert result.recoverable_errors[-1].details == {"failure_kind": "fetch"}
 
 

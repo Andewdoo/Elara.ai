@@ -58,6 +58,16 @@ def extract_cache_key(content_hash: str, parser_version: str) -> str:
     return f"elara:cache:extract:{content_hash}:{parser_version}"
 
 
+def worker_liveness_key() -> str:
+    """Return the transient key refreshed by a ready Celery worker."""
+    return "elara:worker:liveness"
+
+
+def has_live_worker(client: Redis) -> bool:
+    """Return whether a worker heartbeat is present without treating Redis as truth."""
+    return bool(client.get(worker_liveness_key()))
+
+
 @lru_cache
 def get_redis_client() -> Redis:
     return Redis.from_url(

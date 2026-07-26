@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ReportTab = "overview" | "claims" | "evidence" | "graph" | "calculations" | "methodology";
+export type ReportTab = "overview" | "claims" | "evidence" | "graph" | "methodology";
 export type EvidenceFilter = "all" | "supporting" | "contradicting" | "inaccessible";
 export type GraphLayoutMode = "dependency" | "cluster";
 

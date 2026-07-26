@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.models import AgentEvent, GovernanceDecision, ReportCitation, ReportShare, RunStatus, User, UserFeedback, VerificationRun
 from app.models.types import utc_now
-from app.services.run_lifecycle import _next_sequence
+from app.services.run_lifecycle import COMPLETION_CITATION_AUDIT_STATUSES, _next_sequence
 from app.services.verifications import get_owned_run
 
 
@@ -37,7 +37,9 @@ def decide_publication(db: Session, *, reviewer: User, run_id: UUID, decision: s
     run.publication_review_reason = rationale.strip()
     if decision == "approved":
         citations = db.scalars(select(ReportCitation).where(ReportCitation.run_id == run.id)).all()
-        if not citations or any(row.audit_status != "passed" for row in citations):
+        if not citations or any(
+            row.audit_status not in COMPLETION_CITATION_AUDIT_STATUSES for row in citations
+        ):
             raise GovernanceConflictError("Publication approval requires a passing durable citation audit")
         run.status = RunStatus.COMPLETED
         run.completed_at = now

@@ -43,7 +43,12 @@ from app.schemas.verifications import (
     ReportResponse,
     SourcesResponse,
 )
-from app.services.queueing import VerificationDispatcher, get_verification_dispatcher
+from app.services.queueing import (
+    BrokerUnavailableError,
+    VerificationDispatcher,
+    WorkerUnavailableError,
+    get_verification_dispatcher,
+)
 from app.services.run_lifecycle import mirror_agent_event, mirror_progress, persist_progress
 from app.services.run_events import (
     TERMINAL_STATUS_VALUES,
@@ -370,14 +375,33 @@ def create_verification(
         logger.warning("Unable to mirror queued progress for run %s", run.id)
     try:
         dispatcher.enqueue(run.id, run.research_depth)
-    except Exception as exc:
+    except WorkerUnavailableError as exc:
         event = persist_progress(
             db,
             run_id=run.id,
             stage=RunStatus.FAILED,
             event_type="run.failed",
-            message="Verification could not be queued. Please try again.",
-            failure_code="QUEUE_UNAVAILABLE",
+            message="Verification worker is temporarily unavailable. Please try again.",
+            payload={"worker_ready_count": 0},
+            failure_code="WORKER_UNAVAILABLE",
+        )
+        try:
+            mirror_progress(redis_client, settings=settings, event=event)
+        except Exception:
+            logger.warning("Unable to mirror worker failure for run %s", run.id)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Verification worker is unavailable",
+        ) from exc
+    except BrokerUnavailableError as exc:
+        event = persist_progress(
+            db,
+            run_id=run.id,
+            stage=RunStatus.FAILED,
+            event_type="run.failed",
+            message="Verification queue is temporarily unavailable. Please try again.",
+            payload={"broker_connection_attempt_count": 1},
+            failure_code="BROKER_UNAVAILABLE",
         )
         try:
             mirror_progress(redis_client, settings=settings, event=event)
@@ -452,15 +476,38 @@ def retry_verification(
         logger.warning("Unable to mirror retry progress for run %s", run.id)
     try:
         dispatcher.enqueue(run.id, run.research_depth)
-    except Exception as exc:
-        persist_progress(
+    except WorkerUnavailableError as exc:
+        event = persist_progress(
             db,
             run_id=run.id,
             stage=RunStatus.FAILED,
             event_type="run.failed",
-            message="Verification could not be queued. Please try again.",
-            failure_code="QUEUE_UNAVAILABLE",
+            message="Verification worker is temporarily unavailable. Please try again.",
+            payload={"worker_ready_count": 0},
+            failure_code="WORKER_UNAVAILABLE",
         )
+        try:
+            mirror_progress(redis_client, settings=settings, event=event)
+        except Exception:
+            logger.warning("Unable to mirror worker failure for retry run %s", run.id)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Verification worker is unavailable",
+        ) from exc
+    except BrokerUnavailableError as exc:
+        event = persist_progress(
+            db,
+            run_id=run.id,
+            stage=RunStatus.FAILED,
+            event_type="run.failed",
+            message="Verification queue is temporarily unavailable. Please try again.",
+            payload={"broker_connection_attempt_count": 1},
+            failure_code="BROKER_UNAVAILABLE",
+        )
+        try:
+            mirror_progress(redis_client, settings=settings, event=event)
+        except Exception:
+            logger.warning("Unable to mirror broker failure for retry run %s", run.id)
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Verification queue is unavailable",

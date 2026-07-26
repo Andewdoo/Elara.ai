@@ -8,6 +8,7 @@ from typing import Iterable, Mapping
 
 
 DECIMAL_CONTEXT = Context(prec=28, rounding=ROUND_HALF_UP)
+SCORING_VERSION = "1.2-citation-partial-penalty"
 ZERO = Decimal("0")
 ONE = Decimal("1")
 HUNDRED = Decimal("100")
@@ -212,5 +213,6 @@ FORMULAS: Mapping[str, str] = {
     "article_factual_accuracy": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
     "attribution_support": "sum(attribution_claim_support * importance_weight) / sum(importance_weight)",
     "research_coverage": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+    "ambiguity_gate": "owned ambiguity blocks unresolved key facts unless accepted adjusted evidence >= minimum, P > 0, and N = 0",
     "final_label": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
 }

@@ -13,7 +13,9 @@ from graph.state import (
     ScoreBundle,
     VerificationState,
 )
+from research.extension_errors import WorkflowExtensionError
 from scoring.formulas import (
+    SCORING_VERSION,
     FORMULAS,
     EvidenceQuality,
     WeightedEvidence,
@@ -60,7 +62,9 @@ CONTEXT_PENALTIES = {
 }
 
 CONFIDENCE_PENALTIES = {
-    ConfidenceIssue.ESSENTIAL_TERM_AMBIGUOUS: Decimal("15"),
+    # An owned interpretation limitation remains visible, but its calibrated
+    # confidence penalty is 30% lower than the previous 15-point penalty.
+    ConfidenceIssue.ESSENTIAL_TERM_AMBIGUOUS: Decimal("10.5"),
     ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED: Decimal("10"),
     ConfidenceIssue.PRIMARY_EVIDENCE_UNAVAILABLE: Decimal("10"),
     ConfidenceIssue.MAJOR_CONTRADICTION_UNRESOLVED: Decimal("15"),
@@ -82,6 +86,7 @@ class DeterministicScoringService:
     async def process(self, state: VerificationState) -> VerificationState:
         passages = {item.passage_id: item for item in state.passages}
         sources = {item.source_ref: item for item in state.candidate_sources}
+        self._validate_inputs(state, passages, sources)
         accepted = [item for item in state.evidence if not item.recommended_rejection_reasons]
         scored: list[ScoredEvidenceRecord] = []
         calculations: list[CalculationRecord] = []
@@ -186,9 +191,9 @@ class DeterministicScoringService:
             confidence_issues = {
                 issue for _, _, item in items for issue in item.confidence_issues
             }
-            if claim.importance == Importance.ESSENTIAL and (
-                claim.ambiguities or state.unresolved_ambiguities
-            ):
+            owned_ambiguity_count = self._owned_ambiguity_count(state, claim)
+            has_owned_ambiguity = owned_ambiguity_count > 0
+            if has_owned_ambiguity:
                 confidence_issues.add(ConfidenceIssue.ESSENTIAL_TERM_AMBIGUOUS)
             if primary == 0 and self._primary_expected(state, claim.claim_ref):
                 confidence_issues.add(ConfidenceIssue.PRIMARY_EVIDENCE_UNAVAILABLE)
@@ -211,12 +216,20 @@ class DeterministicScoringService:
                 sources[ref].source_type == "OFFICIAL_SELF_REPORT"
                 for ref in claim_source_refs
             )
-            unresolved_key_facts = bool(
-                confidence_issues
-                & {
-                    ConfidenceIssue.ESSENTIAL_TERM_AMBIGUOUS,
-                    ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED,
-                }
+            # An ambiguity is non-blocking only when this owning claim has
+            # adequate accepted evidence, some accepted support, and no accepted
+            # material contradiction. This exact predicate is deterministic;
+            # unowned/global ambiguity strings never enter a claim-level gate.
+            ambiguity_non_blocking = (
+                has_owned_ambiguity
+                and adequate
+                and balance.supporting > 0
+                and balance.contradicting == 0
+            )
+            ambiguity_blocks_key_facts = has_owned_ambiguity and not ambiguity_non_blocking
+            unresolved_key_facts = (
+                ambiguity_blocks_key_facts
+                or ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED in confidence_issues
             )
             insufficient = InsufficientEvidence(
                 total_below_minimum=not adequate,
@@ -308,6 +321,30 @@ class DeterministicScoringService:
                     self._record("final_label", claim.claim_ref, {"support": str(support) if support is not None else None, "confidence": str(confidence), "context": str(context), "insufficient_evidence_reasons": list(insufficient.reasons)}, {"label": label}, "label", "gated" if insufficient.triggered else "passed"),
                 )
             )
+            if has_owned_ambiguity:
+                calculations.append(
+                    self._record(
+                        "ambiguity_gate",
+                        claim.claim_ref,
+                        {
+                            "scoring_version": SCORING_VERSION,
+                            "owned_ambiguity_count": owned_ambiguity_count,
+                            "accepted_adjusted_evidence": str(balance.total),
+                            "minimum_adjusted_evidence": str(self.minimum),
+                            "accepted_supporting_weight": str(balance.supporting),
+                            "accepted_contradicting_weight": str(balance.contradicting),
+                        },
+                        {
+                            "adequate_accepted_evidence": adequate,
+                            "has_accepted_support": balance.supporting > 0,
+                            "no_accepted_material_contradiction": balance.contradicting == 0,
+                            "non_blocking": ambiguity_non_blocking,
+                            "unresolved_key_facts": unresolved_key_facts,
+                        },
+                        "gate_decision",
+                        "non_blocking" if ambiguity_non_blocking else "gated",
+                    )
+                )
 
         factual_claims = [
             (exact_support[row.claim_ref], claim.importance_weight)
@@ -356,7 +393,15 @@ class DeterministicScoringService:
         overall_consistency = overall_balance.consistency or Decimal("0")
         accepted_refs = {passages[item.passage_id].source_ref for item in accepted}
         primary_access = Decimal("100") if any(sources.get(ref) and sources[ref].source_type == "PRIMARY" for ref in accepted_refs) else Decimal("0")
-        global_issues = {issue for issues in claim_confidence_issues.values() for issue in issues}
+        # Claim-owned interpretation limits remain visible on their claim only.
+        # They must not turn a separate essential claim or the whole article into
+        # insufficient evidence; speaker/date limits remain article-level gates.
+        global_issues = {
+            issue
+            for issues in claim_confidence_issues.values()
+            for issue in issues
+            if issue != ConfidenceIssue.ESSENTIAL_TERM_AMBIGUOUS
+        }
         overall_confidence = verdict_confidence(
             coverage=coverage,
             average_quality=overall_quality,
@@ -377,7 +422,9 @@ class DeterministicScoringService:
             total_below_minimum=overall_balance.total < self.minimum,
             no_essential_claim_adequate=bool(essential) and not any(row.adequate_evidence for row in essential),
             single_uncheckable_interested_source=(len(accepted_refs) == 1 and all(sources[ref].source_type == "OFFICIAL_SELF_REPORT" for ref in accepted_refs)),
-            unresolved_key_facts=bool(global_issues & {ConfidenceIssue.ESSENTIAL_TERM_AMBIGUOUS, ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED}),
+            unresolved_key_facts=(
+                ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED in global_issues
+            ),
         )
         strong_refutation = any(
             row.claim_ref in exact_support
@@ -501,9 +548,66 @@ class DeterministicScoringService:
         return state.model_copy(update={"scored_evidence": scored, "claim_scores": claim_scores, "calculations": calculations, "scores": scores})
 
     @staticmethod
+    def _validate_inputs(state, passages, sources) -> None:
+        if not state.claims:
+            raise WorkflowExtensionError(
+                code="SCORING_CLAIMS_REQUIRED",
+                public_message="Deterministic scoring requires at least one atomic claim.",
+            )
+        if not state.evidence:
+            raise WorkflowExtensionError(
+                code="SCORING_EVIDENCE_REQUIRED",
+                public_message="Deterministic scoring requires classified evidence.",
+            )
+        claim_refs = {claim.claim_ref for claim in state.claims}
+        missing_claims = sum(1 for item in state.evidence if item.claim_ref not in claim_refs)
+        missing_passages = sum(1 for item in state.evidence if item.passage_id not in passages)
+        unknown_sources = sum(
+            1
+            for item in state.evidence
+            if item.passage_id in passages and passages[item.passage_id].source_ref not in sources
+        )
+        if missing_claims or missing_passages or unknown_sources:
+            raise WorkflowExtensionError(
+                code="INVALID_SCORING_EVIDENCE_INPUT",
+                public_message="Classified evidence did not match the available scoring inputs.",
+                details={
+                    "missing_claim_count": missing_claims,
+                    "missing_passage_count": missing_passages,
+                    "unknown_source_count": unknown_sources,
+                },
+            )
+        missing_multipliers = set(sources) - set(state.source_dependency_multipliers)
+        invalid_multipliers = sum(
+            1
+            for value in state.source_dependency_multipliers.values()
+            if value not in {Decimal("1.00"), Decimal("0.35"), Decimal("0.10"), Decimal("0.00")}
+        )
+        if missing_multipliers or invalid_multipliers:
+            raise WorkflowExtensionError(
+                code="SCORING_DEPENDENCY_MULTIPLIERS_REQUIRED",
+                public_message="Deterministic scoring requires valid provenance dependency multipliers.",
+                details={
+                    "missing_multiplier_count": len(missing_multipliers),
+                    "invalid_multiplier_count": invalid_multipliers,
+                },
+            )
+
+    @staticmethod
     def _primary_expected(state: VerificationState, claim_ref: str) -> bool:
         objective_refs = {item.objective_ref for item in state.objectives if item.claim_ref == claim_ref}
         return bool(state.primary_source_targets or any(query.objective_ref in objective_refs and query.intent.value == "primary" for query in state.queries))
+
+    @staticmethod
+    def _owned_ambiguity_count(state: VerificationState, claim) -> int:
+        """Count only limitations that are explicitly attached to this claim."""
+        owned = set(claim.ambiguities)
+        owned.update(
+            ambiguity.text
+            for ambiguity in state.claim_ambiguities
+            if ambiguity.claim_ref == claim.claim_ref
+        )
+        return len(owned)
 
     @staticmethod
     def _has_inaccessible_source(state: VerificationState, claim_ref: str) -> bool:

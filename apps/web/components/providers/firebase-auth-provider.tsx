@@ -13,15 +13,17 @@ import { onAuthStateChanged, type User } from "firebase/auth";
 import {
   signInWithEmail as firebaseEmailSignIn,
   signInWithGoogle as firebaseGoogleSignIn,
+  signUpWithEmail as firebaseEmailSignUp,
   signOut as firebaseSignOut,
 } from "@/lib/auth";
-import { getFirebaseAuth, hasPublicFirebaseConfig } from "@/lib/firebase";
+import { getFirebaseAuth, hasPublicFirebaseConfig, type PublicFirebaseConfig } from "@/lib/firebase";
 
 type FirebaseAuthContextValue = {
   user: User | null;
   loading: boolean;
   configured: boolean;
   signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -31,30 +33,65 @@ const FirebaseAuthContext = createContext<FirebaseAuthContextValue>({
   loading: true,
   configured: false,
   signInWithEmail: async () => undefined,
+  signUpWithEmail: async () => undefined,
   signInWithGoogle: async () => undefined,
   signOut: async () => undefined,
 });
 
-export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
-  const configured = hasPublicFirebaseConfig();
+const AUTH_STATE_TIMEOUT_MS = 5_000;
+
+export function FirebaseAuthProvider({ children, publicFirebaseConfig }: { children: ReactNode; publicFirebaseConfig: PublicFirebaseConfig }) {
+  const configured = hasPublicFirebaseConfig(publicFirebaseConfig);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(configured);
 
   useEffect(() => {
     if (!configured) {
+      setLoading(false);
       return;
     }
 
-    const auth = getFirebaseAuth();
-    if (!auth) {
-      return;
-    }
+    let active = true;
+    let timeout: number | undefined;
+    let unsubscribe: (() => void) | undefined;
 
-    return onAuthStateChanged(auth, (nextUser) => {
+    const complete = (nextUser: User | null) => {
+      if (!active) {
+        return;
+      }
+      if (timeout !== undefined) {
+        window.clearTimeout(timeout);
+      }
       setUser(nextUser);
       setLoading(false);
-    });
-  }, [configured]);
+    };
+
+    setLoading(true);
+    timeout = window.setTimeout(() => {
+      complete(null);
+    }, AUTH_STATE_TIMEOUT_MS);
+
+    try {
+      const auth = getFirebaseAuth(publicFirebaseConfig);
+      if (!auth) {
+        complete(null);
+      } else {
+        unsubscribe = onAuthStateChanged(auth, complete, () => {
+          complete(null);
+        });
+      }
+    } catch {
+      complete(null);
+    }
+
+    return () => {
+      active = false;
+      if (timeout !== undefined) {
+        window.clearTimeout(timeout);
+      }
+      unsubscribe?.();
+    };
+  }, [configured, publicFirebaseConfig]);
 
   const value = useMemo(
     () => ({
@@ -62,14 +99,17 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
       loading,
       configured,
       signInWithEmail: async (email: string, password: string) => {
-        await firebaseEmailSignIn(email, password);
+        await firebaseEmailSignIn(publicFirebaseConfig, email, password);
+      },
+      signUpWithEmail: async (email: string, password: string) => {
+        await firebaseEmailSignUp(publicFirebaseConfig, email, password);
       },
       signInWithGoogle: async () => {
-        await firebaseGoogleSignIn();
+        await firebaseGoogleSignIn(publicFirebaseConfig);
       },
-      signOut: firebaseSignOut,
+      signOut: () => firebaseSignOut(publicFirebaseConfig),
     }),
-    [configured, loading, user],
+    [configured, loading, publicFirebaseConfig, user],
   );
 
   return (

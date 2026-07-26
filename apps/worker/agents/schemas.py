@@ -6,6 +6,7 @@ rejection gates, arithmetic, and completion decisions remain deterministic.
 
 from datetime import datetime
 from enum import StrEnum
+from collections.abc import Iterator
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -21,6 +22,7 @@ class AgentOutput(BaseModel):
 class InputKind(StrEnum):
     CLAIM = "claim"
     ARTICLE_URL = "article_url"
+    ARTICLE_TITLE = "article_title"
     ARTICLE_TEXT = "article_text"
     QUOTE = "quote"
     PARAPHRASE = "paraphrase"
@@ -173,8 +175,55 @@ class AtomicClaimOutput(AgentOutput):
         return self
 
 
+class ClaimAmbiguityOutput(AgentOutput):
+    """A durable ambiguity explicitly scoped to one normalized atomic claim."""
+
+    text: str = Field(min_length=1, max_length=1000)
+    claim_ref: str = Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")
+
+
+class DecompositionDraftClaimOutput(AgentOutput):
+    """Model-owned claim content before deterministic reference assignment."""
+
+    text: str = Field(min_length=1)
+    claim_kind: ClaimKind
+    importance: Importance
+    importance_weight: Literal[1, 2, 3]
+    fact_checkability: FactCheckability
+    original_text_span: str | None = None
+    entities: list[NamedEntity] = Field(default_factory=list)
+    time_period: str | None = Field(default=None, max_length=500)
+    locations: list[str] = Field(default_factory=list)
+    metrics: list[MetricReference] = Field(default_factory=list)
+    comparison: str | None = None
+    parent_claim_index: int | None = Field(default=None, ge=0, strict=True)
+    ambiguities: list[str] = Field(default_factory=list)
+    verification_scope: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def importance_matches_weight(self) -> "DecompositionDraftClaimOutput":
+        expected = {
+            Importance.ESSENTIAL: 3,
+            Importance.MAJOR: 2,
+            Importance.MINOR: 1,
+        }[self.importance]
+        if self.importance_weight != expected:
+            raise ValueError("importance_weight must match importance")
+        return self
+
+
+class DecompositionDraftAmbiguityOutput(AgentOutput):
+    """Model-owned ambiguity with an index, before trusted claim refs exist."""
+
+    text: str = Field(min_length=1, max_length=1000)
+    owner_claim_index: int = Field(ge=0, strict=True)
+
+
 class DecompositionOutput(AgentOutput):
     atomic_claims: list[AtomicClaimOutput] = Field(min_length=1)
+    # Only entries in claim_ambiguities can affect a particular claim's scoring.
+    # unresolved_ambiguities deliberately remains unowned, user-visible context.
+    claim_ambiguities: list[ClaimAmbiguityOutput] = Field(default_factory=list)
     unresolved_ambiguities: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
@@ -183,6 +232,14 @@ class DecompositionOutput(AgentOutput):
         if len(refs) != len(set(refs)):
             raise ValueError("claim_ref values must be unique")
         return self
+
+
+class DecompositionDraftOutput(AgentOutput):
+    """Strict model-facing decomposition contract without trusted identifiers."""
+
+    atomic_claims: list[DecompositionDraftClaimOutput] = Field(min_length=1)
+    claim_ambiguities: list[DecompositionDraftAmbiguityOutput] = Field(default_factory=list)
+    unresolved_ambiguities: list[str] = Field(default_factory=list)
 
 
 class ResearchObjectiveOutput(AgentOutput):
@@ -202,6 +259,39 @@ class SearchQueryOutput(AgentOutput):
     recency_hint: str | None = Field(default=None, max_length=100)
     domain_hints: list[str] = Field(default_factory=list)
     priority: UnitScore = 0.5
+
+
+class PlanningDraftQueryOutput(AgentOutput):
+    """A model-owned query scoped to its containing research objective."""
+
+    query: str = Field(min_length=1, max_length=500)
+    recency_hint: str | None = Field(default=None, max_length=100)
+    domain_hints: list[str] = Field(default_factory=list)
+    priority: UnitScore = 0.5
+
+
+class PlanningDraftObjectiveOutput(AgentOutput):
+    """A model-owned objective with no database-like objective reference."""
+
+    claim_ref: str = Field(min_length=1, max_length=64)
+    intent: EvidenceIntent
+    target: str = Field(min_length=1)
+    required_source_role: str | None = Field(default=None, max_length=100)
+    priority: UnitScore = 0.5
+    preferred_source_types: list[str] = Field(default_factory=list)
+    queries: list[PlanningDraftQueryOutput] = Field(min_length=1)
+
+
+class PlanningDraftOutput(AgentOutput):
+    """The narrow schema DeepSeek may use to propose a research plan.
+
+    Objective references and query intents are deterministic workflow values,
+    deliberately absent from this model-facing contract.
+    """
+
+    objectives: list[PlanningDraftObjectiveOutput] = Field(min_length=1)
+    primary_source_targets: list[str] = Field(default_factory=list)
+    known_evidence_gaps: list[str] = Field(default_factory=list)
 
 
 class PlanningOutput(AgentOutput):
@@ -258,8 +348,27 @@ class EvidenceClassificationItemOutput(AgentOutput):
     recommended_rejection_reasons: list[str] = Field(default_factory=list)
 
 
+class EvidenceClassificationTaskResultOutput(AgentOutput):
+    """Language judgment keyed only by a declared classification task."""
+
+    task_ref: str = Field(pattern=r"^classification-[a-f0-9]{24}$")
+    stance: EvidenceStance
+    quality: EvidenceQualityOutput
+    explicit_support: str | None = None
+    explicit_contradiction: str | None = None
+    uncertainty: str | None = None
+    omitted_context: list[str] = Field(default_factory=list)
+    context_issues: list[ContextIssue] = Field(default_factory=list)
+    confidence_issues: list[ConfidenceIssue] = Field(default_factory=list)
+    quote_fidelity: QuoteFidelityComponentsOutput | None = None
+    entity_match: bool
+    time_period_match: bool
+    quotation_or_number_located: bool | None = None
+    recommended_rejection_reasons: list[str] = Field(default_factory=list)
+
+
 class EvidenceClassificationOutput(AgentOutput):
-    classifications: list[EvidenceClassificationItemOutput] = Field(default_factory=list)
+    classifications: list[EvidenceClassificationTaskResultOutput] = Field(default_factory=list)
 
 
 class CitedReportSentenceOutput(AgentOutput):
@@ -268,12 +377,30 @@ class CitedReportSentenceOutput(AgentOutput):
     passage_ids: list[str] = Field(default_factory=list)
 
 
-class SynthesisOutput(AgentOutput):
-    title: str = Field(min_length=1, max_length=300)
+class SynthesisDraftOutput(AgentOutput):
+    """The model-authored portion of a report, limited to cited assertions."""
+
+    report_title: str | None = Field(default=None, min_length=1, max_length=96)
     summary_sentences: list[CitedReportSentenceOutput] = Field(min_length=1)
     factual_sentences: list[CitedReportSentenceOutput] = Field(default_factory=list)
     strongest_credible_contradiction: CitedReportSentenceOutput | None = None
     attribution_findings: list[CitedReportSentenceOutput] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def cited_report_sentence_refs_are_unique(self) -> "SynthesisDraftOutput":
+        sentences = list(iter_auditable_sentences(self))
+        refs = [sentence.sentence_ref for _, sentence in sentences]
+        if len(refs) != len(set(refs)):
+            raise ValueError("sentence_ref values must be unique across the report")
+        if any(not sentence.passage_ids for _, sentence in sentences):
+            raise ValueError("every factual report sentence must cite at least one passage")
+        return self
+
+
+class SynthesisOutput(SynthesisDraftOutput):
+    """The final report, with system-owned contextual notes added deterministically."""
+
+    title: str = Field(min_length=1, max_length=300)
     limitations: list[str] = Field(default_factory=list)
     inaccessible_source_notes: list[str] = Field(default_factory=list)
     evidence_gaps: list[str] = Field(default_factory=list)
@@ -284,23 +411,6 @@ class SynthesisOutput(AgentOutput):
     model_versions: dict[str, str] = Field(default_factory=dict)
     prompt_versions: dict[str, str] = Field(default_factory=dict)
     parser_versions: dict[str, str] = Field(default_factory=dict)
-
-    @model_validator(mode="after")
-    def cited_report_sentence_refs_are_unique(self) -> "SynthesisOutput":
-        sentences = [
-            *self.summary_sentences,
-            *self.factual_sentences,
-            *self.attribution_findings,
-        ]
-        if self.strongest_credible_contradiction is not None:
-            sentences.append(self.strongest_credible_contradiction)
-        refs = [sentence.sentence_ref for sentence in sentences]
-        if len(refs) != len(set(refs)):
-            raise ValueError("sentence_ref values must be unique across the report")
-        if any(not sentence.passage_ids for sentence in sentences):
-            raise ValueError("every factual report sentence must cite at least one passage")
-        return self
-
 
 class SentenceCitationAuditOutput(AgentOutput):
     sentence_ref: str = Field(min_length=1, max_length=64)
@@ -317,18 +427,40 @@ class CitationAuditOutput(AgentOutput):
     needs_revision: bool
 
 
+def iter_auditable_sentences(
+    report: SynthesisDraftOutput,
+) -> Iterator[tuple[str, CitedReportSentenceOutput]]:
+    """Yield every model-authored factual sentence in its durable report section."""
+
+    yield from (("summary", sentence) for sentence in report.summary_sentences)
+    yield from (("factual_finding", sentence) for sentence in report.factual_sentences)
+    if report.strongest_credible_contradiction is not None:
+        yield "strongest_contradiction", report.strongest_credible_contradiction
+    yield from (("attribution", sentence) for sentence in report.attribution_findings)
+
+
 __all__ = [
     "AtomicClaimOutput",
+    "ClaimAmbiguityOutput",
     "CitationAuditOutput",
     "ConfidenceIssue",
     "ContextIssue",
     "CitedReportSentenceOutput",
+    "DecompositionDraftClaimOutput",
+    "DecompositionDraftAmbiguityOutput",
+    "DecompositionDraftOutput",
     "DecompositionOutput",
     "EvidenceClassificationOutput",
+    "EvidenceClassificationTaskResultOutput",
     "EvidenceQualityOutput",
     "IntakeClassificationOutput",
+    "PlanningDraftObjectiveOutput",
+    "PlanningDraftOutput",
+    "PlanningDraftQueryOutput",
     "PlanningOutput",
     "QuoteFidelityComponentsOutput",
     "SentenceCitationAuditOutput",
+    "SynthesisDraftOutput",
     "SynthesisOutput",
+    "iter_auditable_sentences",
 ]

@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 from datetime import UTC, datetime
 from decimal import Decimal
+from typing import Any
 from uuid import UUID
 from urllib.parse import urlsplit
 
@@ -17,6 +18,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from agents.deepseek_client import DeepSeekClient
 from agents.schemas import (
     AtomicClaimOutput,
+    ClaimAmbiguityOutput,
     ClaimKind,
     EvidenceIntent,
     Entailment,
@@ -26,6 +28,7 @@ from agents.schemas import (
     IntakeClassificationOutput,
     ResearchObjectiveOutput,
     SearchQueryOutput,
+    iter_auditable_sentences,
 )
 from app.config import Settings
 from app.models.claims import AtomicClaim, SearchQuery
@@ -67,6 +70,29 @@ _RUN_STATUSES = {
     WorkflowStage.CITATION_REVISION: RunStatus.AUDITING,
     WorkflowStage.CITATION_AUDIT: RunStatus.AUDITING,
 }
+
+
+def _uses_s3_snapshot_store(settings: Settings) -> bool:
+    return bool(
+        settings.s3_access_key_id and settings.s3_secret_access_key
+    ) or settings.environment in {"staging", "production"}
+
+
+def _s3_client_options(settings: Settings) -> dict[str, object]:
+    options: dict[str, object] = {
+        "endpoint_url": settings.s3_endpoint_url,
+        "region_name": settings.s3_region,
+        "config": BotoConfig(
+            signature_version="s3v4",
+            s3={"addressing_style": "path" if settings.s3_force_path_style else "virtual"},
+        ),
+    }
+    if settings.s3_access_key_id and settings.s3_secret_access_key:
+        options.update(
+            aws_access_key_id=settings.s3_access_key_id,
+            aws_secret_access_key=settings.s3_secret_access_key,
+        )
+    return options
 
 
 class DurableProgressWriter:
@@ -153,6 +179,8 @@ class SqlWorkflowStateWriter:
                 run.title = state.report_draft.title
                 run.evidence_reviewed_at = state.evidence_reviewed_at
             elif stage == WorkflowStage.CITATION_AUDIT and state.citation_audit is not None:
+                if state.scores is not None:
+                    self._persist_scoring(db, run, state)
                 self._persist_citation_audit(db, run, state)
             self._persist_model_metadata(run, state)
             db.commit()
@@ -505,22 +533,13 @@ class SqlWorkflowStateWriter:
     ) -> None:
         if state.report_draft is None or state.citation_audit is None:
             return
-        sentence_groups = (
-            ("summary", state.report_draft.summary_sentences),
-            ("factual_finding", state.report_draft.factual_sentences),
-            ("attribution", state.report_draft.attribution_findings),
-            (
-                "strongest_contradiction",
-                [state.report_draft.strongest_credible_contradiction]
-                if state.report_draft.strongest_credible_contradiction is not None
-                else [],
-            ),
-        )
+        auditable_sentences = list(iter_auditable_sentences(state.report_draft))
         sentences = {
             sentence.sentence_ref: (section, sentence)
-            for section, group in sentence_groups
-            for sentence in group
+            for section, sentence in auditable_sentences
         }
+        if len(sentences) != len(auditable_sentences):
+            raise ValueError("duplicate sentence_ref values cannot be persisted")
         db.execute(delete(ReportCitation).where(ReportCitation.run_id == run.id))
         claim_ids = select(AtomicClaim.id).where(AtomicClaim.run_id == run.id)
         evidence_rows = db.scalars(
@@ -530,6 +549,7 @@ class SqlWorkflowStateWriter:
             if row.citation_status != "rejected":
                 row.citation_status = "pending"
         accepted_passages: set[UUID] = set()
+        partially_supported_passages: set[UUID] = set()
         for audit in state.citation_audit.sentence_audits:
             try:
                 passage_id = UUID(audit.passage_id)
@@ -539,6 +559,8 @@ class SqlWorkflowStateWriter:
             passed = audit.entailment == Entailment.ENTAILED
             if passed:
                 accepted_passages.add(passage_id)
+            elif audit.entailment == Entailment.PARTIAL:
+                partially_supported_passages.add(passage_id)
             db.add(
                 ReportCitation(
                     run_id=run.id,
@@ -552,6 +574,11 @@ class SqlWorkflowStateWriter:
         for row in evidence_rows:
             if row.passage_id in accepted_passages and row.citation_status != "rejected":
                 row.citation_status = "accepted"
+            elif (
+                row.passage_id in partially_supported_passages
+                and row.citation_status != "rejected"
+            ):
+                row.citation_status = "partial"
 
 
 def execute_verification_workflow(
@@ -582,8 +609,7 @@ def execute_verification_workflow(
             if run.methodology_version_id is not None
             else None
         )
-        target = dict(run.normalized_target)
-        plan_data = target.pop("research_plan", None)
+        target, plan_data = _split_run_target(run.normalized_target)
         normalized = IntakeClassificationOutput.model_validate(target) if target.get("input_kind") else None
         claim_rows = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
         row_refs = {row.id: str(row.gates.get("claim_ref")) for row in claim_rows}
@@ -612,6 +638,13 @@ def execute_verification_workflow(
                 verification_scope=str(row.gates.get("verification_scope", row.claim_text)),
             )
             for row in claim_rows
+        ]
+        # AtomicClaim.ambiguities is already durable and claim-local. Rehydrate it
+        # as typed ownership; do not infer ownership from run-level free text.
+        claim_ambiguities = [
+            ClaimAmbiguityOutput(text=text, claim_ref=claim.claim_ref)
+            for claim in claims
+            for text in claim.ambiguities
         ]
         objectives = [
             ResearchObjectiveOutput.model_validate(item)
@@ -650,6 +683,7 @@ def execute_verification_workflow(
             started_at=_as_utc(run.started_at or run.queued_at),
             normalized_input=normalized,
             claims=claims,
+            claim_ambiguities=claim_ambiguities,
             objectives=objectives,
             queries=queries,
             primary_source_targets=primary_source_targets,
@@ -659,7 +693,7 @@ def execute_verification_workflow(
 
     async def invoke() -> VerificationState:
         owns_model = model is None
-        client = model or DeepSeekClient()
+        client = model or _build_deepseek_client(settings)
         pipeline = retrieval_pipeline
         owns_pipeline = False
         try:
@@ -676,22 +710,8 @@ def execute_verification_workflow(
                     cache_ttl_seconds=settings.search_cache_ttl_seconds,
                 )
                 staging = SnapshotFileStore(settings.fetch_storage_dir)
-                if all((settings.s3_access_key_id, settings.s3_secret_access_key)):
-                    object_client = boto3.client(
-                        "s3",
-                        endpoint_url=settings.s3_endpoint_url,
-                        aws_access_key_id=settings.s3_access_key_id,
-                        aws_secret_access_key=settings.s3_secret_access_key,
-                        region_name=settings.s3_region,
-                        config=BotoConfig(
-                            signature_version="s3v4",
-                            s3={
-                                "addressing_style": (
-                                    "path" if settings.s3_force_path_style else "virtual"
-                                )
-                            },
-                        ),
-                    )
+                if _uses_s3_snapshot_store(settings):
+                    object_client = boto3.client("s3", **_s3_client_options(settings))
                     snapshot_store = S3SnapshotStore(
                         client=object_client,
                         bucket=settings.s3_bucket_name,
@@ -700,8 +720,6 @@ def execute_verification_workflow(
                         region=settings.s3_region,
                         server_side_encryption=settings.s3_server_side_encryption,
                     )
-                elif settings.environment in {"staging", "production"}:
-                    raise RuntimeError("S3 snapshot credentials are required outside local development")
                 else:
                     snapshot_store = staging
                 fetcher = SecureFetcher(
@@ -790,6 +808,19 @@ def execute_verification_workflow(
     return asyncio.run(invoke())
 
 
+def _split_run_target(normalized_target: dict[str, Any]) -> tuple[dict[str, Any], Any | None]:
+    """Separate operational metadata from the strict intake-schema payload."""
+    target = dict(normalized_target)
+    plan_data = target.pop("research_plan", None)
+    target.pop("retried_from_run_id", None)
+    return target, plan_data
+
+
+def _build_deepseek_client(settings: Settings) -> DeepSeekClient:
+    """Construct the provider client within the bounded worker time budget."""
+    return DeepSeekClient(timeout_seconds=settings.deepseek_request_timeout_seconds)
+
+
 def execute_planning_workflow(*args, **kwargs) -> VerificationState | None:
     """Compatibility wrapper for callers that intentionally stop after planning."""
     kwargs.setdefault("retrieve", False)
@@ -799,6 +830,7 @@ def execute_planning_workflow(*args, **kwargs) -> VerificationState | None:
 _INPUT_KINDS = {
     InputType.CLAIM: InputKind.CLAIM,
     InputType.ARTICLE_URL: InputKind.ARTICLE_URL,
+    InputType.ARTICLE_TITLE: InputKind.ARTICLE_TITLE,
     InputType.ARTICLE_TEXT: InputKind.ARTICLE_TEXT,
     InputType.QUOTE: InputKind.QUOTE,
     InputType.PARAPHRASE: InputKind.PARAPHRASE,

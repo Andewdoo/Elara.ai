@@ -4,7 +4,7 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from redis.exceptions import ResponseError
+from redis.exceptions import ConnectionError as RedisConnectionError, ResponseError
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -27,7 +27,7 @@ from app.models import (
     VerificationRun,
 )
 from app.redis_client import cancellation_key, progress_stream_key, publish_progress_event
-from app.services.run_lifecycle import persist_progress
+from app.services.run_lifecycle import persist_completed_run, persist_progress
 from app.services.reports import build_report
 from elara_worker.errors import TransientFetchError, TransientProviderError
 from elara_worker.tasks import verification as task_module
@@ -63,7 +63,7 @@ class FakeRedis:
         return int(key in self.values)
 
 
-def persist_audited_report(factory, run_id):
+def persist_audited_report(factory, run_id, *, audit_status="passed"):
     with factory() as db:
         run = db.get(VerificationRun, run_id)
         assert run is not None
@@ -107,12 +107,23 @@ def persist_audited_report(factory, run_id):
                 report_section="summary",
                 sentence_text="The controlled filing supports the narrow claim.",
                 passage_id=passage.id,
-                audit_status="passed",
+                audit_status=audit_status,
                 audit_note="Direct support.",
             )
         )
         db.commit()
         return str(passage.id)
+
+
+def test_partial_citation_audit_can_complete_a_durable_report():
+    factory, run = make_run()
+    persist_audited_report(factory, run.id, audit_status="partial")
+
+    with factory() as db:
+        persist_completed_run(db, run_id=run.id, expected_citation_count=1)
+        durable = db.get(VerificationRun, run.id)
+
+    assert durable is not None and durable.status == RunStatus.COMPLETED
 
 
 def ready_state(run, passage_id: str) -> VerificationState:
@@ -138,7 +149,9 @@ def ready_state(run, passage_id: str) -> VerificationState:
     )
 
 
-def make_run() -> tuple[sessionmaker[Session], VerificationRun]:
+def make_run(
+    submitted_text: str = "A durable claim",
+) -> tuple[sessionmaker[Session], VerificationRun]:
     engine = create_engine(
         "sqlite+pysqlite://",
         connect_args={"check_same_thread": False},
@@ -162,7 +175,7 @@ def make_run() -> tuple[sessionmaker[Session], VerificationRun]:
             input_type=InputType.CLAIM,
             research_depth=ResearchDepth.STANDARD,
             status=RunStatus.QUEUED,
-            submitted_text="A durable claim",
+            submitted_text=submitted_text,
             normalized_target={},
             workflow_version="step-5-test",
         )
@@ -348,8 +361,10 @@ def test_completion_cancellation_race_is_won_by_cancellation(
     assert not any(event.event_type == "run.completed" for event in events)
 
 
-def test_task_marks_nonretryable_workflow_stop_failed(monkeypatch: pytest.MonkeyPatch):
-    factory, run = make_run()
+def test_synthetic_hosted_run_invalid_research_plan_is_durable_nonretryable_failure(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    factory, run = make_run("Synthetic public claim: the city published its annual budget.")
     redis_client = FakeRedis()
     settings = Settings(environment="test")
 
@@ -370,6 +385,8 @@ def test_task_marks_nonretryable_workflow_stop_failed(monkeypatch: pytest.Monkey
             )
         ],
     )
+    assert stopped.ready_for_completion is False
+    assert stopped.recoverable_errors[-1].retryable is False
     monkeypatch.setattr(task_module, "get_settings", lambda: settings)
     monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
@@ -391,6 +408,95 @@ def test_task_marks_nonretryable_workflow_stop_failed(monkeypatch: pytest.Monkey
     assert durable_run is not None and durable_run.status == RunStatus.FAILED
     assert durable_run.failure_code == "INVALID_RESEARCH_PLAN"
     assert last_event is not None and last_event.event_type == "run.failed"
+    with factory() as db:
+        completed = db.scalar(
+            select(AgentEvent).where(
+                AgentEvent.run_id == run.id,
+                AgentEvent.event_type == "run.completed",
+            )
+        )
+    assert completed is None
+
+
+@pytest.mark.parametrize(
+    ("code", "message", "details", "expected_payload"),
+    [
+        (
+            "NO_DISCOVERY_RESULTS",
+            "The configured search policy returned no evidence candidates.",
+            {"provider": "brave", "query_count": 2, "private_error": "https://secret.test"},
+            {"code": "NO_DISCOVERY_RESULTS", "query_count": 2},
+        ),
+        (
+            "SUBMITTED_URL_INACCESSIBLE",
+            "The submitted URL could not be retrieved safely.",
+            {"submitted_url_count": 1, "snapshot_count": 1, "raw_exception": "private path"},
+            {"code": "SUBMITTED_URL_INACCESSIBLE", "submitted_url_count": 1, "snapshot_count": 1},
+        ),
+        (
+            "NO_EXTRACTED_SOURCES",
+            "No retrieved evidence source contained usable extractable content.",
+            {"fetched_snapshot_count": 2, "snapshot_count": 2},
+            {"code": "NO_EXTRACTED_SOURCES", "fetched_snapshot_count": 2, "snapshot_count": 2},
+        ),
+        (
+            "INCOMPLETE_CITATION_AUDIT",
+            "Citation audit did not evaluate every cited sentence and passage.",
+            {"unsupported_sentence_count": 1, "raw_response": "private model output"},
+            {"code": "INCOMPLETE_CITATION_AUDIT", "unsupported_sentence_count": 1},
+        ),
+    ],
+)
+def test_typed_workflow_failures_persist_only_stable_public_codes_and_counts(
+    monkeypatch: pytest.MonkeyPatch,
+    code: str,
+    message: str,
+    details: dict[str, object],
+    expected_payload: dict[str, object],
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    stopped = VerificationState(
+        run_id=run.id,
+        user_id=run.user_id,
+        research_depth=GraphResearchDepth.STANDARD,
+        methodology_version="1.0",
+        recoverable_errors=[
+            RecoverableError(
+                stage=WorkflowStage.RETRIEVAL,
+                code=code,
+                public_message=message,
+                details=details,
+            )
+        ],
+    )
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_verification_workflow", lambda *_args, **_kwargs: stopped)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.successful()
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+        event = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id, AgentEvent.event_type == "run.failed")
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
+    assert durable is not None and durable.failure_code == code
+    assert event is not None and event.public_message == message
+    assert event.payload == expected_payload
+    assert "private" not in str(event.payload)
 
 
 def test_task_rejects_exhausted_citation_revision(monkeypatch: pytest.MonkeyPatch):
@@ -442,6 +548,139 @@ def test_task_rejects_exhausted_citation_revision(monkeypatch: pytest.MonkeyPatc
 
 
 @pytest.mark.parametrize(
+    ("code", "details"),
+    [
+        ("AGENT_CONTRACT_REPAIR_EXHAUSTED", {"semantic_validation_attempt_count": 2}),
+        ("STRUCTURED_RESPONSE_INVALID", {"attempt_count": 1}),
+        ("STRUCTURED_RESPONSE_REPAIR_EXHAUSTED", {"attempt_count": 2}),
+        (
+            "DEEPSEEK_LANGUAGE_STEP_FAILED",
+            {
+                "error_code": "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+                "attempt_count": 2,
+            },
+        ),
+    ],
+)
+def test_deterministic_contract_errors_never_enter_celery_retry_budget(
+    monkeypatch: pytest.MonkeyPatch, code: str, details: dict[str, object]
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+    calls = 0
+    raw_response_marker = "raw-invalid-response-marker"
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    stopped = VerificationState(
+        run_id=run.id,
+        user_id=run.user_id,
+        research_depth=GraphResearchDepth.STANDARD,
+        methodology_version="1.0",
+        recoverable_errors=[
+            RecoverableError(
+                stage=WorkflowStage.PLANNER,
+                code=code,
+                public_message="Research planning could not satisfy its contract.",
+                # Exercise the defensive mapping rather than relying on the
+                # workflow's normal default of False.
+                retryable=True,
+                details={**details, "raw_response": raw_response_marker},
+            )
+        ],
+    )
+
+    def execute(*_args, **_kwargs):
+        nonlocal calls
+        calls += 1
+        return stopped
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_verification_workflow", execute)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.successful()
+    assert calls == 1
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+        failure = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id, AgentEvent.event_type == "run.failed")
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
+    assert durable is not None and durable.status == RunStatus.FAILED
+    assert durable.failure_code == code
+    assert failure is not None
+    assert raw_response_marker not in str(failure.payload)
+    assert raw_response_marker not in failure.public_message
+
+
+@pytest.mark.parametrize(
+    ("failure_kind", "error_code", "failure_code"),
+    [
+        ("provider", "provider_timeout", "PROVIDER_UNAVAILABLE"),
+        ("provider", "rate_limit_error", "PROVIDER_UNAVAILABLE"),
+        ("fetch", "fetch_timeout", "FETCH_UNAVAILABLE"),
+    ],
+)
+def test_retryable_provider_and_fetch_workflow_failures_keep_their_retry_budget(
+    monkeypatch: pytest.MonkeyPatch,
+    failure_kind: str,
+    error_code: str,
+    failure_code: str,
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+    calls = 0
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    def execute(*_args, **_kwargs):
+        nonlocal calls
+        calls += 1
+        return VerificationState(
+            run_id=run.id,
+            user_id=run.user_id,
+            research_depth=GraphResearchDepth.STANDARD,
+            methodology_version="1.0",
+            recoverable_errors=[
+                RecoverableError(
+                    stage=WorkflowStage.PLANNER,
+                    code="DEEPSEEK_LANGUAGE_STEP_FAILED",
+                    public_message="A language-analysis step could not be completed.",
+                    retryable=True,
+                    details={"failure_kind": failure_kind, "error_code": error_code},
+                )
+            ],
+        )
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_verification_workflow", execute)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.failed()
+    assert calls == 3
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+    assert durable is not None and durable.failure_code == failure_code
+
+
+@pytest.mark.parametrize(
     ("error", "failure_code"),
     [
         (TransientProviderError("provider detail"), "PROVIDER_UNAVAILABLE"),
@@ -484,6 +723,79 @@ def test_transient_failures_retry_twice_then_use_public_code(
             "message": "A temporary research service remained unavailable after retries.",
         }
     ]
+
+
+def test_unexpected_workflow_error_reaches_sanitized_worker_failure_boundary(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+
+    @contextmanager
+    def locked(_lock):
+        yield True
+
+    def broken_workflow(*_args, **_kwargs):
+        raise RuntimeError("private snapshot path: /secret/evidence")
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(task_module, "acquired_lock", locked)
+    monkeypatch.setattr(task_module, "execute_verification_workflow", broken_workflow)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.failed()
+    assert f"run {run.id}" in caplog.text
+    assert "RuntimeError" in caplog.text
+    assert "private snapshot path: /secret/evidence" in caplog.text
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+        event = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id, AgentEvent.event_type == "run.failed")
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
+    assert durable is not None
+    assert durable.failure_code == "WORKER_ERROR"
+    assert durable.failure_message == "Verification stopped because the worker encountered an error."
+    assert durable.internal_failure_detail == "unexpected_exception:RuntimeError"
+    assert "/secret/evidence" not in durable.failure_message
+    assert "/secret/evidence" not in (durable.internal_failure_detail or "")
+    assert event is not None and event.payload == {"code": "WORKER_ERROR"}
+
+
+def test_redis_failure_uses_the_durable_worker_unavailable_boundary(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    factory, run = make_run()
+    redis_client = FakeRedis()
+
+    def unavailable_lock(*_args, **_kwargs):
+        raise RedisConnectionError("redis://private-broker")
+
+    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
+    monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
+    monkeypatch.setattr(task_module, "run_lock", unavailable_lock)
+
+    result = verify_run.apply(args=[str(run.id)], throw=False)
+
+    assert result.failed()
+    with factory() as db:
+        durable = db.get(VerificationRun, run.id)
+        event = db.scalar(
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id, AgentEvent.event_type == "run.failed")
+            .order_by(AgentEvent.sequence.desc())
+            .limit(1)
+        )
+    assert durable is not None and durable.failure_code == "WORKER_UNAVAILABLE"
+    assert durable.failure_message == "Verification worker temporarily lost its queue connection."
+    assert event is not None and "private-broker" not in event.public_message
 
 
 def test_prepare_run_loads_postgres_and_mirrors_public_progress():

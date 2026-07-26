@@ -56,6 +56,52 @@ def test_staging_and_production_require_release_revision():
         )
 
 
+def test_staging_allows_internal_compose_redis_and_instance_role_s3():
+    settings = Settings(
+        _env_file=None,
+        environment="staging",
+        ELARA_RELEASE_REVISION="a" * 40,
+        web_app_url="https://app.example.test",
+        cors_allowed_origins=["https://app.example.test"],
+        database_url="postgresql+psycopg://elara:strong-password@postgres:5432/elara",
+        redis_url="redis://redis:6379/0",
+        celery_broker_url="redis://redis:6379/0",
+        celery_result_backend="redis://redis:6379/1",
+        s3_endpoint_url="https://s3.us-east-1.amazonaws.com",
+        s3_public_endpoint_url="https://s3.us-east-1.amazonaws.com",
+        s3_bucket_name="private-evidence-bucket",
+        s3_force_path_style=False,
+        firebase_project_id="firebase-project",
+        firebase_client_email="firebase-admin@example.test",
+        firebase_private_key="private-key",
+        s3_access_key_id=None,
+        s3_secret_access_key=None,
+    )
+
+    assert settings.environment == "staging"
+    assert settings.s3_access_key_id is None
+
+
+def test_staging_rejects_plaintext_remote_redis():
+    with pytest.raises(ValidationError, match="internal Compose hostname redis"):
+        Settings(
+            _env_file=None,
+            environment="staging",
+            ELARA_RELEASE_REVISION="a" * 40,
+            web_app_url="https://app.example.test",
+            cors_allowed_origins=["https://app.example.test"],
+            database_url="postgresql+psycopg://elara:strong-password@postgres:5432/elara",
+            redis_url="redis://cache.example.test:6379/0",
+            celery_broker_url="redis://cache.example.test:6379/0",
+            celery_result_backend="redis://cache.example.test:6379/1",
+            s3_endpoint_url="https://s3.us-east-1.amazonaws.com",
+            s3_public_endpoint_url="https://s3.us-east-1.amazonaws.com",
+            firebase_project_id="firebase-project",
+            firebase_client_email="firebase-admin@example.test",
+            firebase_private_key="private-key",
+        )
+
+
 def test_smoke_gate_fails_when_required_urls_are_missing(capsys):
     smoke_gate = _load_smoke_gate()
 

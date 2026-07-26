@@ -4,6 +4,7 @@ from uuid import UUID
 
 from celery import Task
 from redis import Redis
+from redis.exceptions import RedisError
 from sqlalchemy import exists, select
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -28,7 +29,11 @@ from app.services.run_lifecycle import (
     persist_progress,
     persist_completed_run,
 )
-from elara_worker.errors import TransientFetchError, TransientProviderError
+from elara_worker.errors import (
+    TransientFetchError,
+    TransientProviderError,
+    is_retryable_workflow_error,
+)
 from graph.runtime import execute_verification_workflow
 from graph.state import ResearchDepth as GraphResearchDepth, VerificationState
 from observability import (
@@ -110,6 +115,7 @@ def _record(
     message: str,
     payload: dict[str, object] | None = None,
     failure_code: str | None = None,
+    internal_failure_detail: str | None = None,
 ) -> None:
     if _has_durable_event(factory, run_id, event_type):
         _backfill_progress(factory, redis_client, settings, run_id)
@@ -129,6 +135,7 @@ def _record(
             message=message,
             payload=payload,
             failure_code=failure_code,
+            internal_failure_detail=internal_failure_detail,
         )
     # Backfill in sequence order so a temporary Redis outage cannot create a
     # permanent hole before a later event.
@@ -237,6 +244,8 @@ def _mark_failure_safely(
     *,
     code: str,
     message: str,
+    details: dict[str, object] | None = None,
+    internal_failure_detail: str | None = None,
 ) -> None:
     try:
         run = _load_run(factory, run_id)
@@ -249,10 +258,34 @@ def _mark_failure_safely(
                 stage=RunStatus.FAILED,
                 event_type="run.failed",
                 message=message,
+                payload=_public_failure_payload(code, details),
                 failure_code=code,
+                internal_failure_detail=internal_failure_detail,
             )
     except Exception:
         logger.error("Unable to persist failure state for run %s", run_id, exc_info=False)
+
+
+def _public_failure_payload(
+    code: str, details: dict[str, object] | None = None
+) -> dict[str, object]:
+    """Keep terminal events actionable without retaining operational detail.
+
+    Workflow extension details are scalar by contract, but scalar text can still
+    be an URL, a provider response, or an internal exception.  The public
+    durable event needs only the stable failure code and bounded counts.  Raw
+    diagnostics stay in server-side logs/monitoring.
+    """
+    payload: dict[str, object] = {"code": code}
+    for key, value in (details or {}).items():
+        if (
+            key.endswith("_count")
+            and isinstance(value, int)
+            and not isinstance(value, bool)
+            and value >= 0
+        ):
+            payload[key] = value
+    return payload
 
 
 @celery_app.task(
@@ -324,10 +357,20 @@ def verify_run(self: Task, run_id: str) -> None:
                             "cancelled": result.cancelled,
                         }
                     )
-            if result is not None and any(error.retryable for error in result.recoverable_errors):
-                error = next(
-                    item for item in reversed(result.recoverable_errors) if item.retryable
-                )
+            retryable_error = next(
+                (
+                    item
+                    for item in reversed(result.recoverable_errors if result is not None else [])
+                    if is_retryable_workflow_error(
+                        code=item.code,
+                        retryable=item.retryable,
+                        details=item.details,
+                    )
+                ),
+                None,
+            )
+            if retryable_error is not None:
+                error = retryable_error
                 if error.details.get("failure_kind") == "fetch":
                     raise TransientFetchError("A recoverable retrieval step failed")
                 raise TransientProviderError("A recoverable provider step failed")
@@ -340,6 +383,7 @@ def verify_run(self: Task, run_id: str) -> None:
                     parsed_run_id,
                     code=error.code,
                     message=error.public_message,
+                    details=error.details,
                 )
             elif result is not None and result.ready_for_completion:
                 if result.citation_audit is None:
@@ -382,6 +426,16 @@ def verify_run(self: Task, run_id: str) -> None:
                 message="A temporary research service remained unavailable after retries.",
             )
         raise
+    except RedisError:
+        _mark_failure_safely(
+            factory,
+            redis_client,
+            settings,
+            parsed_run_id,
+            code="WORKER_UNAVAILABLE",
+            message="Verification worker temporarily lost its queue connection.",
+        )
+        raise
     except InvalidRunTransitionError:
         _mark_failure_safely(
             factory,
@@ -391,7 +445,14 @@ def verify_run(self: Task, run_id: str) -> None:
             code="COMPLETION_GATE_REJECTED",
             message="Verification stopped before durable citation-audited artifacts were ready.",
         )
-    except Exception:
+    except Exception as exc:
+        logger.exception(
+            "Verification worker encountered an unexpected error for run %s "
+            "(exception_type=%s, retry_count=%s)",
+            parsed_run_id,
+            type(exc).__name__,
+            self.request.retries,
+        )
         _mark_failure_safely(
             factory,
             redis_client,
@@ -399,6 +460,7 @@ def verify_run(self: Task, run_id: str) -> None:
             parsed_run_id,
             code="WORKER_ERROR",
             message="Verification stopped because the worker encountered an error.",
+            internal_failure_detail=f"unexpected_exception:{type(exc).__name__}",
         )
         raise
     finally:

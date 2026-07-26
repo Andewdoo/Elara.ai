@@ -1,0 +1,40 @@
+services:
+  postgres:
+    restart: unless-stopped
+
+  redis:
+    restart: unless-stopped
+
+  object-storage:
+    restart: unless-stopped
+
+  api:
+    restart: unless-stopped
+
+  worker:
+    # Celery exits promptly when Redis is unavailable; Compose provides a
+    # bounded recovery window suitable for the owner-operated demo.
+    restart: on-failure:3
+    healthcheck:
+      test: ["CMD-SHELL", "python -m celery -A app.celery_app:celery_app inspect ping --timeout=3 | grep -q pong"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  caddy:
+    image: caddy:2.10-alpine
+    profiles: ["app"]
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - api
+
+volumes:
+  caddy-data:
+  caddy-config:

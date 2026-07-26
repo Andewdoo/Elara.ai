@@ -3,6 +3,7 @@ from decimal import Decimal
 from uuid import uuid4
 
 import asyncio
+import pytest
 from sqlalchemy import create_engine, func, select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -12,14 +13,16 @@ from app.models import InformationCluster, InputType, RunStatus, SourceDependenc
 from graph.runtime import SqlWorkflowStateWriter
 from graph.state import (
     CandidateSource,
+    DependencyRecord,
     ExtractedSourceRecord,
     ResearchDepth,
     SnapshotRecord,
     VerificationState,
     WorkflowStage,
 )
-from provenance.dependencies import SourceDependencyAnalyzer
+from provenance.dependencies import SourceDependencyAnalyzer, validate_provenance
 from provenance.graph_export import export_source_graph
+from research.extension_errors import WorkflowExtensionError
 
 
 def _state() -> VerificationState:
@@ -142,6 +145,62 @@ def test_detects_dependency_signals_clusters_and_methodology_multipliers():
         and edge.relationship == "CITES"
     )
     assert citation_only.information_cluster_ref is None
+
+
+@pytest.mark.parametrize(
+    ("dependencies", "multipliers", "code"),
+    [
+        (
+            [
+                DependencyRecord(
+                    parent_source_ref="unknown",
+                    child_source_ref="original",
+                    relationship="CITES",
+                    confidence=Decimal("1"),
+                    detection_method="test",
+                )
+            ],
+            {"original": Decimal("1.00")},
+            "INVALID_PROVENANCE_ENDPOINT",
+        ),
+        (
+            [
+                DependencyRecord(
+                    parent_source_ref="original",
+                    child_source_ref="copy",
+                    relationship="CITES",
+                    confidence=Decimal("1"),
+                    detection_method="test",
+                ),
+                DependencyRecord(
+                    parent_source_ref="original",
+                    child_source_ref="copy",
+                    relationship="CITES",
+                    confidence=Decimal("0.9"),
+                    detection_method="test_second",
+                ),
+            ],
+            {"original": Decimal("1.00"), "copy": Decimal("1.00")},
+            "DUPLICATE_PROVENANCE_EDGE",
+        ),
+        (
+            [],
+            {"original": Decimal("0.50"), "copy": Decimal("1.00")},
+            "INVALID_DEPENDENCY_MULTIPLIER",
+        ),
+    ],
+)
+def test_provenance_rejects_invalid_endpoints_duplicate_edges_and_multipliers(
+    dependencies, multipliers, code
+):
+    with pytest.raises(WorkflowExtensionError) as caught:
+        validate_provenance(
+            source_refs={"original", "copy"},
+            dependencies=dependencies,
+            multipliers=multipliers,
+        )
+
+    assert caught.value.code == code
 
 
 def test_graph_export_is_react_flow_compatible_and_contains_detection_metadata():

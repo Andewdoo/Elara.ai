@@ -52,6 +52,35 @@ def _retrieval_versions(methodology: MethodologyVersion | None) -> dict[str, obj
     }
 
 
+def _ambiguity_limitations(
+    claims: list[AtomicClaim], calculations: list[Calculation]
+) -> list[str]:
+    """Project durable non-blocking ambiguity gates without exposing model text."""
+    claims_by_id = {claim.id: claim for claim in claims}
+    supporting_labels = {"Supported", "Mostly supported", "Leaning supported"}
+    limitations: list[str] = []
+    for calculation in calculations:
+        claim = claims_by_id.get(calculation.atomic_claim_id)
+        if (
+            calculation.formula_name != "ambiguity_gate"
+            or calculation.audit_status != "non_blocking"
+            or calculation.result.get("non_blocking") is not True
+            or claim is None
+            or claim.final_label not in supporting_labels
+            or not claim.ambiguities
+        ):
+            continue
+        claim_ref = str(claim.gates.get("claim_ref", claim.id))
+        limitation = (
+            f"Claim {claim_ref} is supported with an unresolved interpretation "
+            f"({len(claim.ambiguities)} claim-local limitation(s)); accepted evidence "
+            "was adequate and unopposed."
+        )
+        if limitation not in limitations:
+            limitations.append(limitation)
+    return limitations
+
+
 def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
     claims = db.scalars(
         select(AtomicClaim)
@@ -85,7 +114,10 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
             RunSource.run_id == run.id, RunSource.inaccessible_reason.is_not(None)
         )
     ).all()
-    failed_audits = [row for row in calculations if row.audit_status != "passed"]
+    failed_audits = [
+        row for row in calculations
+        if row.audit_status not in {"passed", "non_blocking"}
+    ]
     global_score_records = {
         row.formula_name: row
         for row in calculations
@@ -109,6 +141,7 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
         limitations.append(
             f"{len(failed_audits)} calculation audit(s) require review; inspect audit_status and inputs."
         )
+    limitations.extend(_ambiguity_limitations(claims, calculations))
     return ReportResponse(
         run_id=run.id,
         verdict=run.verdict,

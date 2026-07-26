@@ -7,7 +7,7 @@ import hashlib
 import re
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Mapping, Sequence
+from typing import Any, Literal, Mapping, Sequence
 
 import boto3
 from botocore.config import Config as BotoConfig
@@ -29,12 +29,41 @@ from research.search import SearchResult
 
 
 _UUID = re.compile(r'"(?:passage_id|passage_ids)"\s*:\s*(?:\[\s*)?"([0-9a-f-]{36})"')
+WHO_PANDEMIC_CLAIM = "WHO characterized COVID-19 as a pandemic on March 11, 2020."
+_WHO_OFFICIAL_URL = "https://www.who.int/news/item/11-03-2020-who-pandemic"
+_WHO_CONTEXT_URL = "https://context.example.test/who-pandemic-march-11-2020.html"
 
 
 class DeterministicBraveDouble:
     """Stable Brave-shaped search results without provider credentials."""
 
+    def __init__(self, *, fixture: Literal["default", "who_pandemic"] = "default", include_required_evidence: bool = True) -> None:
+        self.fixture = fixture
+        self.include_required_evidence = include_required_evidence
+
     async def search(self, query: str, *, count: int = 10) -> list[SearchResult]:
+        if self.fixture == "who_pandemic":
+            if not self.include_required_evidence:
+                return []
+            results = [
+                SearchResult(
+                    url=_WHO_OFFICIAL_URL,
+                    title="WHO Director-General's opening remarks at the media briefing on COVID-19 - 11 March 2020",
+                    snippet="WHO characterized COVID-19 as a pandemic on 11 March 2020.",
+                    rank=1,
+                    published_at="2020-03-11",
+                    profile="Official WHO record",
+                ),
+                SearchResult(
+                    url=_WHO_CONTEXT_URL,
+                    title="Controlled historical context for the WHO pandemic characterization",
+                    snippet="The WHO announcement was dated 11 March 2020.",
+                    rank=2,
+                    published_at="2020-03-11",
+                    profile="Controlled corroborating context",
+                ),
+            ]
+            return results[:count]
         results = [
             SearchResult(
                 url="https://evidence.example.test/filing.html",
@@ -73,6 +102,14 @@ class ControlledSnapshotFetcher:
         compared with 10 units in Q1 2025. The comparison therefore supports the narrow submitted claim.</p>
         <p>The analysis cites the controlled quarterly filing and preserves the period and denominator.</p>
         <a href=\"https://evidence.example.test/filing.html\">Primary filing</a></main></body></html>""",
+        _WHO_OFFICIAL_URL: b"""<!doctype html><html><head><title>WHO media briefing - 11 March 2020</title></head>
+        <body><main><h1>WHO Director-General's opening remarks at the media briefing on COVID-19 - 11 March 2020</h1>
+        <p>On 11 March 2020, WHO characterized COVID-19 as a pandemic.</p>
+        <p>This controlled official WHO fixture preserves the organization and date required for verification.</p></main></body></html>""",
+        _WHO_CONTEXT_URL: b"""<!doctype html><html><head><title>Historical context</title></head>
+        <body><main><h1>Historical context for WHO's 11 March 2020 announcement</h1>
+        <p>The official WHO media briefing dated 11 March 2020 characterized COVID-19 as a pandemic.</p>
+        <a href=\"https://www.who.int/news/item/11-03-2020-who-pandemic\">WHO record</a></main></body></html>""",
     }
 
     def __init__(self, store: S3SnapshotStore) -> None:
@@ -111,6 +148,7 @@ class DeterministicDeepSeekDouble:
         self.reject_citations = "[citation-rejection]" in submitted_text
         self.fail_provider = "[provider-failure]" in submitted_text
         self.slow_for_cancellation = "[cancellation]" in submitted_text
+        self.who_pandemic_fixture = submitted_text == WHO_PANDEMIC_CLAIM
 
     @property
     def embedding_available(self) -> bool:
@@ -142,10 +180,28 @@ class DeterministicDeepSeekDouble:
             )
         content = "\n".join(message["content"] for message in messages)
         passage_ids = list(dict.fromkeys(_UUID.findall(content)))
+        approved_segment = content.split('"approved_evidence":', 1)[-1]
+        approved_passage_ids = list(dict.fromkeys(_UUID.findall(approved_segment)))
+        task_refs = list(dict.fromkeys(re.findall(r'"task_ref"\s*:\s*"(classification-[a-f0-9]{24})"', content)))
+        allowed_claim_ref = next(
+            iter(re.findall(r'"allowed_claim_refs"\s*:\s*\[\s*"([^"]+)"', content)),
+            "claim-1",
+        )
         name = output_schema.__name__
         payload: dict[str, Any]
         if name == "IntakeClassificationOutput":
-            payload = {
+            payload = (
+                {
+                    "input_kind": "claim",
+                    "normalized_text": WHO_PANDEMIC_CLAIM,
+                    "detected_language": "English",
+                    "fact_checkability": "fact_checkable",
+                    "claim_kinds": ["factual"],
+                    "entities": [{"name": "World Health Organization", "entity_type": "organization"}],
+                    "dates": ["March 11, 2020"],
+                }
+                if self.who_pandemic_fixture
+                else {
                 "input_kind": "claim",
                 "normalized_text": self.submitted_text,
                 "detected_language": "English",
@@ -155,11 +211,25 @@ class DeterministicDeepSeekDouble:
                 "dates": ["Q1 2026", "Q1 2025"],
                 "metrics": [{"name": "net income", "unit": "units", "period": "Q1"}],
                 "comparisons": ["20 units compared with 10 units"],
-            }
-        elif name == "DecompositionOutput":
-            payload = {
+                }
+            )
+        elif name == "DecompositionDraftOutput":
+            payload = (
+                {
+                    "atomic_claims": [{
+                        "text": WHO_PANDEMIC_CLAIM,
+                        "claim_kind": "factual",
+                        "importance": "essential",
+                        "importance_weight": 3,
+                        "fact_checkability": "fact_checkable",
+                        "entities": [{"name": "World Health Organization", "entity_type": "organization"}],
+                        "time_period": "March 11, 2020",
+                        "verification_scope": "Verify whether WHO characterized COVID-19 as a pandemic on March 11, 2020 using an official WHO record.",
+                    }]
+                }
+                if self.who_pandemic_fixture
+                else {
                 "atomic_claims": [{
-                    "claim_ref": "claim-1",
                     "text": "Company X doubled net income in Q1 2026.",
                     "claim_kind": "numerical",
                     "importance": "essential",
@@ -171,41 +241,54 @@ class DeterministicDeepSeekDouble:
                     "comparison": "20 compared with 10",
                     "verification_scope": "Compare the two Q1 net-income values.",
                 }]
-            }
-        elif name == "PlanningOutput":
-            payload = {
+                }
+            )
+        elif name == "PlanningDraftOutput":
+            payload = (
+                {
+                    "objectives": [
+                        {"claim_ref": allowed_claim_ref, "intent": "primary", "target": "Locate the official WHO record dated March 11, 2020.", "priority": 1, "preferred_source_types": ["official WHO record"], "queries": [{"query": "site:who.int COVID-19 pandemic March 11 2020 WHO", "priority": 1}]},
+                        {"claim_ref": allowed_claim_ref, "intent": "contradiction", "target": "Check dated historical context for a conflicting characterization.", "priority": 0.8, "queries": [{"query": "WHO characterized COVID-19 pandemic March 11 2020 correction", "priority": 0.8}]},
+                    ],
+                    "primary_source_targets": ["Official WHO record dated March 11, 2020"],
+                }
+                if self.who_pandemic_fixture
+                else {
                 "objectives": [
-                    {"objective_ref": "objective-primary", "claim_ref": "claim-1", "intent": "primary", "target": "Find the filing.", "priority": 1},
-                    {"objective_ref": "objective-contradiction", "claim_ref": "claim-1", "intent": "contradiction", "target": "Find contrary evidence.", "priority": 0.8},
-                ],
-                "queries": [
-                    {"query": "Company X Q1 2026 net income filing", "objective_ref": "objective-primary", "intent": "primary", "priority": 1},
-                    {"query": "Company X Q1 2026 net income correction", "objective_ref": "objective-contradiction", "intent": "contradiction", "priority": 0.8},
+                    {"claim_ref": allowed_claim_ref, "intent": "primary", "target": "Find the filing.", "priority": 1, "queries": [{"query": "Company X Q1 2026 net income filing", "priority": 1}]},
+                    {"claim_ref": allowed_claim_ref, "intent": "contradiction", "target": "Find contrary evidence.", "priority": 0.8, "queries": [{"query": "Company X Q1 2026 net income correction", "priority": 0.8}]},
                 ],
                 "primary_source_targets": ["Controlled quarterly filing"],
-            }
+                }
+            )
         elif name == "EvidenceClassificationOutput":
             payload = {"classifications": [
                 {
-                    "claim_ref": "claim-1", "passage_id": passage_id,
+                    "task_ref": task_ref,
                     "stance": "strongly_supports",
                     "quality": {"relevance": 1, "directness": 1, "claim_specific_authority": 1, "transparency": 1, "temporal_fit": 1, "extraction_certainty": 1},
-                    "explicit_support": "The passage reports 20 units compared with 10 units.",
+                    "explicit_support": (
+                        "The passage identifies WHO, COVID-19, and March 11, 2020."
+                        if self.who_pandemic_fixture
+                        else "The passage reports 20 units compared with 10 units."
+                    ),
                     "entity_match": True, "time_period_match": True,
                     "quotation_or_number_located": True,
                 }
-                for passage_id in passage_ids[:2]
+                for task_ref in task_refs
             ]}
-        elif name == "SynthesisOutput":
-            passage_id = passage_ids[0]
+        elif name == "SynthesisDraftOutput":
+            passage_id = (approved_passage_ids or passage_ids)[0]
             payload = {
-                "title": "Controlled Company X net-income assessment",
                 "summary_sentences": [{
                     "sentence_ref": "summary-1",
-                    "text": "The controlled evidence reports net income of 20 units versus 10 units for the comparable period.",
+                    "text": (
+                        WHO_PANDEMIC_CLAIM
+                        if self.who_pandemic_fixture
+                        else "The controlled evidence reports net income of 20 units versus 10 units for the comparable period."
+                    ),
                     "passage_ids": [passage_id],
                 }],
-                "limitations": ["This deterministic fixture evaluates only the submitted claim."],
             }
         elif name == "CitationAuditOutput":
             passage_id = passage_ids[0]
@@ -214,7 +297,15 @@ class DeterministicDeepSeekDouble:
                 "sentence_audits": [{
                     "sentence_ref": "summary-1", "passage_id": passage_id,
                     "entailment": "not_entailed" if rejected else "entailed",
-                    "support_explanation": "Forced rejection fixture." if rejected else "The exact values and comparison appear in the passage.",
+                    "support_explanation": (
+                        "Forced rejection fixture."
+                        if rejected
+                        else (
+                            "The passage identifies WHO, COVID-19, and the required date."
+                            if self.who_pandemic_fixture
+                            else "The exact values and comparison appear in the passage."
+                        )
+                    ),
                     "suggested_revision": "Remove the sentence." if rejected else None,
                 }],
                 "unsupported_sentence_refs": ["summary-1"] if rejected else [],
@@ -288,5 +379,6 @@ __all__ = [
     "ControlledSnapshotFetcher",
     "DeterministicBraveDouble",
     "DeterministicDeepSeekDouble",
+    "WHO_PANDEMIC_CLAIM",
     "build_acceptance_adapters",
 ]

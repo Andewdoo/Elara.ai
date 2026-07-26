@@ -7,6 +7,13 @@ from decimal import Decimal
 from urllib.parse import urlsplit
 
 
+# These limits bound both selected research sources and the number of
+# classification tasks sent to a single language-model call.  They deliberately
+# scale with the user-selected research depth rather than the number of
+# segmented passages.
+RESEARCH_DEPTH_LIMITS = {"QUICK": 5, "STANDARD": 10, "DEEP": 20}
+
+
 @dataclass(frozen=True, slots=True)
 class RankingSignals:
     relevance: Decimal
@@ -95,4 +102,10 @@ def _cluster_key(candidate) -> str:
     return " ".join(tokens) or candidate.canonical_url or candidate.url
 
 
-__all__ = ["RankingSignals", "lexical_overlap", "priority_score", "select_diverse"]
+__all__ = [
+    "RESEARCH_DEPTH_LIMITS",
+    "RankingSignals",
+    "lexical_overlap",
+    "priority_score",
+    "select_diverse",
+]

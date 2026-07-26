@@ -54,4 +54,5 @@ test("Lite report metadata exposes corpus, model, prompt, and curated-library sc
   assert.match(adapter, /curated Lite evidence library/);
   assert.match(reportWorkspace, /Evidence reviewed as of/);
   assert.match(reportWorkspace, /workspace_scope/);
+  assert.match(reportWorkspace, /Version title="AI Pipeline" value=\{report\.prompt_versions\}/);
 });
