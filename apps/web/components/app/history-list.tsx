@@ -1,104 +1,59 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Archive, Search, Trash2 } from "lucide-react";
+import { Archive, ArrowDown, ArrowUp, CheckCircle2, CircleX, Clock3, FilePlus2, FolderOpen, MinusCircle, Search, Trash2, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { apiErrorMessage, authenticatedApiFetch } from "@/lib/auth";
 
-type HistoryItem = {
-  run_id: string; status: string; input_type: string; research_depth: string;
-  title: string | null; submitted_text_preview: string | null; verdict: string | null;
-  verdict_confidence: number | null; evidence_reviewed_at: string | null;
-  created_at: string; updated_at: string; saved_at: string | null;
-};
+type HistoryItem = { run_id: string; status: string; input_type: string; research_depth: string; title: string | null; submitted_text_preview: string | null; verdict: string | null; verdict_confidence: number | null; evidence_reviewed_at: string | null; created_at: string; updated_at: string; saved_at: string | null };
 type HistoryResponse = { items: HistoryItem[]; total: number; page: number; page_size: number };
 type SortField = "date" | "confidence";
 type SortDirection = "asc" | "desc";
 const GENERIC_REPORT_TITLES = new Set(["assessment", "evidence assessment", "report", "untitled verification", "verification", "verification report"]);
 
-function conciseHistoryTitle(value: string): string {
-  const title = value.replace(/\s+/g, " ").trim();
-  if (title.length <= 96) return title;
-  const boundary = title.lastIndexOf(" ", 95);
-  return `${title.slice(0, boundary > 24 ? boundary : 95).trimEnd()}…`;
+function conciseHistoryTitle(value: string): string { const title = value.replace(/\s+/g, " ").trim(); if (title.length <= 96) return title; const boundary = title.lastIndexOf(" ", 95); return `${title.slice(0, boundary > 24 ? boundary : 95).trimEnd()}…`; }
+function historyReportTitle(item: HistoryItem): string { const storedTitle = item.title?.trim(); const candidate = storedTitle && !GENERIC_REPORT_TITLES.has(storedTitle.toLowerCase()) ? storedTitle : item.submitted_text_preview; return candidate ? conciseHistoryTitle(candidate) : "Verification report"; }
+function formatDate(value: string) { return new Intl.DateTimeFormat(undefined, { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value)); }
+function formatTime(value: string) { return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(value)); }
+function titleCase(value: string) { return value.toLowerCase().replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()); }
+
+function StatusMark({ status }: { status: string }) {
+  if (status === "COMPLETED") return <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />;
+  if (status === "FAILED") return <TriangleAlert className="h-5 w-5 text-destructive" aria-hidden="true" />;
+  if (status === "CANCELLED") return <MinusCircle className="h-5 w-5 text-muted-foreground" aria-hidden="true" />;
+  if (status === "QUEUED") return <Clock3 className="h-5 w-5 text-muted-foreground" aria-hidden="true" />;
+  return <CircleX className="h-5 w-5 text-primary" aria-hidden="true" />;
 }
 
-function historyReportTitle(item: HistoryItem): string {
-  const storedTitle = item.title?.trim();
-  const candidate = storedTitle && !GENERIC_REPORT_TITLES.has(storedTitle.toLowerCase())
-    ? storedTitle
-    : item.submitted_text_preview;
-  return candidate ? conciseHistoryTitle(candidate) : "Verification report";
+function VerdictMark({ verdict }: { verdict: string | null }) {
+  if (!verdict) return <span className="inline-flex items-center rounded border px-2 py-1 text-xs font-medium text-muted-foreground">No verdict</span>;
+  const normalized = verdict.replaceAll("_", " ").toUpperCase();
+  const isSupported = normalized === "SUPPORTED";
+  const isNotSupported = normalized === "NOT SUPPORTED" || normalized === "CONTRADICTED";
+  const classes = isSupported ? "border-primary/60 bg-primary/5 text-primary" : isNotSupported ? "border-destructive/60 bg-destructive/5 text-destructive" : "border-border bg-muted/30 text-foreground";
+  return <span className={`inline-flex items-center gap-1 rounded border px-2 py-1 text-xs font-semibold ${classes}`}>{isSupported && <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />}{isNotSupported && <CircleX className="h-3.5 w-3.5" aria-hidden="true" />}{normalized}</span>;
 }
 
 export function HistoryList({ savedOnly = false }: { savedOnly?: boolean }) {
-  const { user, loading } = useFirebaseAuth();
-  const queryClient = useQueryClient();
-  const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("all");
-  const [sortField, setSortField] = useState<SortField | null>(null);
-  const [dateDirection, setDateDirection] = useState<SortDirection>("desc");
-  const [confidenceDirection, setConfidenceDirection] = useState<SortDirection>("desc");
-  const [page, setPage] = useState(1);
-  const sort = sortField === "date"
-    ? `date_${dateDirection}`
-    : sortField === "confidence"
-      ? `confidence_${confidenceDirection}`
-      : "date_desc";
-  const params = new URLSearchParams({ page: String(page), page_size: "20", sort, ...(savedOnly ? { saved_only: "true" } : {}) });
-  if (query.trim()) params.set("query", query.trim());
-  if (status !== "all") params.set("status", status);
+  const { user, loading } = useFirebaseAuth(); const queryClient = useQueryClient();
+  const [query, setQuery] = useState(""); const [status, setStatus] = useState("all"); const [sortField, setSortField] = useState<SortField | null>(null); const [dateDirection, setDateDirection] = useState<SortDirection>("desc"); const [confidenceDirection, setConfidenceDirection] = useState<SortDirection>("desc"); const [page, setPage] = useState(1);
+  const sort = sortField === "date" ? `date_${dateDirection}` : sortField === "confidence" ? `confidence_${confidenceDirection}` : "date_desc";
+  const params = new URLSearchParams({ page: String(page), page_size: "20", sort, ...(savedOnly ? { saved_only: "true" } : {}) }); if (query.trim()) params.set("query", query.trim()); if (status !== "all") params.set("status", status);
   const key = ["history", { query, status, sort, page, savedOnly }];
-  const history = useQuery({
-    queryKey: key,
-    enabled: Boolean(user),
-    queryFn: async () => {
-      const response = await authenticatedApiFetch(user!, `/v1/history?${params.toString()}`);
-      if (!response.ok) throw new Error(await apiErrorMessage(response));
-      return response.json() as Promise<HistoryResponse>;
-    },
-  });
-  const action = useMutation({
-    mutationFn: async ({ runId, kind }: { runId: string; kind: "save" | "unsave" | "delete" }) => {
-      const path = kind === "delete" ? `/v1/verifications/${runId}` : `/v1/verifications/${runId}/save`;
-      const response = await authenticatedApiFetch(user!, path, { method: kind === "save" ? "POST" : "DELETE" });
-      if (!response.ok) throw new Error(await apiErrorMessage(response));
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["history"] }),
-  });
+  const history = useQuery({ queryKey: key, enabled: Boolean(user), queryFn: async () => { const response = await authenticatedApiFetch(user!, `/v1/history?${params.toString()}`); if (!response.ok) throw new Error(await apiErrorMessage(response)); return response.json() as Promise<HistoryResponse>; } });
+  const action = useMutation({ mutationFn: async ({ runId, kind }: { runId: string; kind: "save" | "unsave" | "delete" }) => { const path = kind === "delete" ? `/v1/verifications/${runId}` : `/v1/verifications/${runId}/save`; const response = await authenticatedApiFetch(user!, path, { method: kind === "save" ? "POST" : "DELETE" }); if (!response.ok) throw new Error(await apiErrorMessage(response)); }, onSuccess: () => queryClient.invalidateQueries({ queryKey: ["history"] }) });
   const resetPage = (setter: (value: string) => void) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => { setter(event.target.value); setPage(1); };
-  const toggleSort = (field: SortField) => () => {
-    if (sortField !== field) {
-      setSortField(field);
-    } else if (field === "date") {
-      setDateDirection((direction) => direction === "desc" ? "asc" : "desc");
-    } else {
-      setConfidenceDirection((direction) => direction === "desc" ? "asc" : "desc");
-    }
-    setPage(1);
-  };
+  const toggleSort = (field: SortField) => () => { if (sortField !== field) setSortField(field); else if (field === "date") setDateDirection((direction) => direction === "desc" ? "asc" : "desc"); else setConfidenceDirection((direction) => direction === "desc" ? "asc" : "desc"); setPage(1); };
+  const title = savedOnly ? "Saved reports" : "Verification history"; const count = history.data?.total ?? 0; const countLabel = `${count} ${savedOnly ? "saved report" : "total run"}${count === 1 ? "" : "s"}`;
 
-  return <div className="grid gap-4">
-    {!savedOnly && <Card><CardHeader><CardTitle>History filters</CardTitle></CardHeader><CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-      <label className="flex items-center rounded-md border bg-white px-3"><Search className="h-4 w-4 text-muted-foreground" aria-hidden="true"/><input aria-label="Search verification history" className="min-w-0 flex-1 px-2 py-2 text-sm outline-none" value={query} onChange={resetPage(setQuery)} placeholder="Search runs or verdicts" /></label>
-      <select aria-label="Filter history by status" className="rounded-md border bg-white px-3 py-2 text-sm" value={status} onChange={resetPage(setStatus)}><option value="all">All statuses</option>{["COMPLETED", "FAILED"].map((value) => <option key={value} value={value}>{value.toLowerCase()}</option>)}</select>
-      <div className="flex flex-wrap items-center gap-2" aria-label="Sort verification history">
-        <Button type="button" size="sm" className={sortField === "date" ? "h-11 border border-green-700 bg-green-700 text-white hover:bg-green-800" : "h-11 border bg-white text-foreground"} variant="ghost" aria-label={sortField === "date" ? `Date sorting ${dateDirection === "desc" ? "descending" : "ascending"}; click to switch direction` : "Select date sorting"} aria-pressed={sortField === "date"} onClick={toggleSort("date")}>Date {dateDirection === "desc" ? "↓" : "↑"}</Button>
-        <Button type="button" size="sm" className={sortField === "confidence" ? "h-11 border border-green-700 bg-green-700 text-white hover:bg-green-800" : "h-11 border bg-white text-foreground"} variant="ghost" aria-label={sortField === "confidence" ? `Confidence sorting ${confidenceDirection === "desc" ? "descending" : "ascending"}; click to switch direction` : "Select confidence sorting"} aria-pressed={sortField === "confidence"} onClick={toggleSort("confidence")}>Confidence {confidenceDirection === "desc" ? "↓" : "↑"}</Button>
-      </div>
-    </CardContent></Card>}
-    <Card><CardHeader><CardTitle>{savedOnly ? "Saved reports" : "Verification history"}</CardTitle></CardHeader><CardContent className="grid gap-3">
-      {loading || history.isLoading ? <p className="text-sm text-muted-foreground">Loading account history…</p> : !user ? <p className="text-sm text-muted-foreground">Sign in to view your report history.</p> : history.error ? <div role="alert" className="flex flex-wrap items-center gap-3 text-sm text-red-700"><span>{history.error.message}</span><Button size="sm" variant="secondary" onClick={() => void history.refetch()}>Retry</Button></div> : history.data?.items.length ? history.data.items.map((item) => <article key={item.run_id} className="grid gap-3 rounded-md border p-4 md:grid-cols-[1fr_auto]">
-        <div><div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground"><span>{item.status}</span><span>{item.research_depth}</span>{item.saved_at && <span className="text-primary">Saved</span>}</div><Link className="mt-1 block font-semibold hover:text-primary" href={item.status === "COMPLETED" ? `/report/${item.run_id}` : `/verify/${item.run_id}`}>{historyReportTitle(item)}</Link><p className="mt-1 text-sm text-muted-foreground">{item.verdict ?? "No verdict yet"}{item.verdict_confidence == null ? "" : ` · confidence ${item.verdict_confidence}`}</p><p className="mt-1 text-xs text-muted-foreground">Created {new Date(item.created_at).toLocaleString()}</p></div>
-        <div className="flex items-center gap-2"><Button size="sm" variant="secondary" disabled={action.isPending || item.status !== "COMPLETED"} onClick={() => action.mutate({ runId: item.run_id, kind: item.saved_at ? "unsave" : "save" })}><Archive className="mr-2 h-4 w-4"/>{item.saved_at ? "Unsave" : "Save"}</Button><Button size="icon" variant="ghost" aria-label="Delete report" disabled={action.isPending || !["COMPLETED", "FAILED", "CANCELLED"].includes(item.status)} onClick={() => { if (window.confirm("Delete this report and its private exports?")) action.mutate({ runId: item.run_id, kind: "delete" }); }}><Trash2 className="h-4 w-4"/></Button></div>
-      </article>) : <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">{savedOnly ? "No saved reports yet." : "No verification runs match these filters."}</p>}
-      {action.error && <p role="alert" className="text-sm text-red-700">{action.error.message}</p>}
-      {history.data && history.data.total > history.data.page_size && <div className="flex items-center justify-between"><Button variant="secondary" size="sm" disabled={page === 1} onClick={() => setPage((value) => value - 1)}>Previous</Button><span className="text-xs text-muted-foreground">Page {page} of {Math.ceil(history.data.total / history.data.page_size)}</span><Button variant="secondary" size="sm" disabled={page * history.data.page_size >= history.data.total} onClick={() => setPage((value) => value + 1)}>Next</Button></div>}
-    </CardContent></Card>
+  return <div className="mx-auto grid w-full max-w-7xl gap-5">
+    <header className="flex flex-wrap items-start justify-between gap-4"><div><h1 className="font-editorial text-4xl font-normal tracking-[-0.025em] sm:text-5xl">{title}</h1><p className="mt-1 text-sm text-muted-foreground">{countLabel}</p></div><Button asChild className="shrink-0"><Link href="/verify"><FilePlus2 className="h-4 w-4" aria-hidden="true" />New verification</Link></Button></header>
+    <Card className="bg-card/90"><CardContent className="grid gap-3 p-3 sm:grid-cols-[minmax(0,1fr)_190px_auto] sm:p-4"><label className="flex h-10 items-center rounded border bg-background px-3 focus-within:ring-2 focus-within:ring-ring"><Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" /><input aria-label={`Search ${savedOnly ? "saved reports" : "verification history"}`} className="min-w-0 flex-1 bg-transparent px-2 text-sm outline-none" value={query} onChange={resetPage(setQuery)} placeholder="Search runs or verdicts" /></label><select aria-label="Filter history by status" className="h-10 rounded border bg-background px-3 text-sm" value={status} onChange={resetPage(setStatus)}><option value="all">All statuses</option>{["COMPLETED", "FAILED", "CANCELLED"].map((value) => <option key={value} value={value}>{titleCase(value)}</option>)}</select><div className="flex gap-2" aria-label="Sort verification history"><Button type="button" size="sm" className="h-10 flex-1 border bg-background text-foreground hover:bg-muted sm:flex-none" variant="ghost" aria-label={`Sort by date ${sortField === "date" && dateDirection === "desc" ? "ascending" : "descending"}`} aria-pressed={sortField === "date"} onClick={toggleSort("date")}>Date {sortField === "date" && dateDirection === "asc" ? <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" /> : <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />}</Button><Button type="button" size="sm" className="h-10 flex-1 border bg-background text-foreground hover:bg-muted sm:flex-none" variant="ghost" aria-label={`Sort by confidence ${sortField === "confidence" && confidenceDirection === "desc" ? "ascending" : "descending"}`} aria-pressed={sortField === "confidence"} onClick={toggleSort("confidence")}>Confidence {sortField === "confidence" && confidenceDirection === "asc" ? <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" /> : <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />}</Button></div></CardContent></Card>
+    {loading || history.isLoading ? <Card><CardContent className="p-6 text-sm text-muted-foreground">Loading account history…</CardContent></Card> : !user ? <Card><CardContent className="p-6 text-sm text-muted-foreground">Sign in to view your report history.</CardContent></Card> : history.error ? <Card><CardContent className="flex flex-wrap items-center gap-3 p-6 text-sm text-destructive" role="alert"><span>{history.error.message}</span><Button size="sm" variant="secondary" onClick={() => void history.refetch()}>Retry</Button></CardContent></Card> : history.data?.items.length ? <Card className="overflow-hidden"><div className="overflow-x-auto"><table className="w-full min-w-[960px] border-collapse text-left text-sm"><caption className="sr-only">{title}</caption><thead className="border-b bg-muted/35 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><tr><th scope="col" className="px-4 py-3">Status</th><th scope="col" className="px-3 py-3">Depth</th><th scope="col" className="min-w-[260px] px-3 py-3">Report / claim</th><th scope="col" className="px-3 py-3">Verdict</th><th scope="col" className="px-3 py-3 text-right">Confidence</th><th scope="col" className="px-3 py-3">Created</th><th scope="col" className="px-3 py-3 text-center">Saved</th><th scope="col" className="px-4 py-3 text-right">Actions</th></tr></thead><tbody className="divide-y">{history.data.items.map((item) => { const destination = item.status === "COMPLETED" ? `/report/${item.run_id}` : `/verify/${item.run_id}`; const canSave = item.status === "COMPLETED"; const canDelete = ["COMPLETED", "FAILED", "CANCELLED"].includes(item.status); return <tr key={item.run_id} className="transition-colors hover:bg-muted/25"><td className="px-4 py-4"><span className="flex items-center gap-2 whitespace-nowrap"><StatusMark status={item.status} /><span className="text-xs font-semibold tracking-wide text-foreground">{titleCase(item.status)}</span></span></td><td className="px-3 py-4 text-xs text-muted-foreground">{titleCase(item.research_depth)}</td><td className="px-3 py-4"><Link className="block max-w-md font-semibold leading-5 hover:text-primary focus-visible:outline-none focus-visible:underline" href={destination}>{historyReportTitle(item)}</Link><p className="mt-1 max-w-md text-xs text-muted-foreground">{item.submitted_text_preview ?? "Verification record"}</p><Link className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline" href={destination}>Open {item.status === "COMPLETED" ? "report" : "run"}<ArrowUp className="h-3 w-3 rotate-90" aria-hidden="true" /></Link></td><td className="px-3 py-4"><VerdictMark verdict={item.verdict} /></td><td className="px-3 py-4 text-right font-mono text-xs tabular-nums">{item.verdict_confidence == null ? "—" : `${item.verdict_confidence}%`}</td><td className="px-3 py-4 font-mono text-xs tabular-nums text-muted-foreground"><span className="block">{formatDate(item.created_at)}</span><span>{formatTime(item.created_at)}</span></td><td className="px-3 py-4 text-center">{item.saved_at ? <Archive className="mx-auto h-5 w-5 fill-accent text-accent" aria-label="Saved" /> : <Archive className="mx-auto h-5 w-5 text-muted-foreground" aria-label="Not saved" />}</td><td className="px-4 py-4"><div className="flex items-center justify-end gap-1"><Button size="sm" variant="secondary" className="h-8" disabled={action.isPending || !canSave} onClick={() => action.mutate({ runId: item.run_id, kind: item.saved_at ? "unsave" : "save" })}>{item.saved_at ? "Unsave" : "Save"}</Button><Button asChild size="icon" variant="ghost"><Link href={destination} aria-label={`Open ${historyReportTitle(item)}`}><FolderOpen className="h-4 w-4" aria-hidden="true" /></Link></Button><Button size="icon" variant="ghost" aria-label={`Delete ${historyReportTitle(item)}`} disabled={action.isPending || !canDelete} onClick={() => { if (window.confirm("Delete this report and its private exports?")) action.mutate({ runId: item.run_id, kind: "delete" }); }}><Trash2 className="h-4 w-4 text-destructive" aria-hidden="true" /></Button></div></td></tr>; })}</tbody></table></div>{action.error && <p role="alert" className="border-t px-4 py-3 text-sm text-destructive">{action.error.message}</p>}{history.data.total > history.data.page_size && <div className="flex items-center justify-between border-t px-4 py-3"><Button variant="secondary" size="sm" disabled={page === 1} onClick={() => setPage((value) => value - 1)}>Previous</Button><span className="text-xs text-muted-foreground">Page {page} of {Math.ceil(history.data.total / history.data.page_size)}</span><Button variant="secondary" size="sm" disabled={page * history.data.page_size >= history.data.total} onClick={() => setPage((value) => value + 1)}>Next</Button></div>}</Card> : <Card><CardContent className="p-6 text-sm text-muted-foreground">{savedOnly ? "No saved reports yet." : "No verification runs match these filters."}</CardContent></Card>}
   </div>;
 }

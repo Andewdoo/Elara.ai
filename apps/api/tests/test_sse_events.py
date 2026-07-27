@@ -3,6 +3,7 @@ from uuid import UUID
 
 from app.models.enums import RunStatus
 from app.redis_client import publish_progress_event
+from app.services.run_lifecycle import persist_progress
 
 
 def _create_run(client):
@@ -107,3 +108,26 @@ def test_run_read_uses_durable_postgresql_state(client):
     assert response.status_code == 200
     assert response.json()["status"] == "QUEUED"
     assert response.json()["run_id"] == run_id
+
+
+def test_progress_history_returns_authorized_durable_public_events_in_order(
+    client, session_factory
+):
+    run_id = _create_run(client)
+    with session_factory() as db:
+        persist_progress(
+            db,
+            run_id=UUID(run_id),
+            stage=RunStatus.VALIDATING,
+            event_type="run.validating",
+            message="Validating input.",
+            payload={"source_counts": {"SEARCH": 1}},
+        )
+
+    response = client.get(f"/v1/verifications/{run_id}/progress")
+
+    assert response.status_code == 200
+    events = response.json()
+    assert [event["stage"] for event in events] == ["QUEUED", "VALIDATING"]
+    assert [event["event_type"] for event in events] == ["run.queued", "run.validating"]
+    assert events[-1]["source_counts"] == {"SEARCH": 1}

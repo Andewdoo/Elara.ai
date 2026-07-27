@@ -91,12 +91,24 @@ export function useRunEvents(runId: string) {
     },
   });
 
+  const progressHistoryQuery = useQuery({
+    queryKey: ["run-progress", runId],
+    enabled: Boolean(user && runId),
+    queryFn: async () => {
+      if (!user) throw new Error("Sign in to view this verification.");
+      const response = await authenticatedApiFetch(user, `/v1/verifications/${runId}/progress`);
+      if (!response.ok) throw new Error(await apiErrorMessage(response));
+      return (await response.json()) as RunProgressEvent[];
+    },
+  });
+
   const refreshDurableResult = useCallback(async () => {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["run", runId] }),
       queryClient.invalidateQueries({ queryKey: ["report", runId] }),
       queryClient.invalidateQueries({ queryKey: ["sources", runId] }),
       queryClient.invalidateQueries({ queryKey: ["source-graph", runId] }),
+      queryClient.invalidateQueries({ queryKey: ["run-progress", runId] }),
     ]);
   }, [queryClient, runId]);
 
@@ -142,6 +154,15 @@ export function useRunEvents(runId: string) {
         }
         reconnectAttempts.current = 0;
         recordProgress(progress);
+        queryClient.setQueryData<RunProgressEvent[]>(["run-progress", runId], (events = []) => {
+          const alreadyRecorded = events.some(
+            (existing) =>
+              existing.created_at === progress.created_at &&
+              existing.stage === progress.stage &&
+              existing.event_type === progress.event_type,
+          );
+          return alreadyRecorded ? events : [...events, progress];
+        });
         if (isTerminal(progress.stage)) {
           source?.close();
           setConnectionState("closed");
@@ -172,7 +193,7 @@ export function useRunEvents(runId: string) {
       source?.close();
       if (reconnectTimer) clearTimeout(reconnectTimer);
     };
-  }, [recordProgress, refreshDurableResult, runId, runQuery.data?.status, user]);
+  }, [queryClient, recordProgress, refreshDurableResult, runId, runQuery.data?.status, user]);
 
   const cancelMutation = useMutation({
     mutationFn: async () => {
@@ -200,6 +221,7 @@ export function useRunEvents(runId: string) {
   return {
     runQuery,
     latestEvent,
+    progressHistoryQuery,
     connectionState: isTerminal(runQuery.data?.status) ? "closed" : connectionState,
     pollingFallback,
     cancelMutation,

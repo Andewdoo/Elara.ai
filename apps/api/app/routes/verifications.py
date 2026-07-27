@@ -38,6 +38,7 @@ from app.schemas.verifications import (
     VerificationCancelResponse,
     VerificationCreateRequest,
     VerificationCreateResponse,
+    ProgressEvent,
     VerificationRunResponse,
     SourceGraphResponse,
     ReportResponse,
@@ -214,6 +215,40 @@ def get_verification(
     except RunNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     return _run_response(run, viewer_id=authenticated.user.id)
+
+
+@router.get("/{run_id}/progress", response_model=list[ProgressEvent])
+def get_verification_progress_history(
+    run_id: UUID,
+    authenticated: AuthenticatedUser = Depends(get_authenticated_bearer),
+    db: Session = Depends(get_db),
+) -> list[ProgressEvent]:
+    """Return the durable, public run events used to render research progress."""
+    try:
+        run = get_authorized_run(db, viewer_id=authenticated.user.id, run_id=run_id)
+    except RunNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    events = db.scalars(
+        select(AgentEvent)
+        .where(AgentEvent.run_id == run.id)
+        .order_by(AgentEvent.sequence.asc())
+    ).all()
+    return [
+        ProgressEvent(
+            **public_event_data(
+                {
+                    "run_id": str(run.id),
+                    "stage": event.stage.value,
+                    "message": event.public_message,
+                    "event_type": event.event_type,
+                    "payload": event.payload,
+                    "created_at": event.created_at.isoformat(),
+                }
+            )
+        )
+        for event in events
+    ]
 
 
 @router.get("/{run_id}/source-graph", response_model=SourceGraphResponse)

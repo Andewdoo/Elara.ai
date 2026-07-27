@@ -235,6 +235,7 @@ class ProgressEvent(BaseModel):
     run_id: UUID
     stage: RunStatus
     message: str
+    event_type: str
     completed_steps: int
     total_steps: int
     source_counts: dict[str, int] = Field(default_factory=dict)

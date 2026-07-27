@@ -3,8 +3,8 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { Archive, BookOpenText, FileCheck2, History, ShieldCheck } from "lucide-react";
-import type { ReactNode } from "react";
+import { Archive, Asterisk, BookOpenText, FileCheck2, History, PanelLeftClose, PanelLeftOpen, ShieldCheck } from "lucide-react";
+import { useState, type ReactNode } from "react";
 
 import { AuthControls } from "@/components/app/auth-controls";
 import { cn } from "@/lib/utils";
@@ -19,44 +19,47 @@ const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> =
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  function closeSidebarOnMobile() {
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      setSidebarOpen(false);
+    }
+  }
 
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-30 border-b bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <span>
-              <span className="block text-sm font-semibold leading-4">Elara.ai</span>
-              <span className="block text-xs text-muted-foreground">Evidence workspace</span>
-            </span>
+    <div className="min-h-dvh bg-background">
+      <a href="#main-content" className="sr-only z-50 rounded-md bg-sidebar px-4 py-3 text-sidebar-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus-visible:ring-2 focus-visible:ring-white">
+        Skip to main content
+      </a>
+      {sidebarOpen && <button type="button" className="fixed inset-0 z-30 bg-black/50 md:hidden" aria-label="Close navigation" onClick={() => setSidebarOpen(false)} />}
+      <aside
+        id="primary-sidebar"
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-sidebar-border bg-sidebar px-3 py-4 text-sidebar-foreground transition-[transform,width] duration-200 ease-out motion-reduce:transition-none",
+          sidebarOpen ? "w-72 translate-x-0" : "w-16 translate-x-0",
+        )}
+        aria-label="Primary navigation"
+      >
+        <div className={cn("border-b border-sidebar-border pb-5", sidebarOpen ? "px-2" : "px-0")}>
+          <Link href="/" className={cn("flex min-h-11 items-center gap-3 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar", sidebarOpen ? "px-1" : "justify-center")} aria-label="Elara.ai home" title={sidebarOpen ? undefined : "Elara.ai home"}>
+            <Asterisk className="h-9 w-9 shrink-0 text-accent" strokeWidth={1.65} aria-hidden="true" />
+            {sidebarOpen && <span className="font-editorial text-[1.85rem] font-normal leading-none tracking-[-0.035em]">Elara.ai</span>}
           </Link>
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
-            {navItems.map((item) => {
-              const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground",
-                    active && "bg-secondary text-secondary-foreground",
-                  )}
-                >
-                  <Icon className="h-4 w-4" aria-hidden="true" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-          <div className="flex items-center gap-2">
-            <AuthControls />
-          </div>
         </div>
-        <nav className="flex gap-1 overflow-x-auto border-t px-3 py-2 lg:hidden" aria-label="Mobile primary">
+
+        <button
+          type="button"
+          className="absolute -right-4 top-6 z-50 inline-flex h-8 w-8 items-center justify-center rounded-full border border-sidebar-border bg-sidebar text-sidebar-muted shadow-subtle transition duration-200 hover:bg-sidebar-active hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar motion-reduce:transition-none"
+          aria-label={sidebarOpen ? "Collapse Elara navigation" : "Open Elara navigation"}
+          aria-controls="primary-sidebar"
+          aria-expanded={sidebarOpen}
+          onClick={() => setSidebarOpen((open) => !open)}
+        >
+          {sidebarOpen ? <PanelLeftClose className="h-4 w-4" aria-hidden="true" /> : <PanelLeftOpen className="h-4 w-4" aria-hidden="true" />}
+        </button>
+
+        <nav className="mt-6 grid gap-1" aria-label="Workspace navigation">
           {navItems.map((item) => {
             const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
             const Icon = item.icon;
@@ -64,19 +67,30 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={closeSidebarOnMobile}
+                aria-current={active ? "page" : undefined}
+                title={sidebarOpen ? undefined : item.label}
                 className={cn(
-                  "inline-flex min-w-fit items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-muted-foreground",
-                  active && "bg-secondary text-secondary-foreground",
+                  "flex min-h-11 items-center rounded-md text-sm font-medium outline-none transition duration-200 hover:bg-white/10 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
+                  sidebarOpen ? "gap-3 px-3" : "justify-center px-2",
+                  active ? "bg-sidebar-active text-sidebar-foreground" : "text-sidebar-muted",
                 )}
               >
-                <Icon className="h-4 w-4" aria-hidden="true" />
-                {item.label}
+                <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
+                {sidebarOpen && item.label}
               </Link>
             );
           })}
         </nav>
-      </header>
-      <main className="mx-auto max-w-7xl px-4 py-5">{children}</main>
+
+        <div className="mt-auto border-t border-sidebar-border pt-3">
+          <AuthControls sidebarOpen={sidebarOpen} />
+        </div>
+      </aside>
+
+      <main id="main-content" className={cn("min-h-dvh px-4 py-5 transition-[margin] duration-200 ease-out motion-reduce:transition-none sm:px-6", sidebarOpen ? "md:ml-72" : "ml-16")}>
+        <div className="mx-auto max-w-7xl">{children}</div>
+      </main>
     </div>
   );
 }

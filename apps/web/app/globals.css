@@ -22,6 +22,11 @@
   --border: 216 18% 84%;
   --input: 216 18% 84%;
   --ring: 178 70% 30%;
+  --sidebar: 172 38% 8%;
+  --sidebar-foreground: 45 24% 94%;
+  --sidebar-muted: 176 12% 72%;
+  --sidebar-active: 181 51% 30%;
+  --sidebar-border: 174 16% 25%;
   --radius: 0.5rem;
 }
 

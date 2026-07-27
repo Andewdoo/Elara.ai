@@ -26,18 +26,20 @@ test("Verify restores only an active in-memory run and otherwise shows an empty 
   assert.match(store, /latestEvent: RunProgressEvent \| null/);
 });
 
-test("run progress hydrates from the latest stored server event without regressing", async () => {
+test("run progress hydrates durable history without regressing the latest server event", async () => {
   const hook = await read("hooks", "use-run-events.ts");
   const store = await read("stores", "active-verification-store.ts");
   const live = await read("components", "app", "live-research-view.tsx");
 
   assert.match(hook, /state\.runId === runId \? state\.latestEvent : null/);
+  assert.match(hook, /\["run-progress", runId\]/);
+  assert.match(hook, /\/v1\/verifications\/\$\{runId\}\/progress/);
   assert.match(hook, /recordProgress\(progress\)/);
   assert.match(store, /function isNewerProgress/);
   assert.match(store, /event\.completed_steps >= current\.completed_steps/);
-  assert.match(live, /latestEvent\?\.total_steps \?\? DEFAULT_WORKFLOW_STEPS/);
-  assert.match(live, /latestEvent\?\.completed_steps \?\? 0/);
-  assert.match(live, /status === "COMPLETED" \? totalSteps/);
+  assert.match(live, /const researchStages/);
+  assert.match(live, /Verification research stages/);
+  assert.match(live, /progressHistoryQuery/);
 });
 
 test("primary navigation calls the Lite workspace Lite mode and places it last", async () => {
