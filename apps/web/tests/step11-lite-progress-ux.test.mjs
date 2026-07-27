@@ -52,7 +52,7 @@ test("Lite retry resubmits the last bounded request payload", async () => {
   const workspace = await read("components", "lite", "lite-workspace.tsx");
 
   assert.match(workspace, /const \[lastSubmission, setLastSubmission\]/);
-  assert.match(workspace, /setLastSubmission\(\{ input: trimmed, inputTypeHint: submission\.inputTypeHint \}\)/);
+  assert.match(workspace, /setLastSubmission\(\{ input: trimmed \}\)/);
   assert.match(workspace, /function retryLiteRequest\(\)/);
   assert.match(workspace, /void runLiteRequest\(retrySubmission\)/);
   assert.match(workspace, />\s*Retry\s*</);

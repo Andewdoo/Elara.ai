@@ -61,6 +61,12 @@ CONTEXT_PENALTIES = {
     ContextIssue.EDIT_HIDES_CORRECTION: Decimal("25"),
 }
 
+AMBIGUITY_NON_BLOCKING_MINIMUM_SUPPORT = Decimal("70")
+AMBIGUITY_NON_BLOCKING_MAX_CONTRADICTION_RATIO = Decimal("0.15")
+SPEAKER_OR_DATE_SENSITIVE_CLAIM_KINDS = frozenset(
+    {ClaimKind.ATTRIBUTION, ClaimKind.QUOTATION}
+)
+
 CONFIDENCE_PENALTIES = {
     # An owned interpretation limitation remains visible, but its calibrated
     # confidence penalty is 30% lower than the previous 15-point penalty.
@@ -216,20 +222,37 @@ class DeterministicScoringService:
                 sources[ref].source_type == "OFFICIAL_SELF_REPORT"
                 for ref in claim_source_refs
             )
-            # An ambiguity is non-blocking only when this owning claim has
-            # adequate accepted evidence, some accepted support, and no accepted
-            # material contradiction. This exact predicate is deterministic;
-            # unowned/global ambiguity strings never enter a claim-level gate.
+            # An ambiguity is non-blocking when this owning claim is well
+            # supported by adequate evidence and any contradiction is limited.
+            # This preserves a disclosed qualification for broad terms without
+            # treating a small, relevant counterpoint as missing evidence.
+            # Unowned/global ambiguity strings never enter a claim-level gate.
+            contradiction_ratio = (
+                balance.contradicting / balance.supporting
+                if balance.supporting > 0
+                else Decimal("1")
+            )
+            limited_contradiction = (
+                contradiction_ratio <= AMBIGUITY_NON_BLOCKING_MAX_CONTRADICTION_RATIO
+            )
             ambiguity_non_blocking = (
                 has_owned_ambiguity
                 and adequate
-                and balance.supporting > 0
-                and balance.contradicting == 0
+                and support is not None
+                and support >= AMBIGUITY_NON_BLOCKING_MINIMUM_SUPPORT
+                and limited_contradiction
             )
             ambiguity_blocks_key_facts = has_owned_ambiguity and not ambiguity_non_blocking
+            speaker_or_date_blocks_key_facts = (
+                ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED in confidence_issues
+                and (
+                    claim.claim_kind in SPEAKER_OR_DATE_SENSITIVE_CLAIM_KINDS
+                    or claim.time_period is not None
+                )
+            )
             unresolved_key_facts = (
                 ambiguity_blocks_key_facts
-                or ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED in confidence_issues
+                or speaker_or_date_blocks_key_facts
             )
             insufficient = InsufficientEvidence(
                 total_below_minimum=not adequate,
@@ -333,11 +356,12 @@ class DeterministicScoringService:
                             "minimum_adjusted_evidence": str(self.minimum),
                             "accepted_supporting_weight": str(balance.supporting),
                             "accepted_contradicting_weight": str(balance.contradicting),
+                            "contradiction_ratio": str(contradiction_ratio),
                         },
                         {
                             "adequate_accepted_evidence": adequate,
                             "has_accepted_support": balance.supporting > 0,
-                            "no_accepted_material_contradiction": balance.contradicting == 0,
+                            "no_accepted_material_contradiction": limited_contradiction,
                             "non_blocking": ambiguity_non_blocking,
                             "unresolved_key_facts": unresolved_key_facts,
                         },
@@ -418,13 +442,20 @@ class DeterministicScoringService:
             (value, next(c.importance_weight for c in state.claims if c.claim_ref == claim_ref))
             for claim_ref, value in claim_quote_scores.items()
         )
+        speaker_or_date_blocks_article = any(
+            ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED
+            in claim_confidence_issues.get(claim.claim_ref, set())
+            and (
+                claim.claim_kind in SPEAKER_OR_DATE_SENSITIVE_CLAIM_KINDS
+                or claim.time_period is not None
+            )
+            for claim in state.claims
+        )
         overall_insufficient = InsufficientEvidence(
             total_below_minimum=overall_balance.total < self.minimum,
             no_essential_claim_adequate=bool(essential) and not any(row.adequate_evidence for row in essential),
             single_uncheckable_interested_source=(len(accepted_refs) == 1 and all(sources[ref].source_type == "OFFICIAL_SELF_REPORT" for ref in accepted_refs)),
-            unresolved_key_facts=(
-                ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED in global_issues
-            ),
+            unresolved_key_facts=speaker_or_date_blocks_article,
         )
         strong_refutation = any(
             row.claim_ref in exact_support

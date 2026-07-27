@@ -95,11 +95,13 @@ test("Lite browser surface only references public env and never service-role acc
 
 test("report workspace includes the required evidence-reviewed timestamp language", async () => {
   const reportSource = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
+  const methodologySource = await readFile(join(root, "app", "methodology", "page.tsx"), "utf8");
 
   assert.match(reportSource, /Evidence reviewed as of/);
   assert.match(reportSource, /New evidence or corrections may change this assessment\./);
   assert.match(reportSource, /limitations/);
-  assert.match(reportSource, /methodology/);
+  assert.doesNotMatch(reportSource, /Report details/);
+  assert.match(methodologySource, /Score roles/);
   assert.match(reportSource, /Attribution support/);
   assert.match(reportSource, /Quote fidelity/);
 });
@@ -126,7 +128,7 @@ test("report shell includes planned route and workspace surfaces", async () => {
   const sourceGraph = await readFile(join(root, "components", "report", "source-graph.tsx"), "utf8");
   const verifyForm = await readFile(join(root, "components", "app", "verify-form.tsx"), "utf8");
 
-  assert.match(reportWorkspace, /Feedback and correction controls/);
+  assert.doesNotMatch(reportWorkspace, /FeedbackControls/);
   assert.match(reportWorkspace, /Cited passages/);
   assert.match(sourceGraph, /onNodeClick/);
   assert.match(sourceGraph, /onEdgeClick/);

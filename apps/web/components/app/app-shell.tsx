@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { Archive, BookOpenText, FileCheck2, History, Settings, ShieldCheck } from "lucide-react";
+import { Archive, BookOpenText, FileCheck2, History, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { AuthControls } from "@/components/app/auth-controls";
@@ -15,7 +15,6 @@ const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> =
   { href: "/history", label: "History", icon: History },
   { href: "/saved", label: "Saved", icon: Archive },
   { href: "/methodology", label: "Methodology", icon: BookOpenText },
-  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {

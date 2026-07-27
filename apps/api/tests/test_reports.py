@@ -112,7 +112,7 @@ def test_report_exposes_calculation_inputs_decimal_context_and_audit_status(
     assert calculation["result"]["value"] == "40.0"
     assert response.json()["limitations"] == [
         "Claim claim-1 is supported with an unresolved interpretation "
-        "(1 claim-local limitation(s)); accepted evidence was adequate and unopposed."
+        "(1 claim-local limitation(s)); accepted evidence was adequate and not materially contradicted."
     ]
 
 

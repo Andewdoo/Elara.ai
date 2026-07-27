@@ -9,6 +9,15 @@ const principles = [
   { icon: Calculator, title: "Deterministic scoring", text: "Final arithmetic, thresholds, source multipliers, gates, and numerical audits belong in deterministic backend services." },
 ];
 
+const scoreRoles = [
+  ["Evidence support", "How strongly the stored evidence supports the factual claims."],
+  ["Attribution support", "Whether the statement is accurately attributed to the named speaker or source."],
+  ["Quote fidelity", "How faithfully a quotation or paraphrase matches its stored source passage."],
+  ["Verdict confidence", "Confidence that the available evidence is sufficient for the report conclusion."],
+  ["Source independence", "How much cited evidence comes from genuinely independent sources."],
+  ["Context completeness", "Whether relevant surrounding context and limitations were captured."],
+];
+
 export default function MethodologyPage() {
   return (
     <div className="grid gap-5">
@@ -40,6 +49,10 @@ export default function MethodologyPage() {
           );
         })}
       </div>
+      <section className="rounded-lg border bg-white p-5">
+        <h2 className="text-lg font-semibold">Score roles</h2>
+        <dl className="mt-3 grid gap-3 md:grid-cols-2">{scoreRoles.map(([term, description]) => <div key={term} className="rounded-md bg-muted p-3"><dt className="text-sm font-medium">{term}</dt><dd className="mt-1 text-sm leading-6 text-muted-foreground">{description}</dd></div>)}</dl>
+      </section>
     </div>
   );
 }

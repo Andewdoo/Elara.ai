@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Clock3,
   Loader2,
-  Radio,
   RefreshCw,
   Search,
   XCircle,
@@ -42,7 +41,7 @@ function elapsedLabel(from: string | undefined, now: number) {
 
 export function LiveResearchView({ runId }: { runId: string }) {
   const router = useRouter();
-  const { runQuery, latestEvent, connectionState, pollingFallback, cancelMutation, retryMutation, refreshDurableResult } =
+  const { runQuery, latestEvent, cancelMutation, retryMutation, refreshDurableResult } =
     useRunEvents(runId);
   const [now, setNow] = useState(() => Date.now());
 
@@ -89,13 +88,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
     <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
       <Card>
         <CardHeader>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <CardTitle>Live research view</CardTitle>
-            <span role="status" aria-live="polite" className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Radio className={connectionState === "connected" ? "h-3.5 w-3.5 text-emerald-600" : "h-3.5 w-3.5 text-amber-600"} />
-              {pollingFallback ? "Polling PostgreSQL" : connectionState}
-            </span>
-          </div>
+          <CardTitle>Live research view</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-5">
           <div role="status" aria-live="polite" className="rounded-md border bg-white p-5">
@@ -132,8 +125,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
             </div>
           )}
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-            <span className="text-xs text-muted-foreground">Run {runId}</span>
+          <div className="flex justify-end border-t pt-4">
             <div className="flex gap-2">
               <Button variant="secondary" onClick={() => void refreshDurableResult()}><RefreshCw className="h-4 w-4" aria-hidden="true"/>Refresh</Button>
               {!terminal && (
@@ -176,12 +168,6 @@ export function LiveResearchView({ runId }: { runId: string }) {
             </CardContent>
           </Card>
         )}
-        <Card>
-          <CardHeader><CardTitle>Latest public event</CardTitle></CardHeader>
-          <CardContent role="status" aria-live="polite" className="text-sm text-muted-foreground">
-            {latestMessage ?? "No stream event received yet. Private reasoning is never published here."}
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

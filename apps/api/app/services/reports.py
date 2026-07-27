@@ -74,7 +74,7 @@ def _ambiguity_limitations(
         limitation = (
             f"Claim {claim_ref} is supported with an unresolved interpretation "
             f"({len(claim.ambiguities)} claim-local limitation(s)); accepted evidence "
-            "was adequate and unopposed."
+            "was adequate and not materially contradicted."
         )
         if limitation not in limitations:
             limitations.append(limitation)

@@ -17,8 +17,10 @@ test("workspace exposes user-facing tabs, exact passages, graph, and score chart
   const workspace = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
   const charts = await readFile(join(root, "components", "report", "score-charts.tsx"), "utf8");
   const graph = await readFile(join(root, "components", "report", "source-graph.tsx"), "utf8");
-  for (const label of ["Overview", "Claims", "Evidence", "Graph", "Methodology", "Exact passage"]) assert.match(workspace, new RegExp(label));
+  for (const label of ["Overview", "Claims", "Evidence", "Graph", "Exact passage"]) assert.match(workspace, new RegExp(label));
   for (const internalDetail of ['id: "calculations"', 'activeReportTab === "calculations"', "Server calculation records", 'title="Methodology"', 'title="Retrieval"', 'title="Models"', 'title="Parsers"']) assert.doesNotMatch(workspace, new RegExp(internalDetail));
+  for (const sourceDetail of ["Parser", "Content hash", "Snapshot metadata", "Passage metadata", "Chunk metadata", "source.retrieval_reason"]) assert.doesNotMatch(workspace, new RegExp(sourceDetail));
+  assert.doesNotMatch(workspace, /\["Snapshot", source\.snapshot_id/);
   assert.match(workspace, /SourceDrawer/);
   assert.match(charts, /report\.calculations/);
   assert.doesNotMatch(charts, /report\.scores/);
@@ -26,6 +28,9 @@ test("workspace exposes user-facing tabs, exact passages, graph, and score chart
   for (const label of ["Supporting evidence", "Contradicting evidence", "Attribution support", "Quote fidelity", "Surrounding context"]) assert.match(workspace, new RegExp(label));
   for (const filter of ["atomic claim", "relationship", "source role", "access status", "cluster"]) assert.match(graph, new RegExp(filter));
   assert.match(graph, /evidenceUsed/);
+  assert.match(graph, /Graph links/);
+  assert.match(graph, /<details/);
+  assert.doesNotMatch(workspace, /Report details/);
   assert.match(charts, /research_coverage/);
 });
 

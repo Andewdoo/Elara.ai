@@ -7,7 +7,7 @@ import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, Textarea } from "@/components/ui/form-controls";
+import { Textarea } from "@/components/ui/form-controls";
 import { ReportWorkspace } from "@/components/report/report-workspace";
 import { isLiteReportResponse, liteResponseToReportWorkspace } from "@/lib/lite/report-adapter";
 import type { LiteResponse } from "@/lib/lite/schemas";
@@ -16,7 +16,7 @@ const liteProgressStages = [
   {
     id: "intake",
     label: "Intake",
-    description: "Validating the submitted claim or question.",
+    description: "Validating the submitted claim.",
   },
   {
     id: "query_planning",
@@ -46,24 +46,21 @@ const liteProgressStages = [
 ] as const;
 
 const samplePrompts = [
-  "Did the transit budget add weekend rail service in 2025?",
-  "What changed in the library hours update?",
-  "Was the community health pilot approved?",
+  "The transit budget added weekend rail service in 2025.",
+  "The library hours update extended weekday hours.",
+  "The community health pilot was approved.",
 ] as const;
 
-type LiteInputHint = "claim" | "question" | "quote" | "paraphrase";
 type LiteProgressStatus = "idle" | "loading" | "success" | "failure" | "cancelled";
 type LiteStageStatus = "queued" | "active" | "complete" | "failed" | "cancelled";
 type LiteSubmission = {
   input: string;
-  inputTypeHint: LiteInputHint;
 };
 
 const finalOptimisticStageIndex = liteProgressStages.length - 1;
 
 export function LiteWorkspace() {
   const [input, setInput] = useState("");
-  const [inputTypeHint, setInputTypeHint] = useState<LiteInputHint>("question");
   const [result, setResult] = useState<LiteResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,13 +89,13 @@ export function LiteWorkspace() {
 
   async function submitLiteRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await runLiteRequest({ input: input.trim(), inputTypeHint });
+    await runLiteRequest({ input: input.trim() });
   }
 
   async function runLiteRequest(submission: LiteSubmission) {
     const trimmed = submission.input.trim();
     if (!trimmed) {
-      setError("Enter a claim or question for the Lite evidence library.");
+      setError("Enter a claim for the Lite evidence library.");
       return;
     }
     const requestId = requestSequenceRef.current + 1;
@@ -106,7 +103,7 @@ export function LiteWorkspace() {
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
-    setLastSubmission({ input: trimmed, inputTypeHint: submission.inputTypeHint });
+    setLastSubmission({ input: trimmed });
     setIsSubmitting(true);
     setProgressStatus("loading");
     setActiveStageIndex(0);
@@ -120,7 +117,7 @@ export function LiteWorkspace() {
         body: JSON.stringify({
           corpus_version: "lite-corpus-v1",
           input: trimmed,
-          input_type_hint: submission.inputTypeHint,
+          input_type_hint: "claim",
           client_trace_id: createClientTraceId(),
         }),
       });
@@ -169,7 +166,7 @@ export function LiteWorkspace() {
   }
 
   function retryLiteRequest() {
-    const retrySubmission = lastSubmission ?? { input: input.trim(), inputTypeHint };
+    const retrySubmission = lastSubmission ?? { input: input.trim() };
     void runLiteRequest(retrySubmission);
   }
 
@@ -186,7 +183,7 @@ export function LiteWorkspace() {
               <div>
                 <h1 className="text-3xl font-semibold tracking-normal">Evidence workspace</h1>
                 <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-                  Ask a claim or question against Elara&apos;s curated stored evidence library. Lite reports show exact chunks, source labels, uncertainty, and citation-audit status.
+                  Submit a claim against Elara&apos;s curated stored evidence library. Lite reports show exact chunks, source labels, uncertainty, and citation-audit status.
                 </p>
               </div>
               <Button asChild variant="secondary" className="md:mt-1">
@@ -204,22 +201,13 @@ export function LiteWorkspace() {
             </CardHeader>
             <CardContent>
               <form className="grid gap-4" onSubmit={submitLiteRequest}>
-                <label className="grid gap-1 text-sm font-medium">
-                  Request type
-                  <Select value={inputTypeHint} onChange={(event) => setInputTypeHint(event.target.value as LiteInputHint)}>
-                    <option value="question">Question</option>
-                    <option value="claim">Claim</option>
-                    <option value="quote">Quote</option>
-                    <option value="paraphrase">Paraphrase</option>
-                  </Select>
-                </label>
                 <label className="grid gap-1 text-sm font-medium" htmlFor="lite-target">
-                  Claim or question
+                  Claim
                   <Textarea
                     id="lite-target"
                     value={input}
                     onChange={(event) => setInput(event.target.value)}
-                    placeholder="Ask about a public demo topic in the curated evidence library."
+                    placeholder="Enter a claim about a public demo topic in the curated evidence library."
                     aria-describedby="lite-scope"
                     maxLength={4000}
                   />

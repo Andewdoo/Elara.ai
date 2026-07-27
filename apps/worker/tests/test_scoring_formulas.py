@@ -372,7 +372,8 @@ def test_owned_ambiguity_is_non_blocking_for_adequate_unopposed_support():
         "non_blocking": True,
         "unresolved_key_facts": False,
     }
-    assert ambiguity_gate.inputs["scoring_version"] == "1.1-ambiguity-gate"
+    assert Decimal(ambiguity_gate.inputs["contradiction_ratio"]) == 0
+    assert ambiguity_gate.inputs["scoring_version"] == "1.3-qualified-ambiguity"
     assert "The price interpretation" not in str(ambiguity_gate.inputs)
     assert "reasoning" not in ambiguity_gate.inputs
 
@@ -391,6 +392,50 @@ def test_owned_ambiguity_keeps_existing_claim_safety_gates(
     result = asyncio.run(DeterministicScoringService().process(fixture))
 
     assert result.claim_scores[0].final_label == expected_claim_label
+
+
+def test_well_supported_generic_ambiguity_with_limited_counterevidence_is_qualified():
+    state = _ambiguity_fixture(contradiction=True)
+    qualified_claim = state.claims[0].model_copy(
+        update={
+            "text": "Apples are healthy",
+            "claim_kind": ClaimKind.FACTUAL,
+            "verification_scope": "Assess the health benefits of apples.",
+        }
+    )
+    limited_counterevidence = state.evidence[1].model_copy(
+        update={
+            "stance": EvidenceStance.PARTIALLY_CONTRADICTS,
+            "quality": EvidenceQualityOutput(
+                relevance=Decimal("0.2"),
+                directness=Decimal("0.2"),
+                claim_specific_authority=Decimal("0.2"),
+                transparency=Decimal("0.2"),
+                temporal_fit=Decimal("0.2"),
+                extraction_certainty=Decimal("0.2"),
+            ),
+            "confidence_issues": [ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED],
+        }
+    )
+    result = asyncio.run(
+        DeterministicScoringService().process(
+            state.model_copy(
+                update={"claims": [qualified_claim], "evidence": [state.evidence[0], limited_counterevidence]}
+            )
+        )
+    )
+
+    claim = result.claim_scores[0]
+    assert claim.evidence_support == 91
+    assert claim.final_label == "Supported"
+    assert result.scores.final_label == "Supported"
+    ambiguity_gate = next(
+        row for row in result.calculations
+        if row.formula_name == "ambiguity_gate" and row.claim_ref == "meta"
+    )
+    assert ambiguity_gate.audit_status == "non_blocking"
+    assert ambiguity_gate.result["no_accepted_material_contradiction"] is True
+    assert Decimal(ambiguity_gate.inputs["contradiction_ratio"]) <= Decimal("0.15")
 
 
 def test_owned_minor_claim_ambiguity_does_not_downgrade_essential_claim_or_article():

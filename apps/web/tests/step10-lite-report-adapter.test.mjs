@@ -28,7 +28,7 @@ test("Lite adapter maps cited sentences and exact source chunks into report reco
   assert.match(adapter, /chunk\.chunk_text/);
   assert.match(reportWorkspace, /Cited answer/);
   assert.match(reportWorkspace, /Exact source chunk - Cited sentences/);
-  assert.match(reportWorkspace, /Chunk metadata/);
+  assert.doesNotMatch(reportWorkspace, /Chunk metadata/);
 });
 
 test("Lite adapter preserves insufficient-evidence state without Full Mode score output", async () => {
@@ -46,6 +46,7 @@ test("Lite adapter preserves insufficient-evidence state without Full Mode score
 test("Lite report metadata exposes corpus, model, prompt, and curated-library scope", async () => {
   const adapter = await read("lib", "lite", "report-adapter.ts");
   const reportWorkspace = await read("components", "report", "report-workspace.tsx");
+  const methodology = await read("app", "methodology", "page.tsx");
 
   assert.match(adapter, /Corpus version:/);
   assert.match(adapter, /model_versions: response\.report_metadata\.model_versions/);
@@ -54,5 +55,6 @@ test("Lite report metadata exposes corpus, model, prompt, and curated-library sc
   assert.match(adapter, /curated Lite evidence library/);
   assert.match(reportWorkspace, /Evidence reviewed as of/);
   assert.match(reportWorkspace, /workspace_scope/);
-  assert.match(reportWorkspace, /Version title="AI Pipeline" value=\{report\.prompt_versions\}/);
+  assert.doesNotMatch(reportWorkspace, /Report details/);
+  assert.match(methodology, /Score roles/);
 });

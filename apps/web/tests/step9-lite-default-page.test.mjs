@@ -14,7 +14,7 @@ test("default route renders the Lite evidence-library workspace first", async ()
   assert.doesNotMatch(page, /VerifyForm|HistoryList|StatusStrip/);
   assert.match(workspace, /Lite evidence library/);
   assert.match(workspace, /New Lite report/);
-  assert.match(workspace, /Claim or question/);
+  assert.match(workspace, />\s*Claim\s*</);
   assert.match(workspace, /Report progress/);
   assert.match(workspace, /Report workspace/);
 });

@@ -22,5 +22,5 @@ test("live view exposes required public progress controls", async () => {
   assert.match(view, /source_counts/);
   assert.match(view, /inaccessible_count/);
   assert.match(view, /Cancel research/);
-  assert.match(view, /Latest public event/);
+  assert.doesNotMatch(view, /Polling PostgreSQL|Latest public event|Run \{runId\}/);
 });
