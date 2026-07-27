@@ -1,5 +1,5 @@
-import { VerifyForm } from "@/components/app/verify-form";
+import { VerifyRoute } from "@/components/app/verify-route";
 
 export default function VerifyPage() {
-  return <VerifyForm />;
+  return <VerifyRoute />;
 }

@@ -38,12 +38,12 @@ def support_label(support: Decimal) -> str:
     if value >= 60:
         return "Leaning supported"
     if value >= 40:
-        return "Mixed or unresolved"
+        return "Mixed"
     if value >= 26:
-        return "Leaning refuted"
+        return "Leaning contradicted"
     if value >= 11:
-        return "Mostly refuted"
-    return "Refuted"
+        return "Mostly contradicted"
+    return "Contradicted"
 
 
 def confidence_label(confidence: Decimal) -> str:

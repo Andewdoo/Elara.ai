@@ -19,9 +19,18 @@ const tabs: Array<{ id: ReportTab; label: string }> = [
 ];
 
 export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
+  return <ReportWorkspaceContent key={data.run.run_id} data={data} />;
+}
+
+function ReportWorkspaceContent({ data }: { data: ReportWorkspaceData }) {
   const { run, report, sources, sourceGraph, mode = "full" } = data;
   const isLite = mode === "lite";
   const ui = useReportUiStore();
+  const [activeReportTab, setActiveReportTab] = useState<ReportTab>("overview");
+  const openTab = (tab: ReportTab) => {
+    setActiveReportTab(tab);
+    ui.setActiveReportTab(tab);
+  };
   const selectedClaim = report.atomic_claims.find((claim) => claim.id === ui.selectedClaimId) ?? report.atomic_claims[0];
   const selectedSource = sources.find((source) => source.id === ui.selectedSourceId) ?? sources[0];
   const selectedPassage = selectedSource?.passages.find((passage) => passage.id === ui.selectedEvidenceId) ?? selectedSource?.passages.find((passage) => passage.citations.length) ?? selectedSource?.passages[0];
@@ -47,7 +56,7 @@ export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
     if (!direction && !["Home", "End"].includes(event.key)) return;
     event.preventDefault();
     const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (index + direction + tabs.length) % tabs.length;
-    ui.setActiveReportTab(tabs[nextIndex].id);
+    openTab(tabs[nextIndex].id);
     document.getElementById(`report-tab-${tabs[nextIndex].id}`)?.focus();
   };
 
@@ -58,14 +67,14 @@ export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
     </header>
 
     <nav role="tablist" className="flex gap-2 overflow-x-auto rounded-lg border bg-white p-2" aria-label="Report sections">
-      {tabs.map((tab, index) => <Button role="tab" id={`report-tab-${tab.id}`} aria-selected={ui.activeReportTab === tab.id} aria-controls={`report-panel-${tab.id}`} tabIndex={ui.activeReportTab === tab.id ? 0 : -1} key={tab.id} size="sm" variant={ui.activeReportTab === tab.id ? "primary" : "ghost"} onKeyDown={(event) => onTabKeyDown(event, index)} onClick={() => ui.setActiveReportTab(tab.id)}>{tab.label}</Button>)}
+      {tabs.map((tab, index) => <Button role="tab" id={`report-tab-${tab.id}`} aria-selected={activeReportTab === tab.id} aria-controls={`report-panel-${tab.id}`} tabIndex={activeReportTab === tab.id ? 0 : -1} key={tab.id} size="sm" variant={activeReportTab === tab.id ? "primary" : "ghost"} onKeyDown={(event) => onTabKeyDown(event, index)} onClick={() => openTab(tab.id)}>{tab.label}</Button>)}
       <Button className="ml-auto hidden xl:inline-flex" size="icon" variant="ghost" aria-label={ui.sourceDrawerOpen ? "Close source drawer" : "Open source drawer"} onClick={() => ui.setSourceDrawerOpen(!ui.sourceDrawerOpen)}>{ui.sourceDrawerOpen ? <PanelRightClose className="h-4 w-4"/> : <PanelRightOpen className="h-4 w-4"/>}</Button>
     </nav>
 
     <div className={cn("grid gap-4", ui.sourceDrawerOpen ? "xl:grid-cols-[260px_minmax(0,1fr)_340px]" : "xl:grid-cols-[260px_minmax(0,1fr)]")}>
       <aside className="hidden self-start xl:block"><ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim}/></aside>
-      <main role="tabpanel" id={`report-panel-${ui.activeReportTab}`} aria-labelledby={`report-tab-${ui.activeReportTab}`} tabIndex={0} className="min-w-0 grid gap-4">
-        {ui.activeReportTab === "overview" && <><Card><CardHeader><CardTitle>Report overview</CardTitle></CardHeader><CardContent className="grid gap-4">
+      <main role="tabpanel" id={`report-panel-${activeReportTab}`} aria-labelledby={`report-tab-${activeReportTab}`} tabIndex={0} className="min-w-0 grid gap-4">
+        {activeReportTab === "overview" && <><Card><CardHeader><CardTitle>Report overview</CardTitle></CardHeader><CardContent className="grid gap-4">
           {report.answer_markdown && <section className="grid gap-2"><h3 className="text-sm font-semibold">Cited answer</h3><div className="rounded-md border bg-muted/40 p-3 text-sm leading-6 whitespace-pre-wrap">{report.answer_markdown}</div></section>}
           <SentenceSection title="Summary" sentences={summarySentences} empty="No citation-audited summary sentences were stored." onOpen={openEvidence}/>
           <SentenceSection title="Factual findings" sentences={factualSentences} empty="No separate factual findings were stored." onOpen={openEvidence}/>
@@ -74,11 +83,11 @@ export function ReportWorkspace({ data }: { data: ReportWorkspaceData }) {
           <SpecializedPanels report={report}/>
           <div><p className="mb-2 text-sm font-semibold">Limitations</p>{report.limitations.length ? report.limitations.map((item, index) => <p key={`${item}-${index}`} className="mb-2 flex gap-2 rounded-md bg-muted p-3 text-sm"><Info className="mt-0.5 h-4 w-4 shrink-0 text-primary"/>{item}</p>) : <p className="text-sm text-muted-foreground">No limitations were recorded.</p>}</div>
         </CardContent></Card>{!isLite && <ScoreCharts report={report}/>}</>}
-        {ui.activeReportTab === "claims" && <ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim} detailed/>}
-        {ui.activeReportTab === "evidence" && <Card><CardHeader><div className="flex items-center justify-between gap-3"><CardTitle>Evidence passages</CardTitle><select className="rounded-md border bg-white px-2 py-1 text-xs" value={ui.evidenceFilter} onChange={(event) => ui.setEvidenceFilter(event.target.value as typeof ui.evidenceFilter)}><option value="all">All</option><option value="supporting">Supporting</option><option value="contradicting">Contradicting</option><option value="inaccessible">Inaccessible</option></select></div></CardHeader><CardContent className="grid gap-3">
+        {activeReportTab === "claims" && <ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim} detailed/>}
+        {activeReportTab === "evidence" && <Card><CardHeader><div className="flex items-center justify-between gap-3"><CardTitle>Evidence passages</CardTitle><select className="rounded-md border bg-white px-2 py-1 text-xs" value={ui.evidenceFilter} onChange={(event) => ui.setEvidenceFilter(event.target.value as typeof ui.evidenceFilter)}><option value="all">All</option><option value="supporting">Supporting</option><option value="contradicting">Contradicting</option><option value="inaccessible">Inaccessible</option></select></div></CardHeader><CardContent className="grid gap-3">
           {ui.evidenceFilter === "inaccessible" ? <InaccessibleSources sources={sources} onSelect={ui.selectSource}/> : <EvidenceColumns items={evidence} onOpen={openEvidence} mode={mode}/>}
         </CardContent></Card>}
-        {ui.activeReportTab === "graph" && <Card><CardHeader><CardTitle>Source dependency graph</CardTitle></CardHeader><CardContent><SourceGraph graph={sourceGraph} claims={report.atomic_claims} onSourceSelect={ui.selectSource}/></CardContent></Card>}
+        {activeReportTab === "graph" && <Card><CardHeader><CardTitle>Source dependency graph</CardTitle></CardHeader><CardContent><SourceGraph graph={sourceGraph} claims={report.atomic_claims} onSourceSelect={ui.selectSource}/></CardContent></Card>}
       </main>
       {ui.sourceDrawerOpen && <SourceDrawer mode={mode} mobileOpen={Boolean(ui.selectedSourceId)} source={selectedSource} passage={selectedPassage} onClose={() => ui.setSourceDrawerOpen(false)} onPassage={ui.selectEvidence}/>}
     </div>

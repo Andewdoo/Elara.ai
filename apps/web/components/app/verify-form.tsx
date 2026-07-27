@@ -12,6 +12,7 @@ import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, Textarea } from "@/components/ui/form-controls";
 import { apiErrorMessage, authenticatedApiFetch } from "@/lib/auth";
+import { useActiveVerificationStore } from "@/stores/active-verification-store";
 
 const verificationSchema = z.object({
   target: z.string().trim().min(1, "Enter a claim.").max(12000),
@@ -24,6 +25,7 @@ type VerificationCreateResponse = { run_id: string; status: "QUEUED"; events_url
 export function VerifyForm() {
   const router = useRouter();
   const { user } = useFirebaseAuth();
+  const resumeVerification = useActiveVerificationStore((state) => state.resume);
   const [apiError, setApiError] = useState<string | null>(null);
   const {
     register,
@@ -63,6 +65,7 @@ export function VerifyForm() {
                 return;
               }
               const created = (await response.json()) as VerificationCreateResponse;
+              resumeVerification(created.run_id);
               router.push(`/verify/${created.run_id}`);
             } catch (error) {
               setApiError(error instanceof Error ? error.message : "Could not reach the verification API.");

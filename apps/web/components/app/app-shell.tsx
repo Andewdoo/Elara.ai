@@ -10,11 +10,11 @@ import { AuthControls } from "@/components/app/auth-controls";
 import { cn } from "@/lib/utils";
 
 const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> = [
-  { href: "/", label: "Workspace", icon: FileCheck2 },
   { href: "/verify", label: "Verify", icon: ShieldCheck },
   { href: "/history", label: "History", icon: History },
   { href: "/saved", label: "Saved", icon: Archive },
   { href: "/methodology", label: "Methodology", icon: BookOpenText },
+  { href: "/", label: "Lite mode", icon: FileCheck2 },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {

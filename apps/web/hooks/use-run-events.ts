@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { apiBaseUrl, apiErrorMessage, authenticatedApiFetch } from "@/lib/auth";
+import { useActiveVerificationStore } from "@/stores/active-verification-store";
 
 export const terminalRunStatuses = ["COMPLETED", "FAILED", "CANCELLED"] as const;
 export type TerminalRunStatus = (typeof terminalRunStatuses)[number];
@@ -60,11 +61,20 @@ function isTerminal(status: RunStatus | undefined): status is TerminalRunStatus 
 export function useRunEvents(runId: string) {
   const { user } = useFirebaseAuth();
   const queryClient = useQueryClient();
-  const [latestEvent, setLatestEvent] = useState<RunProgressEvent | null>(null);
+  const latestEvent = useActiveVerificationStore((state) => (
+    state.runId === runId ? state.latestEvent : null
+  ));
+  const resumeVerification = useActiveVerificationStore((state) => state.resume);
+  const recordProgress = useActiveVerificationStore((state) => state.recordProgress);
+  const finishVerification = useActiveVerificationStore((state) => state.finish);
   const [connectionState, setConnectionState] = useState<ConnectionState>("connecting");
   const [pollingFallback, setPollingFallback] = useState(false);
   const reconnectAttempts = useRef(0);
   const invalidatedTerminalResult = useRef<string | null>(null);
+
+  useEffect(() => {
+    resumeVerification(runId);
+  }, [resumeVerification, runId]);
 
   const runQuery = useQuery({
     queryKey: ["run", runId],
@@ -93,6 +103,7 @@ export function useRunEvents(runId: string) {
   useEffect(() => {
     const durableRun = runQuery.data;
     if (!durableRun || !isTerminal(durableRun.status)) return;
+    finishVerification(runId);
     const resultVersion = `${durableRun.run_id}:${durableRun.status}:${durableRun.updated_at}`;
     if (invalidatedTerminalResult.current === resultVersion) return;
     invalidatedTerminalResult.current = resultVersion;
@@ -101,7 +112,7 @@ export function useRunEvents(runId: string) {
       queryClient.invalidateQueries({ queryKey: ["sources", runId] }),
       queryClient.invalidateQueries({ queryKey: ["source-graph", runId] }),
     ]);
-  }, [queryClient, runId, runQuery.data]);
+  }, [finishVerification, queryClient, runId, runQuery.data]);
 
   useEffect(() => {
     if (!user || !runId || isTerminal(runQuery.data?.status)) {
@@ -130,7 +141,7 @@ export function useRunEvents(runId: string) {
           return;
         }
         reconnectAttempts.current = 0;
-        setLatestEvent(progress);
+        recordProgress(progress);
         if (isTerminal(progress.stage)) {
           source?.close();
           setConnectionState("closed");
@@ -161,7 +172,7 @@ export function useRunEvents(runId: string) {
       source?.close();
       if (reconnectTimer) clearTimeout(reconnectTimer);
     };
-  }, [refreshDurableResult, runId, runQuery.data?.status, user]);
+  }, [recordProgress, refreshDurableResult, runId, runQuery.data?.status, user]);
 
   const cancelMutation = useMutation({
     mutationFn: async () => {

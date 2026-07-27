@@ -1284,6 +1284,49 @@ def test_synthesis_sends_only_deterministically_approved_evidence_to_the_model()
     assert result.report_draft is not None
 
 
+def test_synthesis_repairs_an_unapproved_citation_once_without_retaining_the_draft():
+    value = state().model_copy(update={
+        "claims": [AtomicClaimOutput.model_validate(DECOMPOSITION["atomic_claims"][0])],
+        "snapshots": [SnapshotRecord(snapshot_id="snapshot-1", source_ref="source-1",
+            access_status="FETCHED", retrieved_at=datetime(2026, 7, 4, tzinfo=UTC))],
+        "passages": [PassageRecord(passage_id="approved-passage", source_ref="source-1",
+            snapshot_id="snapshot-1", text="Approved supporting passage.",
+            text_hash="approved", extraction_certainty=Decimal("1"))],
+        "evidence": [EvidenceClassificationItemOutput.model_validate({
+            "claim_ref": "claim-1", "passage_id": "approved-passage",
+            "stance": "strongly_supports",
+            "quality": {"relevance": 1, "directness": 1,
+                "claim_specific_authority": 1, "transparency": 1,
+                "temporal_fit": 1, "extraction_certainty": 1},
+            "entity_match": True, "time_period_match": True,
+        })],
+        "scores": ScoreBundle(evidence_support=100, verdict_confidence=90,
+            source_independence=80, context_completeness=90, final_label="supported",
+            methodology_version="1.0"),
+    })
+    model = FakeModel([
+        {"summary_sentences": [{"sentence_ref": "summary-invalid",
+            "text": "An invalid citation must not be retained.",
+            "passage_ids": ["unapproved-passage"]}]},
+        {"summary_sentences": [{"sentence_ref": "summary-repaired",
+            "text": "Approved evidence supports the claim.",
+            "passage_ids": ["approved-passage"]}]},
+    ])
+    progress = RecordingProgress()
+
+    result = asyncio.run(WorkflowNodes(WorkflowServices(
+        model=model, submitted_input="unused", progress=progress
+    )).synthesis(value))
+
+    assert result.report_draft is not None
+    assert result.report_draft.summary_sentences[0].passage_ids == ["approved-passage"]
+    assert result.recoverable_errors == []
+    assert len(model.calls) == 2
+    assert "approved-passage" in model.calls[1]["messages"][0]["content"]
+    assert "unapproved-passage" not in str(model.calls[1]["messages"])
+    assert any(event["event_type"] == "workflow.synthesis.citation_repair" for event in progress.events)
+
+
 def test_extension_outputs_are_revalidated():
     async def invalid_extension(value: VerificationState) -> VerificationState:
         return value.model_copy(update={"candidate_sources": [{"source_ref": "incomplete"}]})

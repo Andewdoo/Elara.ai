@@ -83,6 +83,7 @@ PARTIAL_CITATION_EVIDENCE_SUPPORT_PENALTY = 5
 PARTIAL_CITATION_CONFIDENCE_PENALTY = 7
 MAX_PARTIAL_CITATION_EVIDENCE_SUPPORT_PENALTY = 20
 MAX_PARTIAL_CITATION_CONFIDENCE_PENALTY = 25
+SYNTHESIS_CITATION_REPAIR_LIMIT = 1
 
 _STAGE_NUMBERS: dict[WorkflowStage, int] = {
     stage: index
@@ -696,47 +697,71 @@ class WorkflowNodes:
         approved_evidence = [
             item for item in state.evidence if item.passage_id in approved_passage_ids
         ]
+        synthesis_input = {
+            "submitted_target": (
+                state.normalized_input.normalized_text
+                if state.normalized_input is not None
+                else None
+            ),
+            "claims": state.claims,
+            "approved_evidence": approved_evidence,
+            "approved_passages": passages,
+            "source_snapshots": state.snapshots,
+            "scores": state.scores,
+            "methodology_version": state.methodology_version,
+        }
         response = await self._call(
             state,
             WorkflowStage.SYNTHESIS,
             messages=[
                 {"role": "system", "content": SYNTHESIS_PROMPT},
-                {
-                    "role": "user",
-                    "content": _json(
-                        {
-                            "submitted_target": (
-                                state.normalized_input.normalized_text
-                                if state.normalized_input is not None
-                                else None
-                            ),
-                            "claims": state.claims,
-                            "approved_evidence": approved_evidence,
-                            "approved_passages": passages,
-                            "source_snapshots": state.snapshots,
-                            "scores": state.scores,
-                            "methodology_version": state.methodology_version,
-                        }
-                    ),
-                },
+                {"role": "user", "content": _json(synthesis_input)},
             ],
             output_schema=SynthesisDraftOutput,
             max_tokens=8000,
         )
         if isinstance(response, VerificationState):
             return response
-        cited = {
-            passage_id
-            for _, sentence in iter_auditable_sentences(response.output)
-            for passage_id in sentence.passage_ids
-        }
+        cited = _cited_passage_ids(response.output)
         if not cited.issubset(approved_passage_ids):
-            return await self._failure(
+            await self.services.progress.publish(
+                run_id=state.run_id,
+                stage=WorkflowStage.SYNTHESIS,
+                event_type="workflow.synthesis.citation_repair",
+                message="Regenerating the report with approved citations.",
+                payload={
+                    **_stage_progress(WorkflowStage.SYNTHESIS, completed=False),
+                    "citation_repair_attempt": SYNTHESIS_CITATION_REPAIR_LIMIT,
+                },
+            )
+            response = await self._call(
                 state,
                 WorkflowStage.SYNTHESIS,
-                code="UNAPPROVED_REPORT_CITATION",
-                message="The report draft cited a passage that was not approved as evidence.",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            f"{SYNTHESIS_PROMPT}\n"
+                            "Regenerate the report now. A prior draft cited an ID outside the "
+                            "approved evidence. Use only these exact approved passage IDs: "
+                            f"{', '.join(sorted(approved_passage_ids))}."
+                        ),
+                    },
+                    {"role": "user", "content": _json(synthesis_input)},
+                ],
+                output_schema=SynthesisDraftOutput,
+                max_tokens=8000,
             )
+            if isinstance(response, VerificationState):
+                return response
+            cited = _cited_passage_ids(response.output)
+            if not cited.issubset(approved_passage_ids):
+                return await self._failure(
+                    state,
+                    WorkflowStage.SYNTHESIS,
+                    code="UNAPPROVED_REPORT_CITATION",
+                    message="The report draft cited a passage that was not approved as evidence.",
+                )
         has_contradiction = any(
             item.passage_id in approved_passage_ids and "contradicts" in item.stance.value
             for item in state.evidence
@@ -1153,6 +1178,14 @@ def _stage_progress(stage: WorkflowStage, *, completed: bool) -> dict[str, objec
     return {
         "completed_steps": stage_number if completed else stage_number - 1,
         "total_steps": _TOTAL_STAGES,
+    }
+
+
+def _cited_passage_ids(report: SynthesisDraftOutput) -> set[str]:
+    return {
+        passage_id
+        for _, sentence in iter_auditable_sentences(report)
+        for passage_id in sentence.passage_ids
     }
 
 

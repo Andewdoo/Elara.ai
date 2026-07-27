@@ -32,6 +32,9 @@ const stageLabels: Record<RunStatus, string> = {
   CANCELLED: "Cancelled",
 };
 
+// Existing durable workflow events use thirteen stages. Server event values always win.
+const DEFAULT_WORKFLOW_STEPS = 13;
+
 function elapsedLabel(from: string | undefined, now: number) {
   if (!from) return "0:00";
   const seconds = Math.max(0, Math.floor((now - new Date(from).getTime()) / 1_000));
@@ -63,7 +66,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
     () => Object.values(latestEvent?.source_counts ?? {}).reduce((sum, count) => sum + count, 0),
     [latestEvent?.source_counts],
   );
-  const totalSteps = Math.max(1, latestEvent?.total_steps ?? 9);
+  const totalSteps = Math.max(1, latestEvent?.total_steps ?? DEFAULT_WORKFLOW_STEPS);
   const completedSteps = Math.min(
     totalSteps,
     Math.max(0, status === "COMPLETED" ? totalSteps : latestEvent?.completed_steps ?? 0),

@@ -72,14 +72,16 @@ CONFIDENCE_PENALTIES = {
     # confidence penalty is 30% lower than the previous 15-point penalty.
     ConfidenceIssue.ESSENTIAL_TERM_AMBIGUOUS: Decimal("10.5"),
     ConfidenceIssue.SPEAKER_OR_DATE_UNRESOLVED: Decimal("10"),
-    ConfidenceIssue.PRIMARY_EVIDENCE_UNAVAILABLE: Decimal("10"),
+    # Keep the missing-primary limitation in the audit trail. The independent
+    # primary_access confidence component still contributes 0 when unavailable.
+    ConfidenceIssue.PRIMARY_EVIDENCE_UNAVAILABLE: Decimal("0"),
     ConfidenceIssue.MAJOR_CONTRADICTION_UNRESOLVED: Decimal("15"),
     ConfidenceIssue.SINGLE_INFORMATION_CLUSTER: Decimal("15"),
     ConfidenceIssue.IMPORTANT_SOURCE_INACCESSIBLE: Decimal("5"),
     ConfidenceIssue.TRANSLATION_UNCERTAIN: Decimal("10"),
     ConfidenceIssue.EDITED_MEDIA_UNAUTHENTICATED: Decimal("15"),
     ConfidenceIssue.DEVELOPING_EVENT_LOW: Decimal("5"),
-    ConfidenceIssue.DEVELOPING_EVENT_HIGH: Decimal("15"),
+    ConfidenceIssue.DEVELOPING_EVENT_HIGH: Decimal("7.5"),
 }
 
 

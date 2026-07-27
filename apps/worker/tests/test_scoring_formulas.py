@@ -11,7 +11,7 @@ from scoring.formulas import (
     verdict_confidence,
 )
 from scoring.labels import InsufficientEvidence, article_label, final_claim_label, support_label
-from scoring.service import DeterministicScoringService
+from scoring.service import CONFIDENCE_PENALTIES, DeterministicScoringService
 from research.extension_errors import WorkflowExtensionError
 from agents.schemas import (AtomicClaimOutput, ClaimAmbiguityOutput, ClaimKind, ConfidenceIssue, ContextIssue,
     EvidenceClassificationItemOutput, EvidenceQualityOutput, EvidenceStance,
@@ -71,9 +71,15 @@ def test_inputs_outside_published_ranges_are_rejected():
         context_completeness([Decimal("-1")])
 
 
-@pytest.mark.parametrize("value,label", [(90, "Supported"), (75, "Mostly supported"),
-    (60, "Leaning supported"), (40, "Mixed or unresolved"), (26, "Leaning refuted"),
-    (11, "Mostly refuted"), (10, "Refuted")])
+@pytest.mark.parametrize("value,label", [
+    (100, "Supported"), (90, "Supported"),
+    (89, "Mostly supported"), (75, "Mostly supported"),
+    (74, "Leaning supported"), (60, "Leaning supported"),
+    (59, "Mixed"), (40, "Mixed"),
+    (39, "Leaning contradicted"), (26, "Leaning contradicted"),
+    (25, "Mostly contradicted"), (11, "Mostly contradicted"),
+    (10, "Contradicted"), (0, "Contradicted"),
+])
 def test_support_label_boundaries(value, label):
     assert support_label(Decimal(value)) == label
 
@@ -82,6 +88,8 @@ def test_insufficient_context_and_essential_claim_gates_override_numeric_label()
     sparse = InsufficientEvidence(total_below_minimum=True)
     assert final_claim_label(support=Decimal("99"), confidence=Decimal("99"),
                              context=Decimal("100"), insufficient=sparse) == "Insufficient evidence"
+    assert final_claim_label(support=Decimal("99"), confidence=Decimal("34"),
+                             context=Decimal("100"), insufficient=InsufficientEvidence()) == "Insufficient evidence"
     assert final_claim_label(support=Decimal("80"), confidence=Decimal("80"),
                              context=Decimal("49"), insufficient=InsufficientEvidence()) == "Technically supported but misleading"
     assert article_label(factual_accuracy=Decimal("95"), insufficient=InsufficientEvidence(),
@@ -92,6 +100,24 @@ def test_insufficient_context_and_essential_claim_gates_override_numeric_label()
     assert article_label(factual_accuracy=Decimal("80"), insufficient=InsufficientEvidence(),
                          strongly_refuted_essential_claim=False,
                          context=Decimal("49")) == "Technically supported but misleading"
+
+
+def test_confidence_penalties_keep_primary_limitation_visible_without_double_deduction():
+    assert CONFIDENCE_PENALTIES[ConfidenceIssue.DEVELOPING_EVENT_HIGH] == Decimal("7.5")
+    assert CONFIDENCE_PENALTIES[ConfidenceIssue.PRIMARY_EVIDENCE_UNAVAILABLE] == Decimal("0")
+
+    state = _ambiguity_fixture(source_type="SECONDARY_REPORT")
+    state = state.model_copy(update={"primary_source_targets": ["https://primary.example/record"]})
+    result = asyncio.run(DeterministicScoringService().process(state))
+
+    claim = result.claim_scores[0]
+    assert "primary_evidence_unavailable" in claim.gates["confidence_issues"]
+    confidence_record = next(
+        row for row in result.calculations
+        if row.formula_name == "verdict_confidence" and row.claim_ref == "meta"
+    )
+    assert confidence_record.inputs["primary_access"] == "0"
+    assert confidence_record.inputs["penalties"]["primary_evidence_unavailable"] == "0"
 
 
 def test_state_service_scores_only_accepted_evidence_and_emits_audit_records():
