@@ -1,7 +1,12 @@
 import { withSentryConfig } from "@sentry/nextjs";
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  // The Docker-published local app is opened through IPv4 because another
+  // development server owns the IPv6 localhost listener on port 3000.
+  // Allow Next's dev resources to load and hydrate client components there.
+  allowedDevOrigins: ["127.0.0.1"],
+};
 
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG,

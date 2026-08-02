@@ -91,6 +91,13 @@ class Settings(BaseSettings):
     search_provider: Literal["brave"] = "brave"
     search_api_key: str | None = None
     search_base_url: str = "https://api.search.brave.com/res/v1"
+    search_policy_version: str = Field(default="adaptive-search-v1", min_length=1, max_length=100)
+    search_phase_one_quick: int = Field(default=8, ge=1, le=25)
+    search_phase_one_standard: int = Field(default=18, ge=1, le=51)
+    search_phase_one_deep: int = Field(default=36, ge=1, le=101)
+    search_phase_two_quick: int = Field(default=14, ge=0, le=25)
+    search_phase_two_standard: int = Field(default=30, ge=0, le=51)
+    search_phase_two_deep: int = Field(default=64, ge=0, le=101)
     search_cache_ttl_seconds: int = Field(default=3_600, ge=60, le=86_400)
     fetch_cache_ttl_seconds: int = Field(default=21_600, ge=60, le=604_800)
     fetch_connect_timeout_seconds: float = Field(default=5.0, gt=0, le=20)
@@ -139,6 +146,25 @@ class Settings(BaseSettings):
             raise ValueError(
                 "PLAYWRIGHT_MAX_RESPONSE_BYTES cannot exceed PLAYWRIGHT_MAX_TOTAL_RESPONSE_BYTES"
             )
+        return self
+
+    @model_validator(mode="after")
+    def adaptive_search_limits_fit_supported_ceilings(self) -> "Settings":
+        limits = {
+            "QUICK": (self.search_phase_one_quick, self.search_phase_two_quick, 25),
+            "STANDARD": (
+                self.search_phase_one_standard,
+                self.search_phase_two_standard,
+                51,
+            ),
+            "DEEP": (self.search_phase_one_deep, self.search_phase_two_deep, 101),
+        }
+        for depth, (phase_one, phase_two, ceiling) in limits.items():
+            if phase_one + phase_two > ceiling:
+                raise ValueError(
+                    f"SEARCH_PHASE_ONE_{depth} plus SEARCH_PHASE_TWO_{depth} "
+                    "cannot exceed the supported coverage ceiling"
+                )
         return self
 
     @model_validator(mode="after")

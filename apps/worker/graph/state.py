@@ -57,6 +57,8 @@ DependencyRelationshipValue = Literal[
     "USES_SAME_DATA",
     "POSSIBLE_DUPLICATE",
 ]
+SearchDiscoveryPhaseValue = Literal["phase_one", "phase_two"]
+SearchExecutionStatusValue = Literal["planned", "executed", "cache_hit", "not_needed"]
 
 
 class StateModel(BaseModel):
@@ -275,6 +277,37 @@ class EmbeddingRunMetadata(StateModel):
     retryable: bool = False
 
 
+class SearchQueryExecutionRecord(StateModel):
+    query_key: str = Field(min_length=1, max_length=700)
+    discovery_phase: SearchDiscoveryPhaseValue
+    execution_status: SearchExecutionStatusValue = "planned"
+    result_count: int | None = Field(default=None, ge=0)
+    network_attempt_count: int = Field(default=0, ge=0)
+    executed_at: datetime | None = None
+    skip_reason: str | None = Field(default=None, max_length=100)
+
+    @field_validator("executed_at")
+    @classmethod
+    def executed_at_is_timezone_aware(cls, value: datetime | None) -> datetime | None:
+        if value is not None and (value.tzinfo is None or value.utcoffset() is None):
+            raise ValueError("search execution timestamps must be timezone-aware")
+        return value
+
+
+class DiscoveryGateRecord(StateModel):
+    discovery_phase: SearchDiscoveryPhaseValue
+    batch_number: int = Field(ge=1)
+    passed: bool
+    candidate_count: int = Field(ge=0)
+    domain_count: int = Field(ge=0)
+    minimum_candidate_count: int = Field(ge=1)
+    minimum_domain_count: int = Field(ge=1)
+    reason_codes: list[str] = Field(default_factory=list)
+    missing_primary_claim_refs: list[str] = Field(default_factory=list)
+    missing_contradiction_claim_refs: list[str] = Field(default_factory=list)
+    attribution_covered: bool
+
+
 class RecoverableError(StateModel):
     stage: WorkflowStage
     code: str = Field(pattern=r"^[A-Z][A-Z0-9_]{1,99}$")
@@ -307,6 +340,13 @@ class VerificationState(StateModel):
     known_evidence_gaps: list[str] = Field(default_factory=list)
     candidate_sources: list[CandidateSource] = Field(default_factory=list)
     query_result_counts: dict[str, int] = Field(default_factory=dict)
+    search_query_executions: list[SearchQueryExecutionRecord] = Field(default_factory=list)
+    discovery_gate_outcomes: list[DiscoveryGateRecord] = Field(default_factory=list)
+    search_policy_version: str = Field(default="adaptive-search-v1", min_length=1, max_length=100)
+    search_phase_one_target: int | None = Field(default=None, ge=1)
+    search_phase_two_target: int | None = Field(default=None, ge=0)
+    search_mandatory_floor: int = Field(default=0, ge=0)
+    search_effective_budget: int = Field(default=0, ge=0)
     snapshots: list[SnapshotRecord] = Field(default_factory=list)
     extracted_sources: list[ExtractedSourceRecord] = Field(default_factory=list)
     passages: list[PassageRecord] = Field(default_factory=list)
@@ -381,12 +421,14 @@ __all__ = [
     "CandidateSource",
     "DependencyRecord",
     "EmbeddingRunMetadata",
+    "DiscoveryGateRecord",
     "ExtractedBlockRecord",
     "ExtractedSourceRecord",
     "InformationClusterRecord",
     "PassageRecord",
     "RecoverableError",
     "ResearchDepth",
+    "SearchQueryExecutionRecord",
     "ScoreBundle",
     "SnapshotRecord",
     "VerificationState",

@@ -31,7 +31,12 @@ from agents.planning import SYSTEM_PROMPT as PLANNER_PROMPT
 from agents.planning import (
     UnknownPlanningDraftClaimRefError,
     build_planner_payload,
+    exact_quote_for_state,
+    fact_checkable_claim_refs,
     normalize_research_plan,
+    requires_attribution_check,
+    search_budget_for_state,
+    search_policy_for_state,
 )
 from agents.schemas import (
     CitationAuditOutput,
@@ -58,7 +63,13 @@ from agents.validation import (
     summarize_violation_codes,
     validate_research_plan,
 )
-from graph.state import CalculationRecord, RecoverableError, VerificationState, WorkflowStage
+from graph.state import (
+    CalculationRecord,
+    RecoverableError,
+    SearchQueryExecutionRecord,
+    VerificationState,
+    WorkflowStage,
+)
 from graph.transitions import (
     citation_audit_ready,
     evidence_ready,
@@ -66,6 +77,11 @@ from graph.transitions import (
     synthesis_ready,
 )
 from research.extension_errors import WorkflowExtensionError
+from research.search_policy import (
+    CoverageBudgetExceededError,
+    query_state_key,
+    select_initial_queries,
+)
 
 
 PROMPT_VERSIONS = {
@@ -446,6 +462,20 @@ class WorkflowNodes:
                 code="CLAIMS_REQUIRED",
                 message="Research planning requires at least one atomic claim.",
             )
+        try:
+            policy = search_policy_for_state(state)
+            budget = search_budget_for_state(state)
+        except CoverageBudgetExceededError as exc:
+            return await self._failure(
+                state,
+                WorkflowStage.PLANNER,
+                code="SEARCH_COVERAGE_BUDGET_EXCEEDED",
+                message="The submitted target requires more search coverage than this research depth supports.",
+                details={
+                    "mandatory_floor": exc.mandatory_floor,
+                    "supported_ceiling": exc.supported_ceiling,
+                },
+            )
         allowed_claim_refs = [claim.claim_ref for claim in state.claims]
         planner_messages = [
             {"role": "system", "content": PLANNER_PROMPT},
@@ -522,12 +552,42 @@ class WorkflowNodes:
                     "violation_summary": summarize_violation_codes(violations),
                 },
             )
+        exact_quote = exact_quote_for_state(state)
+        phase_one_queries, reserve_queries = select_initial_queries(
+            output.queries,
+            output.objectives,
+            fact_checkable_claim_refs=fact_checkable_claim_refs(state),
+            attribution_required=requires_attribution_check(state, exact_quote),
+            exact_quote=exact_quote,
+            policy=policy,
+            budget=budget,
+        )
+        phase_one_keys = {query_state_key(query) for query in phase_one_queries}
+        reserve_keys = {query_state_key(query) for query in reserve_queries}
+        query_executions = [
+            SearchQueryExecutionRecord(
+                query_key=query_state_key(query),
+                discovery_phase=(
+                    "phase_one" if query_state_key(query) in phase_one_keys else "phase_two"
+                ),
+                execution_status=(
+                    "planned" if query_state_key(query) in phase_one_keys | reserve_keys else "not_needed"
+                ),
+                skip_reason=(
+                    None if query_state_key(query) in phase_one_keys | reserve_keys else "outside_effective_budget"
+                ),
+            )
+            for query in output.queries
+        ]
         updated = state.complete(
             WorkflowStage.PLANNER,
             objectives=output.objectives,
             queries=output.queries,
             primary_source_targets=output.primary_source_targets,
             known_evidence_gaps=output.known_evidence_gaps,
+            search_query_executions=query_executions,
+            search_mandatory_floor=budget.mandatory_floor,
+            search_effective_budget=budget.effective_total_budget,
             model_calls={**state.model_calls, WorkflowStage.PLANNER.value: response.metadata},
         )
         return await self._finish(
@@ -1054,13 +1114,29 @@ class WorkflowNodes:
                 updated = VerificationState.model_validate(updated.model_dump())
             except WorkflowExtensionError as exc:
                 return await self._failure(
-                    state,
+                    exc.state if isinstance(exc.state, VerificationState) else state,
                     stage,
                     code=exc.code,
                     message=exc.public_message,
                     retryable=exc.retryable,
                     details=exc.details,
                 )
+            if len(updated.recoverable_errors) > len(state.recoverable_errors):
+                error = updated.recoverable_errors[-1]
+                await self.services.state_writer.save(stage=stage, state=updated)
+                await self.services.progress.publish(
+                    run_id=state.run_id,
+                    stage=stage,
+                    event_type=f"workflow.{stage.value}.recoverable_failure",
+                    message=error.public_message,
+                    payload={
+                        **_stage_progress(stage, completed=False),
+                        "code": error.code,
+                        "retryable": error.retryable,
+                        "details": error.details,
+                    },
+                )
+                return updated
             updated = updated.complete(stage)
             return await self._finish(updated, stage)
 

@@ -61,6 +61,12 @@ working end-to-end demonstration: public HTTPS API reachability, Firebase sign-i
 Celery processing, and one durable citation-audited report. The host may be stopped
 between demos to reduce cost.
 
+## Full Mode Adaptive Search
+
+- [Two-Phase Brave Search Calling Refactor](project-context/BRAVE_SEARCH_REFACTOR.md)
+  documents the implemented request-budget policy, deterministic
+  evidence-coverage safeguards, durable query provenance, tests, and rollout.
+
 ## Provider And Credential Boundary
 
 Elara uses DeepSeek through server-side `DEEPSEEK_*` configuration only. Do not

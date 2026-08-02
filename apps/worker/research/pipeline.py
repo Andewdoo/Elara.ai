@@ -11,8 +11,24 @@ from xml.etree.ElementTree import ParseError
 
 import fitz
 
+from agents.schemas import SearchQueryOutput
+from agents.planning import (
+    exact_quote_for_state,
+    fact_checkable_claim_refs,
+    requires_attribution_check,
+    search_budget_for_state,
+    search_policy_for_state,
+)
 from extraction.service import ExtractionService
-from graph.state import CandidateSource, ExtractedBlockRecord, ExtractedSourceRecord, SnapshotRecord, VerificationState
+from graph.state import (
+    CandidateSource,
+    DiscoveryGateRecord,
+    ExtractedBlockRecord,
+    ExtractedSourceRecord,
+    SearchQueryExecutionRecord,
+    SnapshotRecord,
+    VerificationState,
+)
 from research.cache import RetrievalRateLimiter
 from research.extension_errors import WorkflowExtensionError
 from research.fetcher import FetchError, SecureFetcher
@@ -23,7 +39,18 @@ from research.ranking import (
     priority_score,
     select_diverse,
 )
-from research.search import BraveSearchClient, SearchProviderError
+from research.search import (
+    BraveSearchClient,
+    SearchExecutionOutcome,
+    SearchProviderError,
+    SearchResult,
+)
+from research.search_policy import (
+    evaluate_discovery_gate,
+    query_state_key,
+    select_initial_queries,
+    select_reserve_batch,
+)
 from research.url_guard import UnsafeUrlError, canonicalize_url
 
 
@@ -45,88 +72,100 @@ class RetrievalPipeline:
         self.rate_limiter = rate_limiter
 
     async def discover(self, state: VerificationState) -> VerificationState:
-        by_url: dict[str, CandidateSource] = {}
-        result_counts: dict[str, int] = {}
-        last_provider_error: SearchProviderError | None = None
+        policy = search_policy_for_state(state)
+        budget = search_budget_for_state(state)
+        fact_claim_refs = fact_checkable_claim_refs(state)
+        exact_quote = exact_quote_for_state(state)
+        attribution_required = requires_attribution_check(state, exact_quote)
+        phase_one, reserve = select_initial_queries(
+            state.queries,
+            state.objectives,
+            fact_checkable_claim_refs=fact_claim_refs,
+            attribution_required=attribution_required,
+            exact_quote=exact_quote,
+            policy=policy,
+            budget=budget,
+        )
+        executions = _ensure_query_executions(state, phase_one, reserve)
+        by_url = {
+            source.canonical_url or source.url: source for source in state.candidate_sources
+        }
+        result_counts = dict(state.query_result_counts)
+        retryable_errors: list[SearchProviderError] = []
         submitted_source = _submitted_url_source(state)
         if submitted_source is not None:
             # A pasted article is a retrieval seed, not a search result.  It
             # must therefore survive an empty or temporarily unavailable
             # supplementary Brave search.
             by_url[submitted_source.canonical_url or submitted_source.url] = submitted_source
-        for query in sorted(state.queries, key=lambda item: -item.priority):
-            try:
-                results = await self.search.search(query.query, count=10)
-            except SearchProviderError as exc:
-                last_provider_error = exc
-                result_counts[f"{query.objective_ref}:{query.query}"] = 0
-                continue
-            result_counts[f"{query.objective_ref}:{query.query}"] = len(results)
-            for result in results:
-                try:
-                    canonical = canonicalize_url(result.url)
-                except UnsafeUrlError:
-                    continue
-                domain = urlsplit(canonical).hostname or ""
-                relevance = lexical_overlap(query.query, result.title, result.snippet)
-                intent = query.intent.value
-                directness = Decimal("1") if intent == "primary" else Decimal("0.6")
-                same_domain_count = sum(item.domain == domain for item in by_url.values())
-                same_title_count = sum(
-                    (item.title or "").casefold() == (result.title or "").casefold()
-                    for item in by_url.values()
-                    if result.title
-                )
-                signals = RankingSignals(
-                    relevance=relevance,
-                    directness=directness,
-                    temporal_fit=Decimal("0.7" if result.published_at else "0.5"),
-                    diversity=Decimal("1" if same_domain_count == 0 else "0.5"),
-                    novelty=Decimal("1" if same_title_count == 0 else "0.25"),
-                    extractability=Decimal("0.8"),
-                )
-                score = priority_score(signals)
-                existing = by_url.get(canonical)
-                objective_refs = sorted(
-                    set((existing.objective_refs if existing else []) + [query.objective_ref])
-                )
-                evidence_intents = sorted(
-                    set((existing.evidence_intents if existing else []) + [intent])
-                )
-                if existing is None or score > existing.priority:
-                    by_url[canonical] = CandidateSource(
-                        source_ref=f"source-{len(by_url) + 1}",
-                        url=result.url,
-                        canonical_url=canonical,
-                        domain=domain,
-                        snippet=result.snippet,
-                        objective_refs=objective_refs,
-                        evidence_intents=evidence_intents,
-                        title=result.title,
-                        source_type="PRIMARY" if intent == "primary" else "UNKNOWN",
-                        source_origin="brave_discovery",
-                        selection_reason=f"Brave result for {intent} objective {query.objective_ref}",
-                        priority=score,
-                    )
-                else:
-                    by_url[canonical] = existing.model_copy(
-                        update={
-                            "objective_refs": objective_refs,
-                            "evidence_intents": evidence_intents,
-                        }
-                    )
-        if not by_url and last_provider_error is not None:
-            raise last_provider_error
-        if not by_url:
-            raise WorkflowExtensionError(
-                code="NO_DISCOVERY_RESULTS",
-                public_message="The configured search policy returned no evidence candidates.",
-                details={
-                    "provider": "brave",
-                    "query_count": len(state.queries),
-                    "search_result_count": sum(result_counts.values()),
-                },
+
+        by_url, result_counts, executions, failures = await self._execute_query_batch(
+            phase_one,
+            by_url=by_url,
+            result_counts=result_counts,
+            executions=executions,
+        )
+        retryable_errors.extend(error for error in failures if error.retryable)
+        gate_outcomes = list(state.discovery_gate_outcomes)
+        decision = evaluate_discovery_gate(
+            list(by_url.values()),
+            state.objectives,
+            fact_checkable_claim_refs=fact_claim_refs,
+            attribution_required=attribution_required,
+            policy=policy,
+        )
+        gate_outcomes.append(_gate_record(decision, policy=policy, phase="phase_one", batch_number=1))
+
+        phase_two_batch = 0
+        while not decision.passed:
+            attempted_keys = {
+                record.query_key
+                for record in executions
+                if record.execution_status in {"executed", "cache_hit"}
+                or record.network_attempt_count > 0
+            }
+            batch = select_reserve_batch(
+                reserve,
+                already_executed_keys=attempted_keys,
+                batch_size=policy.reserve_batch_size,
+                remaining_budget=budget.effective_total_budget - len(attempted_keys),
             )
+            if not batch:
+                break
+            phase_two_batch += 1
+            by_url, result_counts, executions, failures = await self._execute_query_batch(
+                batch,
+                by_url=by_url,
+                result_counts=result_counts,
+                executions=executions,
+            )
+            retryable_errors.extend(error for error in failures if error.retryable)
+            decision = evaluate_discovery_gate(
+                list(by_url.values()),
+                state.objectives,
+                fact_checkable_claim_refs=fact_claim_refs,
+                attribution_required=attribution_required,
+                policy=policy,
+            )
+            gate_outcomes.append(
+                _gate_record(
+                    decision,
+                    policy=policy,
+                    phase="phase_two",
+                    batch_number=phase_two_batch,
+                )
+            )
+
+        if decision.passed:
+            executions = [
+                record.model_copy(
+                    update={"execution_status": "not_needed", "skip_reason": "discovery_gate_passed"}
+                )
+                if record.discovery_phase == "phase_two" and record.execution_status == "planned"
+                else record
+                for record in executions
+            ]
+
         submitted = [
             source for source in by_url.values() if source.source_origin == "submitted_url"
         ]
@@ -144,9 +183,133 @@ class RetrievalPipeline:
             else item.model_copy(update={"source_ref": f"source-{index}"})
             for index, item in enumerate(selected, 1)
         ]
-        return state.model_copy(
-            update={"candidate_sources": selected, "query_result_counts": result_counts}
-        )
+        updates = {
+            "candidate_sources": selected,
+            "query_result_counts": result_counts,
+            "search_query_executions": executions,
+            "discovery_gate_outcomes": gate_outcomes,
+            "search_policy_version": policy.policy_version,
+            "search_mandatory_floor": budget.mandatory_floor,
+            "search_effective_budget": budget.effective_total_budget,
+        }
+        updated = state.model_copy(update=updates)
+        brave_candidates = [
+            source for source in selected if source.source_origin == "brave_discovery"
+        ]
+        if (
+            not decision.passed
+            and retryable_errors
+            and not brave_candidates
+            and submitted_source is None
+        ):
+            raise WorkflowExtensionError(
+                code="SEARCH_PROVIDER_UNAVAILABLE",
+                public_message="The configured search provider was temporarily unavailable.",
+                retryable=True,
+                details={
+                    "failure_kind": "provider",
+                    "query_count": len(result_counts),
+                    "network_attempt_count": sum(
+                        record.network_attempt_count for record in executions
+                    ),
+                },
+                state=updated,
+            )
+        if not brave_candidates and submitted_source is None:
+            raise WorkflowExtensionError(
+                code="NO_DISCOVERY_RESULTS",
+                public_message="The configured search policy returned no evidence candidates.",
+                details={
+                    "provider": "brave",
+                    "query_count": len(result_counts),
+                    "search_result_count": sum(result_counts.values()),
+                },
+                state=updated,
+            )
+        if not decision.passed:
+            finalized_executions = [
+                record.model_copy(
+                    update={
+                        "execution_status": "executed",
+                        "executed_at": record.executed_at or datetime.now(UTC),
+                        "skip_reason": "provider_failure_retained_partial_results",
+                    }
+                )
+                if record.execution_status == "planned" and record.network_attempt_count > 0
+                else record
+                for record in updated.search_query_executions
+            ]
+            limitation = (
+                "Independent discovery coverage remained below the deterministic "
+                "adaptive-search-v1 gate after the available search budget was used."
+            )
+            updated = updated.model_copy(
+                update={
+                    "search_query_executions": finalized_executions,
+                    "known_evidence_gaps": [
+                        *updated.known_evidence_gaps,
+                        *([] if limitation in updated.known_evidence_gaps else [limitation]),
+                    ]
+                }
+            )
+        return updated
+
+    async def _execute_query_batch(
+        self,
+        queries,
+        *,
+        by_url: dict[str, CandidateSource],
+        result_counts: dict[str, int],
+        executions: list[SearchQueryExecutionRecord],
+    ) -> tuple[
+        dict[str, CandidateSource],
+        dict[str, int],
+        list[SearchQueryExecutionRecord],
+        list[SearchProviderError],
+    ]:
+        records = {record.query_key: record for record in executions}
+        failures: list[SearchProviderError] = []
+        for query in queries:
+            key = query_state_key(query)
+            record = records[key]
+            if record.execution_status in {"executed", "cache_hit", "not_needed"}:
+                continue
+            try:
+                raw_outcome = await self.search.search(query.query, count=10)
+                outcome = _search_outcome(raw_outcome)
+            except SearchProviderError as exc:
+                failures.append(exc)
+                result_counts[key] = 0
+                records[key] = record.model_copy(
+                    update={
+                        "execution_status": "planned" if exc.retryable else "executed",
+                        "result_count": 0,
+                        "network_attempt_count": (
+                            record.network_attempt_count + max(1, exc.network_attempt_count)
+                        ),
+                        "executed_at": None if exc.retryable else datetime.now(UTC),
+                        "skip_reason": (
+                            "retryable_provider_failure"
+                            if exc.retryable
+                            else "provider_request_rejected"
+                        ),
+                    }
+                )
+                continue
+            result_counts[key] = len(outcome.results)
+            records[key] = record.model_copy(
+                update={
+                    "execution_status": "cache_hit" if outcome.cache_hit else "executed",
+                    "result_count": len(outcome.results),
+                    "network_attempt_count": (
+                        record.network_attempt_count + outcome.network_attempt_count
+                    ),
+                    "executed_at": datetime.now(UTC),
+                    "skip_reason": None,
+                }
+            )
+            _merge_search_results(by_url, query=query, results=outcome.results)
+        return by_url, result_counts, [records[item.query_key] for item in executions], failures
 
     async def retrieve(self, state: VerificationState) -> VerificationState:
         snapshots: list[SnapshotRecord] = []
@@ -424,6 +587,118 @@ class RetrievalPipeline:
     async def aclose(self) -> None:
         await self.search.aclose()
         await self.fetcher.aclose()
+
+
+def _ensure_query_executions(
+    state: VerificationState,
+    phase_one: list[SearchQueryOutput],
+    reserve: list[SearchQueryOutput],
+) -> list[SearchQueryExecutionRecord]:
+    records = {record.query_key: record for record in state.search_query_executions}
+    phase_one_keys = {query_state_key(query) for query in phase_one}
+    reserve_keys = {query_state_key(query) for query in reserve}
+    for query in state.queries:
+        key = query_state_key(query)
+        if key in records:
+            continue
+        included = key in phase_one_keys | reserve_keys
+        records[key] = SearchQueryExecutionRecord(
+            query_key=key,
+            discovery_phase="phase_one" if key in phase_one_keys else "phase_two",
+            execution_status="planned" if included else "not_needed",
+            skip_reason=None if included else "outside_effective_budget",
+        )
+    return [records[query_state_key(query)] for query in state.queries]
+
+
+def _search_outcome(value: object) -> SearchExecutionOutcome:
+    if isinstance(value, SearchExecutionOutcome):
+        return value
+    if isinstance(value, (list, tuple)) and all(isinstance(item, SearchResult) for item in value):
+        # Compatibility for deterministic test doubles and older local adapters.
+        return SearchExecutionOutcome(
+            results=tuple(value),
+            cache_hit=False,
+            network_attempt_count=1,
+        )
+    raise TypeError("search clients must return SearchExecutionOutcome")
+
+
+def _merge_search_results(
+    by_url: dict[str, CandidateSource],
+    *,
+    query: SearchQueryOutput,
+    results: tuple[SearchResult, ...],
+) -> None:
+    for result in results:
+        try:
+            canonical = canonicalize_url(result.url)
+        except UnsafeUrlError:
+            continue
+        domain = urlsplit(canonical).hostname or ""
+        relevance = lexical_overlap(query.query, result.title, result.snippet)
+        intent = query.intent.value
+        directness = Decimal("1") if intent == "primary" else Decimal("0.6")
+        same_domain_count = sum(item.domain == domain for item in by_url.values())
+        same_title_count = sum(
+            (item.title or "").casefold() == (result.title or "").casefold()
+            for item in by_url.values()
+            if result.title
+        )
+        signals = RankingSignals(
+            relevance=relevance,
+            directness=directness,
+            temporal_fit=Decimal("0.7" if result.published_at else "0.5"),
+            diversity=Decimal("1" if same_domain_count == 0 else "0.5"),
+            novelty=Decimal("1" if same_title_count == 0 else "0.25"),
+            extractability=Decimal("0.8"),
+        )
+        score = priority_score(signals)
+        existing = by_url.get(canonical)
+        objective_refs = sorted(
+            set((existing.objective_refs if existing else []) + [query.objective_ref])
+        )
+        evidence_intents = sorted(
+            set((existing.evidence_intents if existing else []) + [intent])
+        )
+        if existing is None or score > existing.priority:
+            by_url[canonical] = CandidateSource(
+                source_ref=f"source-{len(by_url) + 1}",
+                url=result.url,
+                canonical_url=canonical,
+                domain=domain,
+                snippet=result.snippet,
+                objective_refs=objective_refs,
+                evidence_intents=evidence_intents,
+                title=result.title,
+                source_type="PRIMARY" if intent == "primary" else "UNKNOWN",
+                source_origin="brave_discovery",
+                selection_reason=f"Brave result for {intent} objective {query.objective_ref}",
+                priority=score,
+            )
+        else:
+            by_url[canonical] = existing.model_copy(
+                update={
+                    "objective_refs": objective_refs,
+                    "evidence_intents": evidence_intents,
+                }
+            )
+
+
+def _gate_record(decision, *, policy, phase: str, batch_number: int) -> DiscoveryGateRecord:
+    return DiscoveryGateRecord(
+        discovery_phase=phase,
+        batch_number=batch_number,
+        passed=decision.passed,
+        candidate_count=decision.candidate_count,
+        domain_count=decision.domain_count,
+        minimum_candidate_count=policy.minimum_candidate_count,
+        minimum_domain_count=policy.minimum_domain_count,
+        reason_codes=list(decision.reason_codes),
+        missing_primary_claim_refs=list(decision.missing_primary_claim_refs),
+        missing_contradiction_claim_refs=list(decision.missing_contradiction_claim_refs),
+        attribution_covered=decision.attribution_covered,
+    )
 
 
 def _browser_fallback_is_justified(source: CandidateSource) -> bool:

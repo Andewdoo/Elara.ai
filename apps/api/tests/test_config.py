@@ -80,3 +80,25 @@ def test_deepseek_request_timeout_is_bounded_by_the_worker_soft_limit():
             deepseek_request_timeout_seconds=600,
             celery_task_soft_time_limit_seconds=600,
         )
+
+
+def test_adaptive_search_defaults_and_supported_ceilings_are_validated():
+    settings = Settings(environment="test")
+    assert settings.search_policy_version == "adaptive-search-v1"
+    assert (
+        settings.search_phase_one_quick,
+        settings.search_phase_one_standard,
+        settings.search_phase_one_deep,
+    ) == (8, 18, 36)
+    assert (
+        settings.search_phase_two_quick,
+        settings.search_phase_two_standard,
+        settings.search_phase_two_deep,
+    ) == (14, 30, 64)
+
+    with pytest.raises(ValidationError, match="supported coverage ceiling"):
+        Settings(
+            environment="test",
+            search_phase_one_quick=20,
+            search_phase_two_quick=10,
+        )

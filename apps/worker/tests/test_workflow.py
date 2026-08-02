@@ -59,9 +59,11 @@ from graph.state import (
     CalculationRecord,
     CandidateSource,
     ClaimScoreRecord,
+    DiscoveryGateRecord,
     PassageRecord,
     ResearchDepth,
     ScoreBundle,
+    SearchQueryExecutionRecord,
     SnapshotRecord,
     VerificationState,
     WorkflowStage,
@@ -415,12 +417,42 @@ def test_planner_sends_v2_contract_payload_without_exact_quote_when_inapplicable
     }
     assert payload["allowed_claim_refs"] == ["claim-1"]
     assert payload["research_depth"] == "STANDARD"
-    assert payload["max_query_count"] == 60
+    assert payload["max_query_count"] == 48
     assert payload["required_intents_by_claim"] == {
         "claim-1": ["primary", "contradiction"]
     }
     assert payload["requires_attribution_check"] is False
     assert result.recoverable_errors == []
+
+
+def test_over_ceiling_claim_set_fails_before_planner_or_search_provider_use():
+    claims = [
+        AtomicClaimOutput(
+            claim_ref=f"claim-{index}",
+            text=f"Fact-checkable claim {index}",
+            claim_kind=ClaimKind.FACTUAL,
+            importance=Importance.MINOR,
+            importance_weight=1,
+            fact_checkability=FactCheckability.FACT_CHECKABLE,
+            verification_scope=f"Verify claim {index}.",
+        )
+        for index in range(13)
+    ]
+    model = FakeModel([])
+    value = state().model_copy(update={"research_depth": ResearchDepth.QUICK, "claims": claims})
+
+    result = asyncio.run(
+        WorkflowNodes(WorkflowServices(model=model, submitted_input="future oversized input")).planner(
+            value
+        )
+    )
+
+    assert model.calls == []
+    assert result.recoverable_errors[-1].code == "SEARCH_COVERAGE_BUDGET_EXCEEDED"
+    assert result.recoverable_errors[-1].details == {
+        "mandatory_floor": 26,
+        "supported_ceiling": 25,
+    }
 
 
 def test_planner_prepends_an_exact_brave_query_for_an_article_title():
@@ -1956,23 +1988,75 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
         claims=decomposition.atomic_claims,
         objectives=plan.objectives,
         queries=plan.queries,
+        search_query_executions=[
+            SearchQueryExecutionRecord(
+                query_key=f"{query.objective_ref}:{query.query}",
+                discovery_phase="phase_one" if index == 0 else "phase_two",
+                execution_status="executed" if index == 0 else "not_needed",
+                result_count=3 if index == 0 else None,
+                network_attempt_count=1 if index == 0 else 0,
+                executed_at=datetime.now(UTC) if index == 0 else None,
+                skip_reason=None if index == 0 else "discovery_gate_passed",
+            )
+            for index, query in enumerate(plan.queries)
+        ],
+        discovery_gate_outcomes=[
+            DiscoveryGateRecord(
+                discovery_phase="phase_one",
+                batch_number=1,
+                passed=True,
+                candidate_count=5,
+                domain_count=3,
+                minimum_candidate_count=5,
+                minimum_domain_count=3,
+                attribution_covered=True,
+            )
+        ],
+        candidate_sources=[
+            CandidateSource(
+                source_ref="source-1",
+                url="https://evidence.example/item",
+                canonical_url="https://evidence.example/item",
+                domain="evidence.example",
+                objective_refs=[plan.queries[0].objective_ref],
+                evidence_intents=[plan.queries[0].intent.value],
+                selection_reason="Adaptive discovery candidate",
+            )
+        ],
+        query_result_counts={
+            f"{plan.queries[0].objective_ref}:{plan.queries[0].query}": 3
+        },
+        search_mandatory_floor=2,
+        search_effective_budget=48,
         model_calls={"planner": metadata},
     )
     writer = SqlWorkflowStateWriter(factory)
     asyncio.run(writer.save(stage=WorkflowStage.INTAKE, state=value))
     asyncio.run(writer.save(stage=WorkflowStage.DECOMPOSITION, state=value))
     asyncio.run(writer.save(stage=WorkflowStage.PLANNER, state=value))
+    asyncio.run(writer.save(stage=WorkflowStage.DISCOVERY, state=value))
 
     with factory() as db:
         durable_run = db.get(VerificationRun, run_id)
         claim_count = db.scalar(select(func.count()).select_from(AtomicClaim))
         query_count = db.scalar(select(func.count()).select_from(SearchQuery))
+        query_rows = db.scalars(select(SearchQuery).order_by(SearchQuery.priority.desc())).all()
     assert durable_run is not None
     assert durable_run.normalized_target["research_plan"]["objectives"][0]["objective_ref"] == "objective-1"
     assert durable_run.model_versions["planner"]["provider"] == "deepseek"
     assert durable_run.prompt_versions["planner"] == "planner-v2"
     assert claim_count == 1
     assert query_count == 2
+    assert query_rows[0].execution_status == "executed"
+    assert query_rows[0].network_attempt_count == 1
+    assert query_rows[1].execution_status == "not_needed"
+    assert query_rows[1].skip_reason == "discovery_gate_passed"
+    research_plan = durable_run.normalized_target["research_plan"]
+    assert research_plan["policy_version"] == "adaptive-search-v1"
+    assert research_plan["mandatory_floor"] == 2
+    assert research_plan["effective_budget"] == 48
+    assert research_plan["gate_outcomes"][0]["passed"] is True
+    assert research_plan["discovery_candidates"][0]["domain"] == "evidence.example"
 
 
 def test_runtime_executes_and_persists_planning_handoff():

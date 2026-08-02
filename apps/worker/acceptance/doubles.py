@@ -362,6 +362,7 @@ def build_acceptance_adapters(settings: Settings, submitted_text: str):
         staging=SnapshotFileStore(Path(settings.fetch_storage_dir)),
         create_bucket_if_missing=True,
         region=settings.s3_region,
+        server_side_encryption=settings.s3_server_side_encryption,
     )
     model = DeterministicDeepSeekDouble(
         submitted_text,

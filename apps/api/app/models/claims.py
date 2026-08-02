@@ -63,6 +63,18 @@ class SearchQuery(Base):
     __tablename__ = "search_queries"
     __table_args__ = (
         CheckConstraint("priority IS NULL OR priority BETWEEN 0 AND 1", name="ck_search_queries_priority"),
+        CheckConstraint(
+            "discovery_phase IN ('phase_one', 'phase_two')",
+            name="ck_search_queries_discovery_phase",
+        ),
+        CheckConstraint(
+            "execution_status IN ('planned', 'executed', 'cache_hit', 'not_needed')",
+            name="ck_search_queries_execution_status",
+        ),
+        CheckConstraint(
+            "network_attempt_count >= 0",
+            name="ck_search_queries_network_attempt_count",
+        ),
         Index("ix_search_queries_run_family", "run_id", "family"),
         Index("ix_search_queries_claim_family", "atomic_claim_id", "family"),
     )
@@ -78,6 +90,13 @@ class SearchQuery(Base):
     query_text: Mapped[str] = mapped_column(Text, nullable=False)
     generated_by_node: Mapped[str] = mapped_column(String(100), nullable=False)
     priority: Mapped[Decimal | None] = mapped_column(Numeric(6, 4))
+    discovery_phase: Mapped[str] = mapped_column(String(20), nullable=False, default="phase_one")
+    execution_status: Mapped[str] = mapped_column(String(20), nullable=False, default="planned")
+    network_attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    skip_reason: Mapped[str | None] = mapped_column(String(100))
+    policy_version: Mapped[str] = mapped_column(
+        String(100), nullable=False, default="adaptive-search-v1"
+    )
     executed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     result_count: Mapped[int | None] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utc_now)

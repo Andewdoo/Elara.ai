@@ -10,15 +10,20 @@ import httpx
 import pytest
 
 from agents.schemas import (
+    AtomicClaimOutput,
+    ClaimKind,
     EvidenceIntent,
     FactCheckability,
+    Importance,
     InputKind,
     IntakeClassificationOutput,
+    ResearchObjectiveOutput,
     SearchQueryOutput,
 )
 from extraction.service import ExtractionService
 from graph.state import CandidateSource, ResearchDepth, SnapshotRecord, VerificationState
 from research.extension_errors import WorkflowExtensionError
+from research.cache import RetrievalCache
 from research.fetcher import FetchError, FetchResult
 from research.pipeline import RetrievalPipeline
 from research.ranking import RankingSignals, priority_score, select_diverse
@@ -110,6 +115,47 @@ def test_brave_search_retries_transient_errors_once_then_preserves_results():
 
     assert requests == 2
     assert [result.url for result in results] == ["https://example.test/recovered"]
+    assert results.network_attempt_count == 2
+    assert results.cache_hit is False
+
+
+def test_brave_cache_hit_uses_no_network_request_and_canonicalizes_only_cache_key():
+    class Backend:
+        def __init__(self) -> None:
+            self.values: dict[str, str] = {}
+
+        def get(self, key: str):
+            return self.values.get(key)
+
+        def setex(self, key: str, ttl: int, value: str):
+            del ttl
+            self.values[key] = value
+
+    requests: list[httpx.Request] = []
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(
+            200,
+            json={"web": {"results": [{"url": "https://example.test/cached"}]}},
+            request=request,
+        )
+
+    client = BraveSearchClient(
+        provider="brave",
+        api_key="server-secret",
+        base_url="https://api.search.brave.com/res/v1",
+        cache=RetrievalCache(Backend()),
+        client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
+    )
+    first = run(client.search("Original   Query"))
+    second = run(client.search(" original query "))
+    run(client.aclose())
+
+    assert len(requests) == 1
+    assert requests[0].url.params["q"] == "Original   Query"
+    assert first.cache_hit is False and first.network_attempt_count == 1
+    assert second.cache_hit is True and second.network_attempt_count == 0
 
 
 def test_discovery_preserves_partial_brave_results_when_later_query_fails():
@@ -190,6 +236,180 @@ def test_discovery_raises_typed_error_when_brave_returns_no_candidates():
         "query_count": 1,
         "search_result_count": 0,
     }
+
+
+def _adaptive_discovery_state() -> VerificationState:
+    objectives = [
+        ResearchObjectiveOutput(
+            objective_ref="primary-objective",
+            claim_ref="claim-1",
+            intent=EvidenceIntent.PRIMARY,
+            target="Find the original record",
+        ),
+        ResearchObjectiveOutput(
+            objective_ref="counter-objective",
+            claim_ref="claim-1",
+            intent=EvidenceIntent.CONTRADICTION,
+            target="Find credible contradiction",
+        ),
+        ResearchObjectiveOutput(
+            objective_ref="support-objective",
+            claim_ref="claim-1",
+            intent=EvidenceIntent.SUPPORT,
+            target="Find independent context",
+        ),
+    ]
+    queries = [
+        SearchQueryOutput(
+            query="primary query",
+            objective_ref=objectives[0].objective_ref,
+            intent=objectives[0].intent,
+            priority=1,
+        ),
+        SearchQueryOutput(
+            query="contradiction query",
+            objective_ref=objectives[1].objective_ref,
+            intent=objectives[1].intent,
+            priority=0.99,
+        ),
+        *[
+            SearchQueryOutput(
+                query=f"phase one context {index}",
+                objective_ref=objectives[2].objective_ref,
+                intent=objectives[2].intent,
+                priority=0.9 - index / 100,
+            )
+            for index in range(6)
+        ],
+        *[
+            SearchQueryOutput(
+                query=f"reserve context {index}",
+                objective_ref=objectives[2].objective_ref,
+                intent=objectives[2].intent,
+                priority=0.5 - index / 100,
+            )
+            for index in range(12)
+        ],
+    ]
+    return VerificationState(
+        run_id=uuid4(),
+        user_id=uuid4(),
+        research_depth=ResearchDepth.QUICK,
+        methodology_version="1.0",
+        claims=[
+            AtomicClaimOutput(
+                claim_ref="claim-1",
+                text="The independently verifiable claim",
+                claim_kind=ClaimKind.FACTUAL,
+                importance=Importance.ESSENTIAL,
+                importance_weight=3,
+                fact_checkability=FactCheckability.FACT_CHECKABLE,
+                verification_scope="Verify the submitted claim.",
+            )
+        ],
+        objectives=objectives,
+        queries=queries,
+    )
+
+
+def test_phase_two_is_skipped_when_phase_one_passes_discovery_gate():
+    class PassingSearch:
+        def __init__(self) -> None:
+            self.queries: list[str] = []
+
+        async def search(self, query: str, *, count: int = 10):
+            del count
+            self.queries.append(query)
+            index = len(self.queries)
+            return [
+                SearchResult(
+                    f"https://domain{index}.example/evidence",
+                    f"Evidence {index}",
+                    query,
+                    1,
+                )
+            ]
+
+    search = PassingSearch()
+    result = run(
+        RetrievalPipeline(search=search, fetcher=object()).discover(  # type: ignore[arg-type]
+            _adaptive_discovery_state()
+        )
+    )
+
+    assert len(search.queries) == 8
+    assert result.discovery_gate_outcomes[-1].passed is True
+    assert all(
+        item.execution_status == "not_needed"
+        for item in result.search_query_executions
+        if item.discovery_phase == "phase_two"
+    )
+
+
+def test_phase_two_expands_in_one_bounded_batch_and_stops_when_gate_passes():
+    class ExpandingSearch:
+        def __init__(self) -> None:
+            self.queries: list[str] = []
+
+        async def search(self, query: str, *, count: int = 10):
+            del count
+            self.queries.append(query)
+            if query.startswith("reserve context"):
+                suffix = query.rsplit(" ", 1)[-1]
+                return [
+                    SearchResult(
+                        f"https://reserve{suffix}.example/evidence",
+                        f"Reserve {suffix}",
+                        query,
+                        1,
+                    )
+                ]
+            return [SearchResult("https://one.example/evidence", "Shared", query, 1)]
+
+    search = ExpandingSearch()
+    result = run(
+        RetrievalPipeline(search=search, fetcher=object()).discover(  # type: ignore[arg-type]
+            _adaptive_discovery_state()
+        )
+    )
+
+    assert len(search.queries) == 12
+    phase_two = [
+        item
+        for item in result.search_query_executions
+        if item.discovery_phase == "phase_two" and item.execution_status == "executed"
+    ]
+    assert len(phase_two) == 4
+    assert result.discovery_gate_outcomes[-1].discovery_phase == "phase_two"
+    assert result.discovery_gate_outcomes[-1].passed is True
+    assert len(search.queries) == len(set(search.queries))
+
+
+def test_discovery_redelivery_does_not_repeat_durable_executed_queries():
+    class Search:
+        def __init__(self) -> None:
+            self.queries: list[str] = []
+
+        async def search(self, query: str, *, count: int = 10):
+            del count
+            self.queries.append(query)
+            index = len(self.queries)
+            return [SearchResult(f"https://d{index}.example/evidence", query, query, 1)]
+
+    first_search = Search()
+    pipeline = RetrievalPipeline(search=first_search, fetcher=object())  # type: ignore[arg-type]
+    durable_state = run(pipeline.discover(_adaptive_discovery_state()))
+    assert durable_state.discovery_gate_outcomes[-1].passed is True
+
+    redelivery_search = Search()
+    redelivered = run(
+        RetrievalPipeline(search=redelivery_search, fetcher=object()).discover(  # type: ignore[arg-type]
+            durable_state.model_copy(update={"completed_stages": []})
+        )
+    )
+
+    assert redelivery_search.queries == []
+    assert redelivered.query_result_counts == durable_state.query_result_counts
 
 
 def test_submitted_article_url_is_a_retrieval_seed_when_brave_has_no_results():

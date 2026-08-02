@@ -16,9 +16,16 @@ class SearchConfigurationError(RuntimeError):
 
 
 class SearchProviderError(RuntimeError):
-    def __init__(self, message: str, *, retryable: bool = False) -> None:
+    def __init__(
+        self,
+        message: str,
+        *,
+        retryable: bool = False,
+        network_attempt_count: int = 0,
+    ) -> None:
         super().__init__(message)
         self.retryable = retryable
+        self.network_attempt_count = network_attempt_count
 
 
 @dataclass(frozen=True, slots=True)
@@ -29,6 +36,22 @@ class SearchResult:
     rank: int
     published_at: str | None = None
     profile: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class SearchExecutionOutcome:
+    results: tuple[SearchResult, ...]
+    cache_hit: bool
+    network_attempt_count: int
+
+    def __iter__(self):
+        return iter(self.results)
+
+    def __len__(self) -> int:
+        return len(self.results)
+
+    def __getitem__(self, index: int) -> SearchResult:
+        return self.results[index]
 
 
 class BraveSearchClient:
@@ -69,15 +92,26 @@ class BraveSearchClient:
         )
         self._owns_client = client is None
 
-    async def search(self, query: str, *, count: int = 10) -> list[SearchResult]:
+    async def search(self, query: str, *, count: int = 10) -> SearchExecutionOutcome:
         count = max(1, min(count, 20))
-        cache_key = self._cache.key("search-v1", self._endpoint, query, str(count)) if self._cache else None
+        canonical_query = " ".join(query.casefold().split())
+        cache_key = (
+            self._cache.key("search-v1", self._endpoint, canonical_query, str(count))
+            if self._cache
+            else None
+        )
         cached = self._cache.get_json(cache_key) if self._cache and cache_key else None
         if isinstance(cached, list):
-            return [SearchResult(**item) for item in cached]
+            return SearchExecutionOutcome(
+                results=tuple(SearchResult(**item) for item in cached),
+                cache_hit=True,
+                network_attempt_count=0,
+            )
         response: httpx.Response | None = None
+        network_attempt_count = 0
         for attempt in range(self._max_retries + 1):
             try:
+                network_attempt_count += 1
                 response = await self._client.get(
                     self._endpoint,
                     params={"q": query, "count": count, "safesearch": "moderate"},
@@ -95,22 +129,39 @@ class BraveSearchClient:
                     if isinstance(exc, httpx.TimeoutException)
                     else "Brave Search was unavailable"
                 )
-                raise SearchProviderError(message, retryable=True) from exc
+                raise SearchProviderError(
+                    message,
+                    retryable=True,
+                    network_attempt_count=network_attempt_count,
+                ) from exc
             if response.status_code in {408, 429} or response.status_code >= 500:
                 if attempt < self._max_retries:
                     continue
-                raise SearchProviderError("Brave Search returned a transient error", retryable=True)
+                raise SearchProviderError(
+                    "Brave Search returned a transient error",
+                    retryable=True,
+                    network_attempt_count=network_attempt_count,
+                )
             break
         assert response is not None
         if response.status_code >= 400:
-            raise SearchProviderError("Brave Search rejected the request")
+            raise SearchProviderError(
+                "Brave Search rejected the request",
+                network_attempt_count=network_attempt_count,
+            )
         if len(response.content) > 2_000_000:
-            raise SearchProviderError("Brave Search returned an oversized response")
+            raise SearchProviderError(
+                "Brave Search returned an oversized response",
+                network_attempt_count=network_attempt_count,
+            )
         try:
             payload: dict[str, Any] = response.json()
             raw_results = payload.get("web", {}).get("results", [])
         except (ValueError, AttributeError) as exc:
-            raise SearchProviderError("Brave Search returned an invalid response") from exc
+            raise SearchProviderError(
+                "Brave Search returned an invalid response",
+                network_attempt_count=network_attempt_count,
+            ) from exc
         results = [
             SearchResult(
                 url=str(item["url"]),
@@ -127,7 +178,11 @@ class BraveSearchClient:
         ]
         if self._cache and cache_key:
             self._cache.set_json(cache_key, [asdict(item) for item in results], ttl_seconds=self._cache_ttl)
-        return results
+        return SearchExecutionOutcome(
+            results=tuple(results),
+            cache_hit=False,
+            network_attempt_count=network_attempt_count,
+        )
 
     async def aclose(self) -> None:
         if self._owns_client:
@@ -141,6 +196,7 @@ def _optional_text(value: object) -> str | None:
 __all__ = [
     "BraveSearchClient",
     "SearchConfigurationError",
+    "SearchExecutionOutcome",
     "SearchProviderError",
     "SearchResult",
 ]

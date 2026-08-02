@@ -5,8 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from agents.planning import max_query_count
+from agents.planning import search_budget_for_state
 from agents.schemas import EvidenceIntent, FactCheckability, InputKind, PlanningOutput
+from research.search_policy import CoverageBudgetExceededError
 
 if TYPE_CHECKING:
     from graph.state import VerificationState
@@ -89,7 +90,16 @@ def validate_research_plan(
             )
         )
 
-    query_limit = max_query_count(state.research_depth.value)
+    try:
+        query_limit = search_budget_for_state(state).effective_total_budget
+    except CoverageBudgetExceededError:
+        violations.append(
+            AgentContractViolation(
+                code="PLAN_COVERAGE_BUDGET_EXCEEDED",
+                field="queries",
+            )
+        )
+        query_limit = 0
     query_limit_excess = len(output.queries) - query_limit
     if query_limit_excess > 0:
         violations.append(

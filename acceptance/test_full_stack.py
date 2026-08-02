@@ -34,17 +34,18 @@ BROKER_URL = os.environ["CELERY_BROKER_URL"]
 RESULT_BACKEND = os.environ["CELERY_RESULT_BACKEND"]
 OWNER_TOKEN = "elara-acceptance:owner:owner@example.test"
 OTHER_TOKEN = "elara-acceptance:other:other@example.test"
+WORKER_LIVENESS_KEY = "elara:worker:liveness"
 
 
 def _headers(token: str = OWNER_TOKEN) -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
 
 
-def _submit(client: httpx.Client, text: str) -> str:
+def _submit(client: httpx.Client, text: str, *, research_depth: str = "QUICK") -> str:
     response = client.post(
         "/v1/verifications",
         headers=_headers(),
-        json={"input_type": "CLAIM", "research_depth": "QUICK", "text": text},
+        json={"input_type": "CLAIM", "research_depth": research_depth, "text": text},
     )
     assert response.status_code == 202, response.text
     body = response.json()
@@ -76,6 +77,15 @@ def _wait_for_status(
     raise AssertionError(f"run {run_id} did not reach {expected}; latest={latest}")
 
 
+def _wait_for_worker(redis: Redis, *, timeout: float = 30) -> None:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if redis.get(WORKER_LIVENESS_KEY):
+            return
+        time.sleep(0.2)
+    raise AssertionError("worker liveness signal was not ready")
+
+
 def _counts(db: Session, run_id: UUID) -> dict[str, int]:
     claim_ids = select(AtomicClaim.id).where(AtomicClaim.run_id == run_id)
     return {
@@ -95,6 +105,7 @@ def test_deterministic_full_stack_acceptance() -> None:
     engine = create_engine(DATABASE_URL)
     redis = Redis.from_url(REDIS_URL, decode_responses=True)
     celery = Celery("acceptance", broker=BROKER_URL, backend=RESULT_BACKEND)
+    _wait_for_worker(redis)
 
     with httpx.Client(base_url=API_BASE_URL, timeout=15, trust_env=False) as browser:
         session = browser.post("/v1/auth/session", headers=_headers())
@@ -113,6 +124,25 @@ def test_deterministic_full_stack_acceptance() -> None:
 
         terminal = _wait_for_status(browser, run_id, {"COMPLETED"})
         assert terminal["completed_at"] is not None
+
+        for depth in ("STANDARD", "DEEP"):
+            depth_run_id = _submit(
+                browser,
+                "Company X doubled net income in Q1 2026.",
+                research_depth=depth,
+            )
+            depth_terminal = _wait_for_status(browser, depth_run_id, {"COMPLETED"})
+            assert depth_terminal["completed_at"] is not None
+            with Session(engine) as db:
+                depth_queries = db.scalars(
+                    select(SearchQuery).where(SearchQuery.run_id == UUID(depth_run_id))
+                ).all()
+                assert depth_queries
+                assert all(row.policy_version == "adaptive-search-v1" for row in depth_queries)
+                assert all(
+                    row.execution_status in {"executed", "cache_hit", "not_needed"}
+                    for row in depth_queries
+                )
 
         # A fresh client is the browser-refresh boundary: all server state reloads.
         with httpx.Client(base_url=API_BASE_URL, timeout=15, trust_env=False) as refreshed:

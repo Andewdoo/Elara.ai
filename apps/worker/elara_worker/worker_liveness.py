@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from celery.signals import heartbeat_sent, worker_ready
+from celery.signals import heartbeat_sent, task_prerun, worker_ready
 from redis.exceptions import RedisError
 
 from app.config import Settings, get_settings
@@ -41,3 +41,4 @@ def refresh_worker_liveness(
 
 worker_ready.connect(refresh_worker_liveness, weak=False)
 heartbeat_sent.connect(refresh_worker_liveness, weak=False)
+task_prerun.connect(refresh_worker_liveness, weak=False)

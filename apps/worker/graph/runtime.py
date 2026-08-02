@@ -39,7 +39,14 @@ from app.models.methodology import MethodologyVersion
 from app.models.provenance import InformationCluster, SourceDependency
 from app.models.sources import RunSource, Source, SourcePassage, SourceSnapshot
 from app.models.verification_run import VerificationRun
-from graph.state import ResearchDepth, VerificationState, WorkflowStage
+from graph.state import (
+    CandidateSource,
+    DiscoveryGateRecord,
+    ResearchDepth,
+    SearchQueryExecutionRecord,
+    VerificationState,
+    WorkflowStage,
+)
 from graph.workflow import WorkflowExtensions, WorkflowServices, build_workflow
 from extraction.service import ExtractionService
 from extraction.playwright import PlaywrightExtractor, PlaywrightLimits
@@ -143,7 +150,7 @@ class SqlWorkflowStateWriter:
                 self._persist_claims(db, run, state)
             elif stage == WorkflowStage.PLANNER and state.objectives and state.queries:
                 self._persist_plan(db, run, state)
-            elif stage == WorkflowStage.DISCOVERY and state.query_result_counts:
+            elif stage == WorkflowStage.DISCOVERY and state.search_query_executions:
                 self._persist_search_execution(db, run, state)
             elif (
                 stage == WorkflowStage.EXTRACTION
@@ -187,13 +194,39 @@ class SqlWorkflowStateWriter:
 
     @staticmethod
     def _persist_search_execution(db: Session, run: VerificationRun, state: VerificationState) -> None:
-        executed_at = datetime.now(UTC)
+        executions = {item.query_key: item for item in state.search_query_executions}
         rows = db.scalars(select(SearchQuery).where(SearchQuery.run_id == run.id)).all()
         for row in rows:
             key = f"{row.generated_by_node.removeprefix('planner:')}:{row.query_text}"
-            if key in state.query_result_counts:
-                row.executed_at = executed_at
-                row.result_count = state.query_result_counts[key]
+            execution = executions.get(key)
+            if execution is None:
+                continue
+            row.discovery_phase = execution.discovery_phase
+            row.execution_status = execution.execution_status
+            row.network_attempt_count = execution.network_attempt_count
+            row.skip_reason = execution.skip_reason
+            row.policy_version = state.search_policy_version
+            row.executed_at = execution.executed_at
+            row.result_count = execution.result_count
+        target = dict(run.normalized_target)
+        plan = dict(target.get("research_plan") or {})
+        plan.update(
+            {
+                "policy_version": state.search_policy_version,
+                "mandatory_floor": state.search_mandatory_floor,
+                "effective_budget": state.search_effective_budget,
+                "phase_one_target": state.search_phase_one_target,
+                "phase_two_additional_target": state.search_phase_two_target,
+                "gate_outcomes": [
+                    item.model_dump(mode="json") for item in state.discovery_gate_outcomes
+                ],
+                "discovery_candidates": [
+                    item.model_dump(mode="json") for item in state.candidate_sources
+                ],
+            }
+        )
+        target["research_plan"] = plan
+        run.normalized_target = target
 
     @staticmethod
     def _persist_sources(db: Session, run: VerificationRun, state: VerificationState) -> None:
@@ -492,8 +525,14 @@ class SqlWorkflowStateWriter:
         claims = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
         claim_ids = {str(row.gates.get("claim_ref")): row.id for row in claims}
         objectives = {objective.objective_ref: objective for objective in state.objectives}
+        executions = {item.query_key: item for item in state.search_query_executions}
         for query in state.queries:
             objective = objectives[query.objective_ref]
+            query_key = f"{query.objective_ref}:{query.query}"
+            execution = executions.get(query_key) or SearchQueryExecutionRecord(
+                query_key=query_key,
+                discovery_phase="phase_one",
+            )
             db.add(
                 SearchQuery(
                     run_id=run.id,
@@ -502,6 +541,11 @@ class SqlWorkflowStateWriter:
                     query_text=query.query,
                     generated_by_node=f"planner:{query.objective_ref}"[:100],
                     priority=Decimal(str(query.priority)),
+                    discovery_phase=execution.discovery_phase,
+                    execution_status=execution.execution_status,
+                    network_attempt_count=execution.network_attempt_count,
+                    skip_reason=execution.skip_reason,
+                    policy_version=state.search_policy_version,
                 )
             )
         target = dict(run.normalized_target)
@@ -509,6 +553,13 @@ class SqlWorkflowStateWriter:
             "objectives": [item.model_dump(mode="json") for item in state.objectives],
             "primary_source_targets": list(state.primary_source_targets),
             "known_evidence_gaps": list(state.known_evidence_gaps),
+            "policy_version": state.search_policy_version,
+            "mandatory_floor": state.search_mandatory_floor,
+            "effective_budget": state.search_effective_budget,
+            "phase_one_target": state.search_phase_one_target,
+            "phase_two_additional_target": state.search_phase_two_target,
+            "gate_outcomes": [],
+            "discovery_candidates": [],
         }
         run.normalized_target = target
 
@@ -662,6 +713,26 @@ def execute_verification_workflow(
             )
             for row in query_rows
         ]
+        query_executions = [
+            SearchQueryExecutionRecord(
+                query_key=f"{row.generated_by_node.removeprefix('planner:')}:{row.query_text}",
+                discovery_phase=row.discovery_phase,
+                execution_status=row.execution_status,
+                result_count=row.result_count,
+                network_attempt_count=row.network_attempt_count,
+                executed_at=_as_utc(row.executed_at) if row.executed_at is not None else None,
+                skip_reason=row.skip_reason,
+            )
+            for row in query_rows
+        ]
+        gate_outcomes = [
+            DiscoveryGateRecord.model_validate(item)
+            for item in (plan_data or {}).get("gate_outcomes", [])
+        ]
+        discovery_candidates = [
+            CandidateSource.model_validate(item)
+            for item in (plan_data or {}).get("discovery_candidates", [])
+        ]
         if normalized is not None and claims and objectives and queries and not retrieve:
             return None
         completed: list[WorkflowStage] = []
@@ -688,6 +759,28 @@ def execute_verification_workflow(
             queries=queries,
             primary_source_targets=primary_source_targets,
             known_evidence_gaps=known_evidence_gaps,
+            candidate_sources=discovery_candidates,
+            query_result_counts={
+                item.query_key: item.result_count
+                for item in query_executions
+                if item.result_count is not None
+            },
+            search_query_executions=query_executions,
+            discovery_gate_outcomes=gate_outcomes,
+            search_policy_version=str(
+                (plan_data or {}).get("policy_version") or settings.search_policy_version
+            ),
+            search_phase_one_target=int(
+                (plan_data or {}).get("phase_one_target")
+                or _search_targets(settings, run.research_depth.value)[0]
+            ),
+            search_phase_two_target=int(
+                (plan_data or {}).get("phase_two_additional_target")
+                if (plan_data or {}).get("phase_two_additional_target") is not None
+                else _search_targets(settings, run.research_depth.value)[1]
+            ),
+            search_mandatory_floor=int((plan_data or {}).get("mandatory_floor") or 0),
+            search_effective_budget=int((plan_data or {}).get("effective_budget") or 0),
             completed_stages=completed,
         )
 
@@ -840,6 +933,14 @@ _INPUT_KINDS = {
 
 def _as_utc(value: datetime) -> datetime:
     return value.replace(tzinfo=UTC) if value.tzinfo is None else value
+
+
+def _search_targets(settings: Settings, research_depth: str) -> tuple[int, int]:
+    suffix = research_depth.casefold()
+    return (
+        int(getattr(settings, f"search_phase_one_{suffix}")),
+        int(getattr(settings, f"search_phase_two_{suffix}")),
+    )
 
 
 __all__ = [

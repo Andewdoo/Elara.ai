@@ -54,18 +54,41 @@ def build_run_metrics(
     )
     completion_tokens = max(0, total_tokens - prompt_tokens)
     model_request_count = len(calls) + (embedding.request_count if embedding else 0)
-    search_requests = len(state.query_result_counts)
+    search_executions = list(getattr(state, "search_query_executions", []))
+    brave_query_count = sum(
+        item.execution_status in {"executed", "cache_hit"} for item in search_executions
+    ) or len(state.query_result_counts)
+    brave_network_request_count = sum(
+        item.network_attempt_count for item in search_executions
+    ) or len(state.query_result_counts)
+    brave_cache_hit_count = sum(
+        item.execution_status == "cache_hit" for item in search_executions
+    )
+    brave_phase_two_query_count = sum(
+        item.discovery_phase == "phase_two"
+        and item.execution_status in {"executed", "cache_hit"}
+        for item in search_executions
+    )
+    brave_gate_expansion_count = sum(
+        item.discovery_phase == "phase_two"
+        for item in getattr(state, "discovery_gate_outcomes", [])
+    )
     cost = (
         Decimal(prompt_tokens) * Decimal(str(input_cost_per_million))
         + Decimal(completion_tokens) * Decimal(str(output_cost_per_million))
     ) / Decimal(1_000_000)
-    cost += Decimal(search_requests) * Decimal(str(search_cost_per_request))
+    cost += Decimal(brave_network_request_count) * Decimal(str(search_cost_per_request))
     approved_evidence = sum(
         not item.recommended_rejection_reasons for item in state.evidence
     )
     duplicate_members = sum(max(0, len(item.source_refs) - 1) for item in state.information_clusters)
     citation_failed = bool(state.citation_audit and state.citation_audit.needs_revision)
     values = {
+        "brave_query_count": (float(brave_query_count), "query"),
+        "brave_network_request_count": (float(brave_network_request_count), "request"),
+        "brave_cache_hit_count": (float(brave_cache_hit_count), "query"),
+        "brave_phase_two_query_count": (float(brave_phase_two_query_count), "query"),
+        "brave_gate_expansion_count": (float(brave_gate_expansion_count), "expansion"),
         "search_to_fetch_conversion": (_ratio(len(fetched), sum(state.query_result_counts.values())), "ratio"),
         "extraction_success": (_ratio(len(state.extracted_sources), len(fetched)), "ratio"),
         "median_fetch_latency": (float(median(fetch_latencies)) if fetch_latencies else 0.0, "millisecond"),

@@ -23,9 +23,9 @@ type VerificationFormValues = z.infer<typeof verificationSchema>;
 type VerificationCreateResponse = { run_id: string; status: "QUEUED"; events_url: string };
 
 const researchDepthOptions = [
-  { value: "QUICK", label: "Quick", description: "Faster search over high-confidence sources. Best for simple claims.", icon: Zap },
-  { value: "STANDARD", label: "Standard", description: "Balanced depth and breadth across quality sources. Recommended default.", icon: Scale },
-  { value: "DEEP", label: "Deep", description: "Most comprehensive research across the widest source set. Takes longer.", icon: Layers3 },
+  { value: "QUICK", label: "Quick", description: "Focused evidence breadth for simple claims, with expansion when discovery coverage is insufficient.", icon: Zap },
+  { value: "STANDARD", label: "Standard", description: "Balanced evidence breadth with adaptive discovery. Recommended default.", icon: Scale },
+  { value: "DEEP", label: "Deep", description: "The widest evidence breadth for complex or disputed submissions. Takes longer.", icon: Layers3 },
 ] as const;
 
 export function VerifyForm() {
@@ -88,7 +88,7 @@ export function VerifyForm() {
         >
           <fieldset aria-describedby="research-depth-help">
             <legend className="flex items-center gap-2 text-sm font-semibold">Research depth <CircleHelp className="h-4 w-4 text-muted-foreground" aria-label="Choose how broadly Elara should research this claim." /></legend>
-            <p id="research-depth-help" className="sr-only">Choose Quick, Standard, or Deep research depth.</p>
+            <p id="research-depth-help" className="mt-1 text-sm text-muted-foreground">Depth controls evidence breadth, not truth criteria or citation rigor. Discovery may expand when independent coverage is insufficient.</p>
             <div className="mt-3 grid gap-3 md:grid-cols-3">
               {researchDepthOptions.map(({ value, label, description, icon: Icon }) => (
                 <label key={value} className="cursor-pointer">

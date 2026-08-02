@@ -15,6 +15,11 @@ def test_run_metrics_cover_required_operational_signals_without_content():
         extracted_sources=[object()], candidate_sources=[object(), object()], passages=[object(), object()],
         evidence=[SimpleNamespace(recommended_rejection_reasons=[]), SimpleNamespace(recommended_rejection_reasons=["low_quality"])],
         information_clusters=[SimpleNamespace(source_refs=["one", "two"])], query_result_counts={"query": 4},
+        search_query_executions=[
+            SimpleNamespace(execution_status="executed", network_attempt_count=2, discovery_phase="phase_one"),
+            SimpleNamespace(execution_status="cache_hit", network_attempt_count=0, discovery_phase="phase_two"),
+        ],
+        discovery_gate_outcomes=[SimpleNamespace(discovery_phase="phase_two")],
         model_calls={"intake": CallMetadata(model="deepseek-chat", prompt_version="v1", temperature=0.1, latency_ms=10, usage=TokenUsage(prompt_tokens=10, completion_tokens=5, total_tokens=15))},
         embedding_run_metadata=None, citation_audit=SimpleNamespace(needs_revision=True), cancelled=False,
     )
@@ -28,6 +33,11 @@ def test_run_metrics_cover_required_operational_signals_without_content():
     assert points["evidence_yield"].value == 1.0
     assert points["deepseek_input_token_usage"].value == 10
     assert points["deepseek_output_token_usage"].value == 5
+    assert points["brave_query_count"].value == 2
+    assert points["brave_network_request_count"].value == 2
+    assert points["brave_cache_hit_count"].value == 1
+    assert points["brave_phase_two_query_count"].value == 1
+    assert points["brave_gate_expansion_count"].value == 1
 
 
 def test_observability_filters_sensitive_fields_and_trace_metadata():

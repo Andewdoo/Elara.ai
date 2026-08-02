@@ -96,9 +96,15 @@ def test_enum_contracts_match_the_initial_migration():
         "evidence_stance": EvidenceStance,
         "dependency_relationship": DependencyRelationship,
     }
-    assert {
+    current = {
         name: tuple(member.value for member in enum_class)
         for name, enum_class in enum_classes.items()
+    }
+    assert {
+        **current,
+        "input_type": tuple(
+            value for value in current["input_type"] if value != "ARTICLE_TITLE"
+        ),
     } == revision.ENUMS
 
 
@@ -122,7 +128,40 @@ def test_initial_migration_tables_match_metadata_and_has_one_head():
 
     config = Config(str(API_ROOT / "alembic.ini"))
     script = ScriptDirectory.from_config(config)
-    assert script.get_heads() == ["20260706_0004"]
+    assert script.get_heads() == ["20260801_0007"]
+
+
+def test_adaptive_search_provenance_columns_and_constraints_are_registered():
+    queries = Base.metadata.tables["search_queries"]
+    assert {
+        "discovery_phase",
+        "execution_status",
+        "network_attempt_count",
+        "skip_reason",
+        "policy_version",
+    } <= set(queries.c.keys())
+    constraint_names = {constraint.name for constraint in queries.constraints}
+    assert {
+        "ck_search_queries_discovery_phase",
+        "ck_search_queries_execution_status",
+        "ck_search_queries_network_attempt_count",
+    } <= constraint_names
+
+
+def test_adaptive_search_migration_preserves_historical_rows_and_downgrades():
+    path = API_ROOT / "migrations" / "versions" / "20260801_0007_adaptive_search_policy.py"
+    source = path.read_text(encoding="utf-8")
+    assert 'down_revision = "20260723_0006"' in source
+    assert "legacy-search-v1" in source
+    assert "adaptive-search-v1" in source
+    for column in (
+        "discovery_phase",
+        "execution_status",
+        "network_attempt_count",
+        "skip_reason",
+        "policy_version",
+    ):
+        assert f"DROP COLUMN IF EXISTS {column}" in source
 
 
 def test_uuid_keys_and_timezone_aware_timestamps_are_consistent():

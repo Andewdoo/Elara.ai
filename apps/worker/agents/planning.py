@@ -15,6 +15,12 @@ from agents.schemas import (
     ResearchObjectiveOutput,
     SearchQueryOutput,
 )
+from research.search_policy import (
+    DepthSearchPolicy,
+    SearchBudget,
+    calculate_budget,
+    policy_for_depth,
+)
 
 if TYPE_CHECKING:
     from graph.state import VerificationState
@@ -44,9 +50,6 @@ and neutral wording that does not assume a submitted claim is true.
 
 
 _OBJECTIVE_DIGEST_LENGTH = 16
-_QUERY_LIMITS = {"QUICK": 24, "STANDARD": 60, "DEEP": 120}
-
-
 class UnknownPlanningDraftClaimRefError(ValueError):
     """Raised when a draft selects a claim reference outside workflow state."""
 
@@ -54,8 +57,9 @@ class UnknownPlanningDraftClaimRefError(ValueError):
 def build_planner_payload(state: VerificationState) -> dict[str, object]:
     """Build the model-facing planner contract from typed workflow state."""
 
-    exact_quote = _exact_quote(state)
-    requires_attribution_check = _requires_attribution_check(state, exact_quote)
+    exact_quote = exact_quote_for_state(state)
+    attribution_required = requires_attribution_check(state, exact_quote)
+    budget = search_budget_for_state(state)
     required_intents_by_claim = {
         claim.claim_ref: (
             [EvidenceIntent.PRIMARY.value, EvidenceIntent.CONTRADICTION.value]
@@ -68,23 +72,58 @@ def build_planner_payload(state: VerificationState) -> dict[str, object]:
         "claims": [claim.model_dump(mode="json") for claim in state.claims],
         "allowed_claim_refs": [claim.claim_ref for claim in state.claims],
         "research_depth": state.research_depth.value,
-        "max_query_count": max_query_count(state.research_depth.value)
+        "max_query_count": budget.effective_total_budget
         - (1 if state.normalized_input and state.normalized_input.input_kind == InputKind.ARTICLE_TITLE else 0),
         "required_intents_by_claim": required_intents_by_claim,
-        "requires_attribution_check": requires_attribution_check,
+        "requires_attribution_check": attribution_required,
     }
     if exact_quote is not None:
         payload["exact_quote"] = exact_quote
     return payload
 
 
-def max_query_count(research_depth: str) -> int:
+def max_query_count(
+    research_depth: str,
+    *,
+    fact_checkable_claim_count: int = 0,
+    attribution_required: bool = False,
+) -> int:
     """Return the deterministic query limit used by planner validation."""
 
-    return _QUERY_LIMITS[research_depth]
+    policy = policy_for_depth(research_depth)
+    return calculate_budget(
+        policy,
+        fact_checkable_claim_count=fact_checkable_claim_count,
+        attribution_required=attribution_required,
+    ).effective_total_budget
 
 
-def _exact_quote(state: VerificationState) -> str | None:
+def search_policy_for_state(state: VerificationState) -> DepthSearchPolicy:
+    return policy_for_depth(
+        state.research_depth.value,
+        phase_one_target=state.search_phase_one_target,
+        phase_two_additional_target=state.search_phase_two_target,
+        policy_version=state.search_policy_version,
+    )
+
+
+def search_budget_for_state(state: VerificationState) -> SearchBudget:
+    return calculate_budget(
+        search_policy_for_state(state),
+        fact_checkable_claim_count=len(fact_checkable_claim_refs(state)),
+        attribution_required=requires_attribution_check(state, exact_quote_for_state(state)),
+    )
+
+
+def fact_checkable_claim_refs(state: VerificationState) -> set[str]:
+    return {
+        claim.claim_ref
+        for claim in state.claims
+        if claim.fact_checkability != FactCheckability.NOT_FACT_CHECKABLE
+    }
+
+
+def exact_quote_for_state(state: VerificationState) -> str | None:
     normalized_input = state.normalized_input
     if (
         normalized_input is not None
@@ -95,7 +134,7 @@ def _exact_quote(state: VerificationState) -> str | None:
     return None
 
 
-def _requires_attribution_check(state: VerificationState, exact_quote: str | None) -> bool:
+def requires_attribution_check(state: VerificationState, exact_quote: str | None) -> bool:
     return (
         exact_quote is not None
         or bool(state.normalized_input and state.normalized_input.requires_attribution_check)
@@ -194,6 +233,11 @@ __all__ = [
     "SYSTEM_PROMPT",
     "UnknownPlanningDraftClaimRefError",
     "build_planner_payload",
+    "exact_quote_for_state",
+    "fact_checkable_claim_refs",
     "max_query_count",
     "normalize_research_plan",
+    "requires_attribution_check",
+    "search_budget_for_state",
+    "search_policy_for_state",
 ]

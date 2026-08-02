@@ -25,6 +25,7 @@ class WorkflowExtensionError(RuntimeError):
         public_message: str,
         retryable: bool = False,
         details: Mapping[str, SafeExtensionDetail] | None = None,
+        state: object | None = None,
     ) -> None:
         _validate_code(code)
         _validate_public_message(public_message)
@@ -34,6 +35,7 @@ class WorkflowExtensionError(RuntimeError):
         self.public_message = public_message
         self.retryable = retryable
         self.details = safe_details
+        self.state = state
 
 
 def _validate_code(code: str) -> None:

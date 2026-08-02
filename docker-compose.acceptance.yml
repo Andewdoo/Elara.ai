@@ -50,6 +50,7 @@ services:
       S3_BUCKET_NAME: elara-acceptance
       S3_REGION: us-east-1
       S3_FORCE_PATH_STYLE: "true"
+      S3_SERVER_SIDE_ENCRYPTION: "none"
       FIREBASE_SESSION_COOKIE_NAME: elara_session
       WEB_APP_URL: http://web.test
       CORS_ALLOWED_ORIGINS: http://web.test
@@ -73,7 +74,7 @@ services:
     build:
       context: .
       dockerfile: infrastructure/docker/worker.Dockerfile
-    command: ["python", "-m", "celery", "-A", "app.celery_app:celery_app", "worker", "--loglevel=info", "--concurrency=1", "--queues=verification.quick"]
+    command: ["python", "-m", "celery", "-A", "app.celery_app:celery_app", "worker", "--loglevel=info", "--concurrency=1", "--queues=verification.quick,verification.standard,verification.deep"]
     environment: *acceptance-environment
     depends_on:
       api:
