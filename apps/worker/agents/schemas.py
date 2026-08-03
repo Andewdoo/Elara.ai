@@ -420,7 +420,15 @@ class SentenceCitationAuditOutput(AgentOutput):
     suggested_revision: str | None = None
 
 
+class CitationAuditBatchOutput(AgentOutput):
+    """Model-facing language judgments for one bounded citation batch."""
+
+    sentence_audits: list[SentenceCitationAuditOutput] = Field(default_factory=list)
+
+
 class CitationAuditOutput(AgentOutput):
+    """Deterministically completed run-level citation audit."""
+
     sentence_audits: list[SentenceCitationAuditOutput] = Field(default_factory=list)
     unsupported_sentence_refs: list[str] = Field(default_factory=list)
     missing_citation_sentence_refs: list[str] = Field(default_factory=list)
@@ -442,6 +450,7 @@ def iter_auditable_sentences(
 __all__ = [
     "AtomicClaimOutput",
     "ClaimAmbiguityOutput",
+    "CitationAuditBatchOutput",
     "CitationAuditOutput",
     "ConfidenceIssue",
     "ContextIssue",

@@ -28,6 +28,8 @@ _SAFE_PROMPT_VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$")
 _SAFE_RESPONSE_IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$")
 _STRUCTURED_RESPONSE_INVALID = "STRUCTURED_RESPONSE_INVALID"
 _STRUCTURED_RESPONSE_REPAIR_EXHAUSTED = "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED"
+_MAX_SCHEMA_DIAGNOSTICS = 8
+_SAFE_SCHEMA_PATH_SEGMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_-]{0,63}$")
 _STRUCTURED_REPAIR_INSTRUCTION = (
     "The previous response failed schema validation. Regenerate the complete response "
     "to conform exactly to the JSON Schema. Return only one JSON object."
@@ -126,6 +128,9 @@ class CallMetadata(BaseModel):
     finish_reason: str | None = None
     usage: TokenUsage = Field(default_factory=TokenUsage)
     attempt_count: int = Field(default=1, ge=1, le=3)
+    request_count: int = Field(default=1, ge=1)
+    batch_count: int = Field(default=1, ge=1)
+    repair_count: int = Field(default=0, ge=0)
 
 
 class StructuredResponse(BaseModel, Generic[OutputT]):
@@ -190,6 +195,46 @@ class DeepSeekResponseError(DeepSeekProviderError):
 
 class DeepSeekEmbeddingUnavailableError(DeepSeekProviderError):
     pass
+
+
+def aggregate_call_metadata(
+    calls: Sequence[CallMetadata],
+    *,
+    latency_ms: int,
+) -> CallMetadata:
+    """Aggregate successful batches without implying one representative response."""
+
+    if not calls:
+        raise ValueError("at least one successful call is required")
+    if latency_ms < 0:
+        raise ValueError("latency_ms must be non-negative")
+    first = calls[0]
+    shared = (first.provider, first.model, first.prompt_version, first.temperature)
+    if any(
+        (call.provider, call.model, call.prompt_version, call.temperature) != shared
+        for call in calls[1:]
+    ):
+        raise ValueError(
+            "batched call metadata must share provider, model, prompt version, and temperature"
+        )
+    return CallMetadata(
+        provider=first.provider,
+        model=first.model,
+        prompt_version=first.prompt_version,
+        temperature=first.temperature,
+        latency_ms=latency_ms,
+        response_id=None,
+        finish_reason=None,
+        usage=TokenUsage(
+            prompt_tokens=sum(call.usage.prompt_tokens for call in calls),
+            completion_tokens=sum(call.usage.completion_tokens for call in calls),
+            total_tokens=sum(call.usage.total_tokens for call in calls),
+        ),
+        attempt_count=max(call.attempt_count for call in calls),
+        request_count=sum(call.request_count for call in calls),
+        batch_count=len(calls),
+        repair_count=sum(call.repair_count for call in calls),
+    )
 
 
 class DeepSeekClient:
@@ -319,8 +364,9 @@ class DeepSeekClient:
         temperature: float = 0.1,
         max_tokens: int | None = None,
         repair_invalid_response: bool = False,
+        max_schema_attempts: int = 3,
     ) -> StructuredResponse[OutputT]:
-        """Generate a schema-valid response, optionally repairing two malformed results.
+        """Generate a schema-valid response with a bounded schema-only repair policy.
 
         The repair request repeats only the original trusted messages and schema plus a
         fixed instruction. It deliberately never includes malformed model content or
@@ -334,6 +380,10 @@ class DeepSeekClient:
             raise ValueError("at least one message is required")
         if model_role not in {"chat", "reasoning"}:
             raise ValueError("model_role must be chat or reasoning")
+        if isinstance(max_schema_attempts, bool) or not isinstance(max_schema_attempts, int):
+            raise ValueError("max_schema_attempts must be an integer from 1 through 3")
+        if not 1 <= max_schema_attempts <= 3:
+            raise ValueError("max_schema_attempts must be from 1 through 3")
 
         model = (
             self.config.chat_model
@@ -363,7 +413,8 @@ class DeepSeekClient:
             base_payload["max_tokens"] = max_tokens
 
         trusted_messages = [schema_instruction, *self._validate_messages(messages)]
-        for attempt_count in range(1, 4):
+        attempt_limit = max_schema_attempts if repair_invalid_response else 1
+        for attempt_count in range(1, attempt_limit + 1):
             request_messages = list(trusted_messages)
             if attempt_count == 2:
                 request_messages.append(
@@ -385,31 +436,52 @@ class DeepSeekClient:
                 choice = body["choices"][0]
                 raw_content = choice["message"]["content"]
                 if not isinstance(raw_content, str):
-                    raise TypeError("response content is not text")
-                parsed_output = output_schema.model_validate_json(
-                    self._strip_json_fence(raw_content)
-                )
+                    raise TypeError
+                parsed_body = json.loads(self._strip_json_fence(raw_content))
                 usage = TokenUsage.model_validate(body.get("usage") or {})
-            except (KeyError, IndexError, TypeError, ValueError, ValidationError):
-                error_code = (
-                    _STRUCTURED_RESPONSE_INVALID
-                    if attempt_count == 1
-                    else _STRUCTURED_RESPONSE_REPAIR_EXHAUSTED
-                )
-                metadata = self._error_metadata(
-                    model,
-                    prompt_version,
-                    temperature,
-                    latency_ms,
+            except (json.JSONDecodeError, KeyError, IndexError, TypeError, ValueError, ValidationError):
+                metadata = self._structured_failure_metadata(
+                    model=model,
+                    prompt_version=prompt_version,
+                    temperature=temperature,
+                    latency_ms=latency_ms,
                     status_code=response.status_code,
-                    error_code=error_code,
                     attempt_count=attempt_count,
+                    attempt_limit=attempt_limit,
                 )
                 logger.warning(
-                    "DeepSeek returned an invalid structured response",
-                    extra=metadata.model_dump(),
+                    "DeepSeek returned an invalid structured response body",
+                    extra={**metadata.model_dump(), "schema_error_kind": "provider_body_parse"},
                 )
-                if not repair_invalid_response or attempt_count == 3:
+                if attempt_count == attempt_limit:
+                    raise DeepSeekResponseError(
+                        "DeepSeek returned an invalid structured response", metadata=metadata
+                    ) from None
+                continue
+
+            try:
+                parsed_output = output_schema.model_validate(parsed_body)
+            except ValidationError as exc:
+                metadata = self._structured_failure_metadata(
+                    model=model,
+                    prompt_version=prompt_version,
+                    temperature=temperature,
+                    latency_ms=latency_ms,
+                    status_code=response.status_code,
+                    attempt_count=attempt_count,
+                    attempt_limit=attempt_limit,
+                )
+                error_types, error_paths = self._safe_schema_diagnostics(exc)
+                logger.warning(
+                    "DeepSeek structured response failed schema validation",
+                    extra={
+                        **metadata.model_dump(),
+                        "schema_error_kind": "schema_validation",
+                        "schema_error_types": error_types,
+                        "schema_error_paths": error_paths,
+                    },
+                )
+                if attempt_count == attempt_limit:
                     raise DeepSeekResponseError(
                         "DeepSeek returned an invalid structured response", metadata=metadata
                     ) from None
@@ -424,11 +496,59 @@ class DeepSeekClient:
                 finish_reason=self._safe_response_identifier(choice.get("finish_reason")),
                 usage=usage,
                 attempt_count=attempt_count,
+                request_count=attempt_count,
+                repair_count=attempt_count - 1,
             )
             logger.info("DeepSeek structured request completed", extra=metadata.model_dump())
             return StructuredResponse[output_schema](output=parsed_output, metadata=metadata)
 
-        raise AssertionError("structured response repair loop exceeded its fixed bound")
+        raise AssertionError("structured response repair loop exceeded its configured bound")
+
+    @classmethod
+    def _structured_failure_metadata(
+        cls,
+        *,
+        model: str,
+        prompt_version: str,
+        temperature: float,
+        latency_ms: int,
+        status_code: int,
+        attempt_count: int,
+        attempt_limit: int,
+    ) -> ProviderErrorMetadata:
+        return cls._error_metadata(
+            model,
+            prompt_version,
+            temperature,
+            latency_ms,
+            status_code=status_code,
+            error_code=(
+                _STRUCTURED_RESPONSE_INVALID
+                if attempt_limit == 1 or attempt_count < attempt_limit
+                else _STRUCTURED_RESPONSE_REPAIR_EXHAUSTED
+            ),
+            attempt_count=attempt_count,
+        )
+
+    @staticmethod
+    def _safe_schema_diagnostics(exc: ValidationError) -> tuple[list[str], list[str]]:
+        error_types: list[str] = []
+        error_paths: list[str] = []
+        errors = exc.errors(include_url=False, include_context=False, include_input=False)
+        for error in errors[:_MAX_SCHEMA_DIAGNOSTICS]:
+            error_type = error.get("type")
+            if isinstance(error_type, str) and _SAFE_SCHEMA_PATH_SEGMENT.fullmatch(error_type):
+                error_types.append(error_type)
+            segments: list[str] = []
+            for segment in error.get("loc", ()):
+                if isinstance(segment, int) and segment >= 0:
+                    segments.append(str(segment))
+                elif isinstance(segment, str) and _SAFE_SCHEMA_PATH_SEGMENT.fullmatch(segment):
+                    segments.append(segment)
+                else:
+                    segments.append("field")
+            error_paths.append(".".join(segments) if segments else "root")
+        return error_types, error_paths
 
     async def _post_structured(
         self,
@@ -632,4 +752,5 @@ __all__ = [
     "ProviderErrorMetadata",
     "StructuredResponse",
     "TokenUsage",
+    "aggregate_call_metadata",
 ]

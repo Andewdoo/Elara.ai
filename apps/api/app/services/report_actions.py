@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from sqlalchemy import select
@@ -25,6 +25,11 @@ class ReportActionConflictError(ValueError):
 
 class ExportNotFoundError(LookupError):
     pass
+
+
+def _as_utc(value: datetime) -> datetime:
+    """Normalize database timestamps, including SQLite's naive values, to UTC."""
+    return value.replace(tzinfo=UTC) if value.tzinfo is None else value.astimezone(UTC)
 
 
 def set_saved(db: Session, *, owner_id: UUID, run_id: UUID, saved: bool):
@@ -183,8 +188,8 @@ def delete_report(
     run = get_owned_run(db, owner_id=owner_id, run_id=run_id)
     if run.status not in {RunStatus.COMPLETED, RunStatus.FAILED, RunStatus.CANCELLED}:
         raise ReportActionConflictError("Active verifications must be cancelled before deletion")
-    now = utc_now()
-    if run.legal_hold_until is not None and run.legal_hold_until > now:
+    now = _as_utc(utc_now())
+    if run.legal_hold_until is not None and _as_utc(run.legal_hold_until) > now:
         raise ReportActionConflictError("Report is subject to a legal or audit hold")
     run.deletion_requested_at = run.deletion_requested_at or now
     run.deletion_status = "processing"

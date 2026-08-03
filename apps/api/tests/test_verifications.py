@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 import pytest
@@ -5,7 +6,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.models import AgentEvent, ResearchDepth, User, VerificationRun
+from app.models import AgentEvent, ReportShare, ResearchDepth, User, VerificationRun
 from app.redis_client import cancellation_key, progress_stream_key
 from app.schemas.verifications import RunStatus
 from app.services.run_lifecycle import persist_progress
@@ -109,7 +110,81 @@ def test_owned_run_lookup_does_not_cross_user_boundary(
             get_authorized_run(db, viewer_id=other.id, run_id=run.id)
         run.visibility = "public"
         db.commit()
-        assert get_authorized_run(db, viewer_id=other.id, run_id=run.id).id == run.id
+        with pytest.raises(RunNotFoundError):
+            get_authorized_run(db, viewer_id=other.id, run_id=run.id)
+
+
+def test_authorized_run_requires_live_recipient_share_with_sufficient_scope(
+    session_factory: sessionmaker[Session], owner: User
+):
+    with session_factory() as db:
+        recipient = User(
+            auth_provider="firebase",
+            auth_subject="recipient",
+            email="recipient@example.com",
+            plan_tier="free",
+            role="user",
+            usage_limits={},
+        )
+        run = VerificationRun(
+            user_id=owner.id,
+            input_type="CLAIM",
+            research_depth="QUICK",
+            status="COMPLETED",
+            submitted_text="Shared claim",
+            normalized_target={},
+            workflow_version="test",
+        )
+        db.add_all([recipient, run])
+        db.flush()
+        share = ReportShare(
+            run_id=run.id,
+            recipient_user_id=recipient.id,
+            scope="report",
+            expires_at=datetime(2099, 1, 1, tzinfo=UTC),
+        )
+        db.add(share)
+        db.commit()
+
+        assert get_authorized_run(db, viewer_id=owner.id, run_id=run.id).id == run.id
+        assert get_authorized_run(db, viewer_id=recipient.id, run_id=run.id).id == run.id
+        with pytest.raises(RunNotFoundError):
+            get_authorized_run(
+                db, viewer_id=recipient.id, run_id=run.id, required_scope="sources"
+            )
+
+        share.scope = "report_sources"
+        db.commit()
+        assert (
+            get_authorized_run(
+                db, viewer_id=recipient.id, run_id=run.id, required_scope="sources"
+            ).id
+            == run.id
+        )
+        with pytest.raises(RunNotFoundError):
+            get_authorized_run(
+                db, viewer_id=recipient.id, run_id=run.id, required_scope="exports"
+            )
+
+        share.scope = "report_sources_exports"
+        db.commit()
+        assert (
+            get_authorized_run(
+                db, viewer_id=recipient.id, run_id=run.id, required_scope="exports"
+            ).id
+            == run.id
+        )
+
+        share.expires_at = datetime(2000, 1, 1, tzinfo=UTC)
+        db.commit()
+        with pytest.raises(RunNotFoundError):
+            get_authorized_run(db, viewer_id=recipient.id, run_id=run.id)
+
+        share.expires_at = datetime(2099, 1, 1, tzinfo=UTC)
+        share.revoked_at = datetime(2026, 1, 1, tzinfo=UTC)
+        db.commit()
+        with pytest.raises(RunNotFoundError):
+            get_authorized_run(db, viewer_id=recipient.id, run_id=run.id)
 
 
 def test_research_depth_limit_is_enforced_before_persistence(

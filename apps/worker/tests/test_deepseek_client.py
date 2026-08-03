@@ -8,6 +8,7 @@ import pytest
 from pydantic import BaseModel
 
 from agents.deepseek_client import (
+    CallMetadata,
     DeepSeekAuthenticationError,
     DeepSeekClient,
     DeepSeekConfig,
@@ -16,6 +17,8 @@ from agents.deepseek_client import (
     DeepSeekResponseError,
     DeepSeekTimeoutError,
     DeepSeekUnavailableError,
+    TokenUsage,
+    aggregate_call_metadata,
 )
 from elara_worker.errors import TransientProviderError
 
@@ -349,6 +352,165 @@ def test_third_schema_invalid_response_is_terminal_after_two_repairs():
     assert exc_info.value.metadata.error_code == "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED"
     assert exc_info.value.metadata.attempt_count == 3
     assert not isinstance(exc_info.value, TransientProviderError)
+
+
+@pytest.mark.parametrize("max_schema_attempts", [1, 2, 3])
+def test_configured_schema_attempt_bounds_are_exact(max_schema_attempts: int):
+    call_count = 0
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        nonlocal call_count
+        call_count += 1
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": '{"unexpected":"field"}'}}]},
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "trusted task context"}],
+                output_schema=ExampleOutput,
+                prompt_version="bounded-v1",
+                repair_invalid_response=True,
+                max_schema_attempts=max_schema_attempts,
+            )
+        finally:
+            await http_client.aclose()
+
+    with pytest.raises(DeepSeekResponseError) as exc_info:
+        run(exercise())
+
+    assert call_count == max_schema_attempts
+    assert exc_info.value.metadata.attempt_count == max_schema_attempts
+    assert exc_info.value.metadata.error_code == (
+        "STRUCTURED_RESPONSE_INVALID"
+        if max_schema_attempts == 1
+        else "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED"
+    )
+
+
+@pytest.mark.parametrize("invalid_bound", [0, 4, True, 1.5])
+def test_invalid_schema_attempt_bounds_are_rejected_before_request(invalid_bound):
+    call_count = 0
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        nonlocal call_count
+        call_count += 1
+        return httpx.Response(200, json={})
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "trusted task context"}],
+                output_schema=ExampleOutput,
+                prompt_version="bounded-v1",
+                repair_invalid_response=True,
+                max_schema_attempts=invalid_bound,
+            )
+        finally:
+            await http_client.aclose()
+
+    with pytest.raises(ValueError, match="max_schema_attempts"):
+        run(exercise())
+    assert call_count == 0
+
+
+def test_schema_diagnostics_and_repair_requests_exclude_invalid_content(
+    caplog: pytest.LogCaptureFixture,
+):
+    private_marker = "PRIVATE-EVIDENCE-MARKER"
+    requests: list[dict[str, object]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(json.loads(request.content))
+        content = (
+            json.dumps({"answer": {"marker": private_marker}})
+            if len(requests) == 1
+            else '{"answer":"valid"}'
+        )
+        return httpx.Response(200, json={"choices": [{"message": {"content": content}}]})
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "trusted task context"}],
+                output_schema=ExampleOutput,
+                prompt_version="safe-schema-v1",
+                repair_invalid_response=True,
+                max_schema_attempts=2,
+            )
+        finally:
+            await http_client.aclose()
+
+    with caplog.at_level(logging.WARNING):
+        result = run(exercise())
+
+    schema_record = next(
+        record
+        for record in caplog.records
+        if getattr(record, "schema_error_kind", None) == "schema_validation"
+    )
+    assert schema_record.schema_error_types == ["string_type"]
+    assert schema_record.schema_error_paths == ["answer"]
+    assert result.metadata.request_count == 2
+    assert result.metadata.repair_count == 1
+    assert private_marker not in caplog.text
+    assert private_marker not in json.dumps(requests)
+
+
+def test_aggregate_metadata_sums_usage_and_requests_but_uses_wall_latency():
+    calls = [
+        CallMetadata(
+            model="deepseek-chat-test",
+            prompt_version="batch-v1",
+            temperature=0,
+            latency_ms=90,
+            usage=TokenUsage(prompt_tokens=10, completion_tokens=2, total_tokens=12),
+        ),
+        CallMetadata(
+            model="deepseek-chat-test",
+            prompt_version="batch-v1",
+            temperature=0,
+            latency_ms=80,
+            usage=TokenUsage(prompt_tokens=20, completion_tokens=3, total_tokens=23),
+            attempt_count=2,
+            request_count=2,
+            repair_count=1,
+        ),
+    ]
+
+    aggregate = aggregate_call_metadata(calls, latency_ms=100)
+
+    assert aggregate.latency_ms == 100
+    assert aggregate.usage.model_dump() == {
+        "prompt_tokens": 30,
+        "completion_tokens": 5,
+        "total_tokens": 35,
+    }
+    assert aggregate.request_count == 3
+    assert aggregate.batch_count == 2
+    assert aggregate.repair_count == 1
+    assert aggregate.response_id is None
+
+
+def test_legacy_call_metadata_defaults_remain_readable():
+    metadata = CallMetadata.model_validate(
+        {
+            "model": "deepseek-chat-test",
+            "prompt_version": "legacy-v1",
+            "temperature": 0,
+            "latency_ms": 5,
+        }
+    )
+
+    assert (metadata.request_count, metadata.batch_count, metadata.repair_count) == (1, 1, 0)
 
 
 def test_loggable_request_metadata_must_be_non_sensitive_identifiers():

@@ -47,6 +47,20 @@ test("reconnect, retry, refresh, cancellation, route recovery, and partial repor
   assert.match(boundary, /reset/);
 });
 
+test("the exact run ID is visible beside live-run and report actions", async () => {
+  const live = await read("components", "app", "live-research-view.tsx");
+  const workspace = await read("components", "report", "report-workspace.tsx");
+  const runId = await read("components", "ui", "run-id.tsx");
+
+  assert.match(live, /<RunId value=\{runId\}/);
+  assert.match(live, /sm:justify-between/);
+  assert.match(workspace, /<RunId value=\{run\.run_id\}/);
+  assert.match(workspace, /className="mt-auto pt-2"/);
+  assert.match(runId, /Run ID:/);
+  assert.match(runId, /break-all/);
+  assert.match(runId, /font-mono/);
+});
+
 test("report renders every sentence role, user-facing report details, durable histories, and empty states", async () => {
   const workspace = await read("components", "report", "report-workspace.tsx");
   const methodology = await read("app", "methodology", "page.tsx");

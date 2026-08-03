@@ -9,6 +9,7 @@ import { SourceGraph } from "@/components/report/source-graph";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RunId } from "@/components/ui/run-id";
 import type { EvidenceStance, ReportWorkspaceData, SourceRecord } from "@/lib/report-types";
 import { cn } from "@/lib/utils";
 import { useReportUiStore, type ReportTab } from "@/stores/report-ui-store";
@@ -62,7 +63,7 @@ function ReportWorkspaceContent({ data }: { data: ReportWorkspaceData }) {
 
   return <div className="grid gap-4">
     <header className="grid gap-3 rounded-lg border bg-white p-4 shadow-subtle lg:grid-cols-[1fr_auto]">
-      <div><div className="flex flex-wrap items-center gap-2"><Badge tone={run.status === "COMPLETED" ? "support" : "info"}>{run.status}</Badge><Badge tone="info">{run.research_depth}</Badge>{isLite && <Badge tone="neutral">Curated Lite library</Badge>}</div><h1 className="mt-3 text-2xl font-semibold">{run.title ?? "Verification report"}</h1><p className="mt-2 text-sm text-muted-foreground">Evidence reviewed as of {reviewed}. Report generated {generated}. New evidence or corrections may change this assessment.</p>{report.workspace_scope && <p className="mt-2 text-xs leading-5 text-muted-foreground">{report.workspace_scope}</p>}</div>
+      <div className="flex min-w-0 flex-col"><div className="flex flex-wrap items-center gap-2"><Badge tone={run.status === "COMPLETED" ? "support" : "info"}>{run.status}</Badge><Badge tone="info">{run.research_depth}</Badge>{isLite && <Badge tone="neutral">Curated Lite library</Badge>}</div><h1 className="mt-3 text-2xl font-semibold">{run.title ?? "Verification report"}</h1><p className="mt-2 text-sm text-muted-foreground">Evidence reviewed as of {reviewed}. Report generated {generated}. New evidence or corrections may change this assessment.</p>{report.workspace_scope && <p className="mt-2 text-xs leading-5 text-muted-foreground">{report.workspace_scope}</p>}<RunId value={run.run_id} className="mt-auto pt-2" /></div>
       <div className="grid min-w-60 gap-3"><div className="grid gap-1 rounded-md border bg-muted/40 p-3"><span className="text-xs text-muted-foreground">{isLite ? "Lite result" : "Verdict"}</span><span className="text-lg font-semibold">{report.verdict ?? "Not verified"}</span></div>{run.is_owner && <ReportHeaderActions runId={run.run_id} saved={Boolean(run.saved_at)} />}</div>
     </header>
 

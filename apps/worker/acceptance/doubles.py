@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import json
 import re
 from pathlib import Path
 from types import SimpleNamespace
@@ -179,6 +180,10 @@ class DeterministicDeepSeekDouble:
                 ),
             )
         content = "\n".join(message["content"] for message in messages)
+        try:
+            batch_payload = json.loads(messages[-1]["content"])
+        except (json.JSONDecodeError, KeyError, TypeError):
+            batch_payload = {}
         passage_ids = list(dict.fromkeys(_UUID.findall(content)))
         approved_segment = content.split('"approved_evidence":', 1)[-1]
         approved_passage_ids = list(dict.fromkeys(_UUID.findall(approved_segment)))
@@ -290,26 +295,27 @@ class DeterministicDeepSeekDouble:
                     "passage_ids": [passage_id],
                 }],
             }
-        elif name == "CitationAuditOutput":
-            passage_id = passage_ids[0]
+        elif name == "CitationAuditBatchOutput":
             rejected = self.reject_citations
             payload = {
-                "sentence_audits": [{
-                    "sentence_ref": "summary-1", "passage_id": passage_id,
-                    "entailment": "not_entailed" if rejected else "entailed",
-                    "support_explanation": (
-                        "Forced rejection fixture."
-                        if rejected
-                        else (
-                            "The passage identifies WHO, COVID-19, and the required date."
-                            if self.who_pandemic_fixture
-                            else "The exact values and comparison appear in the passage."
-                        )
-                    ),
-                    "suggested_revision": "Remove the sentence." if rejected else None,
-                }],
-                "unsupported_sentence_refs": ["summary-1"] if rejected else [],
-                "needs_revision": rejected,
+                "sentence_audits": [
+                    {
+                        "sentence_ref": pair["sentence_ref"],
+                        "passage_id": pair["passage_id"],
+                        "entailment": "not_entailed" if rejected else "entailed",
+                        "support_explanation": (
+                            "Forced rejection fixture."
+                            if rejected
+                            else (
+                                "The passage identifies WHO, COVID-19, and the required date."
+                                if self.who_pandemic_fixture
+                                else "The exact values and comparison appear in the passage."
+                            )
+                        ),
+                        "suggested_revision": "Remove the sentence." if rejected else None,
+                    }
+                    for pair in batch_payload.get("audit_pairs", [])
+                ],
             }
         else:
             raise AssertionError(f"No deterministic output for {name}")

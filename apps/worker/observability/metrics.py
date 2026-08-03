@@ -53,7 +53,11 @@ def build_run_metrics(
         embedding.total_tokens if embedding else 0
     )
     completion_tokens = max(0, total_tokens - prompt_tokens)
-    model_request_count = len(calls) + (embedding.request_count if embedding else 0)
+    model_request_count = sum(item.request_count for item in calls) + (
+        embedding.request_count if embedding else 0
+    )
+    model_batch_count = sum(item.batch_count for item in calls)
+    model_repair_count = sum(item.repair_count for item in calls)
     search_executions = list(getattr(state, "search_query_executions", []))
     brave_query_count = sum(
         item.execution_status in {"executed", "cache_hit"} for item in search_executions
@@ -103,6 +107,8 @@ def build_run_metrics(
         "deepseek_input_token_usage": (float(prompt_tokens), "token"),
         "deepseek_output_token_usage": (float(completion_tokens), "token"),
         "deepseek_request_count": (float(model_request_count), "request"),
+        "deepseek_batch_count": (float(model_batch_count), "batch"),
+        "deepseek_repair_count": (float(model_repair_count), "repair"),
         "source_accessibility_failure_rate": (_ratio(len(snapshots) - len(fetched), len(snapshots)), "ratio"),
         "citation_audit_failure_rate": (float(citation_failed), "ratio"),
         "queue_length": (float(queue_depth), "job"),

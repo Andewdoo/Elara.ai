@@ -573,6 +573,9 @@ class SqlWorkflowStateWriter:
                 "model": metadata.model,
                 "latency_ms": metadata.latency_ms,
                 "usage": metadata.usage.model_dump(mode="json"),
+                "request_count": metadata.request_count,
+                "batch_count": metadata.batch_count,
+                "repair_count": metadata.repair_count,
             }
             prompts[stage] = metadata.prompt_version
         run.model_versions = models

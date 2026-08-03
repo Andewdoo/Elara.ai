@@ -20,7 +20,7 @@ def test_run_metrics_cover_required_operational_signals_without_content():
             SimpleNamespace(execution_status="cache_hit", network_attempt_count=0, discovery_phase="phase_two"),
         ],
         discovery_gate_outcomes=[SimpleNamespace(discovery_phase="phase_two")],
-        model_calls={"intake": CallMetadata(model="deepseek-chat", prompt_version="v1", temperature=0.1, latency_ms=10, usage=TokenUsage(prompt_tokens=10, completion_tokens=5, total_tokens=15))},
+        model_calls={"intake": CallMetadata(model="deepseek-chat", prompt_version="v1", temperature=0.1, latency_ms=10, usage=TokenUsage(prompt_tokens=10, completion_tokens=5, total_tokens=15), request_count=3, batch_count=2, repair_count=1)},
         embedding_run_metadata=None, citation_audit=SimpleNamespace(needs_revision=True), cancelled=False,
     )
     points = {
@@ -29,10 +29,13 @@ def test_run_metrics_cover_required_operational_signals_without_content():
             state, duration_seconds=2.5, retry_count=1, queue_depth=3
         )
     }
-    assert set(points) >= {"search_to_fetch_conversion", "extraction_success", "median_fetch_latency", "playwright_fallback_rate", "cache_hit_rate", "duplicate_cluster_rate", "evidence_yield", "cost_per_verification", "deepseek_token_usage", "deepseek_input_token_usage", "deepseek_output_token_usage", "deepseek_request_count", "source_accessibility_failure_rate", "citation_audit_failure_rate", "queue_length", "run_duration", "retry_count", "cancellation_rate"}
+    assert set(points) >= {"search_to_fetch_conversion", "extraction_success", "median_fetch_latency", "playwright_fallback_rate", "cache_hit_rate", "duplicate_cluster_rate", "evidence_yield", "cost_per_verification", "deepseek_token_usage", "deepseek_input_token_usage", "deepseek_output_token_usage", "deepseek_request_count", "deepseek_batch_count", "deepseek_repair_count", "source_accessibility_failure_rate", "citation_audit_failure_rate", "queue_length", "run_duration", "retry_count", "cancellation_rate"}
     assert points["evidence_yield"].value == 1.0
     assert points["deepseek_input_token_usage"].value == 10
     assert points["deepseek_output_token_usage"].value == 5
+    assert points["deepseek_request_count"].value == 3
+    assert points["deepseek_batch_count"].value == 2
+    assert points["deepseek_repair_count"].value == 1
     assert points["brave_query_count"].value == 2
     assert points["brave_network_request_count"].value == 2
     assert points["brave_cache_hit_count"].value == 1

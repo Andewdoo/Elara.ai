@@ -13,9 +13,11 @@ from sqlalchemy.pool import StaticPool
 
 from agents.deepseek_client import (
     CallMetadata,
+    DeepSeekResponseError,
     DeepSeekUnavailableError,
     ProviderErrorMetadata,
     StructuredResponse,
+    TokenUsage,
 )
 from agents.decomposition import normalize_decomposition
 from agents.evidence_classification import build_classification_tasks, classification_task_ref
@@ -152,6 +154,131 @@ class Cancellation:
 
     async def is_cancelled(self, _run_id) -> bool:
         return self.cancelled
+
+
+class SequencedCancellation:
+    def __init__(self, responses: list[bool]) -> None:
+        self.responses = responses
+        self.calls = 0
+
+    async def is_cancelled(self, _run_id) -> bool:
+        response = self.responses[min(self.calls, len(self.responses) - 1)]
+        self.calls += 1
+        return response
+
+
+class BatchingClassificationModel:
+    def __init__(self, *, failure_batch: int | None = None) -> None:
+        self.failure_batch = failure_batch
+        self.calls: list[dict[str, object]] = []
+        self.active = 0
+        self.max_active = 0
+
+    async def generate_structured(self, **kwargs):
+        batch_index = len(self.calls)
+        self.calls.append(kwargs)
+        self.active += 1
+        self.max_active = max(self.max_active, self.active)
+        try:
+            await asyncio.sleep(0.02 if batch_index % 2 == 0 else 0.001)
+            if batch_index == self.failure_batch:
+                raise DeepSeekResponseError(
+                    "invalid structured response",
+                    metadata=ProviderErrorMetadata(
+                        model="deepseek-chat",
+                        prompt_version=kwargs["prompt_version"],
+                        temperature=kwargs["temperature"],
+                        latency_ms=5,
+                        status_code=200,
+                        error_code="STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+                        retryable=False,
+                        attempt_count=2,
+                    ),
+                )
+            payload = json.loads(kwargs["messages"][1]["content"])
+            task_refs = [task["task_ref"] for task in payload["tasks"]]
+            output = kwargs["output_schema"].model_validate(
+                {
+                    "classifications": [
+                        _classification_judgment(task_ref)
+                        for task_ref in reversed(task_refs)
+                    ]
+                }
+            )
+            return StructuredResponse(
+                output=output,
+                metadata=CallMetadata(
+                    model="deepseek-chat",
+                    prompt_version=kwargs["prompt_version"],
+                    temperature=kwargs["temperature"],
+                    latency_ms=20,
+                    usage=TokenUsage(
+                        prompt_tokens=10,
+                        completion_tokens=5,
+                        total_tokens=15,
+                    ),
+                    attempt_count=2,
+                    request_count=2,
+                    repair_count=1,
+                ),
+            )
+        finally:
+            self.active -= 1
+
+
+class BatchingCitationModel:
+    def __init__(self, *, failure_batch: int | None = None) -> None:
+        self.failure_batch = failure_batch
+        self.calls: list[dict[str, object]] = []
+        self.active = 0
+        self.max_active = 0
+
+    async def generate_structured(self, **kwargs):
+        batch_index = len(self.calls)
+        self.calls.append(kwargs)
+        self.active += 1
+        self.max_active = max(self.max_active, self.active)
+        try:
+            await asyncio.sleep(0.02 if batch_index % 2 == 0 else 0.001)
+            if batch_index == self.failure_batch:
+                raise DeepSeekResponseError(
+                    "invalid structured response",
+                    metadata=ProviderErrorMetadata(
+                        model="deepseek-chat",
+                        prompt_version=kwargs["prompt_version"],
+                        temperature=kwargs["temperature"],
+                        latency_ms=5,
+                        status_code=200,
+                        error_code="STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+                        retryable=False,
+                        attempt_count=2,
+                    ),
+                )
+            payload = json.loads(kwargs["messages"][1]["content"])
+            output = kwargs["output_schema"].model_validate(
+                {
+                    "sentence_audits": [
+                        {
+                            **pair,
+                            "entailment": "entailed",
+                            "support_explanation": "The declared pair is supported.",
+                        }
+                        for pair in reversed(payload["audit_pairs"])
+                    ]
+                }
+            )
+            return StructuredResponse(
+                output=output,
+                metadata=CallMetadata(
+                    model="deepseek-chat",
+                    prompt_version=kwargs["prompt_version"],
+                    temperature=kwargs["temperature"],
+                    latency_ms=20,
+                    usage=TokenUsage(prompt_tokens=8, completion_tokens=4, total_tokens=12),
+                ),
+            )
+        finally:
+            self.active -= 1
 
 
 def state() -> VerificationState:
@@ -1040,7 +1167,134 @@ def _classification_judgment(task_ref: str) -> dict[str, object]:
     }
 
 
-def test_evidence_classification_requires_exact_task_coverage_and_uses_v3_payload():
+def _classification_state_with_passages(count: int) -> VerificationState:
+    return VerificationState.model_validate(
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+            "passages": [
+                {
+                    "passage_id": f"passage-{index:02d}",
+                    "source_ref": "source-1",
+                    "snapshot_id": "snapshot-1",
+                    "text": f"The Q1 filing reports value {index} for the claim.",
+                    "text_hash": f"hash-{index}",
+                    "extraction_certainty": "0.95",
+                }
+                for index in range(count)
+            ],
+        }
+    )
+
+
+def test_evidence_classification_batches_ten_tasks_with_bounded_concurrency_and_order(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    value = _classification_state_with_passages(10)
+    tasks = build_classification_tasks(
+        value.claims, value.passages, research_depth=value.research_depth.value
+    )
+    model = BatchingClassificationModel()
+    clock = iter([10.0, 10.123])
+    monkeypatch.setattr("graph.workflow.time.perf_counter", lambda: next(clock))
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).evidence_classification(value)
+    )
+
+    payloads = [json.loads(call["messages"][1]["content"]) for call in model.calls]
+    assert [len(payload["tasks"]) for payload in payloads] == [2, 2, 2, 2, 2]
+    assert model.max_active == 2
+    assert all(call["prompt_version"] == "evidence-classification-v4" for call in model.calls)
+    assert all(call["max_tokens"] == 4_000 for call in model.calls)
+    assert all(call["max_schema_attempts"] == 2 for call in model.calls)
+    assert [item.passage_id for item in result.evidence] == [task.passage_id for task in tasks]
+    metadata = result.model_calls[WorkflowStage.EVIDENCE_CLASSIFICATION.value]
+    assert metadata.batch_count == 5
+    assert metadata.request_count == 10
+    assert metadata.repair_count == 5
+    assert metadata.usage.total_tokens == 75
+    assert metadata.latency_ms == 123
+
+
+def test_evidence_classification_cancellation_between_waves_prevents_later_calls():
+    value = _classification_state_with_passages(10)
+    model = BatchingClassificationModel()
+    cancellation = SequencedCancellation([False, False, True])
+    writer = RecordingStateWriter()
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=model,
+                submitted_input="unused",
+                cancellation=cancellation,
+                state_writer=writer,
+            )
+        ).evidence_classification(value)
+    )
+
+    assert result.cancelled is True
+    assert len(model.calls) == 2
+    assert result.evidence == []
+    assert writer.saved[-1][1].evidence == []
+
+
+def test_failed_evidence_batch_discards_partials_and_emits_one_content_free_failure():
+    private_marker = "PRIVATE-CLAIM-PASSAGE-REPORT-MARKER"
+    value = _classification_state_with_passages(10).model_copy(
+        update={
+            "passages": [
+                passage.model_copy(update={"text": private_marker})
+                for passage in _classification_state_with_passages(10).passages
+            ]
+        }
+    )
+    model = BatchingClassificationModel(failure_batch=1)
+    progress = RecordingProgress()
+    writer = RecordingStateWriter()
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=model,
+                submitted_input="unused",
+                progress=progress,
+                state_writer=writer,
+            )
+        ).evidence_classification(value)
+    )
+
+    assert len(model.calls) == 2
+    assert result.evidence == []
+    assert WorkflowStage.EVIDENCE_CLASSIFICATION not in result.completed_stages
+    assert len(result.recoverable_errors) == 1
+    error = result.recoverable_errors[0]
+    assert error.code == "DEEPSEEK_LANGUAGE_STEP_FAILED"
+    assert error.public_message == (
+        "Evidence classification could not return valid structured results."
+    )
+    assert error.details == {
+        "batch_index": 2,
+        "batch_count": 5,
+        "provider": "deepseek",
+        "model": "deepseek-chat",
+        "status_code": 200,
+        "error_code": "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+        "attempt_count": 2,
+    }
+    assert len(writer.saved) == 1 and writer.saved[0][1].evidence == []
+    assert sum(
+        event["event_type"] == "workflow.evidence_classification.recoverable_failure"
+        for event in progress.events
+    ) == 1
+    assert private_marker not in repr(progress.events)
+
+
+def test_evidence_classification_requires_exact_task_coverage_and_uses_v4_payload():
     passage_text = "The Q1 filing reports net income of 20, compared with 10."
     value = VerificationState.model_validate(
         {
@@ -1080,7 +1334,9 @@ def test_evidence_classification_requires_exact_task_coverage_and_uses_v3_payloa
     )
 
     payload = json.loads(model.calls[0]["messages"][1]["content"])
-    assert model.calls[0]["prompt_version"] == "evidence-classification-v3"
+    assert model.calls[0]["prompt_version"] == "evidence-classification-v4"
+    assert model.calls[0]["max_tokens"] == 4_000
+    assert model.calls[0]["max_schema_attempts"] == 2
     assert set(payload) == {"tasks"}
     assert [task["task_ref"] for task in payload["tasks"]] == [task.task_ref for task in tasks]
     assert {(item.claim_ref, item.passage_id) for item in result.evidence} == {
@@ -1528,9 +1784,6 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
                 "support_explanation": "The passage provides both comparable values.",
             }
         ],
-        "unsupported_sentence_refs": ["invented-by-model"],
-        "missing_citation_sentence_refs": ["invented-by-model"],
-        "needs_revision": True,
     }
     workflow = build_workflow(
         WorkflowServices(
@@ -1567,6 +1820,121 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     assert result.evidence[0].quality.extraction_certainty == 0.95
     assert result.completed_stages[-1] == WorkflowStage.CITATION_AUDIT
     assert result.ready_for_completion is True
+
+
+def _citation_state_with_pairs(count: int) -> VerificationState:
+    passage_ids = [f"passage-{index:02d}" for index in range(count)]
+    return state().model_copy(
+        update={
+            "snapshots": [
+                SnapshotRecord(
+                    snapshot_id="snapshot-1",
+                    source_ref="source-1",
+                    access_status="FETCHED",
+                    retrieved_at=datetime(2026, 7, 4, tzinfo=UTC),
+                )
+            ],
+            "passages": [
+                PassageRecord(
+                    passage_id=passage_id,
+                    source_ref="source-1",
+                    snapshot_id="snapshot-1",
+                    text=f"Approved passage body {passage_id}.",
+                    text_hash=f"hash-{passage_id}",
+                    extraction_certainty=Decimal("1"),
+                )
+                for passage_id in passage_ids
+            ],
+            "evidence": [
+                EvidenceClassificationItemOutput.model_validate(
+                    {
+                        "claim_ref": "claim-1",
+                        "passage_id": passage_id,
+                        "stance": "strongly_supports",
+                        "quality": {
+                            "relevance": 1,
+                            "directness": 1,
+                            "claim_specific_authority": 1,
+                            "transparency": 1,
+                            "temporal_fit": 1,
+                            "extraction_certainty": 1,
+                        },
+                        "entity_match": True,
+                        "time_period_match": True,
+                    }
+                )
+                for passage_id in passage_ids
+            ],
+            "report_draft": SynthesisOutput.model_validate(
+                {
+                    "title": "Assessment",
+                    "summary_sentences": [
+                        {
+                            "sentence_ref": "summary-1",
+                            "text": "The approved passages support this bounded finding.",
+                            "passage_ids": passage_ids,
+                        }
+                    ],
+                }
+            ),
+        }
+    )
+
+
+def test_citation_audit_batches_pairs_and_derives_global_decisions_in_python():
+    value = _citation_state_with_pairs(10)
+    model = BatchingCitationModel()
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).citation_audit(value)
+    )
+
+    payloads = [json.loads(call["messages"][1]["content"]) for call in model.calls]
+    assert [len(payload["audit_pairs"]) for payload in payloads] == [2, 2, 2, 2, 2]
+    assert [len(payload["cited_passages"]) for payload in payloads] == [2, 2, 2, 2, 2]
+    assert model.max_active == 2
+    assert all(call["output_schema"].__name__ == "CitationAuditBatchOutput" for call in model.calls)
+    assert all(call["prompt_version"] == "citation-audit-v4" for call in model.calls)
+    assert all(call["max_tokens"] == 3_000 for call in model.calls)
+    assert all(call["max_schema_attempts"] == 2 for call in model.calls)
+    assert result.citation_audit is not None
+    assert result.citation_audit.needs_revision is False
+    assert result.citation_audit.unsupported_sentence_refs == []
+    assert result.citation_audit.missing_citation_sentence_refs == []
+    assert [item.passage_id for item in result.citation_audit.sentence_audits] == [
+        f"passage-{index:02d}" for index in range(10)
+    ]
+
+
+def test_failed_citation_batch_never_saves_a_partial_audit():
+    value = _citation_state_with_pairs(10)
+    writer = RecordingStateWriter()
+    progress = RecordingProgress()
+    model = BatchingCitationModel(failure_batch=1)
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=model,
+                submitted_input="unused",
+                state_writer=writer,
+                progress=progress,
+            )
+        ).citation_audit(value)
+    )
+
+    assert result.citation_audit is None
+    assert WorkflowStage.CITATION_AUDIT not in result.completed_stages
+    assert len(writer.saved) == 1 and writer.saved[0][1].citation_audit is None
+    assert result.recoverable_errors[0].public_message == (
+        "Citation auditing could not return valid structured results."
+    )
+    assert sum(
+        event["event_type"] == "workflow.citation_audit.recoverable_failure"
+        for event in progress.events
+    ) == 1
 
 
 def test_partial_citation_is_completed_with_a_capped_score_penalty():
@@ -1747,7 +2115,6 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
                         "support_explanation": "The wording matches the passage.",
                     }
                 ],
-                "needs_revision": False,
             },
         ]
     )
@@ -1975,6 +2342,9 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
         prompt_version="planner-v2",
         temperature=0,
         latency_ms=12,
+        request_count=3,
+        batch_count=2,
+        repair_count=1,
     )
     intake = IntakeClassificationOutput.model_validate(INTAKE)
     decomposition = DecompositionOutput.model_validate(DECOMPOSITION)
@@ -2044,6 +2414,9 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
     assert durable_run is not None
     assert durable_run.normalized_target["research_plan"]["objectives"][0]["objective_ref"] == "objective-1"
     assert durable_run.model_versions["planner"]["provider"] == "deepseek"
+    assert durable_run.model_versions["planner"]["request_count"] == 3
+    assert durable_run.model_versions["planner"]["batch_count"] == 2
+    assert durable_run.model_versions["planner"]["repair_count"] == 1
     assert durable_run.prompt_versions["planner"] == "planner-v2"
     assert claim_count == 1
     assert query_count == 2
@@ -2254,7 +2627,6 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
                 "support_explanation": "The passage directly matches the sentence.",
             }
         ],
-        "needs_revision": False,
     }
     public_events: list[dict[str, object]] = []
     result = execute_verification_workflow(

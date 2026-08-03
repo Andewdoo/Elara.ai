@@ -1,6 +1,7 @@
 import hashlib
 import json
 from datetime import UTC, datetime
+from uuid import UUID
 
 import boto3
 import pytest
@@ -206,11 +207,64 @@ def test_active_report_cannot_be_saved_exported_or_deleted(client, session_facto
 
 def test_legal_hold_blocks_report_deletion(client, session_factory, owner):
     run_id = create_run(session_factory, owner)
+    storage = FakeStorage()
+    client.app.dependency_overrides[get_object_storage] = lambda: storage
+    created = client.post(
+        f"/v1/verifications/{run_id}/exports", json={"format": "JSON"}
+    )
+    assert created.status_code == 201
+    object_key = next(iter(storage.objects))
     with session_factory() as db:
         run = db.get(VerificationRun, run_id)
+        assert run is not None
         run.legal_hold_until = datetime(2099, 1, 1, tzinfo=UTC)
         db.commit()
-    assert client.delete(f"/v1/verifications/{run_id}").status_code == 409
+
+    response = client.delete(f"/v1/verifications/{run_id}")
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == "Report is subject to a legal or audit hold"
+    assert storage.deleted == []
+    assert object_key in storage.objects
+    assert client.get(f"/v1/verifications/{run_id}").status_code == 200
+    assert client.get(
+        f"/v1/verifications/{run_id}/exports/{created.json()['export_id']}"
+    ).status_code == 200
+    with session_factory() as db:
+        run = db.get(VerificationRun, run_id)
+        export = db.get(Export, UUID(created.json()["export_id"]))
+        assert run is not None
+        assert run.deletion_requested_at is None
+        assert run.deleted_at is None
+        assert run.deletion_status == "none"
+        assert export is not None and export.object_path == object_key
+
+
+def test_expired_legal_hold_allows_normal_report_deletion(client, session_factory, owner):
+    run_id = create_run(session_factory, owner)
+    storage = FakeStorage()
+    client.app.dependency_overrides[get_object_storage] = lambda: storage
+    created = client.post(
+        f"/v1/verifications/{run_id}/exports", json={"format": "JSON"}
+    )
+    assert created.status_code == 201
+    object_key = next(iter(storage.objects))
+    with session_factory() as db:
+        run = db.get(VerificationRun, run_id)
+        assert run is not None
+        run.legal_hold_until = datetime(2000, 1, 1, tzinfo=UTC)
+        db.commit()
+
+    response = client.delete(f"/v1/verifications/{run_id}")
+
+    assert response.status_code == 200
+    assert storage.deleted == [object_key]
+    with session_factory() as db:
+        run = db.get(VerificationRun, run_id)
+        assert run is not None
+        assert run.deleted_at is not None
+        assert run.deletion_status == "completed"
+        assert db.get(Export, UUID(created.json()["export_id"])) is None
 
 
 def test_new_routes_preserve_owner_and_share_authorization(client, session_factory, owner):

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { RunId } from "@/components/ui/run-id";
 import {
   terminalRunStatuses,
   useRunEvents,
@@ -53,6 +54,19 @@ const researchStages: Array<{ status: Exclude<RunStatus, "COMPLETED" | "FAILED" 
 const stagePosition = Object.fromEntries(
   researchStages.map((stage, index) => [stage.status, index + 1]),
 ) as Record<(typeof researchStages)[number]["status"], number>;
+
+function scoringSubstageLabel(eventType: string | undefined) {
+  if (eventType?.startsWith("workflow.evidence_classification.")) {
+    return "Classifying evidence";
+  }
+  if (eventType?.startsWith("workflow.deterministic_scoring.")) {
+    return "Calculating scores";
+  }
+  if (eventType?.startsWith("workflow.numerical_audit.")) {
+    return "Auditing calculations";
+  }
+  return stageLabels.SCORING;
+}
 
 function timeLabel(value: string | undefined) {
   if (!value) return "—";
@@ -96,6 +110,9 @@ export function LiveResearchView({ runId }: { runId: string }) {
   const events = progressHistoryQuery.data ?? (latestEvent ? [latestEvent] : []);
   const firstEvents = firstEventByStage(events);
   const latestHistoryEvent = events.at(-1);
+  const activeScoringLabel = scoringSubstageLabel(
+    (latestEvent ?? latestHistoryEvent)?.event_type,
+  );
   const lastReachedStage = Math.max(
     1,
     ...events.map((event) => stagePosition[event.stage as keyof typeof stagePosition] ?? 0),
@@ -105,7 +122,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
   const totalSteps = researchStages.length;
   const inaccessibleCount = latestEvent?.inaccessible_count ?? 0;
   const latestMessage =
-    durableTerminal && latestEvent?.stage !== durableStatus
+    durableTerminal
       ? runQuery.data?.failure_message ?? `Verification ${status.toLowerCase()}.`
       : latestEvent?.message ?? latestHistoryEvent?.message ?? "Waiting for the next public research update.";
 
@@ -115,7 +132,9 @@ export function LiveResearchView({ runId }: { runId: string }) {
       ? "Research stopped"
       : status === "CANCELLED"
         ? "Research cancelled"
-        : stageLabels[status];
+        : status === "SCORING"
+          ? activeScoringLabel
+          : stageLabels[status];
 
   if (runQuery.isLoading) {
     return <div className="flex min-h-64 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
@@ -167,6 +186,9 @@ export function LiveResearchView({ runId }: { runId: string }) {
               // Redis event has expired before its timestamp can be loaded.
               const isComplete = status === "COMPLETED" || index + 1 < completedSteps;
               const state = isComplete ? "complete" : isCurrent ? "current" : "pending";
+              const detail = isCurrent && stage.status === "SCORING"
+                ? activeScoringLabel
+                : stage.detail;
               return (
                 <li key={stage.status} className="grid min-h-16 grid-cols-[2.25rem_2rem_minmax(0,1fr)_4.5rem] items-center gap-2 px-3 py-3 sm:grid-cols-[2.75rem_2.5rem_minmax(9rem,1fr)_minmax(12rem,1.35fr)_5.5rem] sm:px-4">
                   <span className="relative flex h-full items-center justify-center" aria-hidden="true">
@@ -177,10 +199,10 @@ export function LiveResearchView({ runId }: { runId: string }) {
                   <span className="font-editorial text-lg tabular-nums text-foreground">{index + 1}</span>
                   <div className="min-w-0">
                     <p className={state === "current" ? "font-medium text-primary" : "font-medium"}>{stageLabels[stage.status]}</p>
-                    <p className="mt-0.5 text-xs leading-5 text-muted-foreground sm:hidden">{stage.detail}</p>
+                    <p className="mt-0.5 text-xs leading-5 text-muted-foreground sm:hidden">{detail}</p>
                     <span className="sr-only">{state === "complete" ? "Completed" : state === "current" ? "In progress" : "Pending"}</span>
                   </div>
-                  <p className="hidden text-sm leading-5 text-muted-foreground sm:block">{stage.detail}</p>
+                  <p className="hidden text-sm leading-5 text-muted-foreground sm:block">{detail}</p>
                   <time dateTime={event?.created_at} className="text-right font-mono text-xs tabular-nums text-muted-foreground">{timeLabel(event?.created_at)}</time>
                 </li>
               );
@@ -190,11 +212,14 @@ export function LiveResearchView({ runId }: { runId: string }) {
           {runQuery.data?.failure_message && <div className="flex gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive" role="alert"><XCircle className="h-4 w-4 shrink-0" /> {runQuery.data.failure_message}</div>}
           {inaccessibleCount > 0 && <div className="flex gap-2 rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground"><AlertTriangle className="h-4 w-4 shrink-0 text-amber-700" aria-hidden="true" /><p><strong className="text-foreground">{inaccessibleCount} source{inaccessibleCount === 1 ? " was" : "s were"} inaccessible.</strong> This limitation will be retained in the report.</p></div>}
 
-          <div className="flex flex-wrap justify-end gap-2 border-t pt-4">
-            <Button variant="secondary" onClick={() => void refreshDurableResult()}><RefreshCw className="h-4 w-4" aria-hidden="true" />Refresh</Button>
-            {!terminal && <Button variant="destructive" onClick={() => cancelMutation.mutate()} disabled={cancelMutation.isPending || Boolean(runQuery.data?.cancellation_requested_at)}>{runQuery.data?.cancellation_requested_at ? "Cancellation requested" : "Cancel research"}</Button>}
-            {status === "COMPLETED" && <Button asChild><Link href={`/report/${runId}`}>Open report</Link></Button>}
-            {(status === "FAILED" || status === "CANCELLED") && <Button disabled={retryMutation.isPending} onClick={async () => { const result = await retryMutation.mutateAsync(); router.push(`/verify/${result.run_id}`); }}>{retryMutation.isPending ? "Retrying" : "Retry verification"}</Button>}
+          <div className="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <RunId value={runId} className="sm:flex-1" />
+            <div className="flex flex-wrap gap-2 sm:justify-end">
+              <Button variant="secondary" onClick={() => void refreshDurableResult()}><RefreshCw className="h-4 w-4" aria-hidden="true" />Refresh</Button>
+              {!terminal && <Button variant="destructive" onClick={() => cancelMutation.mutate()} disabled={cancelMutation.isPending || Boolean(runQuery.data?.cancellation_requested_at)}>{runQuery.data?.cancellation_requested_at ? "Cancellation requested" : "Cancel research"}</Button>}
+              {status === "COMPLETED" && <Button asChild><Link href={`/report/${runId}`}>Open report</Link></Button>}
+              {(status === "FAILED" || status === "CANCELLED") && <Button disabled={retryMutation.isPending} onClick={async () => { const result = await retryMutation.mutateAsync(); router.push(`/verify/${result.run_id}`); }}>{retryMutation.isPending ? "Retrying" : "Retry verification"}</Button>}
+            </div>
           </div>
           {cancelMutation.error && <p className="text-xs text-destructive" role="alert">{cancelMutation.error.message}</p>}
           {retryMutation.error && <p className="text-xs text-destructive" role="alert">{retryMutation.error.message}</p>}

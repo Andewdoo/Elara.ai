@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import re
+import time
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -13,13 +15,27 @@ from uuid import UUID, uuid4
 
 from langgraph.graph import END, START, StateGraph
 
-from agents.citation_audit import PROMPT_VERSION as CITATION_AUDIT_PROMPT_VERSION
-from agents.citation_audit import SYSTEM_PROMPT as CITATION_AUDIT_PROMPT
+from agents.batching import chunked
+from agents.citation_audit import (
+    CITATION_AUDIT_BATCH_MAX_TOKENS,
+    CITATION_AUDIT_BATCH_SIZE,
+    PROMPT_VERSION as CITATION_AUDIT_PROMPT_VERSION,
+    SYSTEM_PROMPT as CITATION_AUDIT_PROMPT,
+    build_citation_audit_tasks,
+    citation_audit_batch_payload,
+)
 from agents.decomposition import PROMPT_VERSION as DECOMPOSITION_PROMPT_VERSION
 from agents.decomposition import SYSTEM_PROMPT as DECOMPOSITION_PROMPT
 from agents.decomposition import DecompositionNormalizationError, normalize_decomposition
-from agents.deepseek_client import DeepSeekError, StructuredResponse
+from agents.deepseek_client import (
+    CallMetadata,
+    DeepSeekError,
+    StructuredResponse,
+    aggregate_call_metadata,
+)
 from agents.evidence_classification import (
+    EVIDENCE_CLASSIFICATION_BATCH_MAX_TOKENS,
+    EVIDENCE_CLASSIFICATION_BATCH_SIZE,
     PROMPT_VERSION as EVIDENCE_PROMPT_VERSION,
     SYSTEM_PROMPT as EVIDENCE_PROMPT,
     build_classification_tasks,
@@ -39,6 +55,7 @@ from agents.planning import (
     search_policy_for_state,
 )
 from agents.schemas import (
+    CitationAuditBatchOutput,
     CitationAuditOutput,
     DecompositionDraftOutput,
     Entailment,
@@ -100,6 +117,8 @@ PARTIAL_CITATION_CONFIDENCE_PENALTY = 7
 MAX_PARTIAL_CITATION_EVIDENCE_SUPPORT_PENALTY = 20
 MAX_PARTIAL_CITATION_CONFIDENCE_PENALTY = 25
 SYNTHESIS_CITATION_REPAIR_LIMIT = 1
+LANGUAGE_BATCH_CONCURRENCY = 2
+LANGUAGE_BATCH_SCHEMA_ATTEMPTS = 2
 
 _STAGE_NUMBERS: dict[WorkflowStage, int] = {
     stage: index
@@ -123,6 +142,7 @@ class StructuredModelClient(Protocol):
         temperature: float = 0.1,
         max_tokens: int | None = None,
         repair_invalid_response: bool = True,
+        max_schema_attempts: int = 3,
     ) -> StructuredResponse: ...
 
 
@@ -187,6 +207,13 @@ class WorkflowServices:
     state_writer: StateWriter = field(default_factory=NullStateWriter)
     extensions: WorkflowExtensions = field(default_factory=WorkflowExtensions)
     citation_revision_limit: int = 2
+
+
+@dataclass(frozen=True, slots=True)
+class LanguageBatchResult:
+    responses: tuple[StructuredResponse, ...]
+    metadata: CallMetadata
+
 
 class WorkflowNodes:
     def __init__(self, services: WorkflowServices) -> None:
@@ -278,6 +305,7 @@ class WorkflowNodes:
         # original trusted context plus a fixed schema-only repair instruction. This
         # is bounded to one extra call and never exposes malformed model content.
         repair_invalid_response: bool = True,
+        max_schema_attempts: int = 3,
     ) -> StructuredResponse | VerificationState:
         try:
             return await self.services.model.generate_structured(
@@ -288,6 +316,7 @@ class WorkflowNodes:
                 temperature=0.0,
                 max_tokens=max_tokens,
                 repair_invalid_response=repair_invalid_response,
+                max_schema_attempts=max_schema_attempts,
             )
         except DeepSeekError as exc:
             return await self._failure(
@@ -303,6 +332,103 @@ class WorkflowNodes:
                     "error_code": exc.metadata.error_code,
                 },
             )
+
+    async def _run_language_batches(
+        self,
+        state: VerificationState,
+        stage: WorkflowStage,
+        *,
+        batches: Sequence[object],
+        output_schema: type,
+        prompt_version: str,
+        max_tokens: int,
+        message_factory: Callable[[object], Sequence[Mapping[str, str]]],
+    ) -> LanguageBatchResult | VerificationState:
+        """Run ordered internal batches in bounded waves without partial state writes."""
+
+        if not batches:
+            raise ValueError("language batches must not be empty")
+        started = time.perf_counter()
+        responses: list[StructuredResponse | None] = [None] * len(batches)
+        for wave_start in range(0, len(batches), LANGUAGE_BATCH_CONCURRENCY):
+            if await self.services.cancellation.is_cancelled(state.run_id):
+                cancelled = state.model_copy(update={"cancelled": True})
+                await self.services.progress.publish(
+                    run_id=state.run_id,
+                    stage=stage,
+                    event_type="run.cancelled",
+                    message="Verification cancelled before the next expensive stage.",
+                    payload=_stage_progress(stage, completed=False),
+                )
+                await self.services.state_writer.save(stage=stage, state=cancelled)
+                return cancelled
+
+            wave = batches[wave_start : wave_start + LANGUAGE_BATCH_CONCURRENCY]
+            calls = [
+                self.services.model.generate_structured(
+                    messages=message_factory(batch),
+                    output_schema=output_schema,
+                    prompt_version=prompt_version,
+                    model_role="chat",
+                    temperature=0.0,
+                    max_tokens=max_tokens,
+                    repair_invalid_response=True,
+                    max_schema_attempts=LANGUAGE_BATCH_SCHEMA_ATTEMPTS,
+                )
+                for batch in wave
+            ]
+            results = await asyncio.gather(*calls, return_exceptions=True)
+            failures = [
+                (wave_start + offset, result)
+                for offset, result in enumerate(results)
+                if isinstance(result, Exception)
+            ]
+            if failures:
+                batch_index, failure = min(failures, key=lambda item: item[0])
+                details: dict[str, str | int | bool | None] = {
+                    "batch_index": batch_index + 1,
+                    "batch_count": len(batches),
+                }
+                retryable = False
+                if isinstance(failure, DeepSeekError):
+                    retryable = failure.metadata.retryable
+                    details.update(
+                        {
+                            "provider": failure.metadata.provider,
+                            "model": failure.metadata.model,
+                            "status_code": failure.metadata.status_code,
+                            "error_code": failure.metadata.error_code,
+                            "attempt_count": failure.metadata.attempt_count,
+                        }
+                    )
+                return await self._failure(
+                    state,
+                    stage,
+                    code="DEEPSEEK_LANGUAGE_STEP_FAILED",
+                    message=(
+                        "Evidence classification could not return valid structured results."
+                        if stage == WorkflowStage.EVIDENCE_CLASSIFICATION
+                        else "Citation auditing could not return valid structured results."
+                    ),
+                    retryable=retryable,
+                    details=details,
+                )
+            for offset, result in enumerate(results):
+                if not isinstance(result, StructuredResponse):
+                    raise TypeError("structured model returned an invalid response wrapper")
+                responses[wave_start + offset] = result
+
+        completed = tuple(response for response in responses if response is not None)
+        if len(completed) != len(batches):
+            raise AssertionError("language batch execution lost a successful response")
+        latency_ms = max(0, round((time.perf_counter() - started) * 1000))
+        return LanguageBatchResult(
+            responses=completed,
+            metadata=aggregate_call_metadata(
+                [response.metadata for response in completed],
+                latency_ms=latency_ms,
+            ),
+        )
 
     async def intake(self, state: VerificationState) -> VerificationState:
         if WorkflowStage.INTAKE in state.completed_stages:
@@ -476,6 +602,7 @@ class WorkflowNodes:
                     "supported_ceiling": exc.supported_ceiling,
                 },
             )
+
         allowed_claim_refs = [claim.claim_ref for claim in state.claims]
         planner_messages = [
             {"role": "system", "content": PLANNER_PROMPT},
@@ -626,22 +753,34 @@ class WorkflowNodes:
                 message="Evidence classification did not produce required bounded tasks.",
                 details={"expected_task_count": 0, "returned_task_count": 0},
             )
-        response = await self._call(
+        batches = chunked(tasks, EVIDENCE_CLASSIFICATION_BATCH_SIZE)
+        batch_result = await self._run_language_batches(
             state,
             WorkflowStage.EVIDENCE_CLASSIFICATION,
-            messages=[
-                {"role": "system", "content": EVIDENCE_PROMPT},
-                {"role": "user", "content": _json({"tasks": [task.prompt_payload() for task in tasks]})},
-            ],
+            batches=batches,
             output_schema=EvidenceClassificationOutput,
-            max_tokens=8000,
+            prompt_version=EVIDENCE_PROMPT_VERSION,
+            max_tokens=EVIDENCE_CLASSIFICATION_BATCH_MAX_TOKENS,
+            message_factory=lambda batch: [
+                {"role": "system", "content": EVIDENCE_PROMPT},
+                {
+                    "role": "user",
+                    "content": _json(
+                        {"tasks": [task.prompt_payload() for task in batch]}
+                    ),
+                },
+            ],
         )
-        if isinstance(response, VerificationState):
-            return response
-        output = response.output
+        if isinstance(batch_result, VerificationState):
+            return batch_result
+        classifications = [
+            item
+            for response in batch_result.responses
+            for item in response.output.classifications
+        ]
         tasks_by_ref = {task.task_ref: task for task in tasks}
         expected_task_refs = set(tasks_by_ref)
-        returned_task_refs = [item.task_ref for item in output.classifications]
+        returned_task_refs = [item.task_ref for item in classifications]
         returned_task_ref_set = set(returned_task_refs)
         duplicate_count = len(returned_task_refs) - len(returned_task_ref_set)
         missing_count = len(expected_task_refs - returned_task_ref_set)
@@ -663,7 +802,9 @@ class WorkflowNodes:
             )
         passages = {passage.passage_id: passage for passage in state.passages}
         guarded_classifications = []
-        for result in output.classifications:
+        results_by_ref = {result.task_ref: result for result in classifications}
+        for expected_task in tasks:
+            result = results_by_ref[expected_task.task_ref]
             task = tasks_by_ref[result.task_ref]
             item = EvidenceClassificationItemOutput.model_validate(
                 {
@@ -724,13 +865,13 @@ class WorkflowNodes:
             evidence=guarded_classifications,
             model_calls={
                 **state.model_calls,
-                WorkflowStage.EVIDENCE_CLASSIFICATION.value: response.metadata,
+                WorkflowStage.EVIDENCE_CLASSIFICATION.value: batch_result.metadata,
             },
         )
         return await self._finish(
             updated,
             WorkflowStage.EVIDENCE_CLASSIFICATION,
-            payload={"classification_count": len(output.classifications)},
+            payload={"classification_count": len(classifications)},
         )
 
     async def synthesis(self, state: VerificationState) -> VerificationState:
@@ -912,38 +1053,51 @@ class WorkflowNodes:
                 code="REJECTED_EVIDENCE_CITED",
                 message="Citation audit found a report citation to rejected evidence.",
             )
-        response = await self._call(
+        tasks = build_citation_audit_tasks(state.report_draft, passage_map)
+        batches = chunked(tasks, CITATION_AUDIT_BATCH_SIZE)
+        if not batches:
+            return await self._failure(
+                state,
+                WorkflowStage.CITATION_AUDIT,
+                code="INCOMPLETE_CITATION_AUDIT",
+                message="Citation audit did not evaluate every cited sentence and passage.",
+            )
+        batch_result = await self._run_language_batches(
             state,
             WorkflowStage.CITATION_AUDIT,
-            messages=[
+            batches=batches,
+            output_schema=CitationAuditBatchOutput,
+            prompt_version=CITATION_AUDIT_PROMPT_VERSION,
+            max_tokens=CITATION_AUDIT_BATCH_MAX_TOKENS,
+            message_factory=lambda batch: [
                 {"role": "system", "content": CITATION_AUDIT_PROMPT},
                 {
                     "role": "user",
-                    "content": _json(
-                        {
-                            "report_sentences": [
-                                sentence
-                                for _, sentence in auditable_sentences
-                            ],
-                            "cited_passages": [
-                                passage_map[pid]
-                                for pid in {
-                                    pid
-                                    for _, sentence in auditable_sentences
-                                    for pid in sentence.passage_ids
-                                }
-                                if pid in passage_map
-                            ],
-                        }
-                    ),
+                    "content": _json(citation_audit_batch_payload(batch)),
                 },
             ],
-            output_schema=CitationAuditOutput,
-            max_tokens=6000,
         )
-        if isinstance(response, VerificationState):
-            return response
-        guarded = _guard_citation_audit(state.report_draft, passage_map, response.output)
+        if isinstance(batch_result, VerificationState):
+            return batch_result
+        audits = [
+            audit
+            for response in batch_result.responses
+            for audit in response.output.sentence_audits
+        ]
+        required_pairs = [(task.sentence_ref, task.passage_id) for task in tasks]
+        received_pairs = [(audit.sentence_ref, audit.passage_id) for audit in audits]
+        if len(received_pairs) == len(set(received_pairs)) and set(received_pairs) == set(
+            required_pairs
+        ):
+            audits_by_pair = {
+                (audit.sentence_ref, audit.passage_id): audit for audit in audits
+            }
+            audits = [audits_by_pair[pair] for pair in required_pairs]
+        guarded = _guard_citation_audit(
+            state.report_draft,
+            passage_map,
+            CitationAuditOutput(sentence_audits=audits, needs_revision=False),
+        )
         if guarded is None:
             return await self._failure(
                 state,
@@ -954,7 +1108,10 @@ class WorkflowNodes:
         updated = state.complete(
             WorkflowStage.CITATION_AUDIT,
             citation_audit=guarded,
-            model_calls={**state.model_calls, WorkflowStage.CITATION_AUDIT.value: response.metadata},
+            model_calls={
+                **state.model_calls,
+                WorkflowStage.CITATION_AUDIT.value: batch_result.metadata,
+            },
         )
         if not guarded.needs_revision:
             updated = _apply_partial_citation_penalty(updated)

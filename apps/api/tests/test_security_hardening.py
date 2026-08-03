@@ -112,10 +112,13 @@ def test_production_config_rejects_insecure_origins_and_placeholder_credentials(
 def test_production_config_rejects_insecure_worker_and_storage_transports(override, message):
     values = {
         "environment": "production",
+        "ELARA_RELEASE_REVISION": "a" * 40,
         "web_app_url": "https://app.example.com",
         "cors_allowed_origins": ["https://app.example.com"],
         "database_url": "postgresql+psycopg://elara:secret@db.example.com/elara",
         "redis_url": "rediss://redis.example.com/0",
+        "celery_broker_url": "rediss://broker.example.com/0",
+        "celery_result_backend": "rediss://results.example.com/0",
         "s3_endpoint_url": "https://storage.example.com",
         "s3_public_endpoint_url": "https://downloads.example.com",
         "s3_access_key_id": "access-key",
@@ -125,4 +128,4 @@ def test_production_config_rejects_insecure_worker_and_storage_transports(overri
         "firebase_private_key": "private-key",
     }
     with pytest.raises(ValidationError, match=message):
-        Settings(**{**values, **override})
+        Settings(_env_file=None, **{**values, **override})

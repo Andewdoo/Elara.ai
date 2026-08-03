@@ -1,9 +1,13 @@
 import pytest
 from pydantic import ValidationError
 
+from agents.batching import chunked
+from agents.citation_audit import build_citation_audit_tasks
+from agents.evidence_classification import classification_task_ref
 from agents.schemas import (
     AtomicClaimOutput,
     ClaimKind,
+    CitationAuditBatchOutput,
     DecompositionOutput,
     FactCheckability,
     Importance,
@@ -114,6 +118,52 @@ def test_model_synthesis_draft_rejects_free_form_factual_gap_fields():
                 "limitations": ["A separate source confirmed the claim."],
             }
         )
+
+
+def test_citation_audit_batch_output_rejects_run_level_decisions():
+    with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
+        CitationAuditBatchOutput.model_validate(
+            {"sentence_audits": [], "needs_revision": False}
+        )
+
+
+def test_batch_helpers_preserve_order_and_bounds():
+    values = list(range(10))
+
+    batches = chunked(values, 4)
+
+    assert [len(batch) for batch in batches] == [4, 4, 2]
+    assert [item for batch in batches for item in batch] == values
+    assert chunked([], 4) == []
+
+
+def test_stable_classification_and_citation_pair_references_are_unchanged():
+    report = SynthesisOutput.model_validate(
+        {
+            "title": "Assessment",
+            "summary_sentences": [
+                {
+                    "sentence_ref": "summary-1",
+                    "text": "The filing reports the value.",
+                    "passage_ids": ["passage-2", "passage-1"],
+                }
+            ],
+        }
+    )
+    passage = type("Passage", (), {"text": "Source passage"})
+
+    tasks = build_citation_audit_tasks(
+        report,
+        {"passage-1": passage(), "passage-2": passage()},
+    )
+
+    assert classification_task_ref("claim-1", "passage-1") == (
+        "classification-d1b91dcb0727cb47d7ef5348"
+    )
+    assert [(task.sentence_ref, task.passage_id) for task in tasks] == [
+        ("summary-1", "passage-2"),
+        ("summary-1", "passage-1"),
+    ]
 
     with pytest.raises(ValidationError, match="sentence_ref values must be unique"):
         SynthesisDraftOutput.model_validate(

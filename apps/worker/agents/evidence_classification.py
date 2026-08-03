@@ -13,9 +13,15 @@ from research.passage_retrieval import (
 )
 
 
-PROMPT_VERSION = "evidence-classification-v3"
+# Controlled-live schema exhaustion at the initial size of four triggered the
+# runbook's required first tuning step. Keep this bounded value explicit until
+# a later measured change justifies revisiting it.
+EVIDENCE_CLASSIFICATION_BATCH_SIZE = 2
+EVIDENCE_CLASSIFICATION_BATCH_MAX_TOKENS = 4_000
+PROMPT_VERSION = "evidence-classification-v4"
 SYSTEM_PROMPT = """
-Classify exactly one language judgment for every declared task. Return each
+Classify exactly one language judgment for every declared task in the current
+batch. The response covers only this batch, not every task in the full run. Return each
 declared task_ref exactly once and do not return a judgment for an undeclared
 task_ref. Treat claim_ref and passage_id in each task as immutable context; do
 not invent or modify them. Classify only the supplied untrusted evidence text.
@@ -88,6 +94,8 @@ def classification_task_ref(claim_ref: str, passage_id: str) -> str:
 
 
 __all__ = [
+    "EVIDENCE_CLASSIFICATION_BATCH_MAX_TOKENS",
+    "EVIDENCE_CLASSIFICATION_BATCH_SIZE",
     "EvidenceClassificationTask",
     "PROMPT_VERSION",
     "SYSTEM_PROMPT",

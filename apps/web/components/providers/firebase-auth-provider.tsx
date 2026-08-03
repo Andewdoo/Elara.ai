@@ -47,27 +47,22 @@ export function FirebaseAuthProvider({ children, publicFirebaseConfig }: { child
 
   useEffect(() => {
     if (!configured) {
-      setLoading(false);
       return;
     }
 
     let active = true;
-    let timeout: number | undefined;
     let unsubscribe: (() => void) | undefined;
 
     const complete = (nextUser: User | null) => {
       if (!active) {
         return;
       }
-      if (timeout !== undefined) {
-        window.clearTimeout(timeout);
-      }
+      window.clearTimeout(timeout);
       setUser(nextUser);
       setLoading(false);
     };
 
-    setLoading(true);
-    timeout = window.setTimeout(() => {
+    const timeout = window.setTimeout(() => {
       complete(null);
     }, AUTH_STATE_TIMEOUT_MS);
 
@@ -86,9 +81,7 @@ export function FirebaseAuthProvider({ children, publicFirebaseConfig }: { child
 
     return () => {
       active = false;
-      if (timeout !== undefined) {
-        window.clearTimeout(timeout);
-      }
+      window.clearTimeout(timeout);
       unsubscribe?.();
     };
   }, [configured, publicFirebaseConfig]);

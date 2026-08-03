@@ -36,24 +36,28 @@ def test_health_exposes_non_secret_revision(client):
     }
 
 
-def test_staging_and_production_require_release_revision():
+@pytest.mark.parametrize("release_revision", [None, "local"])
+def test_staging_and_production_require_release_revision(release_revision):
+    values = {
+        "environment": "staging",
+        "web_app_url": "https://app.example.test",
+        "cors_allowed_origins": ["https://app.example.test"],
+        "database_url": "postgresql+psycopg://elara:password@db.example.test:5432/elara",
+        "redis_url": "rediss://redis.example.test:6379/0",
+        "celery_broker_url": "rediss://redis.example.test:6379/0",
+        "celery_result_backend": "rediss://redis.example.test:6379/1",
+        "s3_endpoint_url": "https://objects-internal.example.test",
+        "s3_public_endpoint_url": "https://downloads.example.test",
+        "firebase_project_id": "firebase-project",
+        "firebase_client_email": "firebase-admin@example.test",
+        "firebase_private_key": "private-key",
+        "s3_access_key_id": "access-key",
+        "s3_secret_access_key": "secret-key",
+    }
+    if release_revision is not None:
+        values["ELARA_RELEASE_REVISION"] = release_revision
     with pytest.raises(ValidationError, match="ELARA_RELEASE_REVISION"):
-        Settings(
-            environment="staging",
-            web_app_url="https://app.example.test",
-            cors_allowed_origins=["https://app.example.test"],
-            database_url="postgresql+psycopg://elara:password@db.example.test:5432/elara",
-            redis_url="rediss://redis.example.test:6379/0",
-            celery_broker_url="rediss://redis.example.test:6379/0",
-            celery_result_backend="rediss://redis.example.test:6379/1",
-            s3_endpoint_url="https://objects-internal.example.test",
-            s3_public_endpoint_url="https://downloads.example.test",
-            firebase_project_id="firebase-project",
-            firebase_client_email="firebase-admin@example.test",
-            firebase_private_key="private-key",
-            s3_access_key_id="access-key",
-            s3_secret_access_key="secret-key",
-        )
+        Settings(_env_file=None, **values)
 
 
 def test_staging_allows_internal_compose_redis_and_instance_role_s3():
@@ -181,10 +185,13 @@ def test_step25a_alert_definitions_cover_required_operational_signals():
     }
 
 
-def test_step25a_controlled_live_cases_cover_every_mvp_input_type():
+def test_step25a_controlled_live_cases_cover_every_supported_input_type():
     plan = json.loads(
         (REPO_ROOT / "infrastructure" / "controlled-live-cases.step25a.json").read_text()
     )
 
-    assert {case["input_type"] for case in plan["cases"]} == {item.value for item in InputType}
+    supported_input_types = {
+        item.value for item in InputType if item is not InputType.ARTICLE_TITLE
+    }
+    assert {case["input_type"] for case in plan["cases"]} == supported_input_types
     assert "Do not place private data" in plan["log_policy"]

@@ -28,8 +28,16 @@ test("live view exposes required public progress controls", async () => {
   assert.match(view, /progressHistoryQuery/);
   assert.match(view, /CircleCheck/);
   assert.match(view, /index \+ 1 < completedSteps/);
+  assert.match(view, /workflow\.evidence_classification\./);
+  assert.match(view, /Classifying evidence/);
+  assert.match(view, /workflow\.deterministic_scoring\./);
+  assert.match(view, /Calculating scores/);
+  assert.match(view, /workflow\.numerical_audit\./);
+  assert.match(view, /Auditing calculations/);
+  assert.match(view, /durableTerminal[\s\S]*failure_message/);
   assert.match(hook, /\["run-progress", runId\]/);
   assert.match(hook, /\/v1\/verifications\/\$\{runId\}\/progress/);
   assert.match(view, /Cancel research/);
   assert.doesNotMatch(view, /Polling PostgreSQL|Latest public event|Run \{runId\}/);
+  assert.doesNotMatch(view, /DeepSeek|prompt_version|schema_error|passage_id/i);
 });
