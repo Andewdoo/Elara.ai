@@ -1206,17 +1206,17 @@ def test_evidence_classification_batches_ten_tasks_with_bounded_concurrency_and_
     )
 
     payloads = [json.loads(call["messages"][1]["content"]) for call in model.calls]
-    assert [len(payload["tasks"]) for payload in payloads] == [2, 2, 2, 2, 2]
+    assert [len(payload["tasks"]) for payload in payloads] == [1] * 10
     assert model.max_active == 2
     assert all(call["prompt_version"] == "evidence-classification-v4" for call in model.calls)
     assert all(call["max_tokens"] == 4_000 for call in model.calls)
     assert all(call["max_schema_attempts"] == 2 for call in model.calls)
     assert [item.passage_id for item in result.evidence] == [task.passage_id for task in tasks]
     metadata = result.model_calls[WorkflowStage.EVIDENCE_CLASSIFICATION.value]
-    assert metadata.batch_count == 5
-    assert metadata.request_count == 10
-    assert metadata.repair_count == 5
-    assert metadata.usage.total_tokens == 75
+    assert metadata.batch_count == 10
+    assert metadata.request_count == 20
+    assert metadata.repair_count == 10
+    assert metadata.usage.total_tokens == 150
     assert metadata.latency_ms == 123
 
 
@@ -1279,7 +1279,7 @@ def test_failed_evidence_batch_discards_partials_and_emits_one_content_free_fail
     )
     assert error.details == {
         "batch_index": 2,
-        "batch_count": 5,
+        "batch_count": 10,
         "provider": "deepseek",
         "model": "deepseek-chat",
         "status_code": 200,
@@ -1324,7 +1324,12 @@ def test_evidence_classification_requires_exact_task_coverage_and_uses_v4_payloa
     tasks = build_classification_tasks(
         value.claims, value.passages, research_depth=value.research_depth.value
     )
-    model = FakeModel([{"classifications": [_classification_judgment(task.task_ref) for task in tasks]}])
+    model = FakeModel(
+        [
+            {"classifications": [_classification_judgment(task.task_ref)]}
+            for task in tasks
+        ]
+    )
     progress = RecordingProgress()
 
     result = asyncio.run(
@@ -1333,12 +1338,16 @@ def test_evidence_classification_requires_exact_task_coverage_and_uses_v4_payloa
         ).evidence_classification(value)
     )
 
-    payload = json.loads(model.calls[0]["messages"][1]["content"])
-    assert model.calls[0]["prompt_version"] == "evidence-classification-v4"
-    assert model.calls[0]["max_tokens"] == 4_000
-    assert model.calls[0]["max_schema_attempts"] == 2
-    assert set(payload) == {"tasks"}
-    assert [task["task_ref"] for task in payload["tasks"]] == [task.task_ref for task in tasks]
+    payloads = [json.loads(call["messages"][1]["content"]) for call in model.calls]
+    assert all(call["prompt_version"] == "evidence-classification-v4" for call in model.calls)
+    assert all(call["max_tokens"] == 4_000 for call in model.calls)
+    assert all(call["max_schema_attempts"] == 2 for call in model.calls)
+    assert all(set(payload) == {"tasks"} for payload in payloads)
+    assert [
+        task["task_ref"]
+        for payload in payloads
+        for task in payload["tasks"]
+    ] == [task.task_ref for task in tasks]
     assert {(item.claim_ref, item.passage_id) for item in result.evidence} == {
         (task.claim_ref, task.passage_id) for task in tasks
     }

@@ -13,10 +13,10 @@ from research.passage_retrieval import (
 )
 
 
-# Controlled-live schema exhaustion at the initial size of four triggered the
-# runbook's required first tuning step. Keep this bounded value explicit until
-# a later measured change justifies revisiting it.
-EVIDENCE_CLASSIFICATION_BATCH_SIZE = 2
+# Controlled-live schema exhaustion persisted after reducing the initial batch
+# size from four to two. Keep each classification request to one task so a
+# malformed response repeats the smallest possible unit of language work.
+EVIDENCE_CLASSIFICATION_BATCH_SIZE = 1
 EVIDENCE_CLASSIFICATION_BATCH_MAX_TOKENS = 4_000
 PROMPT_VERSION = "evidence-classification-v4"
 SYSTEM_PROMPT = """

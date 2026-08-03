@@ -804,6 +804,46 @@ def test_retrieval_converts_retryable_fetch_error_to_safe_workflow_failure():
     assert caught.value.details == {"failure_kind": "fetch", "error_code": "fetch_unavailable"}
 
 
+def test_retrieval_retains_partial_success_when_one_discovered_source_is_temporarily_unavailable():
+    class MixedFetcher:
+        async def fetch(self, url: str) -> FetchResult:
+            if url.endswith("/temporarily-unavailable"):
+                raise FetchError("private upstream 429 detail", retryable=True)
+            return FetchResult(
+                requested_url=url,
+                final_url=url,
+                status_code=200,
+                content_type="text/html",
+                content_length=12,
+                content_hash="c" * 64,
+                storage_path="fixture.html",
+                redirect_chain=(),
+                origin_fetched_at="2026-08-03T00:00:00+00:00",
+            )
+
+    state = _pipeline_source_state()
+    unavailable = CandidateSource(
+        source_ref="source-2",
+        url="https://example.test/temporarily-unavailable",
+        canonical_url="https://example.test/temporarily-unavailable",
+        domain="example.test",
+        selection_reason="partial retrieval failure test",
+    )
+    state = state.model_copy(update={"candidate_sources": [*state.candidate_sources, unavailable]})
+    pipeline = RetrievalPipeline(search=object(), fetcher=MixedFetcher())  # type: ignore[arg-type]
+
+    retrieved = run(pipeline.retrieve(state))
+
+    assert [snapshot.access_status for snapshot in retrieved.snapshots] == [
+        "FETCHED",
+        "INACCESSIBLE",
+    ]
+    limitation = retrieved.snapshots[1]
+    assert limitation.failure_reason == "The evidence source was temporarily unavailable."
+    assert limitation.metadata["inaccessible_reason_code"] == "SOURCE_INACCESSIBLE"
+    assert "429" not in limitation.failure_reason
+
+
 def test_extraction_marks_untrusted_parser_bytes_but_propagates_programming_failures():
     snapshot = SnapshotRecord(
         snapshot_id="snapshot-1",

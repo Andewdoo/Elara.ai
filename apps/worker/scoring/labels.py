@@ -59,10 +59,23 @@ def confidence_label(confidence: Decimal) -> str:
     return "Very low"
 
 
+def insufficient_evidence_label(support: Decimal | None) -> str:
+    """Preserve the gate while exposing the accepted evidence's direction."""
+    prefix = "Insufficient evidence"
+    if support is None:
+        return prefix
+    value = score(support, "support")
+    if value >= Decimal("60"):
+        return f"{prefix}: leans supported"
+    if value < Decimal("40"):
+        return f"{prefix}: leans contradicted"
+    return f"{prefix}: mixed"
+
+
 def final_claim_label(*, support: Decimal | None, confidence: Decimal,
                       context: Decimal, insufficient: InsufficientEvidence) -> str:
     if support is None or confidence < Decimal("35") or insufficient.triggered:
-        return "Insufficient evidence"
+        return insufficient_evidence_label(support)
     if support >= Decimal("70") and context < Decimal("50"):
         return "Technically supported but misleading"
     if support >= Decimal("90") and context >= Decimal("70"):
@@ -75,7 +88,7 @@ def article_label(*, factual_accuracy: Decimal | None, insufficient: Insufficien
                   verdict_confidence: Decimal = Decimal("100"),
                   context: Decimal = Decimal("100")) -> str:
     if factual_accuracy is None or verdict_confidence < Decimal("35") or insufficient.triggered:
-        return "Insufficient evidence"
+        return insufficient_evidence_label(factual_accuracy)
     if factual_accuracy >= Decimal("70") and context < Decimal("50"):
         return "Technically supported but misleading"
     label = support_label(factual_accuracy)

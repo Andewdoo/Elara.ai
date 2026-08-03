@@ -10,7 +10,13 @@ from scoring.formulas import (
     evidence_balance, evidence_quality, quote_fidelity, source_independence,
     verdict_confidence,
 )
-from scoring.labels import InsufficientEvidence, article_label, final_claim_label, support_label
+from scoring.labels import (
+    InsufficientEvidence,
+    article_label,
+    final_claim_label,
+    insufficient_evidence_label,
+    support_label,
+)
 from scoring.service import CONFIDENCE_PENALTIES, DeterministicScoringService
 from research.extension_errors import WorkflowExtensionError
 from agents.schemas import (AtomicClaimOutput, ClaimAmbiguityOutput, ClaimKind, ConfidenceIssue, ContextIssue,
@@ -84,19 +90,36 @@ def test_support_label_boundaries(value, label):
     assert support_label(Decimal(value)) == label
 
 
+@pytest.mark.parametrize("value,label", [
+    (None, "Insufficient evidence"),
+    (100, "Insufficient evidence: leans supported"),
+    (60, "Insufficient evidence: leans supported"),
+    (59, "Insufficient evidence: mixed"),
+    (40, "Insufficient evidence: mixed"),
+    (39, "Insufficient evidence: leans contradicted"),
+    (0, "Insufficient evidence: leans contradicted"),
+])
+def test_insufficient_evidence_label_preserves_gate_and_adds_direction(value, label):
+    support = Decimal(value) if value is not None else None
+    assert insufficient_evidence_label(support) == label
+
+
 def test_insufficient_context_and_essential_claim_gates_override_numeric_label():
     sparse = InsufficientEvidence(total_below_minimum=True)
     assert final_claim_label(support=Decimal("99"), confidence=Decimal("99"),
-                             context=Decimal("100"), insufficient=sparse) == "Insufficient evidence"
+                             context=Decimal("100"), insufficient=sparse) == "Insufficient evidence: leans supported"
     assert final_claim_label(support=Decimal("99"), confidence=Decimal("34"),
-                             context=Decimal("100"), insufficient=InsufficientEvidence()) == "Insufficient evidence"
+                             context=Decimal("100"), insufficient=InsufficientEvidence()) == "Insufficient evidence: leans supported"
     assert final_claim_label(support=Decimal("80"), confidence=Decimal("80"),
                              context=Decimal("49"), insufficient=InsufficientEvidence()) == "Technically supported but misleading"
     assert article_label(factual_accuracy=Decimal("95"), insufficient=InsufficientEvidence(),
                          strongly_refuted_essential_claim=True) == "Mostly supported"
     assert article_label(factual_accuracy=Decimal("95"), insufficient=InsufficientEvidence(),
                          strongly_refuted_essential_claim=False,
-                         verdict_confidence=Decimal("34")) == "Insufficient evidence"
+                         verdict_confidence=Decimal("34")) == "Insufficient evidence: leans supported"
+    assert article_label(factual_accuracy=Decimal("5"), insufficient=InsufficientEvidence(),
+                         strongly_refuted_essential_claim=False,
+                         verdict_confidence=Decimal("34")) == "Insufficient evidence: leans contradicted"
     assert article_label(factual_accuracy=Decimal("80"), insufficient=InsufficientEvidence(),
                          strongly_refuted_essential_claim=False,
                          context=Decimal("49")) == "Technically supported but misleading"
@@ -241,7 +264,7 @@ def test_unresolved_key_fact_gate_is_applied_by_state_service():
     )
     result = asyncio.run(DeterministicScoringService().process(state))
 
-    assert result.claim_scores[0].final_label == "Insufficient evidence"
+    assert result.claim_scores[0].final_label == "Insufficient evidence: leans supported"
     assert "key_definitions_dates_or_identities_unresolved" in result.claim_scores[0].gates["insufficient_evidence"]
     attribution = next(
         row
@@ -399,7 +422,7 @@ def test_owned_ambiguity_is_non_blocking_for_adequate_unopposed_support():
         "unresolved_key_facts": False,
     }
     assert Decimal(ambiguity_gate.inputs["contradiction_ratio"]) == 0
-    assert ambiguity_gate.inputs["scoring_version"] == "1.3-qualified-ambiguity"
+    assert ambiguity_gate.inputs["scoring_version"] == "1.4-directional-insufficient-evidence"
     assert "The price interpretation" not in str(ambiguity_gate.inputs)
     assert "reasoning" not in ambiguity_gate.inputs
 
@@ -407,9 +430,9 @@ def test_owned_ambiguity_is_non_blocking_for_adequate_unopposed_support():
 @pytest.mark.parametrize(
     ("fixture", "expected_claim_label"),
     [
-        (_ambiguity_fixture(contradiction=True), "Insufficient evidence"),
-        (_ambiguity_fixture(multiplier=Decimal("0.35")), "Insufficient evidence"),
-        (_ambiguity_fixture(source_type="OFFICIAL_SELF_REPORT"), "Insufficient evidence"),
+        (_ambiguity_fixture(contradiction=True), "Insufficient evidence: mixed"),
+        (_ambiguity_fixture(multiplier=Decimal("0.35")), "Insufficient evidence: leans supported"),
+        (_ambiguity_fixture(source_type="OFFICIAL_SELF_REPORT"), "Insufficient evidence: leans supported"),
     ],
 )
 def test_owned_ambiguity_keeps_existing_claim_safety_gates(

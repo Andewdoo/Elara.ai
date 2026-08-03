@@ -314,6 +314,7 @@ class RetrievalPipeline:
     async def retrieve(self, state: VerificationState) -> VerificationState:
         snapshots: list[SnapshotRecord] = []
         resolved_sources: dict[str, CandidateSource] = {}
+        retryable_discovered_failure = False
         for source in state.candidate_sources:
             snapshot_id = str(uuid4())
             retrieved_at = datetime.now(UTC)
@@ -359,31 +360,20 @@ class RetrievalPipeline:
                     )
                 )
             except FetchError as exc:
-                if exc.retryable and source.source_origin != "submitted_url":
-                    # A raw FetchError bypasses the workflow extension boundary
-                    # and becomes a generic worker failure. Preserve neither the
-                    # URL nor provider diagnostics in durable state; expose only
-                    # the typed, retryable category that the Celery task maps to
-                    # its bounded retrieval retry budget.
-                    raise WorkflowExtensionError(
-                        code="FETCH_UNAVAILABLE",
-                        public_message="A source retrieval service was temporarily unavailable.",
-                        retryable=True,
-                        details={"failure_kind": "fetch", "error_code": "fetch_unavailable"},
-                    ) from exc
                 submitted_failure = source.source_origin == "submitted_url"
+                retryable_discovered_failure = (
+                    retryable_discovered_failure or (exc.retryable and not submitted_failure)
+                )
                 snapshots.append(
                     SnapshotRecord(
                         snapshot_id=snapshot_id,
                         source_ref=source.source_ref,
-                        # A pasted URL is an input limitation.  Its transient
-                        # outage must not discard independently retrieved Brave
-                        # evidence or trigger an unbounded whole-run retry.
-                        access_status=("INACCESSIBLE" if submitted_failure and exc.retryable else exc.access_status),
+                        # An inaccessible URL is a source limitation. Its
+                        # transient outage must not discard snapshots already
+                        # retrieved from independent evidence sources.
+                        access_status=("INACCESSIBLE" if exc.retryable else exc.access_status),
                         retrieved_at=retrieved_at,
-                        failure_reason=(
-                            _submitted_url_failure_reason(exc) if submitted_failure else str(exc)
-                        ),
+                        failure_reason=_source_failure_reason(exc, submitted=submitted_failure),
                         metadata={
                             "source_origin": source.source_origin,
                             "inaccessible_reason_code": _inaccessible_reason_code(
@@ -407,6 +397,16 @@ class RetrievalPipeline:
                         "submitted_url_count": submitted_count,
                         "snapshot_count": len(snapshots),
                     },
+                )
+            if retryable_discovered_failure:
+                # Retry the whole task only when transient failures left the run
+                # with no usable evidence. A single inaccessible candidate must
+                # not discard snapshots already fetched from other sources.
+                raise WorkflowExtensionError(
+                    code="FETCH_UNAVAILABLE",
+                    public_message="A source retrieval service was temporarily unavailable.",
+                    retryable=True,
+                    details={"failure_kind": "fetch", "error_code": "fetch_unavailable"},
                 )
             raise WorkflowExtensionError(
                 code="NO_ACCESSIBLE_SOURCES",
@@ -755,6 +755,24 @@ def _submitted_url_failure_reason(exc: FetchError) -> str:
             "The submitted URL was temporarily unavailable."
             if exc.retryable
             else "The submitted URL could not be accessed safely."
+        ),
+    )
+
+
+def _source_failure_reason(exc: FetchError, *, submitted: bool) -> str:
+    """Return a public source limitation without transport or URL details."""
+    if submitted:
+        return _submitted_url_failure_reason(exc)
+    return {
+        "PAYWALLED": "The evidence source is paywalled or requires authentication.",
+        "BOT_BLOCKED": "The evidence source denied automated retrieval.",
+        "UNSUPPORTED": "The evidence source returned unsupported content.",
+    }.get(
+        exc.access_status,
+        (
+            "The evidence source was temporarily unavailable."
+            if exc.retryable
+            else "The evidence source could not be accessed safely."
         ),
     )
 

@@ -32,6 +32,8 @@ test("workspace exposes user-facing tabs, exact passages, graph, and score chart
   assert.match(graph, /<details/);
   assert.doesNotMatch(workspace, /Report details/);
   assert.match(charts, /research_coverage/);
+  assert.match(workspace, /claimLabelTone/);
+  assert.match(workspace, /!normalized\.startsWith\("insufficient evidence"\)/);
 });
 
 test("workspace assigns distinct keys to duplicate limitation text", async () => {
