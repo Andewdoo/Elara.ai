@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export type ReportTab = "overview" | "claims" | "evidence" | "graph";
-export type EvidenceFilter = "all" | "supporting" | "contradicting" | "inaccessible";
+export type EvidenceFilter = "all" | "supporting" | "contradicting" | "neutral" | "inaccessible";
 export type GraphLayoutMode = "dependency" | "cluster";
 
 type ReportUiState = {

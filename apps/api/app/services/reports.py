@@ -173,7 +173,7 @@ def build_report(db: Session, *, run: VerificationRun) -> ReportResponse:
                 id=item.id,
                 atomic_claim_id=item.atomic_claim_id,
                 passage_id=item.passage_id,
-                stance=item.stance.value,
+                stance=item.stance,
                 base_quality=float(item.base_quality),
                 dependency_multiplier=float(item.dependency_multiplier),
                 adjusted_weight=float(item.adjusted_weight),

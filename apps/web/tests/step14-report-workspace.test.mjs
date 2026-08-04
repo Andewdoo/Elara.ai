@@ -40,3 +40,40 @@ test("workspace assigns distinct keys to duplicate limitation text", async () =>
   const workspace = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
   assert.match(workspace, /limitations\.map\(\(item, index\) => <p key=\{`\$\{item\}-\$\{index\}`\}/);
 });
+
+test("report redesign keeps the ledger layout responsive and hydration-stable", async () => {
+  const workspace = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
+  const charts = await readFile(join(root, "components", "report", "score-charts.tsx"), "utf8");
+  const styles = await readFile(join(root, "app", "globals.css"), "utf8");
+
+  assert.match(workspace, /report-ledger/);
+  assert.match(workspace, /font-editorial/);
+  assert.match(workspace, /min-h-11/);
+  assert.match(workspace, /reportDateTimeFormat/);
+  assert.match(workspace, /timeZone: "UTC"/);
+  assert.match(charts, /<div className="sr-only"><table>/);
+  assert.match(styles, /\.report-ledger/);
+  assert.match(styles, /prefers-reduced-motion: reduce/);
+});
+
+test("workspace groups every supported stored evidence stance without browser-side inference", async () => {
+  const workspace = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
+  const evidence = await readFile(join(root, "lib", "report-evidence.ts"), "utf8");
+
+  for (const stance of ["STRONGLY_SUPPORTS", "PARTIALLY_SUPPORTS", "STRONGLY_CONTRADICTS", "PARTIALLY_CONTRADICTS", "NEUTRAL"]) {
+    assert.match(evidence, new RegExp(stance));
+  }
+  assert.match(evidence, /typeof stance === "string"/);
+  assert.doesNotMatch(evidence, /\.includes\(/);
+  assert.match(workspace, /groupEvidenceByStance\(report\.evidence\)/);
+  assert.match(workspace, /Evidence data needs review/);
+  assert.match(workspace, /<option value="neutral">Neutral<\/option>/);
+  assert.match(workspace, /invalid\.length < report\.evidence\.length/);
+});
+
+test("desktop source drawer is viewport-bounded and does not stretch with report content", async () => {
+  const workspace = await readFile(join(root, "components", "report", "report-workspace.tsx"), "utf8");
+
+  assert.match(workspace, /grid min-w-0 items-start bg-card/);
+  assert.match(workspace, /xl:static xl:z-auto xl:max-h-\[calc\(100dvh-3rem\)\] xl:min-h-0 xl:self-start/);
+});

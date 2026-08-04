@@ -54,3 +54,13 @@ def test_compose_environment_overrides_private_host_redis_urls_for_containers():
             value = _environment_value(definition, name)
             assert "localhost" not in value
             assert "127.0.0.1" not in value
+
+
+def test_web_compose_service_uses_live_host_source_with_an_isolated_next_cache():
+    compose = COMPOSE_PATH.read_text(encoding="utf-8")
+    definition = _service_definition(compose, "web")
+
+    assert _environment_value(definition, "WATCHPACK_POLLING") == '"true"'
+    assert "./apps/web:/app/apps/web" in definition
+    assert "web-next-cache:/app/apps/web/.next" in definition
+    assert "  web-next-cache:" in compose

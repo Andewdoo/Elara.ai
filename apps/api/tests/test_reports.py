@@ -1,15 +1,42 @@
 from datetime import UTC, datetime
 from uuid import uuid4
 
+import pytest
+
 from app.models import (
     AtomicClaim,
     Calculation,
+    EvidenceStance,
     InputType,
     MethodologyVersion,
     ResearchDepth,
     RunStatus,
     VerificationRun,
 )
+from app.schemas.verifications import EvidenceItemResponse
+
+
+def test_evidence_item_report_contract_accepts_only_stored_evidence_stances():
+    payload = {
+        "id": uuid4(),
+        "atomic_claim_id": uuid4(),
+        "passage_id": uuid4(),
+        "base_quality": 0.9,
+        "dependency_multiplier": 1.0,
+        "adjusted_weight": 0.9,
+        "citation_status": "accepted",
+        "passage_text": "Stored source passage.",
+        "source_title": "Example source",
+        "source_url": "https://example.test/source",
+        "page_or_position": "paragraph 1",
+    }
+
+    for stance in EvidenceStance:
+        response = EvidenceItemResponse.model_validate({**payload, "stance": stance.value})
+        assert response.stance is stance
+
+    with pytest.raises(ValueError):
+        EvidenceItemResponse.model_validate({**payload, "stance": "UNCLASSIFIED"})
 
 
 def test_report_exposes_calculation_inputs_decimal_context_and_audit_status(

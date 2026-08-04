@@ -163,13 +163,21 @@ services:
       # app, while retaining localhost as an allowed API CORS origin above.
       NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:8000}
       NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
+      # Keep the container's Next dev server in sync with the same source tree
+      # used by `npm run dev`; polling makes host-file updates reliable on Docker Desktop.
+      WATCHPACK_POLLING: "true"
     depends_on:
       - api
     ports:
       - "127.0.0.1:3000:3000"
+    volumes:
+      - ./apps/web:/app/apps/web
+      - web-next-cache:/app/apps/web/.next
+      - ./infrastructure/docker/web.instrumentation.local.ts:/app/apps/web/instrumentation.ts:ro
 
 volumes:
   postgres-data:
   redis-data:
   object-storage-data:
   fetch-storage-data:
+  web-next-cache:

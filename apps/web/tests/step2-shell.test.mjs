@@ -84,7 +84,7 @@ test("Lite browser surface only references public env and never service-role acc
     assert.match(await readFile(join(root, "..", "..", ".env.example"), "utf8"), new RegExp(`${name}=`));
   }
   for (const name of envReferences) {
-    assert.match(name, /^NEXT_PUBLIC_/);
+    assert.ok(name === "NODE_ENV" || /^NEXT_PUBLIC_/.test(name), `Unexpected browser environment reference: ${name}`);
   }
   for (const name of forbiddenServerEnv) {
     assert.doesNotMatch(browserSource, new RegExp(`process\\.env\\.${name}\\b`));

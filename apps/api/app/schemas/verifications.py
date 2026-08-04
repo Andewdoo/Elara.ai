@@ -5,7 +5,7 @@ from urllib.parse import urlsplit
 from uuid import UUID
 
 from pydantic import AnyHttpUrl, BaseModel, Field, field_validator, model_validator
-from app.models.enums import ExportFormat, FeedbackCategory, InputType, ResearchDepth, RunStatus
+from app.models.enums import EvidenceStance, ExportFormat, FeedbackCategory, InputType, ResearchDepth, RunStatus
 
 
 class VerificationCreateRequest(BaseModel):
@@ -269,7 +269,7 @@ class EvidenceItemResponse(BaseModel):
     id: UUID
     atomic_claim_id: UUID
     passage_id: UUID
-    stance: str
+    stance: EvidenceStance
     base_quality: float
     dependency_multiplier: float
     adjusted_weight: float
