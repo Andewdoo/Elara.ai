@@ -26,7 +26,11 @@ from app.models import (
     User,
     VerificationRun,
 )
-from app.redis_client import cancellation_key, progress_stream_key, publish_progress_event
+from app.redis_client import (
+    cancellation_key,
+    progress_stream_key,
+    publish_progress_event,
+)
 from app.services.run_lifecycle import persist_completed_run, persist_progress
 from app.services.reports import build_report
 from elara_worker.errors import TransientFetchError, TransientProviderError
@@ -50,7 +54,9 @@ class FakeRedis:
         event_id = str(_.get("id", f"{len(self.streams.get(key, [])) + 1}-0"))
         ids = self.stream_ids.setdefault(key, set())
         if event_id in ids:
-            raise ResponseError("ID is equal or smaller than the target stream top item")
+            raise ResponseError(
+                "ID is equal or smaller than the target stream top item"
+            )
         ids.add(event_id)
         events = self.streams.setdefault(key, [])
         events.append(fields)
@@ -202,7 +208,9 @@ def test_task_contract_has_bounded_transient_retries():
     assert verify_run.autoretry_for == (TransientProviderError, TransientFetchError)
 
 
-def test_task_invokes_full_verification_graph_after_durable_validation(monkeypatch: pytest.MonkeyPatch):
+def test_task_invokes_full_verification_graph_after_durable_validation(
+    monkeypatch: pytest.MonkeyPatch,
+):
     factory, run = make_run()
     redis_client = FakeRedis()
     settings = Settings(environment="test")
@@ -251,7 +259,10 @@ def test_production_task_completes_only_after_durable_audited_report_and_is_idem
             (RunStatus.DECOMPOSING, "workflow.decomposition.completed"),
             (RunStatus.RESEARCHING, "workflow.discovery_source_selection.completed"),
             (RunStatus.EXTRACTING, "workflow.extraction.completed"),
-            (RunStatus.ANALYZING_PROVENANCE, "workflow.provenance_dependency_analysis.completed"),
+            (
+                RunStatus.ANALYZING_PROVENANCE,
+                "workflow.provenance_dependency_analysis.completed",
+            ),
             (RunStatus.SCORING, "workflow.numerical_audit.completed"),
             (RunStatus.SYNTHESIZING, "workflow.synthesis.completed"),
             (RunStatus.AUDITING, "workflow.citation_audit.completed"),
@@ -354,9 +365,7 @@ def test_completion_cancellation_race_is_won_by_cancellation(
     assert result.successful()
     with factory() as db:
         durable = db.get(VerificationRun, run.id)
-        events = db.scalars(
-            select(AgentEvent).where(AgentEvent.run_id == run.id)
-        ).all()
+        events = db.scalars(select(AgentEvent).where(AgentEvent.run_id == run.id)).all()
     assert durable is not None and durable.status == RunStatus.CANCELLED
     assert not any(event.event_type == "run.completed" for event in events)
 
@@ -364,7 +373,9 @@ def test_completion_cancellation_race_is_won_by_cancellation(
 def test_synthetic_hosted_run_invalid_research_plan_is_durable_nonretryable_failure(
     monkeypatch: pytest.MonkeyPatch,
 ):
-    factory, run = make_run("Synthetic public claim: the city published its annual budget.")
+    factory, run = make_run(
+        "Synthetic public claim: the city published its annual budget."
+    )
     redis_client = FakeRedis()
     settings = Settings(environment="test")
 
@@ -392,7 +403,9 @@ def test_synthetic_hosted_run_invalid_research_plan_is_durable_nonretryable_fail
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
     monkeypatch.setattr(task_module, "acquired_lock", locked)
-    monkeypatch.setattr(task_module, "execute_verification_workflow", lambda *_args, **_kwargs: stopped)
+    monkeypatch.setattr(
+        task_module, "execute_verification_workflow", lambda *_args, **_kwargs: stopped
+    )
 
     result = verify_run.apply(args=[str(run.id)], throw=False)
 
@@ -424,20 +437,36 @@ def test_synthetic_hosted_run_invalid_research_plan_is_durable_nonretryable_fail
         (
             "NO_DISCOVERY_RESULTS",
             "The configured search policy returned no evidence candidates.",
-            {"provider": "brave", "query_count": 2, "private_error": "https://secret.test"},
+            {
+                "provider": "brave",
+                "query_count": 2,
+                "private_error": "https://secret.test",
+            },
             {"code": "NO_DISCOVERY_RESULTS", "query_count": 2},
         ),
         (
             "SUBMITTED_URL_INACCESSIBLE",
             "The submitted URL could not be retrieved safely.",
-            {"submitted_url_count": 1, "snapshot_count": 1, "raw_exception": "private path"},
-            {"code": "SUBMITTED_URL_INACCESSIBLE", "submitted_url_count": 1, "snapshot_count": 1},
+            {
+                "submitted_url_count": 1,
+                "snapshot_count": 1,
+                "raw_exception": "private path",
+            },
+            {
+                "code": "SUBMITTED_URL_INACCESSIBLE",
+                "submitted_url_count": 1,
+                "snapshot_count": 1,
+            },
         ),
         (
             "NO_EXTRACTED_SOURCES",
             "No retrieved evidence source contained usable extractable content.",
             {"fetched_snapshot_count": 2, "snapshot_count": 2},
-            {"code": "NO_EXTRACTED_SOURCES", "fetched_snapshot_count": 2, "snapshot_count": 2},
+            {
+                "code": "NO_EXTRACTED_SOURCES",
+                "fetched_snapshot_count": 2,
+                "snapshot_count": 2,
+            },
         ),
         (
             "INCOMPLETE_CITATION_AUDIT",
@@ -475,12 +504,16 @@ def test_typed_workflow_failures_persist_only_stable_public_codes_and_counts(
             )
         ],
     )
-    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(
+        task_module, "get_settings", lambda: Settings(environment="test")
+    )
     monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
     monkeypatch.setattr(task_module, "acquired_lock", locked)
-    monkeypatch.setattr(task_module, "execute_verification_workflow", lambda *_args, **_kwargs: stopped)
+    monkeypatch.setattr(
+        task_module, "execute_verification_workflow", lambda *_args, **_kwargs: stopped
+    )
 
     result = verify_run.apply(args=[str(run.id)], throw=False)
 
@@ -522,7 +555,9 @@ def test_task_rejects_exhausted_citation_revision(monkeypatch: pytest.MonkeyPatc
             )
         ],
     )
-    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(
+        task_module, "get_settings", lambda: Settings(environment="test")
+    )
     monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
@@ -553,11 +588,22 @@ def test_task_rejects_exhausted_citation_revision(monkeypatch: pytest.MonkeyPatc
         ("AGENT_CONTRACT_REPAIR_EXHAUSTED", {"semantic_validation_attempt_count": 2}),
         ("STRUCTURED_RESPONSE_INVALID", {"attempt_count": 1}),
         ("STRUCTURED_RESPONSE_REPAIR_EXHAUSTED", {"attempt_count": 2}),
+        ("STRUCTURED_SCHEMA_REPAIR_EXHAUSTED", {"attempt_count": 2}),
         (
             "DEEPSEEK_LANGUAGE_STEP_FAILED",
             {
                 "error_code": "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
                 "attempt_count": 2,
+            },
+        ),
+        (
+            "DEEPSEEK_LANGUAGE_STEP_FAILED",
+            {
+                "error_code": "PROVIDER_BODY_PARSE_EXHAUSTED",
+                "structured_failure_subtype": "content_json",
+                "structured_failure_count": 2,
+                "local_recovery_exhausted": True,
+                "recovery_exhaustion_count": 1,
             },
         ),
     ],
@@ -597,7 +643,9 @@ def test_deterministic_contract_errors_never_enter_celery_retry_budget(
         calls += 1
         return stopped
 
-    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(
+        task_module, "get_settings", lambda: Settings(environment="test")
+    )
     monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
@@ -621,6 +669,11 @@ def test_deterministic_contract_errors_never_enter_celery_retry_budget(
     assert failure is not None
     assert raw_response_marker not in str(failure.payload)
     assert raw_response_marker not in failure.public_message
+    if "structured_failure_subtype" in details:
+        assert (
+            failure.payload["structured_failure_subtype"]
+            == details["structured_failure_subtype"]
+        )
 
 
 @pytest.mark.parametrize(
@@ -664,7 +717,9 @@ def test_retryable_provider_and_fetch_workflow_failures_keep_their_retry_budget(
             ],
         )
 
-    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(
+        task_module, "get_settings", lambda: Settings(environment="test")
+    )
     monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
@@ -701,7 +756,9 @@ def test_transient_failures_retry_twice_then_use_public_code(
         attempts.append(1)
         raise error
 
-    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(
+        task_module, "get_settings", lambda: Settings(environment="test")
+    )
     monkeypatch.setattr(task_module, "get_redis_client", lambda: object())
     monkeypatch.setattr(task_module, "get_session_factory", lambda: object())
     monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
@@ -738,7 +795,9 @@ def test_unexpected_workflow_error_reaches_sanitized_worker_failure_boundary(
     def broken_workflow(*_args, **_kwargs):
         raise RuntimeError("private snapshot path: /secret/evidence")
 
-    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(
+        task_module, "get_settings", lambda: Settings(environment="test")
+    )
     monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(task_module, "run_lock", lambda *_args, **_kwargs: object())
@@ -761,7 +820,10 @@ def test_unexpected_workflow_error_reaches_sanitized_worker_failure_boundary(
         )
     assert durable is not None
     assert durable.failure_code == "WORKER_ERROR"
-    assert durable.failure_message == "Verification stopped because the worker encountered an error."
+    assert (
+        durable.failure_message
+        == "Verification stopped because the worker encountered an error."
+    )
     assert durable.internal_failure_detail == "unexpected_exception:RuntimeError"
     assert "/secret/evidence" not in durable.failure_message
     assert "/secret/evidence" not in (durable.internal_failure_detail or "")
@@ -777,7 +839,9 @@ def test_redis_failure_uses_the_durable_worker_unavailable_boundary(
     def unavailable_lock(*_args, **_kwargs):
         raise RedisConnectionError("redis://private-broker")
 
-    monkeypatch.setattr(task_module, "get_settings", lambda: Settings(environment="test"))
+    monkeypatch.setattr(
+        task_module, "get_settings", lambda: Settings(environment="test")
+    )
     monkeypatch.setattr(task_module, "get_redis_client", lambda: redis_client)
     monkeypatch.setattr(task_module, "get_session_factory", lambda: factory)
     monkeypatch.setattr(task_module, "run_lock", unavailable_lock)
@@ -794,7 +858,10 @@ def test_redis_failure_uses_the_durable_worker_unavailable_boundary(
             .limit(1)
         )
     assert durable is not None and durable.failure_code == "WORKER_UNAVAILABLE"
-    assert durable.failure_message == "Verification worker temporarily lost its queue connection."
+    assert (
+        durable.failure_message
+        == "Verification worker temporarily lost its queue connection."
+    )
     assert event is not None and "private-broker" not in event.public_message
 
 
@@ -808,7 +875,9 @@ def test_prepare_run_loads_postgres_and_mirrors_public_progress():
     with factory() as db:
         durable_run = db.get(VerificationRun, run.id)
         events = db.scalars(
-            select(AgentEvent).where(AgentEvent.run_id == run.id).order_by(AgentEvent.sequence)
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id)
+            .order_by(AgentEvent.sequence)
         ).all()
     assert durable_run is not None and durable_run.status == RunStatus.VALIDATING
     assert durable_run.started_at is not None
@@ -836,7 +905,9 @@ def test_prepare_run_is_idempotent_after_validation():
 
     with factory() as db:
         events = db.scalars(
-            select(AgentEvent).where(AgentEvent.run_id == run.id).order_by(AgentEvent.sequence)
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id)
+            .order_by(AgentEvent.sequence)
         ).all()
     assert [event.event_type for event in events] == [
         "run.queued",
@@ -888,7 +959,9 @@ def test_redelivery_never_rewinds_a_later_durable_stage():
     with factory() as db:
         durable_run = db.get(VerificationRun, run.id)
         events = db.scalars(
-            select(AgentEvent).where(AgentEvent.run_id == run.id).order_by(AgentEvent.sequence)
+            select(AgentEvent)
+            .where(AgentEvent.run_id == run.id)
+            .order_by(AgentEvent.sequence)
         ).all()
     assert durable_run is not None and durable_run.status == RunStatus.RESEARCHING
     assert [event.event_type for event in events] == ["run.queued"]

@@ -23,14 +23,20 @@ from agents.citation_audit import (
     SYSTEM_PROMPT as CITATION_AUDIT_PROMPT,
     build_citation_audit_tasks,
     citation_audit_batch_payload,
+    split_citation_audit_batch,
 )
 from agents.decomposition import PROMPT_VERSION as DECOMPOSITION_PROMPT_VERSION
 from agents.decomposition import SYSTEM_PROMPT as DECOMPOSITION_PROMPT
-from agents.decomposition import DecompositionNormalizationError, normalize_decomposition
+from agents.decomposition import (
+    DecompositionNormalizationError,
+    normalize_decomposition,
+)
 from agents.deepseek_client import (
     CallMetadata,
     DeepSeekError,
+    ProviderErrorMetadata,
     StructuredResponse,
+    StructuredFailureSubtype,
     aggregate_call_metadata,
 )
 from agents.evidence_classification import (
@@ -119,6 +125,13 @@ MAX_PARTIAL_CITATION_CONFIDENCE_PENALTY = 25
 SYNTHESIS_CITATION_REPAIR_LIMIT = 1
 LANGUAGE_BATCH_CONCURRENCY = 2
 LANGUAGE_BATCH_SCHEMA_ATTEMPTS = 2
+CITATION_RECOVERY_REPLAY_LIMIT_PER_BATCH = 1
+CITATION_RECOVERY_SPLIT_LIMIT_PER_BATCH = 1
+CITATION_RECOVERY_MAX_SPLIT_CALLS_PER_BATCH = 2
+CITATION_RECOVERY_MAX_CALLS = 6
+CITATION_RECOVERY_BACKOFF_SECONDS = 0.1
+CITATION_RECOVERY_JITTER_SECONDS = 0.02
+CITATION_RECOVERY_DEADLINE_SECONDS = 90.0
 
 _STAGE_NUMBERS: dict[WorkflowStage, int] = {
     stage: index
@@ -127,7 +140,9 @@ _STAGE_NUMBERS: dict[WorkflowStage, int] = {
         start=1,
     )
 }
-_STAGE_NUMBERS[WorkflowStage.CITATION_REVISION] = _STAGE_NUMBERS[WorkflowStage.CITATION_AUDIT]
+_STAGE_NUMBERS[WorkflowStage.CITATION_REVISION] = _STAGE_NUMBERS[
+    WorkflowStage.CITATION_AUDIT
+]
 _TOTAL_STAGES = len(WorkflowStage) - 1
 
 
@@ -215,11 +230,26 @@ class LanguageBatchResult:
     metadata: CallMetadata
 
 
+@dataclass(frozen=True, slots=True)
+class LanguageBatchFailure:
+    batch_index: int
+    error: Exception
+
+
+@dataclass(frozen=True, slots=True)
+class LanguageBatchExecution:
+    responses: tuple[StructuredResponse | None, ...]
+    failures: tuple[LanguageBatchFailure, ...]
+    latency_ms: int
+
+
 class WorkflowNodes:
     def __init__(self, services: WorkflowServices) -> None:
         self.services = services
 
-    async def _begin(self, state: VerificationState, stage: WorkflowStage) -> VerificationState | None:
+    async def _begin(
+        self, state: VerificationState, stage: WorkflowStage
+    ) -> VerificationState | None:
         if await self.services.cancellation.is_cancelled(state.run_id):
             cancelled = state.model_copy(update={"cancelled": True})
             await self.services.progress.publish(
@@ -346,22 +376,61 @@ class WorkflowNodes:
     ) -> LanguageBatchResult | VerificationState:
         """Run ordered internal batches in bounded waves without partial state writes."""
 
+        execution = await self._execute_language_batches(
+            state,
+            stage,
+            batches=batches,
+            output_schema=output_schema,
+            prompt_version=prompt_version,
+            max_tokens=max_tokens,
+            message_factory=message_factory,
+        )
+        if isinstance(execution, VerificationState):
+            return execution
+        if execution.failures:
+            failure = min(execution.failures, key=lambda item: item.batch_index)
+            return await self._fail_language_batch(
+                state,
+                stage,
+                batch_index=failure.batch_index,
+                batch_count=len(batches),
+                failure=failure.error,
+            )
+        completed = tuple(
+            response for response in execution.responses if response is not None
+        )
+        if len(completed) != len(batches):
+            raise AssertionError("language batch execution lost a successful response")
+        return LanguageBatchResult(
+            responses=completed,
+            metadata=aggregate_call_metadata(
+                [response.metadata for response in completed],
+                latency_ms=execution.latency_ms,
+            ),
+        )
+
+    async def _execute_language_batches(
+        self,
+        state: VerificationState,
+        stage: WorkflowStage,
+        *,
+        batches: Sequence[object],
+        output_schema: type,
+        prompt_version: str,
+        max_tokens: int,
+        message_factory: Callable[[object], Sequence[Mapping[str, str]]],
+        continue_after_failures: bool = False,
+    ) -> LanguageBatchExecution | VerificationState:
+        """Return successful siblings and ordered failures without persisting partials."""
+
         if not batches:
             raise ValueError("language batches must not be empty")
         started = time.perf_counter()
         responses: list[StructuredResponse | None] = [None] * len(batches)
+        collected_failures: list[LanguageBatchFailure] = []
         for wave_start in range(0, len(batches), LANGUAGE_BATCH_CONCURRENCY):
             if await self.services.cancellation.is_cancelled(state.run_id):
-                cancelled = state.model_copy(update={"cancelled": True})
-                await self.services.progress.publish(
-                    run_id=state.run_id,
-                    stage=stage,
-                    event_type="run.cancelled",
-                    message="Verification cancelled before the next expensive stage.",
-                    payload=_stage_progress(stage, completed=False),
-                )
-                await self.services.state_writer.save(stage=stage, state=cancelled)
-                return cancelled
+                return await self._cancel_language_stage(state, stage)
 
             wave = batches[wave_start : wave_start + LANGUAGE_BATCH_CONCURRENCY]
             calls = [
@@ -378,56 +447,429 @@ class WorkflowNodes:
                 for batch in wave
             ]
             results = await asyncio.gather(*calls, return_exceptions=True)
-            failures = [
-                (wave_start + offset, result)
-                for offset, result in enumerate(results)
-                if isinstance(result, Exception)
-            ]
-            if failures:
-                batch_index, failure = min(failures, key=lambda item: item[0])
-                details: dict[str, str | int | bool | None] = {
-                    "batch_index": batch_index + 1,
-                    "batch_count": len(batches),
-                }
-                retryable = False
-                if isinstance(failure, DeepSeekError):
-                    retryable = failure.metadata.retryable
-                    details.update(
-                        {
-                            "provider": failure.metadata.provider,
-                            "model": failure.metadata.model,
-                            "status_code": failure.metadata.status_code,
-                            "error_code": failure.metadata.error_code,
-                            "attempt_count": failure.metadata.attempt_count,
-                        }
+            failures: list[LanguageBatchFailure] = []
+            for offset, result in enumerate(results):
+                batch_index = wave_start + offset
+                if isinstance(result, Exception):
+                    failures.append(LanguageBatchFailure(batch_index, result))
+                elif isinstance(result, StructuredResponse):
+                    responses[batch_index] = result
+                else:
+                    raise TypeError(
+                        "structured model returned an invalid response wrapper"
                     )
-                return await self._failure(
+            if failures:
+                collected_failures.extend(failures)
+                if not continue_after_failures:
+                    return LanguageBatchExecution(
+                        responses=tuple(responses),
+                        failures=tuple(
+                            sorted(
+                                collected_failures, key=lambda item: item.batch_index
+                            )
+                        ),
+                        latency_ms=max(
+                            0, round((time.perf_counter() - started) * 1000)
+                        ),
+                    )
+        return LanguageBatchExecution(
+            responses=tuple(responses),
+            failures=tuple(
+                sorted(collected_failures, key=lambda item: item.batch_index)
+            ),
+            latency_ms=max(0, round((time.perf_counter() - started) * 1000)),
+        )
+
+    async def _cancel_language_stage(
+        self, state: VerificationState, stage: WorkflowStage
+    ) -> VerificationState:
+        cancelled = state.model_copy(update={"cancelled": True})
+        await self.services.progress.publish(
+            run_id=state.run_id,
+            stage=stage,
+            event_type="run.cancelled",
+            message="Verification cancelled before the next expensive stage.",
+            payload=_stage_progress(stage, completed=False),
+        )
+        await self.services.state_writer.save(stage=stage, state=cancelled)
+        return cancelled
+
+    async def _fail_language_batch(
+        self,
+        state: VerificationState,
+        stage: WorkflowStage,
+        *,
+        batch_index: int,
+        batch_count: int,
+        failure: Exception,
+        force_nonretryable: bool = False,
+        extra_details: Mapping[str, str | int | bool | None] | None = None,
+    ) -> VerificationState:
+        details: dict[str, str | int | bool | None] = {
+            "batch_index": batch_index + 1,
+            "batch_count": batch_count,
+        }
+        retryable = False
+        if isinstance(failure, DeepSeekError):
+            retryable = failure.metadata.retryable
+            details.update(self._provider_failure_details(failure.metadata))
+        details.update(extra_details or {})
+        return await self._failure(
+            state,
+            stage,
+            code="DEEPSEEK_LANGUAGE_STEP_FAILED",
+            message=(
+                "Evidence classification could not return valid structured results."
+                if stage == WorkflowStage.EVIDENCE_CLASSIFICATION
+                else "Citation auditing could not return valid structured results."
+            ),
+            retryable=retryable and not force_nonretryable,
+            details=details,
+        )
+
+    @staticmethod
+    def _provider_failure_details(
+        metadata: ProviderErrorMetadata,
+    ) -> dict[str, str | int | bool | None]:
+        details: dict[str, str | int | bool | None] = {
+            "provider": metadata.provider,
+            "model": metadata.model,
+            "status_code": metadata.status_code,
+            "error_code": metadata.error_code,
+            "attempt_count": metadata.attempt_count,
+        }
+        if metadata.structured_failure_subtype is not None:
+            details["structured_failure_subtype"] = metadata.structured_failure_subtype
+            details["structured_failure_count"] = metadata.structured_failure_count
+        if metadata.content_length_bucket is not None:
+            details["content_length_bucket"] = metadata.content_length_bucket
+        if metadata.response_id is not None:
+            details["response_id"] = metadata.response_id
+        if metadata.finish_reason is not None:
+            details["finish_reason"] = metadata.finish_reason
+        return details
+
+    async def _run_citation_batches_with_recovery(
+        self,
+        state: VerificationState,
+        *,
+        batches: Sequence[tuple[object, ...]],
+        message_factory: Callable[[object], Sequence[Mapping[str, str]]],
+    ) -> LanguageBatchResult | VerificationState:
+        """Recover only terminal provider-body parse failures under one shared budget."""
+
+        stage = WorkflowStage.CITATION_AUDIT
+        started = time.perf_counter()
+        deadline = time.monotonic() + CITATION_RECOVERY_DEADLINE_SECONDS
+        execution = await self._execute_language_batches(
+            state,
+            stage,
+            batches=batches,
+            output_schema=CitationAuditBatchOutput,
+            prompt_version=CITATION_AUDIT_PROMPT_VERSION,
+            max_tokens=CITATION_AUDIT_BATCH_MAX_TOKENS,
+            message_factory=message_factory,
+            continue_after_failures=True,
+        )
+        if isinstance(execution, VerificationState):
+            return execution
+        if not execution.failures:
+            completed = tuple(
+                response for response in execution.responses if response is not None
+            )
+            return LanguageBatchResult(
+                responses=completed,
+                metadata=aggregate_call_metadata(
+                    [response.metadata for response in completed],
+                    latency_ms=execution.latency_ms,
+                ),
+            )
+
+        responses = list(execution.responses)
+        recovery_call_count = 0
+        split_fallback_count = 0
+        recovery_success_count = 0
+        failed_provider_request_count = 0
+        failed_repair_count = 0
+        terminal_failure_counts: dict[StructuredFailureSubtype, int] = {}
+        successful_call_metadata = [
+            response.metadata for response in responses if response is not None
+        ]
+
+        def record_failure(error: Exception) -> None:
+            nonlocal failed_provider_request_count, failed_repair_count
+            if not isinstance(error, DeepSeekError):
+                return
+            failed_provider_request_count += error.metadata.attempt_count
+            failed_repair_count += max(0, error.metadata.attempt_count - 1)
+            for subtype, count in error.metadata.structured_failure_counts.items():
+                terminal_failure_counts[subtype] = (
+                    terminal_failure_counts.get(subtype, 0) + count
+                )
+
+        for item in execution.failures:
+            record_failure(item.error)
+
+        non_body_failures = [
+            item
+            for item in execution.failures
+            if not self._is_provider_body_parse_failure(item.error)
+        ]
+        if non_body_failures:
+            failure = min(execution.failures, key=lambda item: item.batch_index)
+            return await self._fail_language_batch(
+                state,
+                stage,
+                batch_index=failure.batch_index,
+                batch_count=len(batches),
+                failure=failure.error,
+            )
+
+        def recovery_details(*, exhausted: bool) -> dict[str, str | int | bool | None]:
+            body_parse_count = sum(
+                count
+                for subtype, count in terminal_failure_counts.items()
+                if subtype != "output_schema"
+            )
+            return {
+                "recovery_count": recovery_call_count,
+                "split_fallback_count": split_fallback_count,
+                "recovery_success_count": recovery_success_count,
+                "provider_request_count": (
+                    sum(item.request_count for item in successful_call_metadata)
+                    + failed_provider_request_count
+                ),
+                "repair_count": (
+                    sum(item.repair_count for item in successful_call_metadata)
+                    + failed_repair_count
+                ),
+                "provider_body_parse_count": body_parse_count,
+                "recovery_exhaustion_count": int(exhausted),
+                "local_recovery_exhausted": exhausted,
+            }
+
+        async def recovery_boundary(
+            *, batch_index: int, failure: Exception
+        ) -> VerificationState | None:
+            if await self.services.cancellation.is_cancelled(state.run_id):
+                return await self._cancel_language_stage(state, stage)
+            if (
+                recovery_call_count >= CITATION_RECOVERY_MAX_CALLS
+                or time.monotonic() >= deadline
+            ):
+                return await self._fail_language_batch(
                     state,
                     stage,
-                    code="DEEPSEEK_LANGUAGE_STEP_FAILED",
-                    message=(
-                        "Evidence classification could not return valid structured results."
-                        if stage == WorkflowStage.EVIDENCE_CLASSIFICATION
-                        else "Citation auditing could not return valid structured results."
-                    ),
-                    retryable=retryable,
-                    details=details,
+                    batch_index=batch_index,
+                    batch_count=len(batches),
+                    failure=failure,
+                    force_nonretryable=True,
+                    extra_details=recovery_details(exhausted=True),
                 )
-            for offset, result in enumerate(results):
-                if not isinstance(result, StructuredResponse):
-                    raise TypeError("structured model returned an invalid response wrapper")
-                responses[wave_start + offset] = result
+            return None
+
+        for item in sorted(execution.failures, key=lambda failure: failure.batch_index):
+            batch_index = item.batch_index
+            batch = batches[batch_index]
+            last_failure = item.error
+            recovered = False
+
+            for _ in range(CITATION_RECOVERY_REPLAY_LIMIT_PER_BATCH):
+                if stopped := await recovery_boundary(
+                    batch_index=batch_index, failure=last_failure
+                ):
+                    return stopped
+                delay = CITATION_RECOVERY_BACKOFF_SECONDS + (
+                    ((batch_index + 1) % 3) * CITATION_RECOVERY_JITTER_SECONDS
+                )
+                if time.monotonic() + delay >= deadline:
+                    return await self._fail_language_batch(
+                        state,
+                        stage,
+                        batch_index=batch_index,
+                        batch_count=len(batches),
+                        failure=last_failure,
+                        force_nonretryable=True,
+                        extra_details=recovery_details(exhausted=True),
+                    )
+                await asyncio.sleep(delay)
+                if stopped := await recovery_boundary(
+                    batch_index=batch_index, failure=last_failure
+                ):
+                    return stopped
+                recovery_call_count += 1
+                try:
+                    replay = await self.services.model.generate_structured(
+                        messages=message_factory(batch),
+                        output_schema=CitationAuditBatchOutput,
+                        prompt_version=CITATION_AUDIT_PROMPT_VERSION,
+                        model_role="chat",
+                        temperature=0.0,
+                        max_tokens=CITATION_AUDIT_BATCH_MAX_TOKENS,
+                        repair_invalid_response=True,
+                        max_schema_attempts=LANGUAGE_BATCH_SCHEMA_ATTEMPTS,
+                    )
+                except Exception as exc:
+                    last_failure = exc
+                    record_failure(exc)
+                    break
+                if not isinstance(replay, StructuredResponse):
+                    raise TypeError(
+                        "structured model returned an invalid response wrapper"
+                    )
+                responses[batch_index] = replay
+                successful_call_metadata.append(replay.metadata)
+                recovery_success_count += 1
+                recovered = True
+
+            if recovered:
+                continue
+            if (
+                not self._is_provider_body_parse_failure(last_failure)
+                or len(batch) <= 1
+            ):
+                return await self._fail_language_batch(
+                    state,
+                    stage,
+                    batch_index=batch_index,
+                    batch_count=len(batches),
+                    failure=last_failure,
+                    force_nonretryable=True,
+                    extra_details=recovery_details(exhausted=True),
+                )
+
+            split_batches = split_citation_audit_batch(batch)
+            if (
+                CITATION_RECOVERY_SPLIT_LIMIT_PER_BATCH != 1
+                or len(split_batches) > CITATION_RECOVERY_MAX_SPLIT_CALLS_PER_BATCH
+            ):
+                return await self._fail_language_batch(
+                    state,
+                    stage,
+                    batch_index=batch_index,
+                    batch_count=len(batches),
+                    failure=last_failure,
+                    force_nonretryable=True,
+                    extra_details=recovery_details(exhausted=True),
+                )
+            split_fallback_count += 1
+            split_responses: list[StructuredResponse] = []
+            split_started = time.perf_counter()
+            for split_batch in split_batches:
+                if stopped := await recovery_boundary(
+                    batch_index=batch_index, failure=last_failure
+                ):
+                    return stopped
+                recovery_call_count += 1
+                try:
+                    split_response = await self.services.model.generate_structured(
+                        messages=message_factory(split_batch),
+                        output_schema=CitationAuditBatchOutput,
+                        prompt_version=CITATION_AUDIT_PROMPT_VERSION,
+                        model_role="chat",
+                        temperature=0.0,
+                        max_tokens=CITATION_AUDIT_BATCH_MAX_TOKENS,
+                        repair_invalid_response=True,
+                        max_schema_attempts=LANGUAGE_BATCH_SCHEMA_ATTEMPTS,
+                    )
+                except Exception as exc:
+                    last_failure = exc
+                    record_failure(exc)
+                    return await self._fail_language_batch(
+                        state,
+                        stage,
+                        batch_index=batch_index,
+                        batch_count=len(batches),
+                        failure=last_failure,
+                        force_nonretryable=True,
+                        extra_details=recovery_details(exhausted=True),
+                    )
+                if not isinstance(split_response, StructuredResponse):
+                    raise TypeError(
+                        "structured model returned an invalid response wrapper"
+                    )
+                split_responses.append(split_response)
+                successful_call_metadata.append(split_response.metadata)
+
+            split_output = CitationAuditBatchOutput(
+                sentence_audits=[
+                    audit
+                    for response in split_responses
+                    for audit in response.output.sentence_audits
+                ]
+            )
+            responses[batch_index] = StructuredResponse(
+                output=split_output,
+                metadata=aggregate_call_metadata(
+                    [response.metadata for response in split_responses],
+                    latency_ms=max(
+                        0, round((time.perf_counter() - split_started) * 1000)
+                    ),
+                ),
+            )
+            recovery_success_count += 1
 
         completed = tuple(response for response in responses if response is not None)
         if len(completed) != len(batches):
-            raise AssertionError("language batch execution lost a successful response")
-        latency_ms = max(0, round((time.perf_counter() - started) * 1000))
-        return LanguageBatchResult(
-            responses=completed,
-            metadata=aggregate_call_metadata(
-                [response.metadata for response in completed],
-                latency_ms=latency_ms,
-            ),
+            unresolved = next(
+                index for index, response in enumerate(responses) if response is None
+            )
+            failure = min(
+                execution.failures,
+                key=lambda item: abs(item.batch_index - unresolved),
+            )
+            return await self._fail_language_batch(
+                state,
+                stage,
+                batch_index=unresolved,
+                batch_count=len(batches),
+                failure=failure.error,
+                force_nonretryable=True,
+                extra_details=recovery_details(exhausted=True),
+            )
+
+        metadata = aggregate_call_metadata(
+            [response.metadata for response in completed],
+            latency_ms=max(0, round((time.perf_counter() - started) * 1000)),
+        )
+        merged_failure_counts = dict(metadata.structured_failure_counts)
+        for subtype, count in terminal_failure_counts.items():
+            merged_failure_counts[subtype] = (
+                merged_failure_counts.get(subtype, 0) + count
+            )
+        metadata = metadata.model_copy(
+            update={
+                "attempt_count": max(
+                    metadata.attempt_count,
+                    *(
+                        item.error.metadata.attempt_count
+                        for item in execution.failures
+                        if isinstance(item.error, DeepSeekError)
+                    ),
+                ),
+                "request_count": metadata.request_count + failed_provider_request_count,
+                "repair_count": metadata.repair_count + failed_repair_count,
+                "recovery_count": recovery_call_count,
+                "split_fallback_count": split_fallback_count,
+                "recovery_success_count": recovery_success_count,
+                "structured_failure_counts": merged_failure_counts,
+            }
+        )
+        return LanguageBatchResult(responses=completed, metadata=metadata)
+
+    @staticmethod
+    def _is_provider_body_parse_failure(error: Exception) -> bool:
+        return (
+            isinstance(error, DeepSeekError)
+            and error.metadata.error_code == "PROVIDER_BODY_PARSE_EXHAUSTED"
+            and error.metadata.structured_failure_subtype
+            in {
+                "response_json",
+                "choices_envelope",
+                "message_content_type",
+                "content_json",
+                "usage_metadata",
+            }
         )
 
     async def intake(self, state: VerificationState) -> VerificationState:
@@ -435,7 +877,10 @@ class WorkflowNodes:
             return state
         if cancelled := await self._begin(state, WorkflowStage.INTAKE):
             return cancelled
-        if not self.services.submitted_input.strip() or len(self.services.submitted_input) > 100_000:
+        if (
+            not self.services.submitted_input.strip()
+            or len(self.services.submitted_input) > 100_000
+        ):
             return await self._failure(
                 state,
                 WorkflowStage.INTAKE,
@@ -517,7 +962,10 @@ class WorkflowNodes:
         updated = state.complete(
             WorkflowStage.INTAKE,
             normalized_input=output,
-            model_calls={**state.model_calls, WorkflowStage.INTAKE.value: response.metadata},
+            model_calls={
+                **state.model_calls,
+                WorkflowStage.INTAKE.value: response.metadata,
+            },
         )
         return await self._finish(
             updated,
@@ -549,7 +997,9 @@ class WorkflowNodes:
         )
         if isinstance(response, VerificationState):
             return response
-        claim_limit = {"QUICK": 12, "STANDARD": 25, "DEEP": 50}[state.research_depth.value]
+        claim_limit = {"QUICK": 12, "STANDARD": 25, "DEEP": 50}[
+            state.research_depth.value
+        ]
         try:
             output = normalize_decomposition(
                 response.output,
@@ -568,7 +1018,10 @@ class WorkflowNodes:
             claims=output.atomic_claims,
             claim_ambiguities=output.claim_ambiguities,
             unresolved_ambiguities=output.unresolved_ambiguities,
-            model_calls={**state.model_calls, WorkflowStage.DECOMPOSITION.value: response.metadata},
+            model_calls={
+                **state.model_calls,
+                WorkflowStage.DECOMPOSITION.value: response.metadata,
+            },
         )
         return await self._finish(
             updated,
@@ -695,13 +1148,19 @@ class WorkflowNodes:
             SearchQueryExecutionRecord(
                 query_key=query_state_key(query),
                 discovery_phase=(
-                    "phase_one" if query_state_key(query) in phase_one_keys else "phase_two"
+                    "phase_one"
+                    if query_state_key(query) in phase_one_keys
+                    else "phase_two"
                 ),
                 execution_status=(
-                    "planned" if query_state_key(query) in phase_one_keys | reserve_keys else "not_needed"
+                    "planned"
+                    if query_state_key(query) in phase_one_keys | reserve_keys
+                    else "not_needed"
                 ),
                 skip_reason=(
-                    None if query_state_key(query) in phase_one_keys | reserve_keys else "outside_effective_budget"
+                    None
+                    if query_state_key(query) in phase_one_keys | reserve_keys
+                    else "outside_effective_budget"
                 ),
             )
             for query in output.queries
@@ -715,7 +1174,10 @@ class WorkflowNodes:
             search_query_executions=query_executions,
             search_mandatory_floor=budget.mandatory_floor,
             search_effective_budget=budget.effective_total_budget,
-            model_calls={**state.model_calls, WorkflowStage.PLANNER.value: response.metadata},
+            model_calls={
+                **state.model_calls,
+                WorkflowStage.PLANNER.value: response.metadata,
+            },
         )
         return await self._finish(
             updated,
@@ -728,7 +1190,9 @@ class WorkflowNodes:
             },
         )
 
-    async def evidence_classification(self, state: VerificationState) -> VerificationState:
+    async def evidence_classification(
+        self, state: VerificationState
+    ) -> VerificationState:
         if WorkflowStage.EVIDENCE_CLASSIFICATION in state.completed_stages:
             return state
         if cancelled := await self._begin(state, WorkflowStage.EVIDENCE_CLASSIFICATION):
@@ -834,7 +1298,10 @@ class WorkflowNodes:
             )
             grounded_contradiction = (
                 item.stance
-                in {EvidenceStance.STRONGLY_CONTRADICTS, EvidenceStance.PARTIALLY_CONTRADICTS}
+                in {
+                    EvidenceStance.STRONGLY_CONTRADICTS,
+                    EvidenceStance.PARTIALLY_CONTRADICTS,
+                }
                 and explicit_contradiction
             )
             if not item.entity_match and not grounded_contradiction:
@@ -964,10 +1431,14 @@ class WorkflowNodes:
                     message="The report draft cited a passage that was not approved as evidence.",
                 )
         has_contradiction = any(
-            item.passage_id in approved_passage_ids and "contradicts" in item.stance.value
+            item.passage_id in approved_passage_ids
+            and "contradicts" in item.stance.value
             for item in state.evidence
         )
-        if has_contradiction and response.output.strongest_credible_contradiction is None:
+        if (
+            has_contradiction
+            and response.output.strongest_credible_contradiction is None
+        ):
             return await self._failure(
                 state,
                 WorkflowStage.SYNTHESIS,
@@ -987,9 +1458,12 @@ class WorkflowNodes:
         }
         model_versions[WorkflowStage.SYNTHESIS.value] = response.metadata.model
         prompt_versions = {
-            stage: metadata.prompt_version for stage, metadata in state.model_calls.items()
+            stage: metadata.prompt_version
+            for stage, metadata in state.model_calls.items()
         }
-        prompt_versions[WorkflowStage.SYNTHESIS.value] = response.metadata.prompt_version
+        prompt_versions[WorkflowStage.SYNTHESIS.value] = (
+            response.metadata.prompt_version
+        )
         guarded_report = _build_deterministic_report(
             state,
             response.output,
@@ -1003,12 +1477,19 @@ class WorkflowNodes:
             WorkflowStage.SYNTHESIS,
             report_draft=guarded_report,
             evidence_reviewed_at=reviewed_at,
-            model_calls={**state.model_calls, WorkflowStage.SYNTHESIS.value: response.metadata},
+            model_calls={
+                **state.model_calls,
+                WorkflowStage.SYNTHESIS.value: response.metadata,
+            },
         )
         return await self._finish(
             updated,
             WorkflowStage.SYNTHESIS,
-            payload={"sentence_count": sum(1 for _ in iter_auditable_sentences(guarded_report))},
+            payload={
+                "sentence_count": sum(
+                    1 for _ in iter_auditable_sentences(guarded_report)
+                )
+            },
         )
 
     async def citation_audit(self, state: VerificationState) -> VerificationState:
@@ -1062,13 +1543,9 @@ class WorkflowNodes:
                 code="INCOMPLETE_CITATION_AUDIT",
                 message="Citation audit did not evaluate every cited sentence and passage.",
             )
-        batch_result = await self._run_language_batches(
+        batch_result = await self._run_citation_batches_with_recovery(
             state,
-            WorkflowStage.CITATION_AUDIT,
             batches=batches,
-            output_schema=CitationAuditBatchOutput,
-            prompt_version=CITATION_AUDIT_PROMPT_VERSION,
-            max_tokens=CITATION_AUDIT_BATCH_MAX_TOKENS,
             message_factory=lambda batch: [
                 {"role": "system", "content": CITATION_AUDIT_PROMPT},
                 {
@@ -1086,9 +1563,9 @@ class WorkflowNodes:
         ]
         required_pairs = [(task.sentence_ref, task.passage_id) for task in tasks]
         received_pairs = [(audit.sentence_ref, audit.passage_id) for audit in audits]
-        if len(received_pairs) == len(set(received_pairs)) and set(received_pairs) == set(
-            required_pairs
-        ):
+        if len(received_pairs) == len(set(received_pairs)) and set(
+            received_pairs
+        ) == set(required_pairs):
             audits_by_pair = {
                 (audit.sentence_ref, audit.passage_id): audit for audit in audits
             }
@@ -1194,7 +1671,10 @@ class WorkflowNodes:
             item.passage_id in approved_ids and "contradicts" in item.stance.value
             for item in state.evidence
         )
-        if has_contradiction and response.output.strongest_credible_contradiction is None:
+        if (
+            has_contradiction
+            and response.output.strongest_credible_contradiction is None
+        ):
             return await self._failure(
                 state,
                 WorkflowStage.CITATION_REVISION,
@@ -1226,7 +1706,9 @@ class WorkflowNodes:
             parser_versions=prior.parser_versions,
         )
         completed = [
-            stage for stage in state.completed_stages if stage != WorkflowStage.CITATION_AUDIT
+            stage
+            for stage in state.completed_stages
+            if stage != WorkflowStage.CITATION_AUDIT
         ]
         updated = state.model_copy(
             update={
@@ -1251,7 +1733,9 @@ class WorkflowNodes:
         # consume the remaining revision budget without assessing the new wording.
         return await self.citation_audit(finished_revision)
 
-    def extension(self, stage: WorkflowStage, implementation: ExtensionNode | None) -> ExtensionNode:
+    def extension(
+        self, stage: WorkflowStage, implementation: ExtensionNode | None
+    ) -> ExtensionNode:
         async def run(state: VerificationState) -> VerificationState:
             if stage in state.completed_stages:
                 return state
@@ -1318,29 +1802,43 @@ def build_workflow(
     graph.add_node("planner", nodes.planner)
     graph.add_node(
         "discovery_source_selection",
-        nodes.extension(WorkflowStage.DISCOVERY, services.extensions.discovery_source_selection),
+        nodes.extension(
+            WorkflowStage.DISCOVERY, services.extensions.discovery_source_selection
+        ),
     )
     graph.add_node(
         "secure_retrieval",
         nodes.extension(WorkflowStage.RETRIEVAL, services.extensions.secure_retrieval),
     )
-    graph.add_node("extraction", nodes.extension(WorkflowStage.EXTRACTION, services.extensions.extraction))
+    graph.add_node(
+        "extraction",
+        nodes.extension(WorkflowStage.EXTRACTION, services.extensions.extraction),
+    )
     graph.add_node(
         "passage_segmentation_embedding",
-        nodes.extension(WorkflowStage.SEGMENTATION, services.extensions.passage_segmentation_embedding),
+        nodes.extension(
+            WorkflowStage.SEGMENTATION,
+            services.extensions.passage_segmentation_embedding,
+        ),
     )
     graph.add_node(
         "provenance_dependency_analysis",
-        nodes.extension(WorkflowStage.PROVENANCE, services.extensions.provenance_dependency_analysis),
+        nodes.extension(
+            WorkflowStage.PROVENANCE, services.extensions.provenance_dependency_analysis
+        ),
     )
     graph.add_node("evidence_classification", nodes.evidence_classification)
     graph.add_node(
         "deterministic_scoring",
-        nodes.extension(WorkflowStage.SCORING, services.extensions.deterministic_scoring),
+        nodes.extension(
+            WorkflowStage.SCORING, services.extensions.deterministic_scoring
+        ),
     )
     graph.add_node(
         "numerical_audit",
-        nodes.extension(WorkflowStage.NUMERICAL_AUDIT, services.extensions.numerical_audit),
+        nodes.extension(
+            WorkflowStage.NUMERICAL_AUDIT, services.extensions.numerical_audit
+        ),
     )
     graph.add_node("synthesis", nodes.synthesis)
     graph.add_node("citation_audit", nodes.citation_audit)
@@ -1353,12 +1851,16 @@ def build_workflow(
         graph.add_edge("planner", END)
     else:
         _conditional(graph, "planner", "discovery_source_selection", stop_requested)
-        _conditional(graph, "discovery_source_selection", "secure_retrieval", stop_requested)
+        _conditional(
+            graph, "discovery_source_selection", "secure_retrieval", stop_requested
+        )
         _conditional(graph, "secure_retrieval", "extraction", stop_requested)
         if retrieval_only:
             graph.add_edge("extraction", END)
             return graph.compile()
-        _conditional(graph, "extraction", "passage_segmentation_embedding", stop_requested)
+        _conditional(
+            graph, "extraction", "passage_segmentation_embedding", stop_requested
+        )
         if segmentation_only:
             graph.add_edge("passage_segmentation_embedding", END)
             return graph.compile()
@@ -1371,8 +1873,15 @@ def build_workflow(
         if provenance_only:
             graph.add_edge("provenance_dependency_analysis", END)
             return graph.compile()
-        _conditional(graph, "provenance_dependency_analysis", "evidence_classification", evidence_ready)
-        _conditional(graph, "evidence_classification", "deterministic_scoring", stop_requested)
+        _conditional(
+            graph,
+            "provenance_dependency_analysis",
+            "evidence_classification",
+            evidence_ready,
+        )
+        _conditional(
+            graph, "evidence_classification", "deterministic_scoring", stop_requested
+        )
         if scoring_only:
             graph.add_edge("deterministic_scoring", END)
             return graph.compile()
@@ -1460,10 +1969,15 @@ def _validate_planner_output(
     return output, validate_research_plan(state, output)
 
 
-def _with_article_title_query(state: VerificationState, output: PlanningOutput) -> PlanningOutput:
+def _with_article_title_query(
+    state: VerificationState, output: PlanningOutput
+) -> PlanningOutput:
     """Ensure a title submission starts discovery with an exact Brave query."""
     normalized_input = state.normalized_input
-    if normalized_input is None or normalized_input.input_kind != InputKind.ARTICLE_TITLE:
+    if (
+        normalized_input is None
+        or normalized_input.input_kind != InputKind.ARTICLE_TITLE
+    ):
         return output
     article_title = normalized_input.normalized_text
     canonical_title = " ".join(article_title.casefold().split())
@@ -1474,7 +1988,11 @@ def _with_article_title_query(state: VerificationState, output: PlanningOutput) 
     ):
         return output
     primary_objective = next(
-        (objective for objective in output.objectives if objective.intent == EvidenceIntent.PRIMARY),
+        (
+            objective
+            for objective in output.objectives
+            if objective.intent == EvidenceIntent.PRIMARY
+        ),
         None,
     )
     if primary_objective is None:
@@ -1504,7 +2022,9 @@ def _planner_repair_instruction(
 
 
 def _json(value: object) -> str:
-    return json.dumps(_jsonable(value), ensure_ascii=False, separators=(",", ":"), default=str)
+    return json.dumps(
+        _jsonable(value), ensure_ascii=False, separators=(",", ":"), default=str
+    )
 
 
 def _jsonable(value: object) -> object:
@@ -1544,7 +2064,9 @@ def _deterministic_evidence_gaps(
     state: VerificationState, approved_passage_ids: set[str]
 ) -> list[str]:
     supported_claim_refs = {
-        item.claim_ref for item in state.evidence if item.passage_id in approved_passage_ids
+        item.claim_ref
+        for item in state.evidence
+        if item.passage_id in approved_passage_ids
     }
     return [
         f"No approved evidence was available for claim {claim.claim_ref}."
@@ -1568,8 +2090,7 @@ def _deterministic_ambiguity_limitations(state: VerificationState) -> list[str]:
     }
     ambiguity_counts = {
         claim_ref: sum(
-            ambiguity.claim_ref == claim_ref
-            for ambiguity in state.claim_ambiguities
+            ambiguity.claim_ref == claim_ref for ambiguity in state.claim_ambiguities
         )
         for claim_ref in non_blocking_claim_refs
     }
@@ -1605,7 +2126,7 @@ def _normalize_report_title(value: str | None) -> str | None:
     if len(title) <= _REPORT_TITLE_MAX_LENGTH:
         return title
     boundary = title.rfind(" ", 0, _REPORT_TITLE_MAX_LENGTH - 1)
-    return f"{title[:boundary if boundary > 24 else _REPORT_TITLE_MAX_LENGTH - 1].rstrip(' ,;:—-')}…"
+    return f"{title[: boundary if boundary > 24 else _REPORT_TITLE_MAX_LENGTH - 1].rstrip(' ,;:—-')}…"
 
 
 def _report_title(state: VerificationState, suggested_title: str | None) -> str:
@@ -1619,7 +2140,11 @@ def _report_title(state: VerificationState, suggested_title: str | None) -> str:
         else None
     )
     first_claim = state.claims[0].text if state.claims else None
-    return _normalize_report_title(submitted_target) or _normalize_report_title(first_claim) or "Verification report"
+    return (
+        _normalize_report_title(submitted_target)
+        or _normalize_report_title(first_claim)
+        or "Verification report"
+    )
 
 
 def _build_deterministic_report(
@@ -1682,10 +2207,15 @@ def _guard_citation_audit(
             if item.entailment in {Entailment.NOT_ENTAILED, Entailment.INSUFFICIENT}
         }
     )
-    missing = sorted(ref for ref, sentence in sentences.items() if not sentence.passage_ids)
+    missing = sorted(
+        ref for ref, sentence in sentences.items() if not sentence.passage_ids
+    )
     needs_revision = bool(unsupported or missing)
     return CitationAuditOutput(
-        sentence_audits=[SentenceCitationAuditOutput.model_validate(item) for item in audit.sentence_audits],
+        sentence_audits=[
+            SentenceCitationAuditOutput.model_validate(item)
+            for item in audit.sentence_audits
+        ],
         unsupported_sentence_refs=unsupported,
         missing_citation_sentence_refs=missing,
         needs_revision=needs_revision,
@@ -1730,21 +2260,33 @@ def _apply_partial_citation_penalty(state: VerificationState) -> VerificationSta
     for calculation in state.calculations:
         inputs = dict(calculation.inputs)
         result = dict(calculation.result)
-        if calculation.claim_ref is None and calculation.formula_name == "article_factual_accuracy":
-            result["score"] = str(
-                penalize(
-                    int(float(result["score"])), evidence_support_penalty
-                )
-            ) if result.get("score") is not None else None
+        if (
+            calculation.claim_ref is None
+            and calculation.formula_name == "article_factual_accuracy"
+        ):
+            result["score"] = (
+                str(penalize(int(float(result["score"])), evidence_support_penalty))
+                if result.get("score") is not None
+                else None
+            )
             inputs["citation_partial_support_penalty"] = str(evidence_support_penalty)
-        elif calculation.claim_ref is None and calculation.formula_name == "verdict_confidence":
-            result["score"] = str(scores.verdict_confidence) if scores.verdict_confidence is not None else None
+        elif (
+            calculation.claim_ref is None
+            and calculation.formula_name == "verdict_confidence"
+        ):
+            result["score"] = (
+                str(scores.verdict_confidence)
+                if scores.verdict_confidence is not None
+                else None
+            )
             penalties = inputs.get("penalties")
             inputs["penalties"] = {
                 **(penalties if isinstance(penalties, dict) else {}),
                 "citation_partial_support": str(confidence_penalty),
             }
-        calculations.append(calculation.model_copy(update={"inputs": inputs, "result": result}))
+        calculations.append(
+            calculation.model_copy(update={"inputs": inputs, "result": result})
+        )
     calculations.append(
         CalculationRecord(
             calculation_ref=str(uuid4()),
@@ -1767,8 +2309,12 @@ def _apply_partial_citation_penalty(state: VerificationState) -> VerificationSta
     return state.model_copy(update={"scores": scores, "calculations": calculations})
 
 
-_START_MESSAGES = {stage: f"Starting {stage.value.replace('_', ' ')}." for stage in WorkflowStage}
-_COMPLETE_MESSAGES = {stage: f"Completed {stage.value.replace('_', ' ')}." for stage in WorkflowStage}
+_START_MESSAGES = {
+    stage: f"Starting {stage.value.replace('_', ' ')}." for stage in WorkflowStage
+}
+_COMPLETE_MESSAGES = {
+    stage: f"Completed {stage.value.replace('_', ' ')}." for stage in WorkflowStage
+}
 
 
 __all__ = [

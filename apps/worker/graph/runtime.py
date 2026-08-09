@@ -32,7 +32,14 @@ from agents.schemas import (
 )
 from app.config import Settings
 from app.models.claims import AtomicClaim, SearchQuery
-from app.models.enums import AccessStatus, DependencyRelationship, EvidenceStance, InputType, RunStatus, SourceType
+from app.models.enums import (
+    AccessStatus,
+    DependencyRelationship,
+    EvidenceStance,
+    InputType,
+    RunStatus,
+    SourceType,
+)
 from app.models.evidence import EvidenceItem, ReportCitation
 from app.models.records import Calculation
 from app.models.methodology import MethodologyVersion
@@ -50,7 +57,11 @@ from graph.state import (
 from graph.workflow import WorkflowExtensions, WorkflowServices, build_workflow
 from extraction.service import ExtractionService
 from extraction.playwright import PlaywrightExtractor, PlaywrightLimits
-from extraction.passages import PassageEmbeddingService, PassagePipeline, PassageSegmenter
+from extraction.passages import (
+    PassageEmbeddingService,
+    PassagePipeline,
+    PassageSegmenter,
+)
 from research.cache import RetrievalCache, RetrievalRateLimiter
 from research.fetcher import S3SnapshotStore, SecureFetcher, SnapshotFileStore
 from research.pipeline import RetrievalPipeline
@@ -91,7 +102,11 @@ def _s3_client_options(settings: Settings) -> dict[str, object]:
         "region_name": settings.s3_region,
         "config": BotoConfig(
             signature_version="s3v4",
-            s3={"addressing_style": "path" if settings.s3_force_path_style else "virtual"},
+            s3={
+                "addressing_style": "path"
+                if settings.s3_force_path_style
+                else "virtual"
+            },
         ),
     }
     if settings.s3_access_key_id and settings.s3_secret_access_key:
@@ -115,7 +130,11 @@ class DurableProgressWriter:
         message: str,
         payload: dict[str, object] | None = None,
     ) -> None:
-        status = RunStatus.CANCELLED if event_type == "run.cancelled" else _RUN_STATUSES[stage]
+        status = (
+            RunStatus.CANCELLED
+            if event_type == "run.cancelled"
+            else _RUN_STATUSES[stage]
+        )
         self._record(
             run_id=run_id,
             stage=status,
@@ -182,10 +201,16 @@ class SqlWorkflowStateWriter:
             elif stage == WorkflowStage.SYNTHESIS and state.report_draft is not None:
                 run.title = state.report_draft.title
                 run.evidence_reviewed_at = state.evidence_reviewed_at
-            elif stage == WorkflowStage.CITATION_REVISION and state.report_draft is not None:
+            elif (
+                stage == WorkflowStage.CITATION_REVISION
+                and state.report_draft is not None
+            ):
                 run.title = state.report_draft.title
                 run.evidence_reviewed_at = state.evidence_reviewed_at
-            elif stage == WorkflowStage.CITATION_AUDIT and state.citation_audit is not None:
+            elif (
+                stage == WorkflowStage.CITATION_AUDIT
+                and state.citation_audit is not None
+            ):
                 if state.scores is not None:
                     self._persist_scoring(db, run, state)
                 self._persist_citation_audit(db, run, state)
@@ -193,7 +218,9 @@ class SqlWorkflowStateWriter:
             db.commit()
 
     @staticmethod
-    def _persist_search_execution(db: Session, run: VerificationRun, state: VerificationState) -> None:
+    def _persist_search_execution(
+        db: Session, run: VerificationRun, state: VerificationState
+    ) -> None:
         executions = {item.query_key: item for item in state.search_query_executions}
         rows = db.scalars(select(SearchQuery).where(SearchQuery.run_id == run.id)).all()
         for row in rows:
@@ -218,7 +245,8 @@ class SqlWorkflowStateWriter:
                 "phase_one_target": state.search_phase_one_target,
                 "phase_two_additional_target": state.search_phase_two_target,
                 "gate_outcomes": [
-                    item.model_dump(mode="json") for item in state.discovery_gate_outcomes
+                    item.model_dump(mode="json")
+                    for item in state.discovery_gate_outcomes
                 ],
                 "discovery_candidates": [
                     item.model_dump(mode="json") for item in state.candidate_sources
@@ -229,15 +257,22 @@ class SqlWorkflowStateWriter:
         run.normalized_target = target
 
     @staticmethod
-    def _persist_sources(db: Session, run: VerificationRun, state: VerificationState) -> None:
+    def _persist_sources(
+        db: Session, run: VerificationRun, state: VerificationState
+    ) -> None:
         candidates = {item.source_ref: item for item in state.candidate_sources}
         extracted = {item.source_ref: item for item in state.extracted_sources}
         for rank, snapshot in enumerate(state.snapshots, start=1):
-            if snapshot.snapshot_path and urlsplit(snapshot.snapshot_path).scheme in {"http", "https"}:
+            if snapshot.snapshot_path and urlsplit(snapshot.snapshot_path).scheme in {
+                "http",
+                "https",
+            }:
                 raise ValueError("permanent public snapshot URLs are not allowed")
             candidate = candidates[snapshot.source_ref]
             canonical_url = candidate.canonical_url or candidate.url
-            source = db.scalar(select(Source).where(Source.canonical_url == canonical_url))
+            source = db.scalar(
+                select(Source).where(Source.canonical_url == canonical_url)
+            )
             document = extracted.get(snapshot.source_ref)
             if source is None:
                 source = Source(
@@ -255,14 +290,25 @@ class SqlWorkflowStateWriter:
                 db.flush()
             else:
                 source.last_seen_at = snapshot.retrieved_at
-                source.title = source.title or (document.title if document else candidate.title)
+                source.title = source.title or (
+                    document.title if document else candidate.title
+                )
                 source.author = source.author or (document.author if document else None)
-                source.publisher = source.publisher or (document.publisher if document else None)
+                source.publisher = source.publisher or (
+                    document.publisher if document else None
+                )
                 source.content_type = snapshot.content_type or source.content_type
             snapshot_id = UUID(snapshot.snapshot_id)
             durable_snapshot = db.get(SourceSnapshot, snapshot_id)
             if durable_snapshot is None:
-                version = (db.scalar(select(func.max(SourceSnapshot.version_number)).where(SourceSnapshot.source_id == source.id)) or 0) + 1
+                version = (
+                    db.scalar(
+                        select(func.max(SourceSnapshot.version_number)).where(
+                            SourceSnapshot.source_id == source.id
+                        )
+                    )
+                    or 0
+                ) + 1
                 durable_snapshot = SourceSnapshot(
                     id=snapshot_id,
                     source_id=source.id,
@@ -288,19 +334,25 @@ class SqlWorkflowStateWriter:
                 db.flush()
             run_source = db.get(RunSource, (run.id, source.id))
             if run_source is None:
-                run_source = RunSource(run_id=run.id, source_id=source.id, role=candidate.source_type)
+                run_source = RunSource(
+                    run_id=run.id, source_id=source.id, role=candidate.source_type
+                )
                 db.add(run_source)
             run_source.snapshot_id = durable_snapshot.id
             run_source.retrieval_reason = candidate.selection_reason
             run_source.priority_score = candidate.priority
             run_source.selected_rank = rank
             run_source.inaccessible_reason = (
-                snapshot.failure_reason if snapshot.access_status != AccessStatus.FETCHED.value else None
+                snapshot.failure_reason
+                if snapshot.access_status != AccessStatus.FETCHED.value
+                else None
             )
         run.parser_versions = dict(state.parser_versions)
 
     @staticmethod
-    def _persist_passages(db: Session, run: VerificationRun, state: VerificationState) -> None:
+    def _persist_passages(
+        db: Session, run: VerificationRun, state: VerificationState
+    ) -> None:
         source_by_snapshot = {
             str(snapshot_id): source_id
             for snapshot_id, source_id in db.execute(
@@ -313,7 +365,9 @@ class SqlWorkflowStateWriter:
         for passage in state.passages:
             source_id = source_by_snapshot.get(passage.snapshot_id)
             if source_id is None:
-                raise ValueError("passage snapshot is not attached to this verification run")
+                raise ValueError(
+                    "passage snapshot is not attached to this verification run"
+                )
             snapshot_id = UUID(passage.snapshot_id)
             existing = db.scalar(
                 select(SourcePassage).where(
@@ -360,9 +414,12 @@ class SqlWorkflowStateWriter:
         run.model_versions = models
 
     @staticmethod
-    def _persist_provenance(db: Session, run: VerificationRun, state: VerificationState) -> None:
+    def _persist_provenance(
+        db: Session, run: VerificationRun, state: VerificationState
+    ) -> None:
         snapshot_by_ref = {
-            snapshot.source_ref: UUID(snapshot.snapshot_id) for snapshot in state.snapshots
+            snapshot.source_ref: UUID(snapshot.snapshot_id)
+            for snapshot in state.snapshots
         }
         source_by_snapshot = {
             snapshot_id: source_id
@@ -380,10 +437,14 @@ class SqlWorkflowStateWriter:
         }
         expected_refs = {source.source_ref for source in state.candidate_sources}
         if expected_refs - source_by_ref.keys():
-            raise ValueError("provenance source is not attached to this verification run")
+            raise ValueError(
+                "provenance source is not attached to this verification run"
+            )
 
         db.execute(delete(SourceDependency).where(SourceDependency.run_id == run.id))
-        db.execute(delete(InformationCluster).where(InformationCluster.run_id == run.id))
+        db.execute(
+            delete(InformationCluster).where(InformationCluster.run_id == run.id)
+        )
         for cluster in state.information_clusters:
             db.add(
                 InformationCluster(
@@ -391,7 +452,9 @@ class SqlWorkflowStateWriter:
                     run_id=run.id,
                     label=cluster.label,
                     origin_type=cluster.origin_type,
-                    representative_source_id=source_by_ref[cluster.representative_source_ref],
+                    representative_source_id=source_by_ref[
+                        cluster.representative_source_ref
+                    ],
                 )
             )
         db.flush()
@@ -413,62 +476,119 @@ class SqlWorkflowStateWriter:
             )
 
     @staticmethod
-    def _persist_scoring(db: Session, run: VerificationRun, state: VerificationState) -> None:
-        claims = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
+    def _persist_scoring(
+        db: Session, run: VerificationRun, state: VerificationState
+    ) -> None:
+        claims = db.scalars(
+            select(AtomicClaim).where(AtomicClaim.run_id == run.id)
+        ).all()
         claim_by_ref = {str(row.gates.get("claim_ref")): row for row in claims}
         claim_ids = [row.id for row in claims]
         if claim_ids:
-            db.execute(delete(EvidenceItem).where(EvidenceItem.atomic_claim_id.in_(claim_ids)))
+            db.execute(
+                delete(EvidenceItem).where(EvidenceItem.atomic_claim_id.in_(claim_ids))
+            )
         db.execute(delete(Calculation).where(Calculation.run_id == run.id))
         stance_names = {
-            Decimal("-1.00"): "STRONGLY_CONTRADICTS", Decimal("-0.50"): "PARTIALLY_CONTRADICTS",
-            Decimal("0.00"): "NEUTRAL", Decimal("0.50"): "PARTIALLY_SUPPORTS",
+            Decimal("-1.00"): "STRONGLY_CONTRADICTS",
+            Decimal("-0.50"): "PARTIALLY_CONTRADICTS",
+            Decimal("0.00"): "NEUTRAL",
+            Decimal("0.50"): "PARTIALLY_SUPPORTS",
             Decimal("1.00"): "STRONGLY_SUPPORTS",
         }
-        classifications = {(item.claim_ref, item.passage_id): item for item in state.evidence}
+        classifications = {
+            (item.claim_ref, item.passage_id): item for item in state.evidence
+        }
         for item in state.scored_evidence:
             classification = classifications[(item.claim_ref, item.passage_id)]
-            db.add(EvidenceItem(
-                atomic_claim_id=claim_by_ref[item.claim_ref].id, passage_id=UUID(item.passage_id),
-                stance=EvidenceStance[stance_names[item.stance_value]], stance_value=item.stance_value,
-                relevance=Decimal(str(classification.quality.relevance)), directness=Decimal(str(classification.quality.directness)),
-                authority=Decimal(str(classification.quality.claim_specific_authority)), transparency=Decimal(str(classification.quality.transparency)),
-                temporal_fit=Decimal(str(classification.quality.temporal_fit)), extraction_certainty=Decimal(str(classification.quality.extraction_certainty)),
-                base_quality=item.base_quality, dependency_multiplier=item.dependency_multiplier, adjusted_weight=item.adjusted_weight,
-                rejection_reason=";".join(item.rejection_reasons) or None, citation_status="rejected" if item.rejection_reasons else "pending",
-            ))
+            db.add(
+                EvidenceItem(
+                    atomic_claim_id=claim_by_ref[item.claim_ref].id,
+                    passage_id=UUID(item.passage_id),
+                    stance=EvidenceStance[stance_names[item.stance_value]],
+                    stance_value=item.stance_value,
+                    relevance=Decimal(str(classification.quality.relevance)),
+                    directness=Decimal(str(classification.quality.directness)),
+                    authority=Decimal(
+                        str(classification.quality.claim_specific_authority)
+                    ),
+                    transparency=Decimal(str(classification.quality.transparency)),
+                    temporal_fit=Decimal(str(classification.quality.temporal_fit)),
+                    extraction_certainty=Decimal(
+                        str(classification.quality.extraction_certainty)
+                    ),
+                    base_quality=item.base_quality,
+                    dependency_multiplier=item.dependency_multiplier,
+                    adjusted_weight=item.adjusted_weight,
+                    rejection_reason=";".join(item.rejection_reasons) or None,
+                    citation_status="rejected" if item.rejection_reasons else "pending",
+                )
+            )
         SqlWorkflowStateWriter._add_calculations(db, run, state, claim_by_ref)
         for item in state.claim_scores:
             row = claim_by_ref[item.claim_ref]
-            row.support_score, row.confidence_score = item.evidence_support, item.verdict_confidence
-            row.context_completeness, row.final_label = item.context_completeness, item.final_label
-            row.gates = {**row.gates, **item.gates, "adequate_evidence": item.adequate_evidence}
-        run.evidence_support, run.verdict_confidence = state.scores.evidence_support, state.scores.verdict_confidence
-        run.source_independence, run.context_completeness = state.scores.source_independence, state.scores.context_completeness
+            row.support_score, row.confidence_score = (
+                item.evidence_support,
+                item.verdict_confidence,
+            )
+            row.context_completeness, row.final_label = (
+                item.context_completeness,
+                item.final_label,
+            )
+            row.gates = {
+                **row.gates,
+                **item.gates,
+                "adequate_evidence": item.adequate_evidence,
+            }
+        run.evidence_support, run.verdict_confidence = (
+            state.scores.evidence_support,
+            state.scores.verdict_confidence,
+        )
+        run.source_independence, run.context_completeness = (
+            state.scores.source_independence,
+            state.scores.context_completeness,
+        )
         run.verdict = state.scores.final_label
 
     @staticmethod
     def _persist_calculations(
         db: Session, run: VerificationRun, state: VerificationState
     ) -> None:
-        claims = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
+        claims = db.scalars(
+            select(AtomicClaim).where(AtomicClaim.run_id == run.id)
+        ).all()
         claim_by_ref = {str(row.gates.get("claim_ref")): row for row in claims}
         db.execute(delete(Calculation).where(Calculation.run_id == run.id))
         SqlWorkflowStateWriter._add_calculations(db, run, state, claim_by_ref)
 
     @staticmethod
-    def _add_calculations(db: Session, run: VerificationRun, state: VerificationState, claim_by_ref) -> None:
+    def _add_calculations(
+        db: Session, run: VerificationRun, state: VerificationState, claim_by_ref
+    ) -> None:
         for item in state.calculations:
             if item.claim_ref is not None and item.claim_ref not in claim_by_ref:
                 raise ValueError("calculation references an unknown atomic claim")
-            db.add(Calculation(id=UUID(item.calculation_ref), run_id=run.id,
-                atomic_claim_id=claim_by_ref[item.claim_ref].id if item.claim_ref else None,
-                formula_name=item.formula_name, formula_text=item.formula_text, inputs=item.inputs,
-                result=item.result, units=item.units, decimal_context=item.decimal_context,
-                audit_status=item.audit_status))
+            db.add(
+                Calculation(
+                    id=UUID(item.calculation_ref),
+                    run_id=run.id,
+                    atomic_claim_id=claim_by_ref[item.claim_ref].id
+                    if item.claim_ref
+                    else None,
+                    formula_name=item.formula_name,
+                    formula_text=item.formula_text,
+                    inputs=item.inputs,
+                    result=item.result,
+                    units=item.units,
+                    decimal_context=item.decimal_context,
+                    audit_status=item.audit_status,
+                )
+            )
 
     @staticmethod
-    def _persist_claims(db: Session, run: VerificationRun, state: VerificationState) -> None:
+    def _persist_claims(
+        db: Session, run: VerificationRun, state: VerificationState
+    ) -> None:
         db.execute(delete(SearchQuery).where(SearchQuery.run_id == run.id))
         db.execute(delete(AtomicClaim).where(AtomicClaim.run_id == run.id))
         db.flush()
@@ -517,14 +637,22 @@ class SqlWorkflowStateWriter:
             created[claim.claim_ref] = row
         for claim in state.claims:
             if claim.parent_claim_ref is not None:
-                created[claim.claim_ref].parent_claim_id = created[claim.parent_claim_ref].id
+                created[claim.claim_ref].parent_claim_id = created[
+                    claim.parent_claim_ref
+                ].id
 
     @staticmethod
-    def _persist_plan(db: Session, run: VerificationRun, state: VerificationState) -> None:
+    def _persist_plan(
+        db: Session, run: VerificationRun, state: VerificationState
+    ) -> None:
         db.execute(delete(SearchQuery).where(SearchQuery.run_id == run.id))
-        claims = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
+        claims = db.scalars(
+            select(AtomicClaim).where(AtomicClaim.run_id == run.id)
+        ).all()
         claim_ids = {str(row.gates.get("claim_ref")): row.id for row in claims}
-        objectives = {objective.objective_ref: objective for objective in state.objectives}
+        objectives = {
+            objective.objective_ref: objective for objective in state.objectives
+        }
         executions = {item.query_key: item for item in state.search_query_executions}
         for query in state.queries:
             objective = objectives[query.objective_ref]
@@ -576,6 +704,10 @@ class SqlWorkflowStateWriter:
                 "request_count": metadata.request_count,
                 "batch_count": metadata.batch_count,
                 "repair_count": metadata.repair_count,
+                "recovery_count": metadata.recovery_count,
+                "split_fallback_count": metadata.split_fallback_count,
+                "recovery_success_count": metadata.recovery_success_count,
+                "structured_failure_counts": dict(metadata.structured_failure_counts),
             }
             prompts[stage] = metadata.prompt_version
         run.model_versions = models
@@ -626,7 +758,10 @@ class SqlWorkflowStateWriter:
                 )
             )
         for row in evidence_rows:
-            if row.passage_id in accepted_passages and row.citation_status != "rejected":
+            if (
+                row.passage_id in accepted_passages
+                and row.citation_status != "rejected"
+            ):
                 row.citation_status = "accepted"
             elif (
                 row.passage_id in partially_supported_passages
@@ -653,7 +788,12 @@ def execute_verification_workflow(
         run = db.get(VerificationRun, run_id)
         if run is None:
             raise LookupError(f"Verification run {run_id} does not exist")
-        if run.status in {RunStatus.COMPLETED, RunStatus.FAILED, RunStatus.CANCELLED, RunStatus.QUEUED}:
+        if run.status in {
+            RunStatus.COMPLETED,
+            RunStatus.FAILED,
+            RunStatus.CANCELLED,
+            RunStatus.QUEUED,
+        }:
             return None
         submitted_input = run.submitted_text or run.submitted_url
         if not submitted_input:
@@ -664,8 +804,14 @@ def execute_verification_workflow(
             else None
         )
         target, plan_data = _split_run_target(run.normalized_target)
-        normalized = IntakeClassificationOutput.model_validate(target) if target.get("input_kind") else None
-        claim_rows = db.scalars(select(AtomicClaim).where(AtomicClaim.run_id == run.id)).all()
+        normalized = (
+            IntakeClassificationOutput.model_validate(target)
+            if target.get("input_kind")
+            else None
+        )
+        claim_rows = db.scalars(
+            select(AtomicClaim).where(AtomicClaim.run_id == run.id)
+        ).all()
         row_refs = {row.id: str(row.gates.get("claim_ref")) for row in claim_rows}
         claims = [
             AtomicClaimOutput(
@@ -689,7 +835,9 @@ def execute_verification_workflow(
                 comparison=row.comparison,
                 parent_claim_ref=row_refs.get(row.parent_claim_id),
                 ambiguities=[str(value) for value in row.ambiguities],
-                verification_scope=str(row.gates.get("verification_scope", row.claim_text)),
+                verification_scope=str(
+                    row.gates.get("verification_scope", row.claim_text)
+                ),
             )
             for row in claim_rows
         ]
@@ -704,9 +852,15 @@ def execute_verification_workflow(
             ResearchObjectiveOutput.model_validate(item)
             for item in (plan_data or {}).get("objectives", [])
         ]
-        primary_source_targets = [str(value) for value in (plan_data or {}).get("primary_source_targets", [])]
-        known_evidence_gaps = [str(value) for value in (plan_data or {}).get("known_evidence_gaps", [])]
-        query_rows = db.scalars(select(SearchQuery).where(SearchQuery.run_id == run.id)).all()
+        primary_source_targets = [
+            str(value) for value in (plan_data or {}).get("primary_source_targets", [])
+        ]
+        known_evidence_gaps = [
+            str(value) for value in (plan_data or {}).get("known_evidence_gaps", [])
+        ]
+        query_rows = db.scalars(
+            select(SearchQuery).where(SearchQuery.run_id == run.id)
+        ).all()
         queries = [
             SearchQueryOutput(
                 query=row.query_text,
@@ -723,7 +877,9 @@ def execute_verification_workflow(
                 execution_status=row.execution_status,
                 result_count=row.result_count,
                 network_attempt_count=row.network_attempt_count,
-                executed_at=_as_utc(row.executed_at) if row.executed_at is not None else None,
+                executed_at=_as_utc(row.executed_at)
+                if row.executed_at is not None
+                else None,
                 skip_reason=row.skip_reason,
             )
             for row in query_rows
@@ -736,7 +892,13 @@ def execute_verification_workflow(
             CandidateSource.model_validate(item)
             for item in (plan_data or {}).get("discovery_candidates", [])
         ]
-        if normalized is not None and claims and objectives and queries and not retrieve:
+        if (
+            normalized is not None
+            and claims
+            and objectives
+            and queries
+            and not retrieve
+        ):
             return None
         completed: list[WorkflowStage] = []
         if normalized is not None:
@@ -749,7 +911,9 @@ def execute_verification_workflow(
             run_id=run.id,
             user_id=run.user_id,
             research_depth=ResearchDepth(run.research_depth.value),
-            methodology_version=methodology.version if methodology is not None else "1.0",
+            methodology_version=methodology.version
+            if methodology is not None
+            else "1.0",
             workflow_version=run.workflow_version,
             parser_versions={
                 str(key): str(value) for key, value in run.parser_versions.items()
@@ -771,7 +935,8 @@ def execute_verification_workflow(
             search_query_executions=query_executions,
             discovery_gate_outcomes=gate_outcomes,
             search_policy_version=str(
-                (plan_data or {}).get("policy_version") or settings.search_policy_version
+                (plan_data or {}).get("policy_version")
+                or settings.search_policy_version
             ),
             search_phase_one_target=int(
                 (plan_data or {}).get("phase_one_target")
@@ -812,7 +977,8 @@ def execute_verification_workflow(
                         client=object_client,
                         bucket=settings.s3_bucket_name,
                         staging=staging,
-                        create_bucket_if_missing=settings.environment in {"development", "test"},
+                        create_bucket_if_missing=settings.environment
+                        in {"development", "test"},
                         region=settings.s3_region,
                         server_side_encryption=settings.s3_server_side_encryption,
                     )
@@ -870,11 +1036,14 @@ def execute_verification_workflow(
                     )
                 ),
                 cancellation=RunCancellationChecker(
-                    lambda checked_run_id: is_cancelled(factory, redis_client, checked_run_id)
+                    lambda checked_run_id: is_cancelled(
+                        factory, redis_client, checked_run_id
+                    )
                 ),
                 state_writer=SqlWorkflowStateWriter(factory),
                 citation_revision_limit=settings.citation_revision_limit,
-                extensions=workflow_extensions or (
+                extensions=workflow_extensions
+                or (
                     WorkflowExtensions(
                         discovery_source_selection=pipeline.discover,
                         secure_retrieval=pipeline.retrieve,
@@ -890,10 +1059,13 @@ def execute_verification_workflow(
                         deterministic_scoring=DeterministicScoringService().process,
                         numerical_audit=NumericalAuditor().process,
                     )
-                    if pipeline is not None else WorkflowExtensions()
+                    if pipeline is not None
+                    else WorkflowExtensions()
                 ),
             )
-            result = await build_workflow(services, planning_only=not retrieve).ainvoke(initial)
+            result = await build_workflow(services, planning_only=not retrieve).ainvoke(
+                initial
+            )
             return VerificationState.model_validate(result)
         finally:
             if pipeline is not None and owns_pipeline:
@@ -904,7 +1076,9 @@ def execute_verification_workflow(
     return asyncio.run(invoke())
 
 
-def _split_run_target(normalized_target: dict[str, Any]) -> tuple[dict[str, Any], Any | None]:
+def _split_run_target(
+    normalized_target: dict[str, Any],
+) -> tuple[dict[str, Any], Any | None]:
     """Separate operational metadata from the strict intake-schema payload."""
     target = dict(normalized_target)
     plan_data = target.pop("research_plan", None)

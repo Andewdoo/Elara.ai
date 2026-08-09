@@ -77,7 +77,11 @@ def _has_durable_event(
     with factory() as db:
         return bool(
             db.scalar(
-                select(exists().where(AgentEvent.run_id == run_id, AgentEvent.event_type == event_type))
+                select(
+                    exists().where(
+                        AgentEvent.run_id == run_id, AgentEvent.event_type == event_type
+                    )
+                )
             )
         )
 
@@ -121,10 +125,9 @@ def _record(
         _backfill_progress(factory, redis_client, settings, run_id)
         return
     current = _load_run(factory, run_id)
-    if (
-        stage not in {RunStatus.FAILED, RunStatus.CANCELLED}
-        and RUN_STATUS_ORDER.get(stage, 0) < RUN_STATUS_ORDER.get(current.status, 0)
-    ):
+    if stage not in {RunStatus.FAILED, RunStatus.CANCELLED} and RUN_STATUS_ORDER.get(
+        stage, 0
+    ) < RUN_STATUS_ORDER.get(current.status, 0):
         return
     with factory() as db:
         persist_progress(
@@ -263,7 +266,9 @@ def _mark_failure_safely(
                 internal_failure_detail=internal_failure_detail,
             )
     except Exception:
-        logger.error("Unable to persist failure state for run %s", run_id, exc_info=False)
+        logger.error(
+            "Unable to persist failure state for run %s", run_id, exc_info=False
+        )
 
 
 def _public_failure_payload(
@@ -276,8 +281,19 @@ def _public_failure_payload(
     durable event needs only the stable failure code and bounded counts.  Raw
     diagnostics stay in server-side logs/monitoring.
     """
+    safe_structured_subtypes = {
+        "response_json",
+        "choices_envelope",
+        "message_content_type",
+        "content_json",
+        "usage_metadata",
+        "output_schema",
+    }
     payload: dict[str, object] = {"code": code}
     for key, value in (details or {}).items():
+        if key == "structured_failure_subtype" and value in safe_structured_subtypes:
+            payload[key] = value
+            continue
         if (
             key.endswith("_count")
             and isinstance(value, int)
@@ -305,7 +321,9 @@ def verify_run(self: Task, run_id: str) -> None:
     started = time.perf_counter()
     result: VerificationState | None = None
     try:
-        with acquired_lock(run_lock(redis_client, settings=settings, run_id=parsed_run_id)) as acquired:
+        with acquired_lock(
+            run_lock(redis_client, settings=settings, run_id=parsed_run_id)
+        ) as acquired:
             if not acquired:
                 logger.info("Run %s is already owned by another worker", parsed_run_id)
                 return
@@ -313,9 +331,11 @@ def verify_run(self: Task, run_id: str) -> None:
             if _cancel_if_requested(factory, redis_client, settings, parsed_run_id):
                 return
             durable_before_work = _load_run(factory, parsed_run_id)
-            if durable_before_work.status in TERMINAL_STATUSES or durable_before_work.publication_state in {
-                "review_required", "approved", "rejected", "revision_required"
-            }:
+            if (
+                durable_before_work.status in TERMINAL_STATUSES
+                or durable_before_work.publication_state
+                in {"review_required", "approved", "rejected", "revision_required"}
+            ):
                 return
             with safe_trace(
                 "verification.run",
@@ -360,7 +380,9 @@ def verify_run(self: Task, run_id: str) -> None:
             retryable_error = next(
                 (
                     item
-                    for item in reversed(result.recoverable_errors if result is not None else [])
+                    for item in reversed(
+                        result.recoverable_errors if result is not None else []
+                    )
                     if is_retryable_workflow_error(
                         code=item.code,
                         retryable=item.retryable,
@@ -387,7 +409,9 @@ def verify_run(self: Task, run_id: str) -> None:
                 )
             elif result is not None and result.ready_for_completion:
                 if result.citation_audit is None:
-                    raise RuntimeError("completion gate accepted a missing citation audit")
+                    raise RuntimeError(
+                        "completion gate accepted a missing citation audit"
+                    )
                 expected_citations = len(result.citation_audit.sentence_audits)
                 with factory() as db:
                     persist_completed_run(

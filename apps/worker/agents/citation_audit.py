@@ -84,6 +84,16 @@ def citation_audit_batch_payload(
     }
 
 
+def split_citation_audit_batch(
+    tasks: tuple[CitationAuditTask, ...],
+) -> tuple[tuple[CitationAuditTask, ...], ...]:
+    """Split a failed multi-pair batch into stable one-pair recovery batches."""
+
+    if len(tasks) <= 1:
+        return (tasks,)
+    return tuple((task,) for task in tasks)
+
+
 __all__ = [
     "CITATION_AUDIT_BATCH_MAX_TOKENS",
     "CITATION_AUDIT_BATCH_SIZE",
@@ -92,4 +102,5 @@ __all__ = [
     "CitationAuditTask",
     "build_citation_audit_tasks",
     "citation_audit_batch_payload",
+    "split_citation_audit_batch",
 ]

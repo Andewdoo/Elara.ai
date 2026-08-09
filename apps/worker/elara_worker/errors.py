@@ -17,7 +17,10 @@ DETERMINISTIC_CONTRACT_ERROR_CODES = frozenset(
     {
         "AGENT_CONTRACT_REPAIR_EXHAUSTED",
         "STRUCTURED_RESPONSE_INVALID",
+        # Historical runs used the coarse code below for both body parsing and
+        # schema-contract failures. Keep it deterministic for durable replay.
         "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+        "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED",
     }
 )
 
@@ -34,5 +37,10 @@ def is_retryable_workflow_error(
         return False
     error_code = details.get("error_code")
     if isinstance(error_code, str) and error_code in DETERMINISTIC_CONTRACT_ERROR_CODES:
+        return False
+    if (
+        error_code == "PROVIDER_BODY_PARSE_EXHAUSTED"
+        and details.get("local_recovery_exhausted") is True
+    ):
         return False
     return retryable

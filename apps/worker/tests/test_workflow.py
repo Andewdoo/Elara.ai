@@ -20,7 +20,10 @@ from agents.deepseek_client import (
     TokenUsage,
 )
 from agents.decomposition import normalize_decomposition
-from agents.evidence_classification import build_classification_tasks, classification_task_ref
+from agents.evidence_classification import (
+    build_classification_tasks,
+    classification_task_ref,
+)
 from agents.schemas import (
     AtomicClaimOutput,
     CitedReportSentenceOutput,
@@ -72,6 +75,13 @@ from graph.state import (
 )
 from graph.transitions import citation_audit_ready, evidence_ready, synthesis_ready
 from graph.workflow import (
+    CITATION_RECOVERY_BACKOFF_SECONDS,
+    CITATION_RECOVERY_DEADLINE_SECONDS,
+    CITATION_RECOVERY_JITTER_SECONDS,
+    CITATION_RECOVERY_MAX_CALLS,
+    CITATION_RECOVERY_MAX_SPLIT_CALLS_PER_BATCH,
+    CITATION_RECOVERY_REPLAY_LIMIT_PER_BATCH,
+    CITATION_RECOVERY_SPLIT_LIMIT_PER_BATCH,
     WorkflowExtensions,
     WorkflowNodes,
     WorkflowServices,
@@ -190,9 +200,12 @@ class BatchingClassificationModel:
                         temperature=kwargs["temperature"],
                         latency_ms=5,
                         status_code=200,
-                        error_code="STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+                        error_code="STRUCTURED_SCHEMA_REPAIR_EXHAUSTED",
                         retryable=False,
                         attempt_count=2,
+                        structured_failure_subtype="output_schema",
+                        structured_failure_count=2,
+                        structured_failure_counts={"output_schema": 2},
                     ),
                 )
             payload = json.loads(kwargs["messages"][1]["content"])
@@ -249,9 +262,12 @@ class BatchingCitationModel:
                         temperature=kwargs["temperature"],
                         latency_ms=5,
                         status_code=200,
-                        error_code="STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+                        error_code="STRUCTURED_SCHEMA_REPAIR_EXHAUSTED",
                         retryable=False,
                         attempt_count=2,
+                        structured_failure_subtype="output_schema",
+                        structured_failure_count=2,
+                        structured_failure_counts={"output_schema": 2},
                     ),
                 )
             payload = json.loads(kwargs["messages"][1]["content"])
@@ -274,7 +290,79 @@ class BatchingCitationModel:
                     prompt_version=kwargs["prompt_version"],
                     temperature=kwargs["temperature"],
                     latency_ms=20,
-                    usage=TokenUsage(prompt_tokens=8, completion_tokens=4, total_tokens=12),
+                    usage=TokenUsage(
+                        prompt_tokens=8, completion_tokens=4, total_tokens=12
+                    ),
+                ),
+            )
+        finally:
+            self.active -= 1
+
+
+class RecoveringCitationModel:
+    def __init__(self, outcomes: list[str]) -> None:
+        self.outcomes = outcomes
+        self.calls: list[dict[str, object]] = []
+        self.active = 0
+        self.max_active = 0
+
+    async def generate_structured(self, **kwargs):
+        call_index = len(self.calls)
+        self.calls.append(kwargs)
+        self.active += 1
+        self.max_active = max(self.max_active, self.active)
+        try:
+            await asyncio.sleep(0)
+            outcome = self.outcomes[call_index]
+            if outcome in {"body", "schema"}:
+                subtype = "content_json" if outcome == "body" else "output_schema"
+                error_code = (
+                    "PROVIDER_BODY_PARSE_EXHAUSTED"
+                    if outcome == "body"
+                    else "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED"
+                )
+                raise DeepSeekResponseError(
+                    "invalid structured response",
+                    metadata=ProviderErrorMetadata(
+                        model="deepseek-chat",
+                        prompt_version=kwargs["prompt_version"],
+                        temperature=kwargs["temperature"],
+                        latency_ms=5,
+                        status_code=200,
+                        error_code=error_code,
+                        retryable=False,
+                        attempt_count=2,
+                        structured_failure_subtype=subtype,
+                        structured_failure_count=2,
+                        structured_failure_counts={subtype: 2},
+                    ),
+                )
+            payload = json.loads(kwargs["messages"][1]["content"])
+            pairs = payload["audit_pairs"]
+            if outcome == "coverage":
+                pairs = [{"sentence_ref": "unknown", "passage_id": "unknown"}]
+            output = kwargs["output_schema"].model_validate(
+                {
+                    "sentence_audits": [
+                        {
+                            **pair,
+                            "entailment": "entailed",
+                            "support_explanation": "The declared pair is supported.",
+                        }
+                        for pair in reversed(pairs)
+                    ]
+                }
+            )
+            return StructuredResponse(
+                output=output,
+                metadata=CallMetadata(
+                    model="deepseek-chat",
+                    prompt_version=kwargs["prompt_version"],
+                    temperature=kwargs["temperature"],
+                    latency_ms=5,
+                    usage=TokenUsage(
+                        prompt_tokens=4, completion_tokens=2, total_tokens=6
+                    ),
                 ),
             )
         finally:
@@ -381,7 +469,10 @@ def test_report_title_uses_model_paraphrase_and_rejects_generic_fallbacks():
         }
     )
 
-    assert _report_title(title_state, "Company X Q1 net-income growth") == "Company X Q1 net-income growth"
+    assert (
+        _report_title(title_state, "Company X Q1 net-income growth")
+        == "Company X Q1 net-income growth"
+    )
     assert _report_title(title_state, "Evidence assessment") == (
         "Company X doubled net income in Q1 2026 after acquiring a smaller rival."
     )
@@ -420,11 +511,15 @@ DECOMPOSITION_DRAFT = {
         }
     ]
 }
-GENERATED_CLAIM_REF = normalize_decomposition(
-    DecompositionDraftOutput.model_validate(DECOMPOSITION_DRAFT),
-    normalized_text=INTAKE["normalized_text"],
-    claim_limit=25,
-).atomic_claims[0].claim_ref
+GENERATED_CLAIM_REF = (
+    normalize_decomposition(
+        DecompositionDraftOutput.model_validate(DECOMPOSITION_DRAFT),
+        normalized_text=INTAKE["normalized_text"],
+        claim_limit=25,
+    )
+    .atomic_claims[0]
+    .claim_ref
+)
 PLAN = {
     "objectives": [
         {
@@ -466,7 +561,10 @@ def test_retry_provenance_is_excluded_from_the_strict_intake_payload():
 
     assert plan == PLAN
     assert "retried_from_run_id" not in target
-    assert IntakeClassificationOutput.model_validate(target).normalized_text == INTAKE["normalized_text"]
+    assert (
+        IntakeClassificationOutput.model_validate(target).normalized_text
+        == INTAKE["normalized_text"]
+    )
 
 
 DRAFT_PLAN = {
@@ -492,12 +590,18 @@ for _objective in DRAFT_PLAN_FOR_GENERATED_CLAIMS["objectives"]:
 
 def test_planner_normalizes_draft_and_validates_contract():
     workflow_state = VerificationState.model_validate(
-        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+        }
     )
 
     result = asyncio.run(
         WorkflowNodes(
-            WorkflowServices(model=FakeModel([DRAFT_PLAN]), submitted_input="synthetic public claim")
+            WorkflowServices(
+                model=FakeModel([DRAFT_PLAN]), submitted_input="synthetic public claim"
+            )
         ).planner(workflow_state)
     )
 
@@ -505,19 +609,25 @@ def test_planner_normalizes_draft_and_validates_contract():
     assert result.objectives[0].objective_ref.startswith("obj-")
     assert result.queries[0].objective_ref == result.objectives[0].objective_ref
     assert result.queries[0].intent == result.objectives[0].intent
-    assert result.model_calls[WorkflowStage.PLANNER.value].prompt_version == "planner-v2"
+    assert (
+        result.model_calls[WorkflowStage.PLANNER.value].prompt_version == "planner-v2"
+    )
 
 
 def test_planner_sends_v2_contract_payload_without_exact_quote_when_inapplicable():
     workflow_state = VerificationState.model_validate(
-        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+        }
     )
     model = FakeModel([DRAFT_PLAN])
 
     result = asyncio.run(
-        WorkflowNodes(WorkflowServices(model=model, submitted_input="synthetic public claim")).planner(
-            workflow_state
-        )
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="synthetic public claim")
+        ).planner(workflow_state)
     )
 
     call = model.calls[0]
@@ -566,12 +676,14 @@ def test_over_ceiling_claim_set_fails_before_planner_or_search_provider_use():
         for index in range(13)
     ]
     model = FakeModel([])
-    value = state().model_copy(update={"research_depth": ResearchDepth.QUICK, "claims": claims})
+    value = state().model_copy(
+        update={"research_depth": ResearchDepth.QUICK, "claims": claims}
+    )
 
     result = asyncio.run(
-        WorkflowNodes(WorkflowServices(model=model, submitted_input="future oversized input")).planner(
-            value
-        )
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="future oversized input")
+        ).planner(value)
     )
 
     assert model.calls == []
@@ -587,15 +699,21 @@ def test_planner_prepends_an_exact_brave_query_for_an_article_title():
     workflow_state = VerificationState.model_validate(
         {
             **state().model_dump(),
-            "normalized_input": {**INTAKE, "input_kind": "article_title", "normalized_text": article_title},
+            "normalized_input": {
+                **INTAKE,
+                "input_kind": "article_title",
+                "normalized_text": article_title,
+            },
             "claims": DECOMPOSITION["atomic_claims"],
         }
     )
 
     result = asyncio.run(
-        WorkflowNodes(WorkflowServices(model=FakeModel([DRAFT_PLAN]), submitted_input=article_title)).planner(
-            workflow_state
-        )
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([DRAFT_PLAN]), submitted_input=article_title
+            )
+        ).planner(workflow_state)
     )
 
     assert result.queries[0].query == article_title
@@ -607,7 +725,11 @@ def test_planner_rejects_unknown_draft_claim_ref_with_stable_diagnostics():
     invalid_draft = deepcopy(DRAFT_PLAN)
     invalid_draft["objectives"][0]["claim_ref"] = "unknown-claim"
     workflow_state = VerificationState.model_validate(
-        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+        }
     )
 
     result = asyncio.run(
@@ -636,7 +758,11 @@ def test_planner_repairs_one_semantically_invalid_plan_without_replaying_model_c
     invalid_plan["objectives"][0]["queries"][0]["query"] = raw_response_marker
     invalid_plan["objectives"][1]["queries"][0]["query"] = raw_response_marker.upper()
     workflow_state = VerificationState.model_validate(
-        {**state().model_dump(), "normalized_input": INTAKE, "claims": DECOMPOSITION["atomic_claims"]}
+        {
+            **state().model_dump(),
+            "normalized_input": INTAKE,
+            "claims": DECOMPOSITION["atomic_claims"],
+        }
     )
     progress = RecordingProgress()
     model = FakeModel([invalid_plan, DRAFT_PLAN], attempt_counts=[2, 1])
@@ -746,7 +872,11 @@ def planner_contract_cases() -> list[tuple[str, dict[str, object], dict[str, obj
     attribution_missing = deepcopy(PLAN)
     attribution_input = {**INTAKE, "requires_attribution_check": True}
     cases.append(
-        ("missing_attribution_path", attribution_missing, {"normalized_input": attribution_input})
+        (
+            "missing_attribution_path",
+            attribution_missing,
+            {"normalized_input": attribution_input},
+        )
     )
 
     exact_quote_missing = deepcopy(PLAN)
@@ -755,7 +885,9 @@ def planner_contract_cases() -> list[tuple[str, dict[str, object], dict[str, obj
         "input_kind": "quote",
         "normalized_text": "This synthetic statement must be searched verbatim.",
     }
-    cases.append(("missing_exact_quote", exact_quote_missing, {"normalized_input": quote_input}))
+    cases.append(
+        ("missing_exact_quote", exact_quote_missing, {"normalized_input": quote_input})
+    )
 
     intent_mismatch = deepcopy(PLAN)
     intent_mismatch["queries"].append(
@@ -769,7 +901,9 @@ def planner_contract_cases() -> list[tuple[str, dict[str, object], dict[str, obj
     return cases
 
 
-@pytest.mark.skip(reason="Planning drafts cannot supply persisted objective references or query intents.")
+@pytest.mark.skip(
+    reason="Planning drafts cannot supply persisted objective references or query intents."
+)
 @pytest.mark.parametrize(("case_name", "plan", "updates"), planner_contract_cases())
 def test_planner_reports_stable_contract_diagnostics_for_pydantic_valid_plans(
     case_name: str, plan: dict[str, object], updates: dict[str, object]
@@ -787,7 +921,9 @@ def test_planner_reports_stable_contract_diagnostics_for_pydantic_valid_plans(
 
     result = asyncio.run(
         WorkflowNodes(
-            WorkflowServices(model=FakeModel([plan]), submitted_input="synthetic public claim")
+            WorkflowServices(
+                model=FakeModel([plan]), submitted_input="synthetic public claim"
+            )
         ).planner(workflow_state)
     )
 
@@ -809,7 +945,10 @@ def test_planner_reports_stable_contract_diagnostics_for_pydantic_valid_plans(
         assert WorkflowStage.PLANNER in result.completed_stages
     else:
         assert result.recoverable_errors[-1].code == "INVALID_RESEARCH_PLAN"
-        assert result.recoverable_errors[-1].details["primary_violation"] == expected_primary_violations[case_name]
+        assert (
+            result.recoverable_errors[-1].details["primary_violation"]
+            == expected_primary_violations[case_name]
+        )
         assert result.recoverable_errors[-1].details["violation_count"] == len(
             validate_research_plan(workflow_state, PlanningOutput.model_validate(plan))
         )
@@ -1028,7 +1167,11 @@ def test_decomposition_rejects_parent_cycles():
     cyclical = deepcopy(DECOMPOSITION_DRAFT)
     cyclical["atomic_claims"] = [
         {**DECOMPOSITION_DRAFT["atomic_claims"][0], "parent_claim_index": 1},
-        {**DECOMPOSITION_DRAFT["atomic_claims"][0], "text": "Company X reported income in Q1 2026.", "parent_claim_index": 0},
+        {
+            **DECOMPOSITION_DRAFT["atomic_claims"][0],
+            "text": "Company X reported income in Q1 2026.",
+            "parent_claim_index": 0,
+        },
     ]
     value = VerificationState.model_validate(
         {**state().model_dump(), "normalized_input": INTAKE}
@@ -1121,7 +1264,9 @@ def test_evidence_guard_rejects_unknown_passage_reference():
             {
                 "classifications": [
                     {
-                        "task_ref": classification_task_ref("claim-1", "invented-passage"),
+                        "task_ref": classification_task_ref(
+                            "claim-1", "invented-passage"
+                        ),
                         "stance": "strongly_supports",
                         "quality": {
                             "relevance": 1,
@@ -1140,9 +1285,9 @@ def test_evidence_guard_rejects_unknown_passage_reference():
     )
 
     result = asyncio.run(
-        WorkflowNodes(WorkflowServices(model=model, submitted_input="unused")).evidence_classification(
-            workflow_state
-        )
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).evidence_classification(workflow_state)
     )
 
     assert result.evidence == []
@@ -1208,10 +1353,14 @@ def test_evidence_classification_batches_ten_tasks_with_bounded_concurrency_and_
     payloads = [json.loads(call["messages"][1]["content"]) for call in model.calls]
     assert [len(payload["tasks"]) for payload in payloads] == [1] * 10
     assert model.max_active == 2
-    assert all(call["prompt_version"] == "evidence-classification-v4" for call in model.calls)
+    assert all(
+        call["prompt_version"] == "evidence-classification-v4" for call in model.calls
+    )
     assert all(call["max_tokens"] == 4_000 for call in model.calls)
     assert all(call["max_schema_attempts"] == 2 for call in model.calls)
-    assert [item.passage_id for item in result.evidence] == [task.passage_id for task in tasks]
+    assert [item.passage_id for item in result.evidence] == [
+        task.passage_id for task in tasks
+    ]
     metadata = result.model_calls[WorkflowStage.EVIDENCE_CLASSIFICATION.value]
     assert metadata.batch_count == 10
     assert metadata.request_count == 20
@@ -1283,14 +1432,20 @@ def test_failed_evidence_batch_discards_partials_and_emits_one_content_free_fail
         "provider": "deepseek",
         "model": "deepseek-chat",
         "status_code": 200,
-        "error_code": "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+        "error_code": "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED",
         "attempt_count": 2,
+        "structured_failure_subtype": "output_schema",
+        "structured_failure_count": 2,
     }
     assert len(writer.saved) == 1 and writer.saved[0][1].evidence == []
-    assert sum(
-        event["event_type"] == "workflow.evidence_classification.recoverable_failure"
-        for event in progress.events
-    ) == 1
+    assert (
+        sum(
+            event["event_type"]
+            == "workflow.evidence_classification.recoverable_failure"
+            for event in progress.events
+        )
+        == 1
+    )
     assert private_marker not in repr(progress.events)
 
 
@@ -1339,15 +1494,15 @@ def test_evidence_classification_requires_exact_task_coverage_and_uses_v4_payloa
     )
 
     payloads = [json.loads(call["messages"][1]["content"]) for call in model.calls]
-    assert all(call["prompt_version"] == "evidence-classification-v4" for call in model.calls)
+    assert all(
+        call["prompt_version"] == "evidence-classification-v4" for call in model.calls
+    )
     assert all(call["max_tokens"] == 4_000 for call in model.calls)
     assert all(call["max_schema_attempts"] == 2 for call in model.calls)
     assert all(set(payload) == {"tasks"} for payload in payloads)
-    assert [
-        task["task_ref"]
-        for payload in payloads
-        for task in payload["tasks"]
-    ] == [task.task_ref for task in tasks]
+    assert [task["task_ref"] for payload in payloads for task in payload["tasks"]] == [
+        task.task_ref for task in tasks
+    ]
     assert {(item.claim_ref, item.passage_id) for item in result.evidence} == {
         (task.claim_ref, task.passage_id) for task in tasks
     }
@@ -1357,10 +1512,38 @@ def test_evidence_classification_requires_exact_task_coverage_and_uses_v4_payloa
 @pytest.mark.parametrize(
     ("returned_task_refs", "expected_details"),
     [
-        ([], {"missing_task_count": 1, "duplicate_task_count": 0, "unknown_task_count": 0}),
-        ([("expected"), ("expected")], {"missing_task_count": 0, "duplicate_task_count": 1, "unknown_task_count": 0}),
-        ([("unknown")], {"missing_task_count": 1, "duplicate_task_count": 0, "unknown_task_count": 1}),
-        ([("expected"), ("unknown")], {"missing_task_count": 0, "duplicate_task_count": 0, "unknown_task_count": 1}),
+        (
+            [],
+            {
+                "missing_task_count": 1,
+                "duplicate_task_count": 0,
+                "unknown_task_count": 0,
+            },
+        ),
+        (
+            [("expected"), ("expected")],
+            {
+                "missing_task_count": 0,
+                "duplicate_task_count": 1,
+                "unknown_task_count": 0,
+            },
+        ),
+        (
+            [("unknown")],
+            {
+                "missing_task_count": 1,
+                "duplicate_task_count": 0,
+                "unknown_task_count": 1,
+            },
+        ),
+        (
+            [("expected"), ("unknown")],
+            {
+                "missing_task_count": 0,
+                "duplicate_task_count": 0,
+                "unknown_task_count": 1,
+            },
+        ),
     ],
     ids=["empty", "duplicate", "unknown", "extra"],
 )
@@ -1386,11 +1569,21 @@ def test_evidence_classification_rejects_incomplete_or_undeclared_task_results(
     )
     expected_ref = classification_task_ref("claim-1", "passage-1")
     unknown_ref = classification_task_ref("claim-1", "undeclared-passage")
-    refs = [expected_ref if ref == "expected" else unknown_ref for ref in returned_task_refs]
+    refs = [
+        expected_ref if ref == "expected" else unknown_ref for ref in returned_task_refs
+    ]
     result = asyncio.run(
         WorkflowNodes(
             WorkflowServices(
-                model=FakeModel([{"classifications": [_classification_judgment(ref) for ref in refs]}]),
+                model=FakeModel(
+                    [
+                        {
+                            "classifications": [
+                                _classification_judgment(ref) for ref in refs
+                            ]
+                        }
+                    ]
+                ),
                 submitted_input="unused",
             )
         ).evidence_classification(value)
@@ -1441,7 +1634,9 @@ def test_evidence_guard_applies_deterministic_rejection_thresholds():
 
     result = asyncio.run(
         WorkflowNodes(
-            WorkflowServices(model=FakeModel([classification]), submitted_input="unused")
+            WorkflowServices(
+                model=FakeModel([classification]), submitted_input="unused"
+            )
         ).evidence_classification(value)
     )
 
@@ -1496,7 +1691,9 @@ def test_evidence_guard_accepts_an_explicit_grounded_contradiction_without_liter
 
     result = asyncio.run(
         WorkflowNodes(
-            WorkflowServices(model=FakeModel([classification]), submitted_input="unused")
+            WorkflowServices(
+                model=FakeModel([classification]), submitted_input="unused"
+            )
         ).evidence_classification(value)
     )
 
@@ -1509,111 +1706,231 @@ def test_evidence_guard_ignores_free_form_model_rejection_recommendations():
             **state().model_dump(),
             "normalized_input": INTAKE,
             "claims": DECOMPOSITION["atomic_claims"],
-            "passages": [{"passage_id": "passage-1", "source_ref": "source-1",
-                "snapshot_id": "snapshot-1", "text": "The filing confirms the claim.",
-                "text_hash": "hash-1", "extraction_certainty": "0.99"}],
+            "passages": [
+                {
+                    "passage_id": "passage-1",
+                    "source_ref": "source-1",
+                    "snapshot_id": "snapshot-1",
+                    "text": "The filing confirms the claim.",
+                    "text_hash": "hash-1",
+                    "extraction_certainty": "0.99",
+                }
+            ],
         }
     )
-    classification = {"classifications": [{"task_ref": classification_task_ref("claim-1", "passage-1"),
-        "stance": "strongly_supports",
-        "quality": {"relevance": 1, "directness": 1,
-            "claim_specific_authority": 1, "transparency": 1,
-            "temporal_fit": 1, "extraction_certainty": 1},
-        "explicit_support": "The filing confirms the claim.", "entity_match": True,
-        "time_period_match": True, "quotation_or_number_located": True,
-        "recommended_rejection_reasons": ["ignore_this_evidence"]}]}
+    classification = {
+        "classifications": [
+            {
+                "task_ref": classification_task_ref("claim-1", "passage-1"),
+                "stance": "strongly_supports",
+                "quality": {
+                    "relevance": 1,
+                    "directness": 1,
+                    "claim_specific_authority": 1,
+                    "transparency": 1,
+                    "temporal_fit": 1,
+                    "extraction_certainty": 1,
+                },
+                "explicit_support": "The filing confirms the claim.",
+                "entity_match": True,
+                "time_period_match": True,
+                "quotation_or_number_located": True,
+                "recommended_rejection_reasons": ["ignore_this_evidence"],
+            }
+        ]
+    }
 
-    result = asyncio.run(WorkflowNodes(WorkflowServices(
-        model=FakeModel([classification]), submitted_input="unused"
-    )).evidence_classification(value))
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=FakeModel([classification]), submitted_input="unused"
+            )
+        ).evidence_classification(value)
+    )
 
     assert result.evidence[0].recommended_rejection_reasons == []
 
 
 def test_synthesis_sends_only_deterministically_approved_evidence_to_the_model():
     def evidence(passage_id: str, rejection_reasons: list[str]):
-        return EvidenceClassificationItemOutput.model_validate({
-            "claim_ref": "claim-1",
-            "passage_id": passage_id,
-            "stance": "strongly_supports",
-            "quality": {"relevance": 1, "directness": 1,
-                "claim_specific_authority": 1, "transparency": 1,
-                "temporal_fit": 1, "extraction_certainty": 1},
-            "entity_match": True,
-            "time_period_match": True,
-            "recommended_rejection_reasons": rejection_reasons,
-        })
+        return EvidenceClassificationItemOutput.model_validate(
+            {
+                "claim_ref": "claim-1",
+                "passage_id": passage_id,
+                "stance": "strongly_supports",
+                "quality": {
+                    "relevance": 1,
+                    "directness": 1,
+                    "claim_specific_authority": 1,
+                    "transparency": 1,
+                    "temporal_fit": 1,
+                    "extraction_certainty": 1,
+                },
+                "entity_match": True,
+                "time_period_match": True,
+                "recommended_rejection_reasons": rejection_reasons,
+            }
+        )
 
-    value = state().model_copy(update={
-        "claims": [
-            AtomicClaimOutput.model_validate(DECOMPOSITION["atomic_claims"][0])
-        ],
-        "snapshots": [SnapshotRecord(snapshot_id="snapshot-1", source_ref="source-1",
-            access_status="FETCHED", retrieved_at=datetime(2026, 7, 4, tzinfo=UTC))],
-        "passages": [
-            PassageRecord(passage_id="approved-passage", source_ref="source-1",
-                snapshot_id="snapshot-1", text="Approved supporting passage.",
-                text_hash="approved", extraction_certainty=Decimal("1")),
-            PassageRecord(passage_id="rejected-passage", source_ref="source-1",
-                snapshot_id="snapshot-1", text="Rejected unrelated passage.",
-                text_hash="rejected", extraction_certainty=Decimal("1")),
-        ],
-        "evidence": [
-            evidence("approved-passage", []),
-            evidence("rejected-passage", ["entity_mismatch"]),
-        ],
-        "scores": ScoreBundle(evidence_support=100, verdict_confidence=90,
-            source_independence=80, context_completeness=90, final_label="supported",
-            methodology_version="1.0"),
-    })
-    model = FakeModel([{"summary_sentences": [{"sentence_ref": "summary-1",
-        "text": "Approved evidence supports the claim.", "passage_ids": ["approved-passage"]}]}])
+    value = state().model_copy(
+        update={
+            "claims": [
+                AtomicClaimOutput.model_validate(DECOMPOSITION["atomic_claims"][0])
+            ],
+            "snapshots": [
+                SnapshotRecord(
+                    snapshot_id="snapshot-1",
+                    source_ref="source-1",
+                    access_status="FETCHED",
+                    retrieved_at=datetime(2026, 7, 4, tzinfo=UTC),
+                )
+            ],
+            "passages": [
+                PassageRecord(
+                    passage_id="approved-passage",
+                    source_ref="source-1",
+                    snapshot_id="snapshot-1",
+                    text="Approved supporting passage.",
+                    text_hash="approved",
+                    extraction_certainty=Decimal("1"),
+                ),
+                PassageRecord(
+                    passage_id="rejected-passage",
+                    source_ref="source-1",
+                    snapshot_id="snapshot-1",
+                    text="Rejected unrelated passage.",
+                    text_hash="rejected",
+                    extraction_certainty=Decimal("1"),
+                ),
+            ],
+            "evidence": [
+                evidence("approved-passage", []),
+                evidence("rejected-passage", ["entity_mismatch"]),
+            ],
+            "scores": ScoreBundle(
+                evidence_support=100,
+                verdict_confidence=90,
+                source_independence=80,
+                context_completeness=90,
+                final_label="supported",
+                methodology_version="1.0",
+            ),
+        }
+    )
+    model = FakeModel(
+        [
+            {
+                "summary_sentences": [
+                    {
+                        "sentence_ref": "summary-1",
+                        "text": "Approved evidence supports the claim.",
+                        "passage_ids": ["approved-passage"],
+                    }
+                ]
+            }
+        ]
+    )
 
     result = asyncio.run(
-        WorkflowNodes(WorkflowServices(model=model, submitted_input="unused")).synthesis(value)
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).synthesis(value)
     )
 
     payload = json.loads(model.calls[0]["messages"][1]["content"])
     assert model.calls[0]["prompt_version"] == "synthesis-v4"
     assert payload["submitted_target"] is None
-    assert [item["passage_id"] for item in payload["approved_evidence"]] == ["approved-passage"]
-    assert [item["passage_id"] for item in payload["approved_passages"]] == ["approved-passage"]
+    assert [item["passage_id"] for item in payload["approved_evidence"]] == [
+        "approved-passage"
+    ]
+    assert [item["passage_id"] for item in payload["approved_passages"]] == [
+        "approved-passage"
+    ]
     assert result.report_draft is not None
 
 
 def test_synthesis_repairs_an_unapproved_citation_once_without_retaining_the_draft():
-    value = state().model_copy(update={
-        "claims": [AtomicClaimOutput.model_validate(DECOMPOSITION["atomic_claims"][0])],
-        "snapshots": [SnapshotRecord(snapshot_id="snapshot-1", source_ref="source-1",
-            access_status="FETCHED", retrieved_at=datetime(2026, 7, 4, tzinfo=UTC))],
-        "passages": [PassageRecord(passage_id="approved-passage", source_ref="source-1",
-            snapshot_id="snapshot-1", text="Approved supporting passage.",
-            text_hash="approved", extraction_certainty=Decimal("1"))],
-        "evidence": [EvidenceClassificationItemOutput.model_validate({
-            "claim_ref": "claim-1", "passage_id": "approved-passage",
-            "stance": "strongly_supports",
-            "quality": {"relevance": 1, "directness": 1,
-                "claim_specific_authority": 1, "transparency": 1,
-                "temporal_fit": 1, "extraction_certainty": 1},
-            "entity_match": True, "time_period_match": True,
-        })],
-        "scores": ScoreBundle(evidence_support=100, verdict_confidence=90,
-            source_independence=80, context_completeness=90, final_label="supported",
-            methodology_version="1.0"),
-    })
-    model = FakeModel([
-        {"summary_sentences": [{"sentence_ref": "summary-invalid",
-            "text": "An invalid citation must not be retained.",
-            "passage_ids": ["unapproved-passage"]}]},
-        {"summary_sentences": [{"sentence_ref": "summary-repaired",
-            "text": "Approved evidence supports the claim.",
-            "passage_ids": ["approved-passage"]}]},
-    ])
+    value = state().model_copy(
+        update={
+            "claims": [
+                AtomicClaimOutput.model_validate(DECOMPOSITION["atomic_claims"][0])
+            ],
+            "snapshots": [
+                SnapshotRecord(
+                    snapshot_id="snapshot-1",
+                    source_ref="source-1",
+                    access_status="FETCHED",
+                    retrieved_at=datetime(2026, 7, 4, tzinfo=UTC),
+                )
+            ],
+            "passages": [
+                PassageRecord(
+                    passage_id="approved-passage",
+                    source_ref="source-1",
+                    snapshot_id="snapshot-1",
+                    text="Approved supporting passage.",
+                    text_hash="approved",
+                    extraction_certainty=Decimal("1"),
+                )
+            ],
+            "evidence": [
+                EvidenceClassificationItemOutput.model_validate(
+                    {
+                        "claim_ref": "claim-1",
+                        "passage_id": "approved-passage",
+                        "stance": "strongly_supports",
+                        "quality": {
+                            "relevance": 1,
+                            "directness": 1,
+                            "claim_specific_authority": 1,
+                            "transparency": 1,
+                            "temporal_fit": 1,
+                            "extraction_certainty": 1,
+                        },
+                        "entity_match": True,
+                        "time_period_match": True,
+                    }
+                )
+            ],
+            "scores": ScoreBundle(
+                evidence_support=100,
+                verdict_confidence=90,
+                source_independence=80,
+                context_completeness=90,
+                final_label="supported",
+                methodology_version="1.0",
+            ),
+        }
+    )
+    model = FakeModel(
+        [
+            {
+                "summary_sentences": [
+                    {
+                        "sentence_ref": "summary-invalid",
+                        "text": "An invalid citation must not be retained.",
+                        "passage_ids": ["unapproved-passage"],
+                    }
+                ]
+            },
+            {
+                "summary_sentences": [
+                    {
+                        "sentence_ref": "summary-repaired",
+                        "text": "Approved evidence supports the claim.",
+                        "passage_ids": ["approved-passage"],
+                    }
+                ]
+            },
+        ]
+    )
     progress = RecordingProgress()
 
-    result = asyncio.run(WorkflowNodes(WorkflowServices(
-        model=model, submitted_input="unused", progress=progress
-    )).synthesis(value))
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused", progress=progress)
+        ).synthesis(value)
+    )
 
     assert result.report_draft is not None
     assert result.report_draft.summary_sentences[0].passage_ids == ["approved-passage"]
@@ -1621,16 +1938,27 @@ def test_synthesis_repairs_an_unapproved_citation_once_without_retaining_the_dra
     assert len(model.calls) == 2
     assert "approved-passage" in model.calls[1]["messages"][0]["content"]
     assert "unapproved-passage" not in str(model.calls[1]["messages"])
-    assert any(event["event_type"] == "workflow.synthesis.citation_repair" for event in progress.events)
+    assert any(
+        event["event_type"] == "workflow.synthesis.citation_repair"
+        for event in progress.events
+    )
 
 
 def test_extension_outputs_are_revalidated():
     async def invalid_extension(value: VerificationState) -> VerificationState:
-        return value.model_copy(update={"candidate_sources": [{"source_ref": "incomplete"}]})
+        return value.model_copy(
+            update={"candidate_sources": [{"source_ref": "incomplete"}]}
+        )
 
-    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
-    with pytest.warns(UserWarning, match="Pydantic serializer warnings"), pytest.raises(ValidationError):
+    node = WorkflowNodes(
+        WorkflowServices(model=FakeModel([]), submitted_input="unused")
+    )
+    with (
+        pytest.warns(UserWarning, match="Pydantic serializer warnings"),
+        pytest.raises(ValidationError),
+    ):
         asyncio.run(node.extension(WorkflowStage.DISCOVERY, invalid_extension)(state()))
+
 
 def test_typed_extension_error_preserves_safe_failure_contract():
     async def unavailable(_value: VerificationState) -> VerificationState:
@@ -1641,7 +1969,9 @@ def test_typed_extension_error_preserves_safe_failure_contract():
             details={"candidate_count": 2, "failure_kind": "fetch"},
         )
 
-    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
+    node = WorkflowNodes(
+        WorkflowServices(model=FakeModel([]), submitted_input="unused")
+    )
     result = asyncio.run(node.extension(WorkflowStage.RETRIEVAL, unavailable)(state()))
 
     assert result.recoverable_errors[0].code == "NO_ACCESSIBLE_SOURCES"
@@ -1650,14 +1980,19 @@ def test_typed_extension_error_preserves_safe_failure_contract():
         == "No accessible sources were available after secure retrieval."
     )
     assert result.recoverable_errors[0].retryable is True
-    assert result.recoverable_errors[0].details == {"candidate_count": 2, "failure_kind": "fetch"}
+    assert result.recoverable_errors[0].details == {
+        "candidate_count": 2,
+        "failure_kind": "fetch",
+    }
 
 
 def test_unexpected_extension_runtime_error_reaches_worker_boundary():
     async def broken_extension(_value: VerificationState) -> VerificationState:
         raise RuntimeError("programming invariant failed")
 
-    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
+    node = WorkflowNodes(
+        WorkflowServices(model=FakeModel([]), submitted_input="unused")
+    )
     with pytest.raises(RuntimeError, match="programming invariant failed"):
         asyncio.run(node.extension(WorkflowStage.RETRIEVAL, broken_extension)(state()))
 
@@ -1665,9 +2000,24 @@ def test_unexpected_extension_runtime_error_reaches_worker_boundary():
 @pytest.mark.parametrize(
     ("route", "stage", "node_name", "expected_code"),
     [
-        (evidence_ready, WorkflowStage.EVIDENCE_CLASSIFICATION, "evidence_classification", "EVIDENCE_INPUTS_REQUIRED"),
-        (synthesis_ready, WorkflowStage.SYNTHESIS, "synthesis", "APPROVED_EVIDENCE_REQUIRED"),
-        (citation_audit_ready, WorkflowStage.CITATION_AUDIT, "citation_audit", "REPORT_DRAFT_REQUIRED"),
+        (
+            evidence_ready,
+            WorkflowStage.EVIDENCE_CLASSIFICATION,
+            "evidence_classification",
+            "EVIDENCE_INPUTS_REQUIRED",
+        ),
+        (
+            synthesis_ready,
+            WorkflowStage.SYNTHESIS,
+            "synthesis",
+            "APPROVED_EVIDENCE_REQUIRED",
+        ),
+        (
+            citation_audit_ready,
+            WorkflowStage.CITATION_AUDIT,
+            "citation_audit",
+            "REPORT_DRAFT_REQUIRED",
+        ),
     ],
 )
 def test_missing_transition_prerequisite_reaches_responsible_stage(
@@ -1676,7 +2026,9 @@ def test_missing_transition_prerequisite_reaches_responsible_stage(
     value = state()
     assert route(value) == "continue"
 
-    node = WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused"))
+    node = WorkflowNodes(
+        WorkflowServices(model=FakeModel([]), submitted_input="unused")
+    )
     result = asyncio.run(getattr(node, node_name)(value))
 
     assert result.recoverable_errors[-1].stage == stage
@@ -1796,7 +2148,16 @@ def test_full_graph_runs_typed_extensions_and_recomputes_citation_audit():
     }
     workflow = build_workflow(
         WorkflowServices(
-            model=FakeModel([INTAKE, DECOMPOSITION_DRAFT, DRAFT_PLAN_FOR_GENERATED_CLAIMS, evidence, synthesis, audit]),
+            model=FakeModel(
+                [
+                    INTAKE,
+                    DECOMPOSITION_DRAFT,
+                    DRAFT_PLAN_FOR_GENERATED_CLAIMS,
+                    evidence,
+                    synthesis,
+                    audit,
+                ]
+            ),
             submitted_input="Company X doubled net income in Q1 2026.",
             extensions=WorkflowExtensions(
                 discovery_source_selection=discovery,
@@ -1904,7 +2265,10 @@ def test_citation_audit_batches_pairs_and_derives_global_decisions_in_python():
     assert [len(payload["audit_pairs"]) for payload in payloads] == [2, 2, 2, 2, 2]
     assert [len(payload["cited_passages"]) for payload in payloads] == [2, 2, 2, 2, 2]
     assert model.max_active == 2
-    assert all(call["output_schema"].__name__ == "CitationAuditBatchOutput" for call in model.calls)
+    assert all(
+        call["output_schema"].__name__ == "CitationAuditBatchOutput"
+        for call in model.calls
+    )
     assert all(call["prompt_version"] == "citation-audit-v4" for call in model.calls)
     assert all(call["max_tokens"] == 3_000 for call in model.calls)
     assert all(call["max_schema_attempts"] == 2 for call in model.calls)
@@ -1940,10 +2304,258 @@ def test_failed_citation_batch_never_saves_a_partial_audit():
     assert result.recoverable_errors[0].public_message == (
         "Citation auditing could not return valid structured results."
     )
-    assert sum(
-        event["event_type"] == "workflow.citation_audit.recoverable_failure"
-        for event in progress.events
-    ) == 1
+    assert (
+        sum(
+            event["event_type"] == "workflow.citation_audit.recoverable_failure"
+            for event in progress.events
+        )
+        == 1
+    )
+
+
+def test_citation_body_parse_failure_replays_only_failed_batch_and_preserves_order(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_BACKOFF_SECONDS", 0)
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_JITTER_SECONDS", 0)
+    value = _citation_state_with_pairs(8)
+    model = RecoveringCitationModel(
+        ["body", "success", "success", "success", "success"]
+    )
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).citation_audit(value)
+    )
+
+    payloads = [json.loads(call["messages"][1]["content"]) for call in model.calls]
+    assert [len(payload["audit_pairs"]) for payload in payloads] == [2, 2, 2, 2, 2]
+    assert payloads[0]["audit_pairs"] == payloads[4]["audit_pairs"]
+    assert (
+        len(
+            {
+                tuple(
+                    (pair["sentence_ref"], pair["passage_id"])
+                    for pair in payload["audit_pairs"]
+                )
+                for payload in payloads[1:4]
+            }
+        )
+        == 3
+    )
+    assert result.citation_audit is not None
+    assert [item.passage_id for item in result.citation_audit.sentence_audits] == [
+        f"passage-{index:02d}" for index in range(8)
+    ]
+    metadata = result.model_calls[WorkflowStage.CITATION_AUDIT.value]
+    assert metadata.request_count == 6
+    assert metadata.repair_count == 1
+    assert metadata.recovery_count == 1
+    assert metadata.split_fallback_count == 0
+    assert metadata.recovery_success_count == 1
+    assert metadata.structured_failure_counts == {"content_json": 2}
+    assert model.max_active == 2
+
+
+def test_repeated_two_pair_body_parse_failure_splits_to_stable_single_pairs(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_BACKOFF_SECONDS", 0)
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_JITTER_SECONDS", 0)
+    value = _citation_state_with_pairs(4)
+    model = RecoveringCitationModel(["body", "success", "body", "success", "success"])
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).citation_audit(value)
+    )
+
+    payloads = [json.loads(call["messages"][1]["content"]) for call in model.calls]
+    assert [len(payload["audit_pairs"]) for payload in payloads] == [2, 2, 2, 1, 1]
+    assert [payload["audit_pairs"][0] for payload in payloads[3:]] == payloads[0][
+        "audit_pairs"
+    ]
+    assert result.citation_audit is not None
+    assert [item.passage_id for item in result.citation_audit.sentence_audits] == [
+        f"passage-{index:02d}" for index in range(4)
+    ]
+    metadata = result.model_calls[WorkflowStage.CITATION_AUDIT.value]
+    assert metadata.request_count == 7
+    assert metadata.repair_count == 2
+    assert metadata.recovery_count == 3
+    assert metadata.split_fallback_count == 1
+    assert metadata.recovery_success_count == 1
+    assert metadata.structured_failure_counts == {"content_json": 4}
+
+
+def test_citation_schema_failure_and_coverage_mismatch_do_not_enter_parse_recovery(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_BACKOFF_SECONDS", 0)
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_JITTER_SECONDS", 0)
+    value = _citation_state_with_pairs(4)
+    schema_model = RecoveringCitationModel(["schema", "success"])
+
+    schema_result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=schema_model, submitted_input="unused")
+        ).citation_audit(value)
+    )
+
+    assert len(schema_model.calls) == 2
+    assert schema_result.citation_audit is None
+    assert schema_result.recoverable_errors[-1].details["error_code"] == (
+        "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED"
+    )
+
+    coverage_model = RecoveringCitationModel(["coverage", "success"])
+    coverage_result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=coverage_model, submitted_input="unused")
+        ).citation_audit(value)
+    )
+
+    assert len(coverage_model.calls) == 2
+    assert coverage_result.citation_audit is None
+    assert coverage_result.recoverable_errors[-1].code == "INCOMPLETE_CITATION_AUDIT"
+
+
+def test_failed_split_discards_all_results_and_emits_one_safe_terminal_event(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_BACKOFF_SECONDS", 0)
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_JITTER_SECONDS", 0)
+    private_marker = "PRIVATE-CITATION-RECOVERY-MARKER"
+    value = _citation_state_with_pairs(4).model_copy(
+        update={
+            "passages": [
+                passage.model_copy(update={"text": private_marker})
+                for passage in _citation_state_with_pairs(4).passages
+            ]
+        }
+    )
+    writer = RecordingStateWriter()
+    progress = RecordingProgress()
+    model = RecoveringCitationModel(["body", "success", "body", "success", "body"])
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=model,
+                submitted_input="unused",
+                state_writer=writer,
+                progress=progress,
+            )
+        ).citation_audit(value)
+    )
+
+    assert result.citation_audit is None
+    assert len(writer.saved) == 1 and writer.saved[0][1].citation_audit is None
+    assert len(model.calls) == 5
+    assert (
+        sum(
+            event["event_type"] == "workflow.citation_audit.recoverable_failure"
+            for event in progress.events
+        )
+        == 1
+    )
+    details = result.recoverable_errors[-1].details
+    assert details["structured_failure_subtype"] == "content_json"
+    assert details["recovery_count"] == 3
+    assert details["split_fallback_count"] == 1
+    assert details["recovery_exhaustion_count"] == 1
+    assert private_marker not in repr(progress.events)
+    assert private_marker not in repr(details)
+
+
+def test_multiple_failed_batches_share_one_exact_bounded_recovery_budget(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_BACKOFF_SECONDS", 0)
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_JITTER_SECONDS", 0)
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_MAX_CALLS", 3)
+    value = _citation_state_with_pairs(4)
+    model = RecoveringCitationModel(["body", "body", "body", "success", "success"])
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).citation_audit(value)
+    )
+
+    assert len(model.calls) == 5
+    error = result.recoverable_errors[-1]
+    assert error.details["batch_index"] == 2
+    assert error.details["recovery_count"] == 3
+    assert error.details["local_recovery_exhausted"] is True
+    assert result.citation_audit is None
+
+
+def test_citation_recovery_stage_deadline_stops_before_an_additional_call(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_DEADLINE_SECONDS", -1)
+    value = _citation_state_with_pairs(4)
+    model = RecoveringCitationModel(["body", "success"])
+
+    result = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).citation_audit(value)
+    )
+
+    assert len(model.calls) == 2
+    assert result.citation_audit is None
+    assert result.recoverable_errors[-1].details["recovery_count"] == 0
+    assert result.recoverable_errors[-1].details["recovery_exhaustion_count"] == 1
+
+
+def test_citation_recovery_cancellation_prevents_replay_and_later_split_calls(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_BACKOFF_SECONDS", 0)
+    monkeypatch.setattr("graph.workflow.CITATION_RECOVERY_JITTER_SECONDS", 0)
+    value = _citation_state_with_pairs(4)
+
+    before_replay = RecoveringCitationModel(["body", "success"])
+    cancelled = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=before_replay,
+                submitted_input="unused",
+                cancellation=SequencedCancellation([False, False, True]),
+            )
+        ).citation_audit(value)
+    )
+    assert cancelled.cancelled is True
+    assert len(before_replay.calls) == 2
+
+    between_splits = RecoveringCitationModel(["body", "success", "body", "success"])
+    cancelled = asyncio.run(
+        WorkflowNodes(
+            WorkflowServices(
+                model=between_splits,
+                submitted_input="unused",
+                cancellation=SequencedCancellation(
+                    [False, False, False, False, False, True]
+                ),
+            )
+        ).citation_audit(value)
+    )
+    assert cancelled.cancelled is True
+    assert len(between_splits.calls) == 4
+
+
+def test_citation_recovery_constants_are_exact_and_bounded():
+    assert CITATION_RECOVERY_REPLAY_LIMIT_PER_BATCH == 1
+    assert CITATION_RECOVERY_SPLIT_LIMIT_PER_BATCH == 1
+    assert CITATION_RECOVERY_MAX_SPLIT_CALLS_PER_BATCH == 2
+    assert CITATION_RECOVERY_MAX_CALLS == 6
+    assert CITATION_RECOVERY_BACKOFF_SECONDS == 0.1
+    assert CITATION_RECOVERY_JITTER_SECONDS == 0.02
+    assert CITATION_RECOVERY_DEADLINE_SECONDS == 90.0
 
 
 def test_partial_citation_is_completed_with_a_capped_score_penalty():
@@ -2022,9 +2634,12 @@ def test_partial_citation_is_completed_with_a_capped_score_penalty():
     assert display_scores["verdict_confidence"].inputs["penalties"] == {
         "citation_partial_support": "7"
     }
-    assert display_scores["citation_partial_support_penalty"].inputs[
-        "partial_sentence_count"
-    ] == 1
+    assert (
+        display_scores["citation_partial_support_penalty"].inputs[
+            "partial_sentence_count"
+        ]
+        == 1
+    )
 
 
 def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
@@ -2075,21 +2690,23 @@ def test_citation_revision_uses_only_approved_passages_and_is_reaudited():
                 )
             ],
             "evidence": [
-                EvidenceClassificationItemOutput.model_validate({
-                    "claim_ref": "claim-1",
-                    "passage_id": "passage-1",
-                    "stance": "strongly_supports",
-                    "quality": {
-                        "relevance": 1,
-                        "directness": 1,
-                        "claim_specific_authority": 1,
-                        "transparency": 1,
-                        "temporal_fit": 1,
-                        "extraction_certainty": 1,
-                    },
-                    "entity_match": True,
-                    "time_period_match": True,
-                })
+                EvidenceClassificationItemOutput.model_validate(
+                    {
+                        "claim_ref": "claim-1",
+                        "passage_id": "passage-1",
+                        "stance": "strongly_supports",
+                        "quality": {
+                            "relevance": 1,
+                            "directness": 1,
+                            "claim_specific_authority": 1,
+                            "transparency": 1,
+                            "temporal_fit": 1,
+                            "extraction_certainty": 1,
+                        },
+                        "entity_match": True,
+                        "time_period_match": True,
+                    }
+                )
             ],
             "scores": ScoreBundle(
                 evidence_support=100,
@@ -2157,11 +2774,16 @@ def test_citation_audit_requires_exact_unique_known_sentence_passage_pairs():
         "entailment": "entailed",
         "support_explanation": "The passage contains the reported value.",
     }
-    assert _guard_citation_audit(
-        report,
-        {"passage-1": object()},
-        CitationAuditOutput.model_validate({"sentence_audits": [complete], "needs_revision": False}),
-    ) is not None
+    assert (
+        _guard_citation_audit(
+            report,
+            {"passage-1": object()},
+            CitationAuditOutput.model_validate(
+                {"sentence_audits": [complete], "needs_revision": False}
+            ),
+        )
+        is not None
+    )
 
     invalid_audits = [
         [],
@@ -2170,13 +2792,16 @@ def test_citation_audit_requires_exact_unique_known_sentence_passage_pairs():
         [{**complete, "passage_id": "unknown-passage"}],
     ]
     for audits in invalid_audits:
-        assert _guard_citation_audit(
-            report,
-            {"passage-1": object()},
-            CitationAuditOutput.model_validate(
-                {"sentence_audits": audits, "needs_revision": False}
-            ),
-        ) is None
+        assert (
+            _guard_citation_audit(
+                report,
+                {"passage-1": object()},
+                CitationAuditOutput.model_validate(
+                    {"sentence_audits": audits, "needs_revision": False}
+                ),
+            )
+            is None
+        )
 
 
 def test_citation_audit_preflight_rejects_duplicate_sentence_refs_without_model_call():
@@ -2205,9 +2830,9 @@ def test_citation_audit_preflight_rejects_duplicate_sentence_refs_without_model_
     model = FakeModel([])
 
     result = asyncio.run(
-        WorkflowNodes(WorkflowServices(model=model, submitted_input="unused")).citation_audit(
-            state().model_copy(update={"report_draft": report})
-        )
+        WorkflowNodes(
+            WorkflowServices(model=model, submitted_input="unused")
+        ).citation_audit(state().model_copy(update={"report_draft": report}))
     )
 
     assert model.calls == []
@@ -2273,7 +2898,9 @@ def test_citation_audit_rejects_a_report_pair_from_rejected_evidence():
     )
 
     result = asyncio.run(
-        WorkflowNodes(WorkflowServices(model=FakeModel([]), submitted_input="unused")).citation_audit(value)
+        WorkflowNodes(
+            WorkflowServices(model=FakeModel([]), submitted_input="unused")
+        ).citation_audit(value)
     )
 
     assert result.recoverable_errors[-1].code == "REJECTED_EVIDENCE_CITED"
@@ -2354,6 +2981,10 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
         request_count=3,
         batch_count=2,
         repair_count=1,
+        recovery_count=2,
+        split_fallback_count=1,
+        recovery_success_count=1,
+        structured_failure_counts={"content_json": 2},
     )
     intake = IntakeClassificationOutput.model_validate(INTAKE)
     decomposition = DecompositionOutput.model_validate(DECOMPOSITION)
@@ -2419,13 +3050,24 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
         durable_run = db.get(VerificationRun, run_id)
         claim_count = db.scalar(select(func.count()).select_from(AtomicClaim))
         query_count = db.scalar(select(func.count()).select_from(SearchQuery))
-        query_rows = db.scalars(select(SearchQuery).order_by(SearchQuery.priority.desc())).all()
+        query_rows = db.scalars(
+            select(SearchQuery).order_by(SearchQuery.priority.desc())
+        ).all()
     assert durable_run is not None
-    assert durable_run.normalized_target["research_plan"]["objectives"][0]["objective_ref"] == "objective-1"
+    assert (
+        durable_run.normalized_target["research_plan"]["objectives"][0]["objective_ref"]
+        == "objective-1"
+    )
     assert durable_run.model_versions["planner"]["provider"] == "deepseek"
     assert durable_run.model_versions["planner"]["request_count"] == 3
     assert durable_run.model_versions["planner"]["batch_count"] == 2
     assert durable_run.model_versions["planner"]["repair_count"] == 1
+    assert durable_run.model_versions["planner"]["recovery_count"] == 2
+    assert durable_run.model_versions["planner"]["split_fallback_count"] == 1
+    assert durable_run.model_versions["planner"]["recovery_success_count"] == 1
+    assert durable_run.model_versions["planner"]["structured_failure_counts"] == {
+        "content_json": 2
+    }
     assert durable_run.prompt_versions["planner"] == "planner-v2"
     assert claim_count == 1
     assert query_count == 2
@@ -2645,7 +3287,16 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
         run_id,
         record=lambda *_args, **kwargs: public_events.append(kwargs),
         is_cancelled=lambda *_args: False,
-        model=FakeModel([INTAKE, DECOMPOSITION_DRAFT, DRAFT_PLAN_FOR_GENERATED_CLAIMS, evidence, synthesis, audit]),
+        model=FakeModel(
+            [
+                INTAKE,
+                DECOMPOSITION_DRAFT,
+                DRAFT_PLAN_FOR_GENERATED_CLAIMS,
+                evidence,
+                synthesis,
+                audit,
+            ]
+        ),
         workflow_extensions=WorkflowExtensions(
             discovery_source_selection=discovery,
             secure_retrieval=retrieval,
@@ -2667,7 +3318,9 @@ def test_production_runtime_executes_full_graph_and_persists_report_before_compl
         assert db.scalar(select(func.count()).select_from(ReportCitation)) == 1
         persist_completed_run(db, run_id=run_id, expected_citation_count=1)
         report = build_report(db, run=run)
-    assert report.report_sentences[0].sentence_text == "Company X reported a value of 20."
+    assert (
+        report.report_sentences[0].sentence_text == "Company X reported a value of 20."
+    )
     assert public_events[-1]["event_type"] == "workflow.citation_audit.completed"
 
 
@@ -2834,9 +3487,25 @@ def test_sql_state_writer_persists_every_report_sentence_role():
                     "passage_ids": [str(passage_id)],
                 }
             ],
-            "factual_sentences": [{"sentence_ref": "fact-1", "text": "The filing records the value.", "passage_ids": [str(passage_id)]}],
-            "attribution_findings": [{"sentence_ref": "attribution-1", "text": "The filing attributes the value to the agency.", "passage_ids": [str(passage_id)]}],
-            "strongest_credible_contradiction": {"sentence_ref": "contradiction-1", "text": "A cited record reports a different value.", "passage_ids": [str(passage_id)]},
+            "factual_sentences": [
+                {
+                    "sentence_ref": "fact-1",
+                    "text": "The filing records the value.",
+                    "passage_ids": [str(passage_id)],
+                }
+            ],
+            "attribution_findings": [
+                {
+                    "sentence_ref": "attribution-1",
+                    "text": "The filing attributes the value to the agency.",
+                    "passage_ids": [str(passage_id)],
+                }
+            ],
+            "strongest_credible_contradiction": {
+                "sentence_ref": "contradiction-1",
+                "text": "A cited record reports a different value.",
+                "passage_ids": [str(passage_id)],
+            },
         }
     )
     audit = CitationAuditOutput.model_validate(
@@ -2848,9 +3517,24 @@ def test_sql_state_writer_persists_every_report_sentence_role():
                     "entailment": "entailed",
                     "support_explanation": "The passage directly supports the sentence.",
                 },
-                {"sentence_ref": "fact-1", "passage_id": str(passage_id), "entailment": "entailed", "support_explanation": "The passage supports the factual finding."},
-                {"sentence_ref": "attribution-1", "passage_id": str(passage_id), "entailment": "entailed", "support_explanation": "The passage supports the attribution."},
-                {"sentence_ref": "contradiction-1", "passage_id": str(passage_id), "entailment": "entailed", "support_explanation": "The passage supports the contradiction."},
+                {
+                    "sentence_ref": "fact-1",
+                    "passage_id": str(passage_id),
+                    "entailment": "entailed",
+                    "support_explanation": "The passage supports the factual finding.",
+                },
+                {
+                    "sentence_ref": "attribution-1",
+                    "passage_id": str(passage_id),
+                    "entailment": "entailed",
+                    "support_explanation": "The passage supports the attribution.",
+                },
+                {
+                    "sentence_ref": "contradiction-1",
+                    "passage_id": str(passage_id),
+                    "entailment": "entailed",
+                    "support_explanation": "The passage supports the contradiction.",
+                },
             ],
             "needs_revision": False,
         }
@@ -2874,7 +3558,10 @@ def test_sql_state_writer_persists_every_report_sentence_role():
     with factory() as db:
         citations = db.scalars(select(ReportCitation)).all()
     assert {citation.report_section for citation in citations} == {
-        "summary", "factual_finding", "attribution", "strongest_contradiction"
+        "summary",
+        "factual_finding",
+        "attribution",
+        "strongest_contradiction",
     }
     assert {citation.passage_id for citation in citations} == {passage_id}
     assert {citation.audit_status for citation in citations} == {"passed"}

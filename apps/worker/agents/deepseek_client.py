@@ -14,7 +14,7 @@ from typing import Any, Generic, Literal, TypeVar
 from urllib.parse import urlsplit
 
 import httpx
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from elara_worker.errors import TransientProviderError
 from observability.tracing import safe_trace
@@ -23,11 +23,30 @@ from observability.tracing import safe_trace
 logger = logging.getLogger(__name__)
 OutputT = TypeVar("OutputT", bound=BaseModel)
 ModelRole = Literal["chat", "reasoning"]
+StructuredFailureSubtype = Literal[
+    "response_json",
+    "choices_envelope",
+    "message_content_type",
+    "content_json",
+    "usage_metadata",
+    "output_schema",
+]
+StructuredContentLengthBucket = Literal[
+    "empty", "1-255", "256-1023", "1024-4095", "4096+"
+]
+StructuredFinishReason = Literal[
+    "stop",
+    "length",
+    "content_filter",
+    "tool_calls",
+    "insufficient_system_resource",
+]
 _SAFE_MODEL_IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$")
 _SAFE_PROMPT_VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$")
 _SAFE_RESPONSE_IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$")
 _STRUCTURED_RESPONSE_INVALID = "STRUCTURED_RESPONSE_INVALID"
-_STRUCTURED_RESPONSE_REPAIR_EXHAUSTED = "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED"
+_PROVIDER_BODY_PARSE_EXHAUSTED = "PROVIDER_BODY_PARSE_EXHAUSTED"
+_STRUCTURED_SCHEMA_REPAIR_EXHAUSTED = "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED"
 _MAX_SCHEMA_DIAGNOSTICS = 8
 _SAFE_SCHEMA_PATH_SEGMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_-]{0,63}$")
 _STRUCTURED_REPAIR_INSTRUCTION = (
@@ -91,7 +110,10 @@ class DeepSeekConfig:
         embedding_model = values.get("DEEPSEEK_EMBEDDING_MODEL", "").strip() or None
         invalid_models = [
             name
-            for name, value in (*models.items(), ("DEEPSEEK_EMBEDDING_MODEL", embedding_model))
+            for name, value in (
+                *models.items(),
+                ("DEEPSEEK_EMBEDDING_MODEL", embedding_model),
+            )
             if value is not None and not _SAFE_MODEL_IDENTIFIER.fullmatch(value)
         ]
         if invalid_models:
@@ -109,7 +131,7 @@ class DeepSeekConfig:
 
 
 class TokenUsage(BaseModel):
-    model_config = ConfigDict(extra="ignore")
+    model_config = ConfigDict(extra="ignore", strict=True)
 
     prompt_tokens: int = Field(default=0, ge=0)
     completion_tokens: int = Field(default=0, ge=0)
@@ -125,12 +147,27 @@ class CallMetadata(BaseModel):
     temperature: float
     latency_ms: int = Field(ge=0)
     response_id: str | None = None
-    finish_reason: str | None = None
+    finish_reason: StructuredFinishReason | None = None
     usage: TokenUsage = Field(default_factory=TokenUsage)
     attempt_count: int = Field(default=1, ge=1, le=3)
     request_count: int = Field(default=1, ge=1)
     batch_count: int = Field(default=1, ge=1)
     repair_count: int = Field(default=0, ge=0)
+    recovery_count: int = Field(default=0, ge=0)
+    split_fallback_count: int = Field(default=0, ge=0)
+    recovery_success_count: int = Field(default=0, ge=0)
+    structured_failure_counts: dict[StructuredFailureSubtype, int] = Field(
+        default_factory=dict
+    )
+
+    @field_validator("structured_failure_counts")
+    @classmethod
+    def structured_failure_counts_are_bounded(
+        cls, value: dict[StructuredFailureSubtype, int]
+    ) -> dict[StructuredFailureSubtype, int]:
+        if any(isinstance(count, bool) or count < 0 for count in value.values()):
+            raise ValueError("structured failure counts must be non-negative integers")
+        return value
 
 
 class StructuredResponse(BaseModel, Generic[OutputT]):
@@ -159,6 +196,28 @@ class ProviderErrorMetadata(BaseModel):
     error_code: str | None = None
     retryable: bool = False
     attempt_count: int = Field(default=1, ge=1, le=3)
+    structured_failure_subtype: StructuredFailureSubtype | None = None
+    structured_failure_count: int = Field(default=0, ge=0, le=3)
+    structured_failure_counts: dict[StructuredFailureSubtype, int] = Field(
+        default_factory=dict
+    )
+    response_id: str | None = None
+    finish_reason: StructuredFinishReason | None = None
+    content_length_bucket: StructuredContentLengthBucket | None = None
+
+    @field_validator("structured_failure_counts")
+    @classmethod
+    def structured_failure_counts_are_bounded(
+        cls, value: dict[StructuredFailureSubtype, int]
+    ) -> dict[StructuredFailureSubtype, int]:
+        if any(
+            isinstance(count, bool) or count < 0 or count > 3
+            for count in value.values()
+        ):
+            raise ValueError(
+                "provider structured failure counts must be between zero and three"
+            )
+        return value
 
 
 class DeepSeekError(RuntimeError):
@@ -197,6 +256,14 @@ class DeepSeekEmbeddingUnavailableError(DeepSeekProviderError):
     pass
 
 
+class _StructuredResponseParseError(RuntimeError):
+    """Content-free marker for one allowlisted provider response boundary."""
+
+    def __init__(self, subtype: StructuredFailureSubtype) -> None:
+        super().__init__(subtype)
+        self.subtype = subtype
+
+
 def aggregate_call_metadata(
     calls: Sequence[CallMetadata],
     *,
@@ -217,6 +284,10 @@ def aggregate_call_metadata(
         raise ValueError(
             "batched call metadata must share provider, model, prompt version, and temperature"
         )
+    failure_counts: dict[StructuredFailureSubtype, int] = {}
+    for call in calls:
+        for subtype, count in call.structured_failure_counts.items():
+            failure_counts[subtype] = failure_counts.get(subtype, 0) + count
     return CallMetadata(
         provider=first.provider,
         model=first.model,
@@ -234,6 +305,10 @@ def aggregate_call_metadata(
         request_count=sum(call.request_count for call in calls),
         batch_count=len(calls),
         repair_count=sum(call.repair_count for call in calls),
+        recovery_count=sum(call.recovery_count for call in calls),
+        split_fallback_count=sum(call.split_fallback_count for call in calls),
+        recovery_success_count=sum(call.recovery_success_count for call in calls),
+        structured_failure_counts=failure_counts,
     )
 
 
@@ -273,13 +348,19 @@ class DeepSeekClient:
         model = self.config.embedding_model
         if model is None:
             metadata = self._error_metadata(
-                "unconfigured", "embedding-v1", 0.0, 0, error_code="embedding_route_unavailable"
+                "unconfigured",
+                "embedding-v1",
+                0.0,
+                0,
+                error_code="embedding_route_unavailable",
             )
             raise DeepSeekEmbeddingUnavailableError(
                 "No approved DeepSeek-compatible embedding route is configured",
                 metadata=metadata,
             )
-        if not texts or any(not isinstance(text, str) or not text.strip() for text in texts):
+        if not texts or any(
+            not isinstance(text, str) or not text.strip() for text in texts
+        ):
             raise ValueError("embedding input requires non-empty text values")
         if len(texts) > 128:
             raise ValueError("embedding batches are limited to 128 passages")
@@ -288,7 +369,11 @@ class DeepSeekClient:
             with safe_trace(
                 "deepseek.embedding",
                 run_type="embedding",
-                metadata={"provider": "deepseek", "model": model, "prompt_version": "embedding-v1"},
+                metadata={
+                    "provider": "deepseek",
+                    "model": model,
+                    "prompt_version": "embedding-v1",
+                },
             ):
                 response = await self._http.post(
                     f"{self.config.base_url}/embeddings",
@@ -302,7 +387,9 @@ class DeepSeekClient:
             metadata = self._error_metadata(
                 model, "embedding-v1", 0.0, self._latency_ms(started), retryable=True
             )
-            raise DeepSeekTimeoutError("DeepSeek embedding request timed out", metadata=metadata) from None
+            raise DeepSeekTimeoutError(
+                "DeepSeek embedding request timed out", metadata=metadata
+            ) from None
         except httpx.RequestError:
             metadata = self._error_metadata(
                 model, "embedding-v1", 0.0, self._latency_ms(started), retryable=True
@@ -373,14 +460,20 @@ class DeepSeekClient:
         validation details.
         """
         if not _SAFE_PROMPT_VERSION.fullmatch(prompt_version):
-            raise ValueError("prompt_version must be a stable, non-sensitive identifier")
+            raise ValueError(
+                "prompt_version must be a stable, non-sensitive identifier"
+            )
         if not 0.0 <= temperature <= 0.3:
-            raise ValueError("structured calls require a temperature between 0.0 and 0.3")
+            raise ValueError(
+                "structured calls require a temperature between 0.0 and 0.3"
+            )
         if not messages:
             raise ValueError("at least one message is required")
         if model_role not in {"chat", "reasoning"}:
             raise ValueError("model_role must be chat or reasoning")
-        if isinstance(max_schema_attempts, bool) or not isinstance(max_schema_attempts, int):
+        if isinstance(max_schema_attempts, bool) or not isinstance(
+            max_schema_attempts, int
+        ):
             raise ValueError("max_schema_attempts must be an integer from 1 through 3")
         if not 1 <= max_schema_attempts <= 3:
             raise ValueError("max_schema_attempts must be from 1 through 3")
@@ -414,6 +507,7 @@ class DeepSeekClient:
 
         trusted_messages = [schema_instruction, *self._validate_messages(messages)]
         attempt_limit = max_schema_attempts if repair_invalid_response else 1
+        failure_counts: dict[StructuredFailureSubtype, int] = {}
         for attempt_count in range(1, attempt_limit + 1):
             request_messages = list(trusted_messages)
             if attempt_count == 2:
@@ -431,15 +525,18 @@ class DeepSeekClient:
                 temperature=temperature,
                 attempt_count=attempt_count,
             )
+            body: Mapping[str, Any] | None = None
+            choice: Mapping[str, Any] | None = None
+            content_length_bucket: StructuredContentLengthBucket | None = None
             try:
-                body = response.json()
-                choice = body["choices"][0]
-                raw_content = choice["message"]["content"]
-                if not isinstance(raw_content, str):
-                    raise TypeError
-                parsed_body = json.loads(self._strip_json_fence(raw_content))
-                usage = TokenUsage.model_validate(body.get("usage") or {})
-            except (json.JSONDecodeError, KeyError, IndexError, TypeError, ValueError, ValidationError):
+                body = self._parse_response_json(response)
+                choice, message = self._parse_choices_envelope(body)
+                raw_content = self._parse_message_content(message)
+                content_length_bucket = self._content_length_bucket(raw_content)
+                parsed_body = self._parse_content_json(raw_content)
+                usage = self._parse_usage_metadata(body)
+            except _StructuredResponseParseError as exc:
+                failure_counts[exc.subtype] = failure_counts.get(exc.subtype, 0) + 1
                 metadata = self._structured_failure_metadata(
                     model=model,
                     prompt_version=prompt_version,
@@ -448,20 +545,41 @@ class DeepSeekClient:
                     status_code=response.status_code,
                     attempt_count=attempt_count,
                     attempt_limit=attempt_limit,
+                    subtype=exc.subtype,
+                    structured_failure_count=failure_counts[exc.subtype],
+                    structured_failure_counts=failure_counts,
+                    response_id=(
+                        self._safe_response_identifier(body.get("id"))
+                        if body is not None
+                        else None
+                    ),
+                    finish_reason=(
+                        self._safe_finish_reason(choice.get("finish_reason"))
+                        if choice is not None
+                        else None
+                    ),
+                    content_length_bucket=content_length_bucket,
                 )
                 logger.warning(
                     "DeepSeek returned an invalid structured response body",
-                    extra={**metadata.model_dump(), "schema_error_kind": "provider_body_parse"},
+                    extra={
+                        **metadata.model_dump(),
+                        "schema_error_kind": "provider_body_parse",
+                    },
                 )
                 if attempt_count == attempt_limit:
                     raise DeepSeekResponseError(
-                        "DeepSeek returned an invalid structured response", metadata=metadata
+                        "DeepSeek returned an invalid structured response",
+                        metadata=metadata,
                     ) from None
                 continue
 
             try:
                 parsed_output = output_schema.model_validate(parsed_body)
             except ValidationError as exc:
+                failure_counts["output_schema"] = (
+                    failure_counts.get("output_schema", 0) + 1
+                )
                 metadata = self._structured_failure_metadata(
                     model=model,
                     prompt_version=prompt_version,
@@ -470,6 +588,12 @@ class DeepSeekClient:
                     status_code=response.status_code,
                     attempt_count=attempt_count,
                     attempt_limit=attempt_limit,
+                    subtype="output_schema",
+                    structured_failure_count=failure_counts["output_schema"],
+                    structured_failure_counts=failure_counts,
+                    response_id=self._safe_response_identifier(body.get("id")),
+                    finish_reason=self._safe_finish_reason(choice.get("finish_reason")),
+                    content_length_bucket=content_length_bucket,
                 )
                 error_types, error_paths = self._safe_schema_diagnostics(exc)
                 logger.warning(
@@ -483,7 +607,8 @@ class DeepSeekClient:
                 )
                 if attempt_count == attempt_limit:
                     raise DeepSeekResponseError(
-                        "DeepSeek returned an invalid structured response", metadata=metadata
+                        "DeepSeek returned an invalid structured response",
+                        metadata=metadata,
                     ) from None
                 continue
 
@@ -493,16 +618,23 @@ class DeepSeekClient:
                 temperature=temperature,
                 latency_ms=latency_ms,
                 response_id=self._safe_response_identifier(body.get("id")),
-                finish_reason=self._safe_response_identifier(choice.get("finish_reason")),
+                finish_reason=self._safe_finish_reason(choice.get("finish_reason")),
                 usage=usage,
                 attempt_count=attempt_count,
                 request_count=attempt_count,
                 repair_count=attempt_count - 1,
+                structured_failure_counts=failure_counts,
             )
-            logger.info("DeepSeek structured request completed", extra=metadata.model_dump())
-            return StructuredResponse[output_schema](output=parsed_output, metadata=metadata)
+            logger.info(
+                "DeepSeek structured request completed", extra=metadata.model_dump()
+            )
+            return StructuredResponse[output_schema](
+                output=parsed_output, metadata=metadata
+            )
 
-        raise AssertionError("structured response repair loop exceeded its configured bound")
+        raise AssertionError(
+            "structured response repair loop exceeded its configured bound"
+        )
 
     @classmethod
     def _structured_failure_metadata(
@@ -515,7 +647,14 @@ class DeepSeekClient:
         status_code: int,
         attempt_count: int,
         attempt_limit: int,
+        subtype: StructuredFailureSubtype,
+        structured_failure_count: int,
+        structured_failure_counts: Mapping[StructuredFailureSubtype, int],
+        response_id: str | None,
+        finish_reason: StructuredFinishReason | None,
+        content_length_bucket: StructuredContentLengthBucket | None,
     ) -> ProviderErrorMetadata:
+        is_terminal = attempt_count == attempt_limit
         return cls._error_metadata(
             model,
             prompt_version,
@@ -524,31 +663,112 @@ class DeepSeekClient:
             status_code=status_code,
             error_code=(
                 _STRUCTURED_RESPONSE_INVALID
-                if attempt_limit == 1 or attempt_count < attempt_limit
-                else _STRUCTURED_RESPONSE_REPAIR_EXHAUSTED
+                if not is_terminal
+                else (
+                    _STRUCTURED_SCHEMA_REPAIR_EXHAUSTED
+                    if subtype == "output_schema"
+                    else _PROVIDER_BODY_PARSE_EXHAUSTED
+                )
             ),
             attempt_count=attempt_count,
+            structured_failure_subtype=subtype,
+            structured_failure_count=structured_failure_count,
+            structured_failure_counts=dict(structured_failure_counts),
+            response_id=response_id,
+            finish_reason=finish_reason,
+            content_length_bucket=content_length_bucket,
         )
 
     @staticmethod
     def _safe_schema_diagnostics(exc: ValidationError) -> tuple[list[str], list[str]]:
         error_types: list[str] = []
         error_paths: list[str] = []
-        errors = exc.errors(include_url=False, include_context=False, include_input=False)
+        errors = exc.errors(
+            include_url=False, include_context=False, include_input=False
+        )
         for error in errors[:_MAX_SCHEMA_DIAGNOSTICS]:
             error_type = error.get("type")
-            if isinstance(error_type, str) and _SAFE_SCHEMA_PATH_SEGMENT.fullmatch(error_type):
+            if isinstance(error_type, str) and _SAFE_SCHEMA_PATH_SEGMENT.fullmatch(
+                error_type
+            ):
                 error_types.append(error_type)
             segments: list[str] = []
             for segment in error.get("loc", ()):
                 if isinstance(segment, int) and segment >= 0:
                     segments.append(str(segment))
-                elif isinstance(segment, str) and _SAFE_SCHEMA_PATH_SEGMENT.fullmatch(segment):
+                elif isinstance(segment, str) and _SAFE_SCHEMA_PATH_SEGMENT.fullmatch(
+                    segment
+                ):
                     segments.append(segment)
                 else:
                     segments.append("field")
             error_paths.append(".".join(segments) if segments else "root")
         return error_types, error_paths
+
+    @staticmethod
+    def _parse_response_json(response: httpx.Response) -> Mapping[str, Any]:
+        try:
+            body = response.json()
+        except (json.JSONDecodeError, ValueError):
+            raise _StructuredResponseParseError("response_json") from None
+        if not isinstance(body, Mapping):
+            raise _StructuredResponseParseError("choices_envelope")
+        return body
+
+    @staticmethod
+    def _parse_choices_envelope(
+        body: Mapping[str, Any],
+    ) -> tuple[Mapping[str, Any], Mapping[str, Any]]:
+        choices = body.get("choices")
+        if (
+            not isinstance(choices, Sequence)
+            or isinstance(choices, (str, bytes))
+            or not choices
+            or not isinstance(choices[0], Mapping)
+        ):
+            raise _StructuredResponseParseError("choices_envelope")
+        choice = choices[0]
+        message = choice.get("message")
+        if not isinstance(message, Mapping):
+            raise _StructuredResponseParseError("choices_envelope")
+        return choice, message
+
+    @staticmethod
+    def _parse_message_content(message: Mapping[str, Any]) -> str:
+        content = message.get("content")
+        if not isinstance(content, str):
+            raise _StructuredResponseParseError("message_content_type")
+        return content
+
+    @classmethod
+    def _parse_content_json(cls, content: str) -> Any:
+        try:
+            return json.loads(cls._strip_json_fence(content))
+        except (json.JSONDecodeError, ValueError):
+            raise _StructuredResponseParseError("content_json") from None
+
+    @staticmethod
+    def _parse_usage_metadata(body: Mapping[str, Any]) -> TokenUsage:
+        raw_usage = body.get("usage")
+        if raw_usage is None:
+            return TokenUsage()
+        try:
+            return TokenUsage.model_validate(raw_usage)
+        except ValidationError:
+            raise _StructuredResponseParseError("usage_metadata") from None
+
+    @staticmethod
+    def _content_length_bucket(content: str) -> StructuredContentLengthBucket:
+        length = len(content)
+        if length == 0:
+            return "empty"
+        if length <= 255:
+            return "1-255"
+        if length <= 1023:
+            return "256-1023"
+        if length <= 4095:
+            return "1024-4095"
+        return "4096+"
 
     async def _post_structured(
         self,
@@ -603,7 +823,9 @@ class DeepSeekClient:
                 retryable=True,
                 attempt_count=attempt_count,
             )
-            logger.warning("DeepSeek request transport failed", extra=metadata.model_dump())
+            logger.warning(
+                "DeepSeek request transport failed", extra=metadata.model_dump()
+            )
             raise DeepSeekUnavailableError(
                 "DeepSeek request transport failed", metadata=metadata
             ) from None
@@ -634,7 +856,9 @@ class DeepSeekClient:
             role = message.get("role", "")
             content = message.get("content", "")
             if role not in allowed_roles or not isinstance(content, str) or not content:
-                raise ValueError("messages require a supported role and non-empty text content")
+                raise ValueError(
+                    "messages require a supported role and non-empty text content"
+                )
             validated.append({"role": role, "content": content})
         return validated
 
@@ -661,7 +885,9 @@ class DeepSeekClient:
             retryable=retryable,
             attempt_count=attempt_count,
         )
-        logger.warning("DeepSeek provider rejected a request", extra=metadata.model_dump())
+        logger.warning(
+            "DeepSeek provider rejected a request", extra=metadata.model_dump()
+        )
         if status in {401, 403}:
             return DeepSeekAuthenticationError(
                 "DeepSeek authentication failed", metadata=metadata
@@ -671,9 +897,7 @@ class DeepSeekClient:
                 "DeepSeek rate limit exceeded", metadata=metadata
             )
         if status == 408:
-            return DeepSeekTimeoutError(
-                "DeepSeek request timed out", metadata=metadata
-            )
+            return DeepSeekTimeoutError("DeepSeek request timed out", metadata=metadata)
         if status >= 500:
             return DeepSeekUnavailableError(
                 "DeepSeek service is temporarily unavailable", metadata=metadata
@@ -703,6 +927,12 @@ class DeepSeekClient:
         error_code: str | None = None,
         retryable: bool = False,
         attempt_count: int = 1,
+        structured_failure_subtype: StructuredFailureSubtype | None = None,
+        structured_failure_count: int = 0,
+        structured_failure_counts: Mapping[StructuredFailureSubtype, int] | None = None,
+        response_id: str | None = None,
+        finish_reason: StructuredFinishReason | None = None,
+        content_length_bucket: StructuredContentLengthBucket | None = None,
     ) -> ProviderErrorMetadata:
         return ProviderErrorMetadata(
             model=model,
@@ -713,6 +943,12 @@ class DeepSeekClient:
             error_code=error_code,
             retryable=retryable,
             attempt_count=attempt_count,
+            structured_failure_subtype=structured_failure_subtype,
+            structured_failure_count=structured_failure_count,
+            structured_failure_counts=dict(structured_failure_counts or {}),
+            response_id=response_id,
+            finish_reason=finish_reason,
+            content_length_bucket=content_length_bucket,
         )
 
     @staticmethod
@@ -734,6 +970,17 @@ class DeepSeekClient:
             return value
         return None
 
+    @staticmethod
+    def _safe_finish_reason(value: object) -> StructuredFinishReason | None:
+        allowed: set[StructuredFinishReason] = {
+            "stop",
+            "length",
+            "content_filter",
+            "tool_calls",
+            "insufficient_system_resource",
+        }
+        return value if isinstance(value, str) and value in allowed else None
+
 
 __all__ = [
     "CallMetadata",
@@ -751,6 +998,7 @@ __all__ = [
     "EmbeddingResponse",
     "ProviderErrorMetadata",
     "StructuredResponse",
+    "StructuredFailureSubtype",
     "TokenUsage",
     "aggregate_call_metadata",
 ]

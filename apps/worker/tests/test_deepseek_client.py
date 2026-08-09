@@ -17,9 +17,11 @@ from agents.deepseek_client import (
     DeepSeekResponseError,
     DeepSeekTimeoutError,
     DeepSeekUnavailableError,
+    ProviderErrorMetadata,
     TokenUsage,
     aggregate_call_metadata,
 )
+from agents.schemas import CitationAuditBatchOutput
 from elara_worker.errors import TransientProviderError
 
 
@@ -90,7 +92,7 @@ def test_structured_json_parsing_and_metadata_are_recorded():
                 "model": "deepseek-chat-test",
                 "choices": [
                     {
-                        "message": {"content": "```json\n{\"answer\":\"grounded\"}\n```"},
+                        "message": {"content": '```json\n{"answer":"grounded"}\n```'},
                         "finish_reason": "stop",
                     }
                 ],
@@ -203,9 +205,119 @@ def test_invalid_json_maps_to_redacted_response_error():
     with pytest.raises(DeepSeekResponseError) as exc_info:
         run(exercise())
 
-    assert exc_info.value.metadata.error_code == "STRUCTURED_RESPONSE_INVALID"
+    assert exc_info.value.metadata.error_code == "PROVIDER_BODY_PARSE_EXHAUSTED"
+    assert exc_info.value.metadata.structured_failure_subtype == "content_json"
     assert exc_info.value.metadata.attempt_count == 1
     assert exc_info.value.__cause__ is None
+
+
+@pytest.mark.parametrize(
+    ("response_factory", "expected_subtype"),
+    [
+        (
+            lambda: httpx.Response(
+                200,
+                content=b"PRIVATE-RAW-BODY-MARKER",
+                headers={"content-type": "application/json"},
+            ),
+            "response_json",
+        ),
+        (lambda: httpx.Response(200, json={"choices": []}), "choices_envelope"),
+        (
+            lambda: httpx.Response(
+                200,
+                json={"choices": [{"message": {"content": None}}]},
+            ),
+            "message_content_type",
+        ),
+        (
+            lambda: httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": {"content": "PRIVATE-CONTENT-JSON-MARKER"}}]
+                },
+            ),
+            "content_json",
+        ),
+        (
+            lambda: httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": {"content": '{"answer":"valid"}'}}],
+                    "usage": {"total_tokens": "12"},
+                },
+            ),
+            "usage_metadata",
+        ),
+    ],
+)
+def test_structured_provider_body_failures_have_safe_distinct_subtypes(
+    caplog: pytest.LogCaptureFixture,
+    response_factory,
+    expected_subtype: str,
+):
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return response_factory()
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "PRIVATE-PROMPT-MARKER"}],
+                output_schema=ExampleOutput,
+                prompt_version="audit-v1",
+            )
+        finally:
+            await http_client.aclose()
+
+    with (
+        caplog.at_level(logging.WARNING),
+        pytest.raises(DeepSeekResponseError) as exc_info,
+    ):
+        run(exercise())
+
+    metadata = exc_info.value.metadata
+    assert metadata.error_code == "PROVIDER_BODY_PARSE_EXHAUSTED"
+    assert metadata.structured_failure_subtype == expected_subtype
+    assert metadata.structured_failure_counts == {expected_subtype: 1}
+    assert "PRIVATE-" not in caplog.text
+    assert "PRIVATE-" not in str(exc_info.value)
+    assert "PRIVATE-" not in metadata.model_dump_json()
+
+
+def test_citation_output_schema_failure_is_distinct_from_provider_body_parse():
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "content": '{"sentence_audits":[{"sentence_ref":"s"}]}'
+                        }
+                    }
+                ]
+            },
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "trusted task context"}],
+                output_schema=CitationAuditBatchOutput,
+                prompt_version="citation-audit-v4",
+            )
+        finally:
+            await http_client.aclose()
+
+    with pytest.raises(DeepSeekResponseError) as exc_info:
+        run(exercise())
+
+    assert exc_info.value.metadata.error_code == "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED"
+    assert exc_info.value.metadata.structured_failure_subtype == "output_schema"
 
 
 def test_invalid_json_is_repaired_once_without_exposing_raw_response(
@@ -216,7 +328,11 @@ def test_invalid_json_is_repaired_once_without_exposing_raw_response(
 
     def handler(request: httpx.Request) -> httpx.Response:
         captured_requests.append(json.loads(request.content))
-        content = raw_invalid_marker if len(captured_requests) == 1 else '{"answer":"repaired"}'
+        content = (
+            raw_invalid_marker
+            if len(captured_requests) == 1
+            else '{"answer":"repaired"}'
+        )
         return httpx.Response(
             200,
             json={
@@ -246,7 +362,9 @@ def test_invalid_json_is_repaired_once_without_exposing_raw_response(
     assert result.output.answer == "repaired"
     assert result.metadata.attempt_count == 2
     assert len(captured_requests) == 2
-    assert all(request["model"] == "deepseek-reasoning-test" for request in captured_requests)
+    assert all(
+        request["model"] == "deepseek-reasoning-test" for request in captured_requests
+    )
     assert all(request["temperature"] == 0.1 for request in captured_requests)
     assert captured_requests[0]["messages"] == captured_requests[1]["messages"][:-1]
     assert captured_requests[1]["messages"][-1] == {
@@ -267,7 +385,9 @@ def test_schema_invalid_json_is_repaired_once():
         nonlocal call_count
         call_count += 1
         content = '{"unexpected":"field"}' if call_count == 1 else '{"answer":"valid"}'
-        return httpx.Response(200, json={"choices": [{"message": {"content": content}}]})
+        return httpx.Response(
+            200, json={"choices": [{"message": {"content": content}}]}
+        )
 
     async def exercise():
         http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
@@ -349,7 +469,8 @@ def test_third_schema_invalid_response_is_terminal_after_two_repairs():
         run(exercise())
 
     assert call_count == 3
-    assert exc_info.value.metadata.error_code == "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED"
+    assert exc_info.value.metadata.error_code == "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED"
+    assert exc_info.value.metadata.structured_failure_subtype == "output_schema"
     assert exc_info.value.metadata.attempt_count == 3
     assert not isinstance(exc_info.value, TransientProviderError)
 
@@ -385,11 +506,8 @@ def test_configured_schema_attempt_bounds_are_exact(max_schema_attempts: int):
 
     assert call_count == max_schema_attempts
     assert exc_info.value.metadata.attempt_count == max_schema_attempts
-    assert exc_info.value.metadata.error_code == (
-        "STRUCTURED_RESPONSE_INVALID"
-        if max_schema_attempts == 1
-        else "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED"
-    )
+    assert exc_info.value.metadata.error_code == "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED"
+    assert exc_info.value.metadata.structured_failure_count == max_schema_attempts
 
 
 @pytest.mark.parametrize("invalid_bound", [0, 4, True, 1.5])
@@ -433,7 +551,9 @@ def test_schema_diagnostics_and_repair_requests_exclude_invalid_content(
             if len(requests) == 1
             else '{"answer":"valid"}'
         )
-        return httpx.Response(200, json={"choices": [{"message": {"content": content}}]})
+        return httpx.Response(
+            200, json={"choices": [{"message": {"content": content}}]}
+        )
 
     async def exercise():
         http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
@@ -510,7 +630,32 @@ def test_legacy_call_metadata_defaults_remain_readable():
         }
     )
 
-    assert (metadata.request_count, metadata.batch_count, metadata.repair_count) == (1, 1, 0)
+    assert (metadata.request_count, metadata.batch_count, metadata.repair_count) == (
+        1,
+        1,
+        0,
+    )
+    assert (
+        metadata.recovery_count,
+        metadata.split_fallback_count,
+        metadata.recovery_success_count,
+        metadata.structured_failure_counts,
+    ) == (0, 0, 0, {})
+
+
+def test_legacy_provider_error_metadata_defaults_remain_readable():
+    metadata = ProviderErrorMetadata.model_validate(
+        {
+            "model": "deepseek-chat-test",
+            "prompt_version": "legacy-v1",
+            "temperature": 0,
+            "latency_ms": 5,
+            "error_code": "STRUCTURED_RESPONSE_REPAIR_EXHAUSTED",
+        }
+    )
+
+    assert metadata.structured_failure_subtype is None
+    assert metadata.structured_failure_counts == {}
 
 
 def test_loggable_request_metadata_must_be_non_sensitive_identifiers():
@@ -565,6 +710,7 @@ def test_worker_has_no_disallowed_provider_or_environment_references():
             # Server-only web modules may legitimately use the provider's private
             # configuration. Browser bundles must never receive a public provider
             # environment variable.
-            assert "next_public_deepseek_" not in source_path.read_text(
-                encoding="utf-8"
-            ).casefold()
+            assert (
+                "next_public_deepseek_"
+                not in source_path.read_text(encoding="utf-8").casefold()
+            )
