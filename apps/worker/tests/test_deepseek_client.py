@@ -125,9 +125,163 @@ def test_structured_json_parsing_and_metadata_are_recorded():
     assert result.metadata.usage.total_tokens == 22
     assert result.metadata.latency_ms >= 0
     assert captured_request["response_format"] == {"type": "json_object"}
+    assert captured_request["thinking"] == {"type": "disabled"}
     assert captured_request["temperature"] == 0.1
     assert captured_request["stream"] is False
     assert "untrusted evidence" in captured_request["messages"][0]["content"]
+
+
+@pytest.mark.parametrize(
+    ("model_role", "expected_model", "thinking_type"),
+    [
+        ("chat", "deepseek-chat-test", "disabled"),
+        ("reasoning", "deepseek-reasoning-test", "enabled"),
+    ],
+)
+def test_structured_model_roles_set_thinking_explicitly(
+    model_role: str, expected_model: str, thinking_type: str
+):
+    captured_request: dict[str, object] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured_request.update(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": '{"answer":"valid"}'}}]},
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "trusted task context"}],
+                output_schema=ExampleOutput,
+                prompt_version="thinking-mode-v1",
+                model_role=model_role,
+            )
+        finally:
+            await http_client.aclose()
+
+    run(exercise())
+
+    assert captured_request["model"] == expected_model
+    assert captured_request["thinking"] == {"type": thinking_type}
+
+
+def test_empty_length_response_gets_one_bounded_non_thinking_retry(
+    caplog: pytest.LogCaptureFixture,
+):
+    private_prompt = "PRIVATE-TRUNCATION-PROMPT"
+    captured_requests: list[dict[str, object]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured_requests.append(json.loads(request.content))
+        if len(captured_requests) == 1:
+            return httpx.Response(
+                200,
+                json={
+                    "id": "safe-response-id",
+                    "choices": [
+                        {"message": {"content": ""}, "finish_reason": "length"}
+                    ],
+                },
+            )
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {"content": '{"answer":"recovered"}'},
+                        "finish_reason": "stop",
+                    }
+                ]
+            },
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": private_prompt}],
+                output_schema=ExampleOutput,
+                prompt_version="evidence-v4",
+                model_role="chat",
+                temperature=0.0,
+                max_tokens=4_000,
+                repair_invalid_response=True,
+                max_schema_attempts=2,
+            )
+        finally:
+            await http_client.aclose()
+
+    with caplog.at_level(logging.WARNING):
+        result = run(exercise())
+
+    assert result.output.answer == "recovered"
+    assert result.metadata.attempt_count == 2
+    assert result.metadata.request_count == 2
+    assert result.metadata.structured_failure_counts == {"content_json": 1}
+    assert len(captured_requests) == 2
+    assert captured_requests[0]["thinking"] == {"type": "disabled"}
+    assert captured_requests[1]["thinking"] == {"type": "disabled"}
+    assert captured_requests[0]["max_tokens"] == 4_000
+    assert captured_requests[1]["max_tokens"] == 8_000
+    assert captured_requests[0]["messages"] == captured_requests[1]["messages"]
+    warning = next(
+        record
+        for record in caplog.records
+        if getattr(record, "schema_error_kind", None) == "provider_body_parse"
+    )
+    assert warning.structured_failure_subtype == "content_json"
+    assert warning.content_length_bucket == "empty"
+    assert warning.finish_reason == "length"
+    assert private_prompt not in caplog.text
+    assert private_prompt not in result.metadata.model_dump_json()
+
+
+def test_failed_truncation_retry_is_terminal_within_existing_attempt_budget():
+    captured_requests: list[dict[str, object]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured_requests.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {"message": {"content": ""}, "finish_reason": "length"}
+                ]
+            },
+        )
+
+    async def exercise():
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = DeepSeekClient(config(), http_client=http_client)
+        try:
+            return await client.generate_structured(
+                messages=[{"role": "user", "content": "trusted task context"}],
+                output_schema=ExampleOutput,
+                prompt_version="bounded-truncation-v1",
+                max_tokens=4_000,
+                repair_invalid_response=True,
+                max_schema_attempts=3,
+            )
+        finally:
+            await http_client.aclose()
+
+    with pytest.raises(DeepSeekResponseError) as exc_info:
+        run(exercise())
+
+    assert len(captured_requests) == 2
+    assert [request["max_tokens"] for request in captured_requests] == [4_000, 8_000]
+    assert all(
+        request["thinking"] == {"type": "disabled"}
+        for request in captured_requests
+    )
+    assert exc_info.value.metadata.error_code == "PROVIDER_BODY_PARSE_EXHAUSTED"
+    assert exc_info.value.metadata.structured_failure_subtype == "content_json"
+    assert exc_info.value.metadata.attempt_count == 2
 
 
 @pytest.mark.parametrize(
@@ -366,6 +520,10 @@ def test_invalid_json_is_repaired_once_without_exposing_raw_response(
         request["model"] == "deepseek-reasoning-test" for request in captured_requests
     )
     assert all(request["temperature"] == 0.1 for request in captured_requests)
+    assert all(
+        request["thinking"] == {"type": "enabled"}
+        for request in captured_requests
+    )
     assert captured_requests[0]["messages"] == captured_requests[1]["messages"][:-1]
     assert captured_requests[1]["messages"][-1] == {
         "role": "system",
@@ -714,3 +872,15 @@ def test_worker_has_no_disallowed_provider_or_environment_references():
                 "next_public_deepseek_"
                 not in source_path.read_text(encoding="utf-8").casefold()
             )
+
+
+def test_sample_environment_uses_current_explicit_deepseek_v4_models():
+    repository_root = Path(__file__).resolve().parents[3]
+    sample_environment = (repository_root / ".env.example").read_text(
+        encoding="utf-8"
+    )
+
+    assert "DEEPSEEK_CHAT_MODEL=deepseek-v4-flash" in sample_environment
+    assert "DEEPSEEK_REASONING_MODEL=deepseek-v4-pro" in sample_environment
+    assert "DEEPSEEK_CHAT_MODEL=deepseek-chat" not in sample_environment
+    assert "DEEPSEEK_REASONING_MODEL=deepseek-reasoner" not in sample_environment

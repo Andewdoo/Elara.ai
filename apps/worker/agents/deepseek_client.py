@@ -48,6 +48,8 @@ _STRUCTURED_RESPONSE_INVALID = "STRUCTURED_RESPONSE_INVALID"
 _PROVIDER_BODY_PARSE_EXHAUSTED = "PROVIDER_BODY_PARSE_EXHAUSTED"
 _STRUCTURED_SCHEMA_REPAIR_EXHAUSTED = "STRUCTURED_SCHEMA_REPAIR_EXHAUSTED"
 _MAX_SCHEMA_DIAGNOSTICS = 8
+_STRUCTURED_TRUNCATION_RETRY_TOKEN_MULTIPLIER = 2
+_STRUCTURED_TRUNCATION_RETRY_MAX_TOKENS = 16_000
 _SAFE_SCHEMA_PATH_SEGMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_-]{0,63}$")
 _STRUCTURED_REPAIR_INSTRUCTION = (
     "The previous response failed schema validation. Regenerate the complete response "
@@ -497,6 +499,9 @@ class DeepSeekClient:
         base_payload: dict[str, Any] = {
             "model": model,
             "response_format": {"type": "json_object"},
+            "thinking": {
+                "type": "disabled" if model_role == "chat" else "enabled"
+            },
             "temperature": temperature,
             "stream": False,
         }
@@ -508,18 +513,30 @@ class DeepSeekClient:
         trusted_messages = [schema_instruction, *self._validate_messages(messages)]
         attempt_limit = max_schema_attempts if repair_invalid_response else 1
         failure_counts: dict[StructuredFailureSubtype, int] = {}
+        truncation_retry_attempt: int | None = None
+        truncation_retry_used = False
+        schema_repair_count = 0
         for attempt_count in range(1, attempt_limit + 1):
+            is_truncation_retry = attempt_count == truncation_retry_attempt
             request_messages = list(trusted_messages)
-            if attempt_count == 2:
+            if attempt_count > 1 and not is_truncation_retry:
+                schema_repair_count += 1
+            if schema_repair_count == 1 and not is_truncation_retry:
                 request_messages.append(
                     {"role": "system", "content": _STRUCTURED_REPAIR_INSTRUCTION}
                 )
-            elif attempt_count == 3:
+            elif schema_repair_count == 2 and not is_truncation_retry:
                 request_messages.append(
                     {"role": "system", "content": _STRUCTURED_FINAL_REPAIR_INSTRUCTION}
                 )
+            request_payload = {**base_payload, "messages": request_messages}
+            if is_truncation_retry:
+                request_payload["thinking"] = {"type": "disabled"}
+                request_payload["max_tokens"] = self._truncation_retry_max_tokens(
+                    max_tokens
+                )
             response, latency_ms = await self._post_structured(
-                payload={**base_payload, "messages": request_messages},
+                payload=request_payload,
                 model=model,
                 prompt_version=prompt_version,
                 temperature=temperature,
@@ -537,6 +554,11 @@ class DeepSeekClient:
                 usage = self._parse_usage_metadata(body)
             except _StructuredResponseParseError as exc:
                 failure_counts[exc.subtype] = failure_counts.get(exc.subtype, 0) + 1
+                finish_reason = (
+                    self._safe_finish_reason(choice.get("finish_reason"))
+                    if choice is not None
+                    else None
+                )
                 metadata = self._structured_failure_metadata(
                     model=model,
                     prompt_version=prompt_version,
@@ -553,12 +575,9 @@ class DeepSeekClient:
                         if body is not None
                         else None
                     ),
-                    finish_reason=(
-                        self._safe_finish_reason(choice.get("finish_reason"))
-                        if choice is not None
-                        else None
-                    ),
+                    finish_reason=finish_reason,
                     content_length_bucket=content_length_bucket,
+                    force_terminal=is_truncation_retry,
                 )
                 logger.warning(
                     "DeepSeek returned an invalid structured response body",
@@ -567,11 +586,20 @@ class DeepSeekClient:
                         "schema_error_kind": "provider_body_parse",
                     },
                 )
-                if attempt_count == attempt_limit:
+                if is_truncation_retry or attempt_count == attempt_limit:
                     raise DeepSeekResponseError(
                         "DeepSeek returned an invalid structured response",
                         metadata=metadata,
                     ) from None
+                if self._should_retry_truncated_content(
+                    subtype=exc.subtype,
+                    content_length_bucket=content_length_bucket,
+                    finish_reason=finish_reason,
+                    max_tokens=max_tokens,
+                    truncation_retry_used=truncation_retry_used,
+                ):
+                    truncation_retry_attempt = attempt_count + 1
+                    truncation_retry_used = True
                 continue
 
             try:
@@ -594,6 +622,7 @@ class DeepSeekClient:
                     response_id=self._safe_response_identifier(body.get("id")),
                     finish_reason=self._safe_finish_reason(choice.get("finish_reason")),
                     content_length_bucket=content_length_bucket,
+                    force_terminal=is_truncation_retry,
                 )
                 error_types, error_paths = self._safe_schema_diagnostics(exc)
                 logger.warning(
@@ -605,7 +634,7 @@ class DeepSeekClient:
                         "schema_error_paths": error_paths,
                     },
                 )
-                if attempt_count == attempt_limit:
+                if is_truncation_retry or attempt_count == attempt_limit:
                     raise DeepSeekResponseError(
                         "DeepSeek returned an invalid structured response",
                         metadata=metadata,
@@ -653,8 +682,9 @@ class DeepSeekClient:
         response_id: str | None,
         finish_reason: StructuredFinishReason | None,
         content_length_bucket: StructuredContentLengthBucket | None,
+        force_terminal: bool = False,
     ) -> ProviderErrorMetadata:
-        is_terminal = attempt_count == attempt_limit
+        is_terminal = force_terminal or attempt_count == attempt_limit
         return cls._error_metadata(
             model,
             prompt_version,
@@ -677,6 +707,32 @@ class DeepSeekClient:
             response_id=response_id,
             finish_reason=finish_reason,
             content_length_bucket=content_length_bucket,
+        )
+
+    @staticmethod
+    def _should_retry_truncated_content(
+        *,
+        subtype: StructuredFailureSubtype,
+        content_length_bucket: StructuredContentLengthBucket | None,
+        finish_reason: StructuredFinishReason | None,
+        max_tokens: int | None,
+        truncation_retry_used: bool,
+    ) -> bool:
+        return (
+            not truncation_retry_used
+            and subtype == "content_json"
+            and (content_length_bucket == "empty" or finish_reason == "length")
+            and max_tokens is not None
+            and max_tokens < _STRUCTURED_TRUNCATION_RETRY_MAX_TOKENS
+        )
+
+    @staticmethod
+    def _truncation_retry_max_tokens(max_tokens: int | None) -> int:
+        if max_tokens is None or max_tokens >= _STRUCTURED_TRUNCATION_RETRY_MAX_TOKENS:
+            raise AssertionError("truncation retry requires a smaller explicit cap")
+        return min(
+            max_tokens * _STRUCTURED_TRUNCATION_RETRY_TOKEN_MULTIPLIER,
+            _STRUCTURED_TRUNCATION_RETRY_MAX_TOKENS,
         )
 
     @staticmethod
