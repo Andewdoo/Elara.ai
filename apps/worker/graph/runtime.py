@@ -47,6 +47,9 @@ from app.models.provenance import InformationCluster, SourceDependency
 from app.models.sources import RunSource, Source, SourcePassage, SourceSnapshot
 from app.models.verification_run import VerificationRun
 from graph.state import (
+    AuthorityGapRecord,
+    AuthorityPreflightQueryRecord,
+    AuthorityProfileRecord,
     CandidateSource,
     DiscoveryGateRecord,
     ResearchDepth,
@@ -224,6 +227,8 @@ class SqlWorkflowStateWriter:
         executions = {item.query_key: item for item in state.search_query_executions}
         rows = db.scalars(select(SearchQuery).where(SearchQuery.run_id == run.id)).all()
         for row in rows:
+            if not row.generated_by_node.startswith("planner:"):
+                continue
             key = f"{row.generated_by_node.removeprefix('planner:')}:{row.query_text}"
             execution = executions.get(key)
             if execution is None:
@@ -235,6 +240,40 @@ class SqlWorkflowStateWriter:
             row.policy_version = state.search_policy_version
             row.executed_at = execution.executed_at
             row.result_count = execution.result_count
+        db.execute(
+            delete(SearchQuery).where(
+                SearchQuery.run_id == run.id,
+                SearchQuery.generated_by_node.like("authority_preflight:%"),
+            )
+        )
+        claim_rows = db.scalars(
+            select(AtomicClaim).where(AtomicClaim.run_id == run.id)
+        ).all()
+        claim_ids = {
+            str(row.gates.get("claim_ref")): row.id for row in claim_rows
+        }
+        for record in state.authority_preflight_queries:
+            db.add(
+                SearchQuery(
+                    run_id=run.id,
+                    atomic_claim_id=claim_ids.get(record.claim_ref),
+                    family="authority_preflight",
+                    query_text=record.query,
+                    generated_by_node=f"authority_preflight:{record.claim_ref}"[:100],
+                    priority=Decimal("1"),
+                    discovery_phase="authority_preflight",
+                    execution_status=record.execution_status,
+                    network_attempt_count=record.network_attempt_count,
+                    skip_reason=record.skip_reason,
+                    policy_version=record.registry_version,
+                    authority_profile_version=record.profile_version,
+                    authority_registry_version=record.registry_version,
+                    source_role=record.source_role,
+                    domain_restriction=record.domain_restriction,
+                    executed_at=record.executed_at,
+                    result_count=record.result_count,
+                )
+            )
         target = dict(run.normalized_target)
         plan = dict(target.get("research_plan") or {})
         plan.update(
@@ -251,6 +290,21 @@ class SqlWorkflowStateWriter:
                 "discovery_candidates": [
                     item.model_dump(mode="json") for item in state.candidate_sources
                 ],
+                "authority_profiles": [
+                    item.model_dump(mode="json") for item in state.authority_profiles
+                ],
+                "authority_preflight_queries": [
+                    item.model_dump(mode="json")
+                    for item in state.authority_preflight_queries
+                ],
+                "authority_gaps": [
+                    item.model_dump(mode="json") for item in state.authority_gaps
+                ],
+                "authority_profile_version": state.authority_profile_version,
+                "authority_registry_version": state.authority_registry_version,
+                "authority_preflight_budget": state.authority_preflight_budget,
+                "authority_preflight_used": state.authority_preflight_used,
+                "known_evidence_gaps": list(state.known_evidence_gaps),
             }
         )
         target["research_plan"] = plan
@@ -338,6 +392,7 @@ class SqlWorkflowStateWriter:
                     run_id=run.id, source_id=source.id, role=candidate.source_type
                 )
                 db.add(run_source)
+            run_source.role = candidate.source_type
             run_source.snapshot_id = durable_snapshot.id
             run_source.retrieval_reason = candidate.selection_reason
             run_source.priority_score = candidate.priority
@@ -347,7 +402,43 @@ class SqlWorkflowStateWriter:
                 if snapshot.access_status != AccessStatus.FETCHED.value
                 else None
             )
+            run_source.selection_metadata = {
+                "search_phase": candidate.search_phase,
+                "source_origin": candidate.source_origin,
+                "authority_claim_ref": candidate.authority_claim_ref,
+                "authority_source_role": candidate.authority_source_role,
+                "authority_match_status": candidate.authority_match_status,
+                "authority_match_reasons": candidate.authority_match_reasons,
+                "authority_profile_version": candidate.authority_profile_version,
+                "authority_registry_version": candidate.authority_registry_version,
+            }
         run.parser_versions = dict(state.parser_versions)
+        target = dict(run.normalized_target)
+        plan = dict(target.get("research_plan") or {})
+        plan.update(
+            {
+                "known_evidence_gaps": list(state.known_evidence_gaps),
+                "discovery_candidates": [
+                    item.model_dump(mode="json") for item in state.candidate_sources
+                ],
+                "authority_profiles": [
+                    item.model_dump(mode="json") for item in state.authority_profiles
+                ],
+                "authority_preflight_queries": [
+                    item.model_dump(mode="json")
+                    for item in state.authority_preflight_queries
+                ],
+                "authority_gaps": [
+                    item.model_dump(mode="json") for item in state.authority_gaps
+                ],
+                "authority_profile_version": state.authority_profile_version,
+                "authority_registry_version": state.authority_registry_version,
+                "authority_preflight_budget": state.authority_preflight_budget,
+                "authority_preflight_used": state.authority_preflight_used,
+            }
+        )
+        target["research_plan"] = plan
+        run.normalized_target = target
 
     @staticmethod
     def _persist_passages(
@@ -688,6 +779,13 @@ class SqlWorkflowStateWriter:
             "phase_two_additional_target": state.search_phase_two_target,
             "gate_outcomes": [],
             "discovery_candidates": [],
+            "authority_profiles": [],
+            "authority_preflight_queries": [],
+            "authority_gaps": [],
+            "authority_profile_version": None,
+            "authority_registry_version": None,
+            "authority_preflight_budget": 0,
+            "authority_preflight_used": 0,
         }
         run.normalized_target = target
 
@@ -861,6 +959,9 @@ def execute_verification_workflow(
         query_rows = db.scalars(
             select(SearchQuery).where(SearchQuery.run_id == run.id)
         ).all()
+        planner_rows = [
+            row for row in query_rows if row.generated_by_node.startswith("planner:")
+        ]
         queries = [
             SearchQueryOutput(
                 query=row.query_text,
@@ -868,7 +969,7 @@ def execute_verification_workflow(
                 intent=EvidenceIntent(row.family),
                 priority=float(row.priority) if row.priority is not None else 0.5,
             )
-            for row in query_rows
+            for row in planner_rows
         ]
         query_executions = [
             SearchQueryExecutionRecord(
@@ -882,7 +983,7 @@ def execute_verification_workflow(
                 else None,
                 skip_reason=row.skip_reason,
             )
-            for row in query_rows
+            for row in planner_rows
         ]
         gate_outcomes = [
             DiscoveryGateRecord.model_validate(item)
@@ -891,6 +992,18 @@ def execute_verification_workflow(
         discovery_candidates = [
             CandidateSource.model_validate(item)
             for item in (plan_data or {}).get("discovery_candidates", [])
+        ]
+        authority_profiles = [
+            AuthorityProfileRecord.model_validate(item)
+            for item in (plan_data or {}).get("authority_profiles", [])
+        ]
+        authority_preflight_queries = [
+            AuthorityPreflightQueryRecord.model_validate(item)
+            for item in (plan_data or {}).get("authority_preflight_queries", [])
+        ]
+        authority_gaps = [
+            AuthorityGapRecord.model_validate(item)
+            for item in (plan_data or {}).get("authority_gaps", [])
         ]
         if (
             normalized is not None
@@ -926,6 +1039,21 @@ def execute_verification_workflow(
             queries=queries,
             primary_source_targets=primary_source_targets,
             known_evidence_gaps=known_evidence_gaps,
+            authority_profiles=authority_profiles,
+            authority_preflight_queries=authority_preflight_queries,
+            authority_gaps=authority_gaps,
+            authority_profile_version=(plan_data or {}).get(
+                "authority_profile_version"
+            ),
+            authority_registry_version=(plan_data or {}).get(
+                "authority_registry_version"
+            ),
+            authority_preflight_budget=int(
+                (plan_data or {}).get("authority_preflight_budget") or 0
+            ),
+            authority_preflight_used=int(
+                (plan_data or {}).get("authority_preflight_used") or 0
+            ),
             candidate_sources=discovery_candidates,
             query_result_counts={
                 item.query_key: item.result_count

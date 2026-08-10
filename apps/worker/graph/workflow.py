@@ -2068,11 +2068,22 @@ def _deterministic_evidence_gaps(
         for item in state.evidence
         if item.passage_id in approved_passage_ids
     }
-    return [
+    authority_gaps = [
+        (
+            f"{gap.code} for claim {gap.claim_ref}: "
+            f"{gap.reason_code.lower().replace('_', ' ')}."
+        )
+        for gap in sorted(
+            state.authority_gaps,
+            key=lambda item: (item.claim_ref, item.reason_code),
+        )
+    ]
+    unsupported_claim_gaps = [
         f"No approved evidence was available for claim {claim.claim_ref}."
         for claim in state.claims
         if claim.claim_ref not in supported_claim_refs
     ]
+    return [*authority_gaps, *unsupported_claim_gaps]
 
 
 def _deterministic_ambiguity_limitations(state: VerificationState) -> list[str]:

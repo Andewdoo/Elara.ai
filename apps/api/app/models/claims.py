@@ -64,7 +64,7 @@ class SearchQuery(Base):
     __table_args__ = (
         CheckConstraint("priority IS NULL OR priority BETWEEN 0 AND 1", name="ck_search_queries_priority"),
         CheckConstraint(
-            "discovery_phase IN ('phase_one', 'phase_two')",
+            "discovery_phase IN ('authority_preflight', 'phase_one', 'phase_two')",
             name="ck_search_queries_discovery_phase",
         ),
         CheckConstraint(
@@ -97,6 +97,10 @@ class SearchQuery(Base):
     policy_version: Mapped[str] = mapped_column(
         String(100), nullable=False, default="adaptive-search-v1"
     )
+    authority_profile_version: Mapped[str | None] = mapped_column(String(100))
+    authority_registry_version: Mapped[str | None] = mapped_column(String(100))
+    source_role: Mapped[str | None] = mapped_column(String(100))
+    domain_restriction: Mapped[str | None] = mapped_column(String(255))
     executed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     result_count: Mapped[int | None] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utc_now)

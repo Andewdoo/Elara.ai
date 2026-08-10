@@ -60,6 +60,8 @@ def select_diverse(
     per_domain: int = 2,
     reserved_intents: tuple[str, ...] = ("primary", "support", "contradiction"),
 ) -> list:
+    if limit <= 0:
+        return []
     selected: list = []
     domains: dict[str, int] = {}
     clusters: set[str] = set()

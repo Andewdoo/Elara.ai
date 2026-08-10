@@ -59,6 +59,27 @@ DependencyRelationshipValue = Literal[
 ]
 SearchDiscoveryPhaseValue = Literal["phase_one", "phase_two"]
 SearchExecutionStatusValue = Literal["planned", "executed", "cache_hit", "not_needed"]
+AuthoritySubjectValue = Literal[
+    "compensation",
+    "legal",
+    "medical",
+    "product",
+    "corporate",
+    "quotation",
+    "public_record",
+]
+AuthorityGapReasonValue = Literal[
+    "AUTHORITY_PROFILE_AMBIGUOUS",
+    "NO_SEARCH_RESULTS",
+    "NO_VERIFIED_RESULT",
+    "PROVIDER_FAILURE",
+    "PREFLIGHT_BUDGET_EXHAUSTED",
+    "INACCESSIBLE_OR_BLOCKED",
+    "NO_EXACT_CLAIM_EVIDENCE",
+]
+CandidateSearchPhaseValue = Literal[
+    "submitted", "authority_preflight", "broad_phase_one", "broad_phase_two"
+]
 
 
 class StateModel(BaseModel):
@@ -88,6 +109,77 @@ class WorkflowStage(StrEnum):
     CITATION_AUDIT = "citation_audit"
 
 
+class AuthorityRecordHolderRecord(StateModel):
+    domain: str = Field(min_length=1, max_length=255)
+    source_role: str = Field(min_length=1, max_length=100)
+    entity: str = Field(min_length=1, max_length=300)
+    jurisdictions: list[str] = Field(default_factory=list)
+    query_terms: list[str] = Field(default_factory=list)
+    document_terms: list[str] = Field(default_factory=list)
+    source_type: SourceTypeValue
+
+
+class AuthorityProfileRecord(StateModel):
+    claim_ref: str = Field(min_length=1, max_length=64)
+    subject: AuthoritySubjectValue
+    entity: str | None = Field(default=None, max_length=300)
+    jurisdiction: str | None = Field(default=None, max_length=200)
+    timeframe: str | None = Field(default=None, max_length=500)
+    metric_or_quotation: str | None = Field(default=None, max_length=180)
+    expected_source_roles: list[str] = Field(min_length=1)
+    record_holders: list[AuthorityRecordHolderRecord] = Field(min_length=1)
+    profile_version: str = Field(min_length=1, max_length=100)
+    registry_version: str = Field(min_length=1, max_length=100)
+    created_at: datetime
+
+    @field_validator("created_at")
+    @classmethod
+    def created_at_is_timezone_aware(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("authority profile timestamps must be timezone-aware")
+        return value
+
+
+class AuthorityPreflightQueryRecord(StateModel):
+    query_key: str = Field(min_length=1, max_length=700)
+    claim_ref: str = Field(min_length=1, max_length=64)
+    query: str = Field(min_length=1, max_length=500)
+    domain_restriction: str = Field(min_length=1, max_length=255)
+    source_role: str = Field(min_length=1, max_length=100)
+    profile_version: str = Field(min_length=1, max_length=100)
+    registry_version: str = Field(min_length=1, max_length=100)
+    execution_status: SearchExecutionStatusValue = "planned"
+    result_count: int | None = Field(default=None, ge=0)
+    verified_candidate_count: int = Field(default=0, ge=0)
+    network_attempt_count: int = Field(default=0, ge=0)
+    executed_at: datetime | None = None
+    skip_reason: str | None = Field(default=None, max_length=100)
+    rejection_reason_codes: list[str] = Field(default_factory=list)
+
+    @field_validator("executed_at")
+    @classmethod
+    def executed_at_is_timezone_aware(cls, value: datetime | None) -> datetime | None:
+        if value is not None and (value.tzinfo is None or value.utcoffset() is None):
+            raise ValueError("authority preflight timestamps must be timezone-aware")
+        return value
+
+
+class AuthorityGapRecord(StateModel):
+    code: Literal["APPLICABLE_AUTHORITATIVE_SOURCE_NOT_FOUND"]
+    claim_ref: str = Field(min_length=1, max_length=64)
+    profile_subject: AuthoritySubjectValue
+    reason_code: AuthorityGapReasonValue
+    preflight_queries: list[str] = Field(default_factory=list)
+    recorded_at: datetime
+
+    @field_validator("recorded_at")
+    @classmethod
+    def recorded_at_is_timezone_aware(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("authority gap timestamps must be timezone-aware")
+        return value
+
+
 class CandidateSource(StateModel):
     source_ref: str = Field(min_length=1, max_length=128)
     url: str = Field(min_length=1, max_length=4096)
@@ -101,9 +193,20 @@ class CandidateSource(StateModel):
     # This is deterministic intake provenance, not a claim about the source's
     # evidentiary weight.  It keeps a user-submitted URL distinct from the
     # supplementary Brave discovery candidates used to research the claim.
-    source_origin: Literal["submitted_url", "brave_discovery"] = "brave_discovery"
+    source_origin: Literal[
+        "submitted_url", "brave_discovery", "authority_preflight"
+    ] = "brave_discovery"
     selection_reason: str = Field(min_length=1)
     priority: UnitDecimal = Decimal("0")
+    search_phase: CandidateSearchPhaseValue = "broad_phase_one"
+    authority_claim_ref: str | None = Field(default=None, max_length=64)
+    authority_source_role: str | None = Field(default=None, max_length=100)
+    authority_match_status: Literal[
+        "not_evaluated", "verified_search_match", "verified_document_match", "rejected"
+    ] = "not_evaluated"
+    authority_match_reasons: list[str] = Field(default_factory=list)
+    authority_profile_version: str | None = Field(default=None, max_length=100)
+    authority_registry_version: str | None = Field(default=None, max_length=100)
 
 
 class SnapshotRecord(StateModel):
@@ -338,6 +441,15 @@ class VerificationState(StateModel):
     queries: list[SearchQueryOutput] = Field(default_factory=list)
     primary_source_targets: list[str] = Field(default_factory=list)
     known_evidence_gaps: list[str] = Field(default_factory=list)
+    authority_profiles: list[AuthorityProfileRecord] = Field(default_factory=list)
+    authority_preflight_queries: list[AuthorityPreflightQueryRecord] = Field(
+        default_factory=list
+    )
+    authority_gaps: list[AuthorityGapRecord] = Field(default_factory=list)
+    authority_profile_version: str | None = Field(default=None, max_length=100)
+    authority_registry_version: str | None = Field(default=None, max_length=100)
+    authority_preflight_budget: int = Field(default=0, ge=0)
+    authority_preflight_used: int = Field(default=0, ge=0)
     candidate_sources: list[CandidateSource] = Field(default_factory=list)
     query_result_counts: dict[str, int] = Field(default_factory=dict)
     search_query_executions: list[SearchQueryExecutionRecord] = Field(default_factory=list)
@@ -417,10 +529,18 @@ class VerificationState(StateModel):
 
 
 __all__ = [
+    "AuthorityGapRecord",
+    "AuthorityGapReasonValue",
+    "AuthorityPreflightQueryRecord",
+    "AuthorityProfileRecord",
+    "AuthorityRecordHolderRecord",
+    "AuthoritySubjectValue",
+    "CandidateSearchPhaseValue",
     "CalculationRecord",
     "CandidateSource",
     "DependencyRecord",
     "EmbeddingRunMetadata",
+    "EvidenceIntentValue",
     "DiscoveryGateRecord",
     "ExtractedBlockRecord",
     "ExtractedSourceRecord",
@@ -431,6 +551,7 @@ __all__ = [
     "SearchQueryExecutionRecord",
     "ScoreBundle",
     "SnapshotRecord",
+    "SourceTypeValue",
     "VerificationState",
     "WorkflowStage",
 ]

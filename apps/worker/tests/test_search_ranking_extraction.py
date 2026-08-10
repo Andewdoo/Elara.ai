@@ -666,6 +666,7 @@ def test_selection_reserves_research_paths_and_deduplicates_result_clusters():
     refs = {item.source_ref for item in selected}
     assert {"primary", "contradiction", "support-high"} <= refs
     assert "support-copy" not in refs
+    assert select_diverse(candidates, limit=0) == []
 
 
 def test_html_extraction_uses_static_parser_and_preserves_untrusted_text():

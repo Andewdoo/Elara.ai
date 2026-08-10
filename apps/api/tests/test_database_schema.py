@@ -128,7 +128,7 @@ def test_initial_migration_tables_match_metadata_and_has_one_head():
 
     config = Config(str(API_ROOT / "alembic.ini"))
     script = ScriptDirectory.from_config(config)
-    assert script.get_heads() == ["20260801_0007"]
+    assert script.get_heads() == ["20260809_0008"]
 
 
 def test_adaptive_search_provenance_columns_and_constraints_are_registered():
@@ -160,6 +160,42 @@ def test_adaptive_search_migration_preserves_historical_rows_and_downgrades():
         "network_attempt_count",
         "skip_reason",
         "policy_version",
+    ):
+        assert f"DROP COLUMN IF EXISTS {column}" in source
+
+
+def test_authority_first_discovery_provenance_columns_and_migration_are_registered():
+    queries = Base.metadata.tables["search_queries"]
+    run_sources = Base.metadata.tables["run_sources"]
+    assert {
+        "authority_profile_version",
+        "authority_registry_version",
+        "source_role",
+        "domain_restriction",
+    } <= set(queries.c.keys())
+    assert "selection_metadata" in run_sources.c
+    discovery_constraint = next(
+        constraint
+        for constraint in queries.constraints
+        if constraint.name == "ck_search_queries_discovery_phase"
+    )
+    assert "authority_preflight" in str(discovery_constraint.sqltext)
+
+    path = (
+        API_ROOT
+        / "migrations"
+        / "versions"
+        / "20260809_0008_authority_first_discovery.py"
+    )
+    source = path.read_text(encoding="utf-8")
+    assert 'down_revision = "20260801_0007"' in source
+    assert "authority_preflight" in source
+    for column in (
+        "authority_profile_version",
+        "authority_registry_version",
+        "source_role",
+        "domain_restriction",
+        "selection_metadata",
     ):
         assert f"DROP COLUMN IF EXISTS {column}" in source
 

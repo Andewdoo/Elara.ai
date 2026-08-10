@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from decimal import Decimal
 import time
+from typing import cast
 from urllib.parse import urlsplit
 from uuid import uuid4
 from xml.etree.ElementTree import ParseError
@@ -21,13 +22,35 @@ from agents.planning import (
 )
 from extraction.service import ExtractionService
 from graph.state import (
+    AuthorityGapRecord,
+    AuthorityGapReasonValue,
+    AuthorityPreflightQueryRecord,
+    AuthorityProfileRecord,
+    AuthorityRecordHolderRecord,
+    AuthoritySubjectValue,
     CandidateSource,
+    CandidateSearchPhaseValue,
     DiscoveryGateRecord,
     ExtractedBlockRecord,
     ExtractedSourceRecord,
+    EvidenceIntentValue,
     SearchQueryExecutionRecord,
     SnapshotRecord,
+    SourceTypeValue,
     VerificationState,
+)
+from research.authority import (
+    AUTHORITY_GAP_CODE,
+    AUTHORITY_POLICY_REGISTRY_VERSION,
+    AUTHORITY_PREFLIGHT_PER_CLAIM,
+    AUTHORITY_PREFLIGHT_RESULT_LIMIT,
+    AUTHORITY_PREFLIGHT_TOTAL_BUDGET,
+    AUTHORITY_PROFILE_VERSION,
+    build_preflight_query,
+    derive_authority_profiles,
+    holder_for_profile,
+    registered_document_match,
+    registered_search_match,
 )
 from research.cache import RetrievalRateLimiter
 from research.extension_errors import WorkflowExtensionError
@@ -91,6 +114,29 @@ class RetrievalPipeline:
             source.canonical_url or source.url: source for source in state.candidate_sources
         }
         result_counts = dict(state.query_result_counts)
+        profiles, ambiguous_profiles = derive_authority_profiles(state)
+        authority_gaps = list(state.authority_gaps)
+        for claim_ref, subject, reason_code in ambiguous_profiles:
+            authority_gaps = _set_authority_gap(
+                authority_gaps,
+                claim_ref=claim_ref,
+                profile_subject=subject,
+                reason_code=reason_code,
+                preflight_queries=[],
+            )
+        (
+            by_url,
+            result_counts,
+            authority_queries,
+            authority_gaps,
+            authority_preflight_used,
+        ) = await self._execute_authority_preflight(
+            state,
+            profiles=profiles,
+            by_url=by_url,
+            result_counts=result_counts,
+            gaps=authority_gaps,
+        )
         retryable_errors: list[SearchProviderError] = []
         submitted_source = _submitted_url_source(state)
         if submitted_source is not None:
@@ -169,13 +215,39 @@ class RetrievalPipeline:
         submitted = [
             source for source in by_url.values() if source.source_origin == "submitted_url"
         ]
-        discovered = [
+        authority = [
+            source for source in by_url.values() if source.source_origin == "authority_preflight"
+        ]
+        broad_discovered = [
             source for source in by_url.values() if source.source_origin == "brave_discovery"
         ]
         discovered_limit = max(
             0, RESEARCH_DEPTH_LIMITS[state.research_depth.value] - len(submitted)
         )
-        selected = [*submitted, *select_diverse(discovered, limit=discovered_limit)]
+        # Authority-first is not authority-only. Keep room for ordinary Brave
+        # corroboration/contradiction even when many profiles return records.
+        broad_reserve = min(2, len(broad_discovered), discovered_limit)
+        authority_limit = max(0, discovered_limit - broad_reserve)
+        selected_authority = (
+            select_diverse(
+                authority,
+                limit=authority_limit,
+                reserved_intents=("primary",),
+            )
+            if authority_limit
+            else []
+        )
+        broad_limit = max(0, discovered_limit - len(selected_authority))
+        selected_broad = (
+            select_diverse(broad_discovered, limit=broad_limit)
+            if broad_limit
+            else []
+        )
+        selected = [
+            *submitted,
+            *selected_authority,
+            *selected_broad,
+        ]
         # Keep source refs stable after ranking/deduplication.
         selected = [
             item
@@ -191,6 +263,16 @@ class RetrievalPipeline:
             "search_policy_version": policy.policy_version,
             "search_mandatory_floor": budget.mandatory_floor,
             "search_effective_budget": budget.effective_total_budget,
+            "authority_profiles": profiles,
+            "authority_preflight_queries": authority_queries,
+            "authority_gaps": authority_gaps,
+            "authority_profile_version": AUTHORITY_PROFILE_VERSION,
+            "authority_registry_version": AUTHORITY_POLICY_REGISTRY_VERSION,
+            "authority_preflight_budget": AUTHORITY_PREFLIGHT_TOTAL_BUDGET,
+            "authority_preflight_used": authority_preflight_used,
+            "known_evidence_gaps": _known_gaps_with_authority(
+                state.known_evidence_gaps, authority_gaps
+            ),
         }
         updated = state.model_copy(update=updates)
         brave_candidates = [
@@ -254,6 +336,156 @@ class RetrievalPipeline:
             )
         return updated
 
+    async def _execute_authority_preflight(
+        self,
+        state: VerificationState,
+        *,
+        profiles: list[AuthorityProfileRecord],
+        by_url: dict[str, CandidateSource],
+        result_counts: dict[str, int],
+        gaps: list[AuthorityGapRecord],
+    ) -> tuple[
+        dict[str, CandidateSource],
+        dict[str, int],
+        list[AuthorityPreflightQueryRecord],
+        list[AuthorityGapRecord],
+        int,
+    ]:
+        existing = {item.query_key: item for item in state.authority_preflight_queries}
+        planned: list[
+            tuple[
+                AuthorityProfileRecord,
+                AuthorityRecordHolderRecord,
+                AuthorityPreflightQueryRecord,
+            ]
+        ] = []
+        remaining = AUTHORITY_PREFLIGHT_TOTAL_BUDGET
+        for profile in sorted(profiles, key=lambda item: item.claim_ref):
+            for holder in profile.record_holders[:AUTHORITY_PREFLIGHT_PER_CLAIM]:
+                if remaining <= 0:
+                    break
+                query = build_preflight_query(profile, holder)
+                key = (
+                    f"authority:{profile.claim_ref}:{holder.domain}:{holder.source_role}"
+                )
+                record = existing.get(key) or AuthorityPreflightQueryRecord(
+                    query_key=key,
+                    claim_ref=profile.claim_ref,
+                    query=query,
+                    domain_restriction=holder.domain,
+                    source_role=holder.source_role,
+                    profile_version=profile.profile_version,
+                    registry_version=profile.registry_version,
+                )
+                planned.append((profile, holder, record))
+                remaining -= 1
+
+        records: dict[str, AuthorityPreflightQueryRecord] = {
+            record.query_key: record for _, _, record in planned
+        }
+        used = 0
+        by_claim_outcomes: dict[str, list[str]] = {
+            profile.claim_ref: [] for profile in profiles
+        }
+        for profile, holder, original in planned:
+            record = records[original.query_key]
+            if record.execution_status in {"executed", "cache_hit", "not_needed"}:
+                if record.verified_candidate_count:
+                    by_claim_outcomes[profile.claim_ref].append("VERIFIED")
+                elif record.result_count == 0:
+                    by_claim_outcomes[profile.claim_ref].append("NO_SEARCH_RESULTS")
+                else:
+                    by_claim_outcomes[profile.claim_ref].append("NO_VERIFIED_RESULT")
+                continue
+            used += 1
+            try:
+                raw_outcome = await self.search.search(
+                    record.query, count=AUTHORITY_PREFLIGHT_RESULT_LIMIT
+                )
+                outcome = _search_outcome(raw_outcome)
+            except SearchProviderError as exc:
+                result_counts[record.query_key] = 0
+                records[record.query_key] = record.model_copy(
+                    update={
+                        "execution_status": "executed",
+                        "result_count": 0,
+                        "network_attempt_count": (
+                            record.network_attempt_count
+                            + max(1, exc.network_attempt_count)
+                        ),
+                        "executed_at": datetime.now(UTC),
+                        "skip_reason": "provider_failure_fallback_to_broad_search",
+                        "rejection_reason_codes": ["PROVIDER_FAILURE"],
+                    }
+                )
+                by_claim_outcomes[profile.claim_ref].append("PROVIDER_FAILURE")
+                continue
+            verified = 0
+            rejected: set[str] = set()
+            for result in outcome.results:
+                match = registered_search_match(profile, holder, result)
+                if not match.matched:
+                    rejected.update(match.reason_codes)
+                    continue
+                verified += 1
+                _merge_authority_search_result(
+                    by_url,
+                    state=state,
+                    profile=profile,
+                    holder=holder,
+                    result=result,
+                    match_reasons=match.reason_codes,
+                    source_type=match.source_type,
+                )
+            result_counts[record.query_key] = len(outcome.results)
+            records[record.query_key] = record.model_copy(
+                update={
+                    "execution_status": "cache_hit" if outcome.cache_hit else "executed",
+                    "result_count": len(outcome.results),
+                    "verified_candidate_count": verified,
+                    "network_attempt_count": (
+                        record.network_attempt_count + outcome.network_attempt_count
+                    ),
+                    "executed_at": datetime.now(UTC),
+                    "skip_reason": None,
+                    "rejection_reason_codes": sorted(rejected),
+                }
+            )
+            by_claim_outcomes[profile.claim_ref].append(
+                "VERIFIED"
+                if verified
+                else ("NO_SEARCH_RESULTS" if not outcome.results else "NO_VERIFIED_RESULT")
+            )
+
+        for profile in profiles:
+            outcomes = by_claim_outcomes.get(profile.claim_ref, [])
+            queries = [
+                record.query
+                for record in records.values()
+                if record.claim_ref == profile.claim_ref
+            ]
+            if "VERIFIED" in outcomes:
+                gaps = _remove_authority_gap(gaps, profile.claim_ref)
+                continue
+            reason = (
+                "PREFLIGHT_BUDGET_EXHAUSTED"
+                if not outcomes
+                else "PROVIDER_FAILURE"
+                if outcomes and all(item == "PROVIDER_FAILURE" for item in outcomes)
+                else "NO_SEARCH_RESULTS"
+                if outcomes and all(item in {"NO_SEARCH_RESULTS", "PROVIDER_FAILURE"} for item in outcomes)
+                else "NO_VERIFIED_RESULT"
+            )
+            gaps = _set_authority_gap(
+                gaps,
+                claim_ref=profile.claim_ref,
+                profile_subject=profile.subject,
+                reason_code=reason,
+                preflight_queries=queries,
+            )
+        ordered_records = [records[record.query_key] for _, _, record in planned]
+        return by_url, result_counts, ordered_records, gaps, used
+
     async def _execute_query_batch(
         self,
         queries,
@@ -308,12 +540,22 @@ class RetrievalPipeline:
                     "skip_reason": None,
                 }
             )
-            _merge_search_results(by_url, query=query, results=outcome.results)
+            _merge_search_results(
+                by_url,
+                query=query,
+                results=outcome.results,
+                search_phase=(
+                    "broad_phase_one"
+                    if record.discovery_phase == "phase_one"
+                    else "broad_phase_two"
+                ),
+            )
         return by_url, result_counts, [records[item.query_key] for item in executions], failures
 
     async def retrieve(self, state: VerificationState) -> VerificationState:
         snapshots: list[SnapshotRecord] = []
         resolved_sources: dict[str, CandidateSource] = {}
+        profiles = {item.claim_ref: item for item in state.authority_profiles}
         retryable_discovered_failure = False
         for source in state.candidate_sources:
             snapshot_id = str(uuid4())
@@ -326,17 +568,46 @@ class RetrievalPipeline:
                     raise FetchError("retrieval rate limit reached", access_status="INACCESSIBLE")
                 result = await self.fetcher.fetch(source.canonical_url or source.url)
                 final_url = result.final_url
+                resolved = source
                 if final_url != source.canonical_url:
                     # Google News article wrappers and ordinary public redirects
                     # are fetched only through SecureFetcher.  Its per-hop
                     # validation makes the final publisher URL the canonical
                     # durable identity for the retrieved evidence.
-                    resolved_sources[source.source_ref] = source.model_copy(
+                    resolved = source.model_copy(
                         update={
                             "canonical_url": final_url,
                             "domain": urlsplit(final_url).hostname or source.domain,
                         }
                     )
+                    if source.source_origin == "authority_preflight":
+                        profile = profiles.get(source.authority_claim_ref or "")
+                        holder = (
+                            holder_for_profile(
+                                profile,
+                                domain=resolved.domain or "",
+                                source_role=source.authority_source_role or "",
+                            )
+                            if profile is not None
+                            else None
+                        )
+                        if holder is None:
+                            resolved = resolved.model_copy(
+                                update={
+                                    "source_type": "UNKNOWN",
+                                    "authority_match_status": "rejected",
+                                    "authority_match_reasons": [
+                                        *source.authority_match_reasons,
+                                        "REDIRECT_DOMAIN_NOT_REGISTERED",
+                                    ],
+                                    "selection_reason": (
+                                        f"Authority preflight result for claim "
+                                        f"{source.authority_claim_ref} redirected outside its "
+                                        "registered record-holder domain"
+                                    ),
+                                }
+                            )
+                    resolved_sources[source.source_ref] = resolved
                 snapshots.append(
                     SnapshotRecord(
                         snapshot_id=snapshot_id,
@@ -355,6 +626,13 @@ class RetrievalPipeline:
                             "cache_hit": result.cache_hit,
                             "fetch_latency_ms": round((time.perf_counter() - fetch_started) * 1000, 3),
                             "source_origin": source.source_origin,
+                            "search_phase": source.search_phase,
+                            "authority_claim_ref": source.authority_claim_ref,
+                            "authority_source_role": source.authority_source_role,
+                            "authority_match_status": resolved.authority_match_status,
+                            "authority_match_reasons": resolved.authority_match_reasons,
+                            "authority_profile_version": source.authority_profile_version,
+                            "authority_registry_version": source.authority_registry_version,
                             "untrusted_evidence": True,
                         },
                     )
@@ -376,6 +654,13 @@ class RetrievalPipeline:
                         failure_reason=_source_failure_reason(exc, submitted=submitted_failure),
                         metadata={
                             "source_origin": source.source_origin,
+                            "search_phase": source.search_phase,
+                            "authority_claim_ref": source.authority_claim_ref,
+                            "authority_source_role": source.authority_source_role,
+                            "authority_match_status": source.authority_match_status,
+                            "authority_match_reasons": source.authority_match_reasons,
+                            "authority_profile_version": source.authority_profile_version,
+                            "authority_registry_version": source.authority_registry_version,
                             "inaccessible_reason_code": _inaccessible_reason_code(
                                 exc, submitted=submitted_failure
                             ),
@@ -383,6 +668,47 @@ class RetrievalPipeline:
                             "fetch_latency_ms": round((time.perf_counter() - fetch_started) * 1000, 3),
                         },
                     )
+                )
+        updated_sources = [
+            resolved_sources.get(source.source_ref, source)
+            for source in state.candidate_sources
+        ]
+        authority_gaps = list(state.authority_gaps)
+        fetched_refs = {
+            snapshot.source_ref
+            for snapshot in snapshots
+            if snapshot.access_status == "FETCHED"
+        }
+        for profile in state.authority_profiles:
+            candidates = [
+                source
+                for source in updated_sources
+                if source.authority_claim_ref == profile.claim_ref
+            ]
+            verified_fetched = [
+                source
+                for source in candidates
+                if source.source_ref in fetched_refs
+                and source.authority_match_status != "rejected"
+            ]
+            if verified_fetched:
+                authority_gaps = _remove_authority_gap(authority_gaps, profile.claim_ref)
+            elif candidates:
+                reason = (
+                    "INACCESSIBLE_OR_BLOCKED"
+                    if not any(source.source_ref in fetched_refs for source in candidates)
+                    else "NO_VERIFIED_RESULT"
+                )
+                authority_gaps = _set_authority_gap(
+                    authority_gaps,
+                    claim_ref=profile.claim_ref,
+                    profile_subject=profile.subject,
+                    reason_code=reason,
+                    preflight_queries=[
+                        item.query
+                        for item in state.authority_preflight_queries
+                        if item.claim_ref == profile.claim_ref
+                    ],
                 )
         accessible_count = sum(snapshot.access_status == "FETCHED" for snapshot in snapshots)
         if not accessible_count:
@@ -419,10 +745,11 @@ class RetrievalPipeline:
         return state.model_copy(
             update={
                 "snapshots": snapshots,
-                "candidate_sources": [
-                    resolved_sources.get(source.source_ref, source)
-                    for source in state.candidate_sources
-                ],
+                "candidate_sources": updated_sources,
+                "authority_gaps": authority_gaps,
+                "known_evidence_gaps": _known_gaps_with_authority(
+                    state.known_evidence_gaps, authority_gaps
+                ),
             }
         )
 
@@ -576,11 +903,117 @@ class RetrievalPipeline:
                     "snapshot_count": len(state.snapshots),
                 },
             )
+        extracted_by_ref = {item.source_ref: item for item in extracted}
+        profiles = {item.claim_ref: item for item in state.authority_profiles}
+        validated_sources: list[CandidateSource] = []
+        validation_by_source: dict[str, CandidateSource] = {}
+        for source in state.candidate_sources:
+            if (
+                source.source_origin != "authority_preflight"
+                or source.authority_match_status == "rejected"
+            ):
+                validated_sources.append(source)
+                continue
+            profile = profiles.get(source.authority_claim_ref or "")
+            extracted_document = extracted_by_ref.get(source.source_ref)
+            holder = (
+                holder_for_profile(
+                    profile,
+                    domain=source.domain or "",
+                    source_role=source.authority_source_role or "",
+                )
+                if profile is not None
+                else None
+            )
+            if profile is None or holder is None or extracted_document is None:
+                validated = source.model_copy(
+                    update={
+                        "source_type": "UNKNOWN",
+                        "authority_match_status": "rejected",
+                        "authority_match_reasons": [
+                            *source.authority_match_reasons,
+                            "NO_USABLE_EXTRACTED_DOCUMENT",
+                        ],
+                    }
+                )
+            else:
+                match = registered_document_match(profile, holder, extracted_document)
+                validated = source.model_copy(
+                    update={
+                        "source_type": match.source_type,
+                        "authority_match_status": (
+                            "verified_document_match" if match.matched else "rejected"
+                        ),
+                        "authority_match_reasons": list(match.reason_codes),
+                        "selection_reason": (
+                            source.selection_reason
+                            if match.matched
+                            else (
+                                f"Authority preflight source for claim {profile.claim_ref} "
+                                "did not match the expected document scope"
+                            )
+                        ),
+                    }
+                )
+            validated_sources.append(validated)
+            validation_by_source[source.source_ref] = validated
+
+        validated_snapshots: list[SnapshotRecord] = []
+        for snapshot in snapshots:
+            validated_source = validation_by_source.get(snapshot.source_ref)
+            if validated_source is None:
+                validated_snapshots.append(snapshot)
+                continue
+            validated_snapshots.append(
+                snapshot.model_copy(
+                    update={
+                        "metadata": {
+                            **snapshot.metadata,
+                            "authority_match_status": validated_source.authority_match_status,
+                            "authority_match_reasons": validated_source.authority_match_reasons,
+                        }
+                    }
+                )
+            )
+        snapshots = validated_snapshots
+        authority_gaps = list(state.authority_gaps)
+        for profile in state.authority_profiles:
+            candidates = [
+                source
+                for source in validated_sources
+                if source.authority_claim_ref == profile.claim_ref
+            ]
+            if any(
+                source.authority_match_status == "verified_document_match"
+                for source in candidates
+            ):
+                authority_gaps = _remove_authority_gap(authority_gaps, profile.claim_ref)
+            elif candidates:
+                authority_gaps = _set_authority_gap(
+                    authority_gaps,
+                    claim_ref=profile.claim_ref,
+                    profile_subject=profile.subject,
+                    reason_code=(
+                        "NO_EXACT_CLAIM_EVIDENCE"
+                        if any(source.source_ref in extracted_by_ref for source in candidates)
+                        else "INACCESSIBLE_OR_BLOCKED"
+                    ),
+                    preflight_queries=[
+                        item.query
+                        for item in state.authority_preflight_queries
+                        if item.claim_ref == profile.claim_ref
+                    ],
+                )
         return state.model_copy(
             update={
                 "snapshots": snapshots,
                 "extracted_sources": extracted,
                 "parser_versions": parser_versions,
+                "candidate_sources": validated_sources,
+                "authority_gaps": authority_gaps,
+                "known_evidence_gaps": _known_gaps_with_authority(
+                    state.known_evidence_gaps, authority_gaps
+                ),
             }
         )
 
@@ -629,6 +1062,7 @@ def _merge_search_results(
     *,
     query: SearchQueryOutput,
     results: tuple[SearchResult, ...],
+    search_phase: CandidateSearchPhaseValue,
 ) -> None:
     for result in results:
         try:
@@ -658,10 +1092,21 @@ def _merge_search_results(
         objective_refs = sorted(
             set((existing.objective_refs if existing else []) + [query.objective_ref])
         )
-        evidence_intents = sorted(
-            set((existing.evidence_intents if existing else []) + [intent])
+        evidence_intents = cast(
+            list[EvidenceIntentValue],
+            sorted(set((existing.evidence_intents if existing else []) + [intent])),
         )
-        if existing is None or score > existing.priority:
+        if existing is not None and existing.authority_match_status in {
+            "verified_search_match",
+            "verified_document_match",
+        }:
+            by_url[canonical] = existing.model_copy(
+                update={
+                    "objective_refs": objective_refs,
+                    "evidence_intents": evidence_intents,
+                }
+            )
+        elif existing is None or score > existing.priority:
             by_url[canonical] = CandidateSource(
                 source_ref=f"source-{len(by_url) + 1}",
                 url=result.url,
@@ -671,10 +1116,14 @@ def _merge_search_results(
                 objective_refs=objective_refs,
                 evidence_intents=evidence_intents,
                 title=result.title,
-                source_type="PRIMARY" if intent == "primary" else "UNKNOWN",
+                # Planner intent is not publisher verification. Broad results
+                # remain unclassified until another deterministic boundary can
+                # establish their source role.
+                source_type="UNKNOWN",
                 source_origin="brave_discovery",
                 selection_reason=f"Brave result for {intent} objective {query.objective_ref}",
                 priority=score,
+                search_phase=search_phase,
             )
         else:
             by_url[canonical] = existing.model_copy(
@@ -683,6 +1132,124 @@ def _merge_search_results(
                     "evidence_intents": evidence_intents,
                 }
             )
+
+
+def _merge_authority_search_result(
+    by_url: dict[str, CandidateSource],
+    *,
+    state: VerificationState,
+    profile: AuthorityProfileRecord,
+    holder: AuthorityRecordHolderRecord,
+    result: SearchResult,
+    match_reasons: tuple[str, ...],
+    source_type: SourceTypeValue,
+) -> None:
+    try:
+        canonical = canonicalize_url(result.url)
+    except UnsafeUrlError:
+        return
+    domain = urlsplit(canonical).hostname or ""
+    objective_refs = sorted(
+        objective.objective_ref
+        for objective in state.objectives
+        if objective.claim_ref == profile.claim_ref
+    )
+    query_basis = " ".join(
+        part
+        for part in (
+            profile.entity,
+            profile.jurisdiction,
+            profile.timeframe,
+            profile.metric_or_quotation,
+            holder.source_role,
+        )
+        if part
+    )
+    relevance = lexical_overlap(query_basis, result.title, result.snippet)
+    same_domain_count = sum(item.domain == domain for item in by_url.values())
+    same_title_count = sum(
+        (item.title or "").casefold() == (result.title or "").casefold()
+        for item in by_url.values()
+        if result.title
+    )
+    score = priority_score(
+        RankingSignals(
+            relevance=relevance,
+            directness=Decimal("1"),
+            temporal_fit=Decimal("0.7" if result.published_at else "0.5"),
+            diversity=Decimal("1" if same_domain_count == 0 else "0.5"),
+            novelty=Decimal("1" if same_title_count == 0 else "0.25"),
+            extractability=Decimal("0.8"),
+        )
+    )
+    existing = by_url.get(canonical)
+    if existing is not None:
+        objective_refs = sorted(set(existing.objective_refs + objective_refs))
+    candidate = CandidateSource(
+        source_ref=(existing.source_ref if existing is not None else f"authority-{len(by_url) + 1}"),
+        url=result.url,
+        canonical_url=canonical,
+        domain=domain,
+        snippet=result.snippet,
+        objective_refs=objective_refs,
+        evidence_intents=cast(
+            list[EvidenceIntentValue],
+            sorted(set((existing.evidence_intents if existing else []) + ["primary"])),
+        ),
+        title=result.title,
+        source_type=source_type,
+        source_origin="authority_preflight",
+        selection_reason=(
+            f"Verified {holder.source_role} for claim {profile.claim_ref} on registered "
+            f"record-holder domain {holder.domain}"
+        ),
+        priority=max(score, existing.priority if existing is not None else Decimal("0")),
+        search_phase="authority_preflight",
+        authority_claim_ref=profile.claim_ref,
+        authority_source_role=holder.source_role,
+        authority_match_status="verified_search_match",
+        authority_match_reasons=list(match_reasons),
+        authority_profile_version=profile.profile_version,
+        authority_registry_version=profile.registry_version,
+    )
+    by_url[canonical] = candidate
+
+
+def _set_authority_gap(
+    gaps: list[AuthorityGapRecord],
+    *,
+    claim_ref: str,
+    profile_subject: AuthoritySubjectValue,
+    reason_code: AuthorityGapReasonValue,
+    preflight_queries: list[str],
+) -> list[AuthorityGapRecord]:
+    retained = [item for item in gaps if item.claim_ref != claim_ref]
+    return [
+        *retained,
+        AuthorityGapRecord(
+            code=AUTHORITY_GAP_CODE,
+            claim_ref=claim_ref,
+            profile_subject=profile_subject,
+            reason_code=reason_code,
+            preflight_queries=list(dict.fromkeys(preflight_queries)),
+            recorded_at=datetime.now(UTC),
+        ),
+    ]
+
+
+def _remove_authority_gap(
+    gaps: list[AuthorityGapRecord], claim_ref: str
+) -> list[AuthorityGapRecord]:
+    return [item for item in gaps if item.claim_ref != claim_ref]
+
+
+def _known_gaps_with_authority(
+    known: list[str], gaps: list[AuthorityGapRecord]
+) -> list[str]:
+    values = [item for item in known if item != AUTHORITY_GAP_CODE]
+    if gaps:
+        values.append(AUTHORITY_GAP_CODE)
+    return values
 
 
 def _gate_record(decision, *, policy, phase: str, batch_number: int) -> DiscoveryGateRecord:
@@ -734,6 +1301,7 @@ def _submitted_url_source(state: VerificationState) -> CandidateSource | None:
         selection_reason="Submitted article URL retrieval seed",
         source_origin="submitted_url",
         priority=Decimal("1"),
+        search_phase="submitted",
     )
 
 

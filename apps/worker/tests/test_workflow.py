@@ -61,6 +61,9 @@ from app.models import (
 from app.services.reports import build_report
 from app.services.run_lifecycle import persist_completed_run
 from graph.state import (
+    AuthorityPreflightQueryRecord,
+    AuthorityProfileRecord,
+    AuthorityRecordHolderRecord,
     CalculationRecord,
     CandidateSource,
     ClaimScoreRecord,
@@ -3030,9 +3033,63 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
                 domain="evidence.example",
                 objective_refs=[plan.queries[0].objective_ref],
                 evidence_intents=[plan.queries[0].intent.value],
-                selection_reason="Adaptive discovery candidate",
+                source_type="PRIMARY",
+                source_origin="authority_preflight",
+                selection_reason="Verified authority discovery candidate",
+                search_phase="authority_preflight",
+                authority_claim_ref="claim-1",
+                authority_source_role="issuer_filing",
+                authority_match_status="verified_search_match",
+                authority_match_reasons=["DOMAIN_REGISTERED", "DOCUMENT_ROLE_MATCHED"],
+                authority_profile_version="authority-profile-v1",
+                authority_registry_version="authority-registry-v1",
             )
         ],
+        authority_profiles=[
+            AuthorityProfileRecord(
+                claim_ref="claim-1",
+                subject="corporate",
+                entity="Company X",
+                jurisdiction="United States",
+                timeframe="Q1 2026",
+                metric_or_quotation="net income",
+                expected_source_roles=["issuer_filing"],
+                record_holders=[
+                    AuthorityRecordHolderRecord(
+                        domain="sec.gov",
+                        source_role="issuer_filing",
+                        entity="U.S. Securities and Exchange Commission",
+                        jurisdictions=["United States"],
+                        query_terms=["10-q"],
+                        document_terms=["10-q", "filing"],
+                        source_type="PRIMARY",
+                    )
+                ],
+                profile_version="authority-profile-v1",
+                registry_version="authority-registry-v1",
+                created_at=datetime.now(UTC),
+            )
+        ],
+        authority_preflight_queries=[
+            AuthorityPreflightQueryRecord(
+                query_key="authority:claim-1:sec.gov:issuer_filing",
+                claim_ref="claim-1",
+                query="site:sec.gov Company X Q1 2026 net income 10-q",
+                domain_restriction="sec.gov",
+                source_role="issuer_filing",
+                profile_version="authority-profile-v1",
+                registry_version="authority-registry-v1",
+                execution_status="executed",
+                result_count=1,
+                verified_candidate_count=1,
+                network_attempt_count=1,
+                executed_at=datetime.now(UTC),
+            )
+        ],
+        authority_profile_version="authority-profile-v1",
+        authority_registry_version="authority-registry-v1",
+        authority_preflight_budget=6,
+        authority_preflight_used=1,
         query_result_counts={
             f"{plan.queries[0].objective_ref}:{plan.queries[0].query}": 3
         },
@@ -3070,17 +3127,30 @@ def test_sql_state_writer_persists_planning_artifacts_and_safe_model_metadata():
     }
     assert durable_run.prompt_versions["planner"] == "planner-v2"
     assert claim_count == 1
-    assert query_count == 2
-    assert query_rows[0].execution_status == "executed"
-    assert query_rows[0].network_attempt_count == 1
-    assert query_rows[1].execution_status == "not_needed"
-    assert query_rows[1].skip_reason == "discovery_gate_passed"
+    assert query_count == 3
+    planner_rows = [row for row in query_rows if row.discovery_phase != "authority_preflight"]
+    authority_row = next(
+        row for row in query_rows if row.discovery_phase == "authority_preflight"
+    )
+    assert planner_rows[0].execution_status == "executed"
+    assert planner_rows[0].network_attempt_count == 1
+    assert planner_rows[1].execution_status == "not_needed"
+    assert planner_rows[1].skip_reason == "discovery_gate_passed"
+    assert authority_row.query_text.startswith("site:sec.gov")
+    assert authority_row.domain_restriction == "sec.gov"
+    assert authority_row.source_role == "issuer_filing"
+    assert authority_row.authority_profile_version == "authority-profile-v1"
+    assert authority_row.authority_registry_version == "authority-registry-v1"
     research_plan = durable_run.normalized_target["research_plan"]
     assert research_plan["policy_version"] == "adaptive-search-v1"
     assert research_plan["mandatory_floor"] == 2
     assert research_plan["effective_budget"] == 48
     assert research_plan["gate_outcomes"][0]["passed"] is True
     assert research_plan["discovery_candidates"][0]["domain"] == "evidence.example"
+    assert research_plan["authority_profiles"][0]["claim_ref"] == "claim-1"
+    assert research_plan["authority_preflight_queries"][0]["verified_candidate_count"] == 1
+    assert research_plan["authority_preflight_budget"] == 6
+    assert research_plan["authority_preflight_used"] == 1
 
 
 def test_runtime_executes_and_persists_planning_handoff():

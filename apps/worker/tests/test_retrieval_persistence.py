@@ -16,6 +16,7 @@ from app.models.user import User
 from app.models.verification_run import VerificationRun
 from graph.runtime import SqlWorkflowStateWriter
 from graph.state import (
+    AuthorityGapRecord,
     CandidateSource,
     ExtractedSourceRecord,
     ResearchDepth,
@@ -67,8 +68,17 @@ def test_extraction_stage_persists_source_snapshot_and_explicit_access_status():
                 url="https://example.test/a",
                 canonical_url="https://example.test/a",
                 domain="example.test",
-                selection_reason="primary objective",
+                source_type="PRIMARY",
+                source_origin="authority_preflight",
+                selection_reason="Verified regulator record for claim claim-1",
                 priority=Decimal("0.8"),
+                search_phase="authority_preflight",
+                authority_claim_ref="claim-1",
+                authority_source_role="regulator_record",
+                authority_match_status="verified_document_match",
+                authority_match_reasons=["DOMAIN_REGISTERED", "DOCUMENT_ROLE_MATCHED"],
+                authority_profile_version="authority-profile-v1",
+                authority_registry_version="authority-registry-v1",
             ),
             CandidateSource(
                 source_ref="source-2",
@@ -130,6 +140,17 @@ def test_extraction_stage_persists_source_snapshot_and_explicit_access_status():
             )
         ],
         parser_versions={"trafilatura": "2.1.0", "playwright": "1.52.0"},
+        authority_gaps=[
+            AuthorityGapRecord(
+                code="APPLICABLE_AUTHORITATIVE_SOURCE_NOT_FOUND",
+                claim_ref="claim-1",
+                profile_subject="legal",
+                reason_code="INACCESSIBLE_OR_BLOCKED",
+                preflight_queries=["site:example.test official record"],
+                recorded_at=now,
+            )
+        ],
+        known_evidence_gaps=["APPLICABLE_AUTHORITATIVE_SOURCE_NOT_FOUND"],
     )
     asyncio.run(SqlWorkflowStateWriter(factory).save(stage=WorkflowStage.EXTRACTION, state=state))
     with factory() as db:
@@ -150,7 +171,30 @@ def test_extraction_stage_persists_source_snapshot_and_explicit_access_status():
         assert inaccessible.parser_name == "playwright"
         assert inaccessible.parser_version == "1.52.0"
         links = db.scalars(select(RunSource).order_by(RunSource.selected_rank)).all()
+        durable_run = db.get(VerificationRun, run_id)
+        assert durable_run is not None
+        assert durable_run.normalized_target["research_plan"]["authority_gaps"][0][
+            "reason_code"
+        ] == "INACCESSIBLE_OR_BLOCKED"
+        assert durable_run.normalized_target["research_plan"]["known_evidence_gaps"] == [
+            "APPLICABLE_AUTHORITATIVE_SOURCE_NOT_FOUND"
+        ]
         assert links[0].snapshot_id == fetched_id
+        assert links[0].role == "PRIMARY"
+        assert links[0].retrieval_reason == "Verified regulator record for claim claim-1"
+        assert links[0].selection_metadata == {
+            "search_phase": "authority_preflight",
+            "source_origin": "authority_preflight",
+            "authority_claim_ref": "claim-1",
+            "authority_source_role": "regulator_record",
+            "authority_match_status": "verified_document_match",
+            "authority_match_reasons": [
+                "DOMAIN_REGISTERED",
+                "DOCUMENT_ROLE_MATCHED",
+            ],
+            "authority_profile_version": "authority-profile-v1",
+            "authority_registry_version": "authority-registry-v1",
+        }
         assert links[1].inaccessible_reason == "source denied automated access"
 
 

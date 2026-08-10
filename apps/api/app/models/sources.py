@@ -110,6 +110,9 @@ class RunSource(Base):
     priority_score: Mapped[Decimal | None] = mapped_column(Numeric(6, 4))
     selected_rank: Mapped[int | None] = mapped_column(Integer)
     inaccessible_reason: Mapped[str | None] = mapped_column(Text)
+    selection_metadata: Mapped[dict[str, Any]] = mapped_column(
+        JsonObject, nullable=False, default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utc_now)
 
 
