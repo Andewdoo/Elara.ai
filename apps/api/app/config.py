@@ -312,10 +312,17 @@ class Settings(BaseSettings):
             parsed = urlsplit(value)
             if not parsed.hostname or parsed.hostname in {"localhost", "127.0.0.1", "::1"}:
                 raise ValueError(f"{name} must not use a local endpoint outside development and test")
-        if any(
-            urlsplit(value).scheme != "https"
-            for value in (self.s3_endpoint_url, self.effective_s3_public_endpoint_url)
-        ):
+        s3_endpoint = urlsplit(self.s3_endpoint_url)
+        internal_compose_s3 = (
+            self.environment == "staging"
+            and s3_endpoint.scheme == "http"
+            and s3_endpoint.hostname == "object-storage"
+            and s3_endpoint.port == 9000
+        )
+        secure_s3_urls = [self.effective_s3_public_endpoint_url]
+        if not internal_compose_s3:
+            secure_s3_urls.append(self.s3_endpoint_url)
+        if any(urlsplit(value).scheme != "https" for value in secure_s3_urls):
             raise ValueError("S3 endpoints must use HTTPS outside development and test")
         required = {
             "FIREBASE_PROJECT_ID": self.firebase_project_id,

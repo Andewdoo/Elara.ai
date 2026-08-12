@@ -60,7 +60,7 @@ def test_staging_and_production_require_release_revision(release_revision):
         Settings(_env_file=None, **values)
 
 
-def test_staging_allows_internal_compose_redis_and_instance_role_s3():
+def test_staging_allows_internal_compose_redis_and_object_storage():
     settings = Settings(
         _env_file=None,
         environment="staging",
@@ -71,8 +71,8 @@ def test_staging_allows_internal_compose_redis_and_instance_role_s3():
         redis_url="redis://redis:6379/0",
         celery_broker_url="redis://redis:6379/0",
         celery_result_backend="redis://redis:6379/1",
-        s3_endpoint_url="https://s3.us-east-1.amazonaws.com",
-        s3_public_endpoint_url="https://s3.us-east-1.amazonaws.com",
+        s3_endpoint_url="http://object-storage:9000",
+        s3_public_endpoint_url="https://downloads.example.test",
         s3_bucket_name="private-evidence-bucket",
         s3_force_path_style=False,
         firebase_project_id="firebase-project",
@@ -84,6 +84,36 @@ def test_staging_allows_internal_compose_redis_and_instance_role_s3():
 
     assert settings.environment == "staging"
     assert settings.s3_access_key_id is None
+
+
+@pytest.mark.parametrize(
+    ("environment", "s3_endpoint_url", "s3_public_endpoint_url"),
+    [
+        ("production", "http://object-storage:9000", "https://downloads.example.test"),
+        ("staging", "http://storage.example.test:9000", "https://downloads.example.test"),
+        ("staging", "http://object-storage:9000", "http://downloads.example.test"),
+    ],
+)
+def test_staging_only_allows_the_internal_object_storage_endpoint(
+    environment, s3_endpoint_url, s3_public_endpoint_url
+):
+    with pytest.raises(ValidationError, match="S3 endpoints"):
+        Settings(
+            _env_file=None,
+            environment=environment,
+            ELARA_RELEASE_REVISION="a" * 40,
+            web_app_url="https://app.example.test",
+            cors_allowed_origins=["https://app.example.test"],
+            database_url="postgresql+psycopg://elara:strong-password@postgres:5432/elara",
+            redis_url="rediss://redis.example.test:6379/0",
+            celery_broker_url="rediss://redis.example.test:6379/0",
+            celery_result_backend="rediss://redis.example.test:6379/1",
+            s3_endpoint_url=s3_endpoint_url,
+            s3_public_endpoint_url=s3_public_endpoint_url,
+            firebase_project_id="firebase-project",
+            firebase_client_email="firebase-admin@example.test",
+            firebase_private_key="private-key",
+        )
 
 
 def test_staging_rejects_plaintext_remote_redis():
