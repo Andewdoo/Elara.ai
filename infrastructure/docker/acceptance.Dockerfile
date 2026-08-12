@@ -10,5 +10,9 @@ RUN pip install --no-cache-dir "/srv/worker[dev]"
 
 COPY acceptance /srv/acceptance
 
-CMD ["pytest", "-q", "-s", "/srv/acceptance/test_full_stack.py"]
+RUN useradd --create-home --uid 10001 --shell /usr/sbin/nologin elara \
+    && chown -R elara:elara /srv
 
+USER elara
+
+CMD ["pytest", "-q", "-s", "/srv/acceptance/test_full_stack.py"]

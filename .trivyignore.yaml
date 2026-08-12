@@ -1,0 +1,23 @@
+misconfigurations:
+  - id: AVD-AWS-0011
+    paths:
+      - "infrastructure/aws/public-beta-stack.yml"
+    statement: "WAF is intentionally excluded for the owner-operated, low-traffic demo scope."
+  - id: AVD-AWS-0013
+    paths:
+      - "infrastructure/aws/public-beta-stack.yml"
+    statement: "The hosted demo uses the CloudFront default hostname; AWS fixes its default certificate policy to TLSv1."
+  - id: AVD-AWS-0028
+    paths:
+      - "infrastructure/aws/public-beta-stack.yml"
+    statement: "False positive: the EC2 MetadataOptions explicitly set HttpTokens to required."
+  - id: AVD-AWS-0104
+    paths:
+      - "infrastructure/aws/public-beta-stack.yml"
+    statement: "The single demo host needs dynamic HTTPS egress to DeepSeek, Brave Search, AWS, and source websites."
+
+secrets:
+  - id: gcp-service-account
+    paths:
+      - "apps/api/app/config.py"
+    statement: "False positive: this mapping is assembled at runtime from server-side environment variables and contains no credential value."
