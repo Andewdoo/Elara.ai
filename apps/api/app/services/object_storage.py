@@ -93,7 +93,6 @@ class S3ObjectStorage:
             and endpoint.scheme == "http"
             and endpoint.hostname == "object-storage"
             and endpoint.port == 9000
-            and settings.s3_force_path_style
         )
 
     def _assert_minio_bucket_has_no_policy(self) -> None:

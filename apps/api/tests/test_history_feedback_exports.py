@@ -476,6 +476,7 @@ def test_internal_minio_requires_an_absent_bucket_policy(monkeypatch):
             s3_public_endpoint_url="https://downloads.example.test",
             s3_access_key_id="key",
             s3_secret_access_key="secret",
+            s3_force_path_style=False,
         ),
     )
     object_storage_module.S3ObjectStorage().assert_private_bucket()
