@@ -127,7 +127,6 @@ export function LiveResearchView({ runId }: { runId: string }) {
   const terminal = terminalRunStatuses.includes(status as (typeof terminalRunStatuses)[number]);
   useEffect(() => {
     if (!runQuery.data || terminal) return;
-    setNow(Date.now());
     const timer = window.setInterval(() => setNow(Date.now()), 1_000);
     return () => window.clearInterval(timer);
   }, [runQuery.data, terminal]);
