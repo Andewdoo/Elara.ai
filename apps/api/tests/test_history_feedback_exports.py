@@ -5,6 +5,7 @@ from uuid import UUID
 
 import boto3
 import pytest
+from botocore.exceptions import ClientError
 from sqlalchemy import select
 
 from app.auth.dependencies import AuthenticatedUser, get_authenticated_bearer
@@ -440,3 +441,41 @@ def test_s3_uses_internal_endpoint_for_storage_and_public_endpoint_for_signing(m
             content_type="application/json\r\nX-Unsafe: value",
             expires_in=300,
         )
+
+
+def test_internal_minio_requires_an_absent_bucket_policy(monkeypatch):
+    class FakeClient:
+        def get_public_access_block(self, **_kwargs):
+            raise ClientError({"Error": {"Code": "NotImplemented"}}, "GetPublicAccessBlock")
+
+        def get_bucket_policy(self, **_kwargs):
+            raise ClientError({"Error": {"Code": "NoSuchBucketPolicy"}}, "GetBucketPolicy")
+
+        def get_bucket_encryption(self, **_kwargs):
+            return {"ServerSideEncryptionConfiguration": {"Rules": [{
+                "ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}
+            }]}}
+
+    monkeypatch.setattr(boto3, "client", lambda *_args, **_kwargs: FakeClient())
+    monkeypatch.setattr(
+        object_storage_module,
+        "get_settings",
+        lambda: Settings(
+            environment="staging",
+            database_url="postgresql+psycopg://user:password@postgres/elara",
+            redis_url="redis://redis:6379/0",
+            celery_broker_url="redis://redis:6379/0",
+            celery_result_backend="redis://redis:6379/1",
+            web_app_url="https://app.example.test",
+            cors_allowed_origins=["https://app.example.test"],
+            ELARA_RELEASE_REVISION="test-revision",
+            firebase_project_id="project",
+            firebase_client_email="service@example.test",
+            firebase_private_key="private-key",
+            s3_endpoint_url="http://object-storage:9000",
+            s3_public_endpoint_url="https://downloads.example.test",
+            s3_access_key_id="key",
+            s3_secret_access_key="secret",
+        ),
+    )
+    object_storage_module.S3ObjectStorage().assert_private_bucket()

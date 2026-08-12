@@ -3,6 +3,9 @@ from __future__ import annotations
 from functools import lru_cache
 import re
 from typing import Protocol
+from urllib.parse import urlsplit
+
+from botocore.exceptions import ClientError
 
 from app.config import get_settings
 
@@ -66,13 +69,43 @@ class S3ObjectStorage:
         self.client.put_object(**arguments)
 
     def assert_private_bucket(self) -> None:
-        public = self.client.get_public_access_block(Bucket=self.bucket)["PublicAccessBlockConfiguration"]
+        try:
+            public = self.client.get_public_access_block(Bucket=self.bucket)["PublicAccessBlockConfiguration"]
+        except ClientError as exc:
+            if not self._uses_internal_minio() or not _is_s3_not_implemented(exc):
+                raise
+            self._assert_minio_bucket_has_no_policy()
+            self._assert_encryption_policy()
+            return
         required = {"BlockPublicAcls", "IgnorePublicAcls", "BlockPublicPolicy", "RestrictPublicBuckets"}
         if not all(public.get(key) is True for key in required):
             raise RuntimeError("Object-storage public access block is incomplete")
         status = self.client.get_bucket_policy_status(Bucket=self.bucket).get("PolicyStatus", {})
         if status.get("IsPublic") is not False:
             raise RuntimeError("Object-storage bucket policy is public or unverifiable")
+        self._assert_encryption_policy()
+
+    def _uses_internal_minio(self) -> bool:
+        settings = get_settings()
+        endpoint = urlsplit(settings.s3_endpoint_url)
+        return (
+            settings.environment == "staging"
+            and endpoint.scheme == "http"
+            and endpoint.hostname == "object-storage"
+            and endpoint.port == 9000
+            and settings.s3_force_path_style
+        )
+
+    def _assert_minio_bucket_has_no_policy(self) -> None:
+        try:
+            self.client.get_bucket_policy(Bucket=self.bucket)
+        except ClientError as exc:
+            if _is_missing_bucket_policy(exc):
+                return
+            raise RuntimeError("Object-storage bucket policy is public or unverifiable") from exc
+        raise RuntimeError("Object-storage bucket policy is public or unverifiable")
+
+    def _assert_encryption_policy(self) -> None:
         if self.encryption is None:
             return
         rules = self.client.get_bucket_encryption(Bucket=self.bucket)["ServerSideEncryptionConfiguration"]["Rules"]
@@ -114,6 +147,14 @@ _SAFE_KEY = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]{0,1023}$")
 def _validate_object_key(key: str) -> None:
     if not _SAFE_KEY.fullmatch(key) or ".." in key.split("/") or "//" in key:
         raise ValueError("object-storage key is invalid")
+
+
+def _is_s3_not_implemented(exc: ClientError) -> bool:
+    return exc.response.get("Error", {}).get("Code") == "NotImplemented"
+
+
+def _is_missing_bucket_policy(exc: ClientError) -> bool:
+    return exc.response.get("Error", {}).get("Code") == "NoSuchBucketPolicy"
 
 
 @lru_cache
