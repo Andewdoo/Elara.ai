@@ -11,6 +11,8 @@ test("run events use credentialed EventSource without URL tokens", async () => {
   assert.match(hook, /invalidateQueries\(\{ queryKey: \["run", runId\]/);
   assert.match(hook, /invalidateQueries\(\{ queryKey: \["report", runId\]/);
   assert.match(hook, /pollingFallback.*3_000/s);
+  assert.match(hook, /progressHistoryQuery[\s\S]*refetchInterval[\s\S]*pollingFallback/);
+  assert.match(hook, /reconnectAttempts\.current >= 3[\s\S]*invalidateQueries\(\{ queryKey: \["run", runId\] \}\)[\s\S]*\["run-progress", runId\]/);
   assert.match(hook, /invalidatedTerminalResult/);
   assert.match(hook, /JSON\.parse[\s\S]*catch[\s\S]*reconnectOrPoll/);
   assert.doesNotMatch(hook, /[?&](token|id_token|session)=/i);
@@ -35,6 +37,11 @@ test("live view exposes required public progress controls", async () => {
   assert.match(view, /workflow\.numerical_audit\./);
   assert.match(view, /Auditing calculations/);
   assert.match(view, /durableTerminal[\s\S]*failure_message/);
+  assert.match(view, /pollingFallback[\s\S]*\? durableStatus \?\? latestEvent\?\.stage/);
+  assert.match(view, /const displayedEvent = pollingFallback/);
+  assert.match(view, /function elapsedTimeLabel/);
+  assert.match(view, /window\.setInterval\(\(\) => setNow\(Date\.now\(\)\), 1_000\)/);
+  assert.match(view, /Elapsed \$\{elapsedTimeLabel/);
   assert.match(hook, /\["run-progress", runId\]/);
   assert.match(hook, /\/v1\/verifications\/\$\{runId\}\/progress/);
   assert.match(view, /Cancel research/);

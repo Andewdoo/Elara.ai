@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   Check,
@@ -79,6 +80,19 @@ function timeLabel(value: string | undefined) {
   }).format(date);
 }
 
+function elapsedTimeLabel(value: string | undefined, now: number) {
+  if (!value) return "â€”";
+  const startedAt = new Date(value).getTime();
+  if (Number.isNaN(startedAt)) return "â€”";
+  const elapsedSeconds = Math.max(0, Math.floor((now - startedAt) / 1_000));
+  const hours = Math.floor(elapsedSeconds / 3_600);
+  const minutes = Math.floor((elapsedSeconds % 3_600) / 60);
+  const seconds = elapsedSeconds % 60;
+  return hours > 0
+    ? `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
+    : `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
 function firstEventByStage(events: RunProgressEvent[]) {
   const firstByStage = new Map<RunStatus, RunProgressEvent>();
   for (const event of events) {
@@ -89,10 +103,12 @@ function firstEventByStage(events: RunProgressEvent[]) {
 
 export function LiveResearchView({ runId }: { runId: string }) {
   const router = useRouter();
+  const [now, setNow] = useState(() => Date.now());
   const {
     runQuery,
     latestEvent,
     progressHistoryQuery,
+    pollingFallback,
     cancelMutation,
     retryMutation,
     refreshDurableResult,
@@ -105,13 +121,24 @@ export function LiveResearchView({ runId }: { runId: string }) {
   const status: RunStatus =
     durableTerminal && durableStatus
       ? durableStatus
-      : latestEvent?.stage ?? durableStatus ?? "QUEUED";
+      : pollingFallback
+        ? durableStatus ?? latestEvent?.stage ?? "QUEUED"
+        : latestEvent?.stage ?? durableStatus ?? "QUEUED";
   const terminal = terminalRunStatuses.includes(status as (typeof terminalRunStatuses)[number]);
+  useEffect(() => {
+    if (!runQuery.data || terminal) return;
+    setNow(Date.now());
+    const timer = window.setInterval(() => setNow(Date.now()), 1_000);
+    return () => window.clearInterval(timer);
+  }, [runQuery.data, terminal]);
   const events = progressHistoryQuery.data ?? (latestEvent ? [latestEvent] : []);
   const firstEvents = firstEventByStage(events);
   const latestHistoryEvent = events.at(-1);
+  const displayedEvent = pollingFallback
+    ? latestHistoryEvent ?? latestEvent
+    : latestEvent ?? latestHistoryEvent;
   const activeScoringLabel = scoringSubstageLabel(
-    (latestEvent ?? latestHistoryEvent)?.event_type,
+    displayedEvent?.event_type,
   );
   const lastReachedStage = Math.max(
     1,
@@ -120,11 +147,11 @@ export function LiveResearchView({ runId }: { runId: string }) {
   const completedSteps = status === "COMPLETED" ? researchStages.length :
     stagePosition[status as keyof typeof stagePosition] ?? lastReachedStage;
   const totalSteps = researchStages.length;
-  const inaccessibleCount = latestEvent?.inaccessible_count ?? 0;
+  const inaccessibleCount = displayedEvent?.inaccessible_count ?? 0;
   const latestMessage =
     durableTerminal
       ? runQuery.data?.failure_message ?? `Verification ${status.toLowerCase()}.`
-      : latestEvent?.message ?? latestHistoryEvent?.message ?? "Waiting for the next public research update.";
+      : displayedEvent?.message ?? "Waiting for the next public research update.";
 
   const progressHeading = status === "COMPLETED"
     ? "Research complete"
@@ -189,6 +216,9 @@ export function LiveResearchView({ runId }: { runId: string }) {
               const detail = isCurrent && stage.status === "SCORING"
                 ? activeScoringLabel
                 : stage.detail;
+              const stageTime = isCurrent
+                ? `Elapsed ${elapsedTimeLabel(event?.created_at ?? runQuery.data?.started_at ?? runQuery.data?.queued_at, now)}`
+                : timeLabel(event?.created_at);
               return (
                 <li key={stage.status} className="grid min-h-16 grid-cols-[2.25rem_2rem_minmax(0,1fr)_4.5rem] items-center gap-2 px-3 py-3 sm:grid-cols-[2.75rem_2.5rem_minmax(9rem,1fr)_minmax(12rem,1.35fr)_5.5rem] sm:px-4">
                   <span className="relative flex h-full items-center justify-center" aria-hidden="true">
@@ -203,7 +233,7 @@ export function LiveResearchView({ runId }: { runId: string }) {
                     <span className="sr-only">{state === "complete" ? "Completed" : state === "current" ? "In progress" : "Pending"}</span>
                   </div>
                   <p className="hidden text-sm leading-5 text-muted-foreground sm:block">{detail}</p>
-                  <time dateTime={event?.created_at} className="text-right font-mono text-xs tabular-nums text-muted-foreground">{timeLabel(event?.created_at)}</time>
+                  <time dateTime={event?.created_at} className="text-right font-mono text-xs tabular-nums text-muted-foreground">{stageTime}</time>
                 </li>
               );
             })}

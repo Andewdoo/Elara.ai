@@ -100,6 +100,9 @@ export function useRunEvents(runId: string) {
       if (!response.ok) throw new Error(await apiErrorMessage(response));
       return (await response.json()) as RunProgressEvent[];
     },
+    refetchInterval: () => (
+      pollingFallback && !isTerminal(runQuery.data?.status) ? 3_000 : false
+    ),
   });
 
   const refreshDurableResult = useCallback(async () => {
@@ -178,6 +181,10 @@ export function useRunEvents(runId: string) {
         if (reconnectAttempts.current >= 3) {
           setPollingFallback(true);
           setConnectionState("polling");
+          void Promise.all([
+            queryClient.invalidateQueries({ queryKey: ["run", runId] }),
+            queryClient.invalidateQueries({ queryKey: ["run-progress", runId] }),
+          ]);
           return;
         }
         setConnectionState("reconnecting");

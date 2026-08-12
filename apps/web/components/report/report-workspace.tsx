@@ -72,6 +72,7 @@ function ReportWorkspaceContent({ data }: { data: ReportWorkspaceData }) {
   const attributionSentences = report.report_sentences.filter((sentence) => sentence.report_section === "attribution");
   const contradictionSentences = report.report_sentences.filter((sentence) => sentence.report_section === "strongest_contradiction");
   const inaccessibleCount = sources.filter((source) => source.access_status !== "FETCHED").length;
+  const showSourceDrawer = activeReportTab !== "graph" && ui.sourceDrawerOpen;
   const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
     if (!direction && !["Home", "End"].includes(event.key)) return;
@@ -147,18 +148,20 @@ function ReportWorkspaceContent({ data }: { data: ReportWorkspaceData }) {
             </button>
           ))}
         </nav>
-        <Button
-          className="mr-3 hidden h-11 min-w-11 xl:inline-flex"
-          size="icon"
-          variant="ghost"
-          aria-label={ui.sourceDrawerOpen ? "Close source drawer" : "Open source drawer"}
-          onClick={() => ui.setSourceDrawerOpen(!ui.sourceDrawerOpen)}
-        >
-          {ui.sourceDrawerOpen ? <PanelRightClose className="h-4 w-4" aria-hidden="true" /> : <PanelRightOpen className="h-4 w-4" aria-hidden="true" />}
-        </Button>
+        {activeReportTab !== "graph" && (
+          <Button
+            className="mr-3 hidden h-11 min-w-11 xl:inline-flex"
+            size="icon"
+            variant="ghost"
+            aria-label={ui.sourceDrawerOpen ? "Close source drawer" : "Open source drawer"}
+            onClick={() => ui.setSourceDrawerOpen(!ui.sourceDrawerOpen)}
+          >
+            {ui.sourceDrawerOpen ? <PanelRightClose className="h-4 w-4" aria-hidden="true" /> : <PanelRightOpen className="h-4 w-4" aria-hidden="true" />}
+          </Button>
+        )}
       </div>
 
-      <div className={cn("grid min-w-0 items-start bg-card", ui.sourceDrawerOpen ? "xl:grid-cols-[260px_minmax(0,1fr)_340px]" : "xl:grid-cols-[260px_minmax(0,1fr)]")}>
+      <div className={cn("grid min-w-0 items-start bg-card", showSourceDrawer ? "xl:grid-cols-[260px_minmax(0,1fr)_340px]" : "xl:grid-cols-[260px_minmax(0,1fr)]")}>
         <aside className="hidden self-stretch border-r bg-card xl:block">
           <ClaimRail claims={report.atomic_claims} selectedId={selectedClaim?.id} onSelect={ui.selectClaim} />
         </aside>
@@ -244,7 +247,7 @@ function ReportWorkspaceContent({ data }: { data: ReportWorkspaceData }) {
           )}
         </main>
 
-        {ui.sourceDrawerOpen && <SourceDrawer mode={mode} mobileOpen={Boolean(ui.selectedSourceId)} source={selectedSource} passage={selectedPassage} onClose={() => ui.setSourceDrawerOpen(false)} onPassage={ui.selectEvidence} />}
+        {showSourceDrawer && <SourceDrawer mode={mode} mobileOpen={Boolean(ui.selectedSourceId)} source={selectedSource} passage={selectedPassage} onClose={() => ui.setSourceDrawerOpen(false)} onPassage={ui.selectEvidence} />}
       </div>
     </div>
   );
