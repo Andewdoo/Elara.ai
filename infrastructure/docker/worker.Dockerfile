@@ -12,7 +12,8 @@ RUN pip install --no-cache-dir /srv/worker
 RUN python -m playwright install --with-deps chromium \
     && useradd --create-home --uid 10001 --shell /usr/sbin/nologin elara \
     && mkdir -p /var/lib/elara/fetch \
-    && chown -R elara:elara /ms-playwright /var/lib/elara/fetch
+    && chmod -R a+rX /srv /ms-playwright \
+    && chown -R elara:elara /var/lib/elara/fetch
 
 COPY infrastructure/docker/container-entrypoint.py /container-entrypoint.py
 
