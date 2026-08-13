@@ -212,6 +212,7 @@ Resources:
 
           cd /opt/elara/app
           export S3_BUCKET_NAME=${EvidenceBucketName}
+          export PUBLIC_BETA_S3_ENDPOINT_URL=https://s3.${AWS::Region}.amazonaws.com
           COMPOSE="docker compose --env-file .env.private -f docker-compose.yml -f docker-compose.public-beta.yml"
           $COMPOSE build api worker
           $COMPOSE up -d postgres redis object-storage object-storage-init

@@ -7,6 +7,7 @@ from urllib.parse import urlsplit
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 COMPOSE_PATH = REPO_ROOT / "docker-compose.yml"
+PUBLIC_BETA_COMPOSE_PATH = REPO_ROOT / "docker-compose.public-beta.yml"
 CONTAINER_REDIS_URLS = {
     "REDIS_URL": "redis://redis:6379/0",
     "CELERY_BROKER_URL": "redis://redis:6379/0",
@@ -54,6 +55,23 @@ def test_compose_environment_overrides_private_host_redis_urls_for_containers():
             value = _environment_value(definition, name)
             assert "localhost" not in value
             assert "127.0.0.1" not in value
+
+
+def test_public_beta_api_and_worker_use_the_regional_aws_s3_endpoint():
+    compose = PUBLIC_BETA_COMPOSE_PATH.read_text(encoding="utf-8")
+
+    for service in ("api", "worker"):
+        definition = _service_definition(compose, service)
+        endpoint = _environment_value(definition, "S3_ENDPOINT_URL")
+        public_endpoint = _environment_value(definition, "S3_PUBLIC_ENDPOINT_URL")
+
+        assert endpoint == "${PUBLIC_BETA_S3_ENDPOINT_URL:-https://s3.us-east-1.amazonaws.com}"
+        assert public_endpoint == endpoint
+        assert _environment_value(definition, "S3_ACCESS_KEY_ID") == '""'
+        assert _environment_value(definition, "S3_SECRET_ACCESS_KEY") == '""'
+        assert _environment_value(definition, "S3_FORCE_PATH_STYLE") == '"false"'
+        assert _environment_value(definition, "S3_SERVER_SIDE_ENCRYPTION") == "AES256"
+        assert "object-storage" not in endpoint
 
 
 def test_web_compose_service_uses_live_host_source_with_an_isolated_next_cache():
