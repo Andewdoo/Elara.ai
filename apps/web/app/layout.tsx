@@ -6,8 +6,8 @@ import { AppProviders } from "@/components/providers/app-providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Elara.ai Evidence Workspace",
-  description: "Evidence-managed verification reports with traceable sources, scores, and methodology.",
+  title: "Elara.ai Demo",
+  description: "A read-only archive of completed Elara verification runs.",
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

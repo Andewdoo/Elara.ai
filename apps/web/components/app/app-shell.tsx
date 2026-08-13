@@ -14,17 +14,38 @@ const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> =
   { href: "/history", label: "History", icon: History },
   { href: "/saved", label: "Saved", icon: Archive },
   { href: "/methodology", label: "Methodology", icon: BookOpenText },
-  { href: "/", label: "Lite mode", icon: FileCheck2 },
+  { href: "/", label: "Demo", icon: FileCheck2 },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const isDemo = pathname === "/";
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   function closeSidebarOnMobile() {
     if (window.matchMedia("(max-width: 767px)").matches) {
       setSidebarOpen(false);
     }
+  }
+
+  if (isDemo) {
+    return (
+      <div className="min-h-dvh bg-background">
+        <a href="#main-content" className="sr-only z-50 rounded-md bg-sidebar px-4 py-3 text-sidebar-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus-visible:ring-2 focus-visible:ring-white">
+          Skip to main content
+        </a>
+        <header className="border-b bg-card">
+          <div className="mx-auto flex min-h-16 max-w-5xl items-center gap-3 px-4 sm:px-6">
+            <Asterisk className="h-7 w-7 shrink-0 text-accent" strokeWidth={1.65} aria-hidden="true" />
+            <span className="font-editorial text-2xl leading-none tracking-[-0.035em] text-foreground">Elara.ai</span>
+            <span className="border-l pl-3 text-sm font-medium text-muted-foreground">Demo</span>
+          </div>
+        </header>
+        <main id="main-content" className="min-h-[calc(100dvh-4rem)] px-4 py-8 sm:px-6 sm:py-12">
+          <div className="mx-auto max-w-5xl">{children}</div>
+        </main>
+      </div>
+    );
   }
 
   return (

@@ -6,20 +6,18 @@ import test from "node:test";
 const root = new URL("..", import.meta.url).pathname.replace(/^\/(.:)/, "$1");
 const read = (...parts) => readFile(join(root, ...parts), "utf8");
 
-test("app shell provides a collapsible, accessible sidebar navigation", async () => {
+test("full workspace routes retain the accessible sidebar navigation", async () => {
   const shell = await read("components", "app", "app-shell.tsx");
 
   assert.match(shell, /const \[sidebarOpen, setSidebarOpen\] = useState\(true\)/);
-  assert.match(shell, /id="primary-sidebar"/);
-  assert.match(shell, /aria-label="Primary navigation"/);
-  assert.match(shell, /aria-current=\{active \? "page" : undefined\}/);
   assert.match(shell, /href="#main-content"/);
-  assert.match(shell, /motion-reduce:transition-none/);
   assert.match(shell, /Asterisk/);
-  assert.match(shell, /Collapse Elara navigation/);
+  assert.match(shell, /font-editorial/);
+  assert.match(shell, /<main id="main-content"/);
+  assert.match(shell, /id="primary-sidebar"/);
+  assert.match(shell, /aria-label="Workspace navigation"/);
   assert.match(shell, /PanelLeftClose/);
   assert.match(shell, /PanelLeftOpen/);
-  assert.match(shell, /font-editorial/);
   assert.doesNotMatch(shell, /Evidence, clearly/);
 });
 

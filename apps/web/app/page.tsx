@@ -1,5 +1,5 @@
-import { LiteWorkspace } from "@/components/lite/lite-workspace";
+import { DemoWorkspace } from "@/components/demo/demo-workspace";
 
 export default function HomePage() {
-  return <LiteWorkspace />;
+  return <DemoWorkspace />;
 }

@@ -42,10 +42,12 @@ test("run progress hydrates durable history without regressing the latest server
   assert.match(live, /progressHistoryQuery/);
 });
 
-test("primary navigation calls the Lite workspace Lite mode and places it last", async () => {
+test("Demo shell keeps the archive sidebar-free while retaining the full workspace navigation", async () => {
   const shell = await read("components", "app", "app-shell.tsx");
-  const labels = [...shell.matchAll(/label: "([^"]+)"/g)].map((match) => match[1]);
 
-  assert.deepEqual(labels, ["Verify", "History", "Saved", "Methodology", "Lite mode"]);
-  assert.doesNotMatch(shell, /label: "Workspace"|label: "Workplace"/);
+  assert.match(shell, /const isDemo = pathname === "\/"/);
+  assert.match(shell, />Demo</);
+  assert.match(shell, /id="primary-sidebar"/);
+  assert.match(shell, /aria-label="Workspace navigation"/);
+  assert.doesNotMatch(shell, /Lite mode/);
 });

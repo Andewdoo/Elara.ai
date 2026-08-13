@@ -6,34 +6,43 @@ import test from "node:test";
 const root = new URL("..", import.meta.url).pathname.replace(/^\/(.:)/, "$1");
 const read = (...parts) => readFile(join(root, ...parts), "utf8");
 
-test("default route renders the Lite evidence-library workspace first", async () => {
+test("default route renders the read-only Demo archive", async () => {
   const page = await read("app", "page.tsx");
-  const workspace = await read("components", "lite", "lite-workspace.tsx");
+  const workspace = await read("components", "demo", "demo-workspace.tsx");
+  const runs = await read("lib", "demo", "demo-runs.ts");
 
-  assert.match(page, /LiteWorkspace/);
+  assert.match(page, /DemoWorkspace/);
   assert.doesNotMatch(page, /VerifyForm|HistoryList|StatusStrip/);
-  assert.match(workspace, /Lite evidence library/);
-  assert.match(workspace, /New Lite report/);
-  assert.match(workspace, />\s*Claim\s*</);
-  assert.match(workspace, /Report progress/);
-  assert.match(workspace, /Report workspace/);
+  assert.match(workspace, /Read-only demo archive/);
+  assert.match(workspace, /Completed verification runs/);
+  assert.match(workspace, /does not accept requests or retrieve new evidence/i);
+  assert.match(runs, /DEMO_RUN_LIMIT = 12/);
 });
 
-test("Lite default page exposes a clear Full Mode route", async () => {
-  const workspace = await read("components", "lite", "lite-workspace.tsx");
+test("Demo uses the owner's saved, completed full-version reports", async () => {
+  const workspace = await read("components", "demo", "demo-workspace.tsx");
+  const runs = await read("lib", "demo", "demo-runs.ts");
 
+  assert.match(workspace, /authenticatedApiFetch/);
+  assert.match(workspace, /saved_only: "true"/);
+  assert.match(workspace, /status: "COMPLETED"/);
+  assert.match(workspace, /page_size: String\(DEMO_RUN_LIMIT\)/);
   assert.match(workspace, /href="\/verify"/);
   assert.match(workspace, /Open Full Verifier/);
+  assert.match(workspace, /href=\{`\/report\/\$\{run\.run_id\}`\}/);
+  assert.match(workspace, /grid-cols-3[\s\S]*sm:w-\[27rem\]/);
+  assert.doesNotMatch(workspace, /api\/lite|textarea|<form/i);
 });
 
-test("Lite default page labels scope without exposing secret environment names", async () => {
+test("Demo labels its scope without exposing secret environment names", async () => {
   const renderedSources = [
     await read("app", "page.tsx"),
-    await read("components", "lite", "lite-workspace.tsx"),
+    await read("components", "demo", "demo-workspace.tsx"),
+    await read("lib", "demo", "demo-runs.ts"),
   ].join("\n");
 
-  assert.match(renderedSources, /curated stored evidence library/i);
-  assert.match(renderedSources, /not the complete production verifier/i);
+  assert.match(renderedSources, /citation-audited full-version reports/i);
+  assert.match(renderedSources, /owner-controlled/i);
 
   for (const forbidden of [
     "DEEPSEEK_API_KEY",
