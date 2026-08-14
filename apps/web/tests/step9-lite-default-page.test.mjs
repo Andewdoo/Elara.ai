@@ -22,14 +22,13 @@ test("default route renders the read-only Demo archive", async () => {
   assert.match(runs, /DEMO_RUN_LIMIT = 12/);
 });
 
-test("Demo uses the owner's saved, completed full-version reports", async () => {
+test("Demo uses the shared, designated full-version reports", async () => {
   const workspace = await read("components", "demo", "demo-workspace.tsx");
   const runs = await read("lib", "demo", "demo-runs.ts");
 
   assert.match(workspace, /authenticatedApiFetch/);
-  assert.match(workspace, /saved_only: "true"/);
-  assert.match(workspace, /status: "COMPLETED"/);
-  assert.match(workspace, /page_size: String\(DEMO_RUN_LIMIT\)/);
+  assert.match(workspace, /"\/v1\/demo-runs"/);
+  assert.doesNotMatch(workspace, /saved_only|\/v1\/history/);
   assert.match(workspace, /href="\/verify"/);
   assert.match(workspace, /Open Full Verifier/);
   assert.match(workspace, /href=\{`\/report\/\$\{run\.run_id\}`\}/);
@@ -45,7 +44,7 @@ test("Demo labels its scope without exposing secret environment names", async ()
   ].join("\n");
 
   assert.match(renderedSources, /citation-audited full-version reports/i);
-  assert.match(renderedSources, /owner-controlled/i);
+  assert.match(renderedSources, /designated shared report collection/i);
 
   for (const forbidden of [
     "DEEPSEEK_API_KEY",

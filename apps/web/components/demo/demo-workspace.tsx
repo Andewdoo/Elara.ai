@@ -24,18 +24,11 @@ const completedDateFormat = new Intl.DateTimeFormat("en-CA", {
 export function DemoWorkspace() {
   const { user, loading: authLoading } = useFirebaseAuth();
   const runsQuery = useQuery({
-    queryKey: ["demo-runs", user?.uid],
+    queryKey: ["demo-runs"],
     enabled: Boolean(user),
     queryFn: async () => {
-      if (!user) throw new Error("Sign in to load saved Demo runs.");
-      const params = new URLSearchParams({
-        saved_only: "true",
-        status: "COMPLETED",
-        sort: "date_desc",
-        page: "1",
-        page_size: String(DEMO_RUN_LIMIT),
-      });
-      const response = await authenticatedApiFetch(user, `/v1/history?${params.toString()}`);
+      if (!user) throw new Error("Sign in to load Demo runs.");
+      const response = await authenticatedApiFetch(user, "/v1/demo-runs");
       if (!response.ok) throw new Error(await apiErrorMessage(response));
       return response.json() as Promise<DemoRunsResponse>;
     },
@@ -67,9 +60,9 @@ export function DemoWorkspace() {
         <div className="flex flex-wrap items-end justify-between gap-3 border-b pb-4">
           <div>
             <h2 id="demo-runs-heading" className="text-lg font-semibold text-foreground">Demo runs</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{demoRuns.length} of {Math.min(runsQuery.data?.total ?? DEMO_RUN_LIMIT, DEMO_RUN_LIMIT)} saved completed reports shown</p>
+            <p className="mt-1 text-sm text-muted-foreground">{demoRuns.length} of {Math.min(runsQuery.data?.total ?? DEMO_RUN_LIMIT, DEMO_RUN_LIMIT)} designated completed reports shown</p>
           </div>
-          <span className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">Saved reports only</span>
+          <span className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">Designated reports only</span>
         </div>
 
         {authLoading || runsQuery.isLoading ? <LoadingDemoRuns /> : !user ? <SignedOutDemoRuns /> : runsQuery.error ? <DemoRunsError onRetry={() => void runsQuery.refetch()} /> : demoRuns.length ? <div className="grid gap-3">{demoRuns.map((run) => <DemoRunCard key={run.run_id} run={run} />)}</div> : <EmptyDemoRuns />}
@@ -122,19 +115,19 @@ function DemoMetric({ icon: Icon, label, value }: { icon: typeof ShieldCheck; la
 }
 
 function LoadingDemoRuns() {
-  return <Card><CardContent className="flex min-h-40 items-center gap-3 p-6 text-sm text-muted-foreground"><Clock3 className="h-5 w-5 animate-pulse text-primary motion-reduce:animate-none" aria-hidden="true" />Loading saved Demo runs…</CardContent></Card>;
+  return <Card><CardContent className="flex min-h-40 items-center gap-3 p-6 text-sm text-muted-foreground"><Clock3 className="h-5 w-5 animate-pulse text-primary motion-reduce:animate-none" aria-hidden="true" />Loading shared Demo runs…</CardContent></Card>;
 }
 
 function SignedOutDemoRuns() {
-  return <Card><CardContent className="grid min-h-40 place-items-center p-8 text-center"><div className="max-w-sm"><h3 className="text-base font-semibold text-foreground">Sign in to load your saved runs</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">Demo runs stay owner-controlled and are loaded from your saved full-version reports.</p></div></CardContent></Card>;
+  return <Card><CardContent className="grid min-h-40 place-items-center p-8 text-center"><div className="max-w-sm"><h3 className="text-base font-semibold text-foreground">Sign in to view Demo reports</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">The designated full-version reports are identical for every account.</p></div></CardContent></Card>;
 }
 
 function DemoRunsError({ onRetry }: { onRetry: () => void }) {
-  return <Card><CardContent className="flex flex-wrap items-center gap-3 p-6 text-sm text-destructive" role="alert"><span>Saved Demo runs could not be loaded.</span><Button size="sm" variant="secondary" onClick={onRetry}>Retry</Button></CardContent></Card>;
+  return <Card><CardContent className="flex flex-wrap items-center gap-3 p-6 text-sm text-destructive" role="alert"><span>Shared Demo runs could not be loaded.</span><Button size="sm" variant="secondary" onClick={onRetry}>Retry</Button></CardContent></Card>;
 }
 
 function EmptyDemoRuns() {
-  return <Card><CardContent className="grid min-h-56 place-items-center p-8 text-center"><div className="max-w-sm"><span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-muted text-primary"><FileCheck2 className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-4 text-base font-semibold text-foreground">No saved completed reports yet</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">Save a completed report in the full verifier and it will appear here automatically.</p></div></CardContent></Card>;
+  return <Card><CardContent className="grid min-h-56 place-items-center p-8 text-center"><div className="max-w-sm"><span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-muted text-primary"><FileCheck2 className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-4 text-base font-semibold text-foreground">No Demo reports are available yet</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">The shared Demo archive is being prepared.</p></div></CardContent></Card>;
 }
 
 function formatVerdict(value: string | null) {

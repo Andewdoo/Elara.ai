@@ -1,4 +1,4 @@
-/** The Demo archive is limited to the most recent completed saved reports. */
+/** The Demo archive is limited to the owner-designated shared report collection. */
 export const DEMO_RUN_LIMIT = 12;
 
 export type DemoRun = {

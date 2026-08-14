@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import Settings, get_settings
 from app.observability import initialize_api_sentry
-from app.routes import auth_router, history_router, uploads_router, verifications_router
+from app.routes import auth_router, demo_runs_router, history_router, uploads_router, verifications_router
 from app.security import SecurityHeadersMiddleware
 from app.services.object_storage import get_object_storage
 
@@ -24,6 +24,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["Authorization", "Content-Type", "Last-Event-ID"],
     )
     app.include_router(auth_router)
+    app.include_router(demo_runs_router)
     app.include_router(history_router)
     app.include_router(uploads_router)
     app.include_router(verifications_router)

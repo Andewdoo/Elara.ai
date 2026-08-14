@@ -8,6 +8,7 @@ from app.config import Settings
 from app.models.agent_event import AgentEvent
 from app.models.enums import InputType, RunStatus
 from app.models.types import utc_now
+from app.services.demo_runs import DEMO_VISIBILITY
 from app.models.user import User
 from app.models.verification_run import VerificationRun
 from app.models.upload import Upload
@@ -156,7 +157,7 @@ def get_owned_run(db: Session, *, owner_id: UUID, run_id: UUID) -> VerificationR
 def get_authorized_run(
     db: Session, *, viewer_id: UUID, run_id: UUID, required_scope: str = "report"
 ) -> VerificationRun:
-    """Authorize the owner or a live, recipient-specific share with sufficient scope."""
+    """Authorize an owner, valid share recipient, or a designated Demo report viewer."""
     allowed_scopes = {
         "report": {"report", "report_sources", "report_sources_exports"},
         "sources": {"report_sources", "report_sources_exports"},
@@ -165,6 +166,15 @@ def get_authorized_run(
     if required_scope not in allowed_scopes:
         raise ValueError("Unknown share scope")
     now = utc_now()
+    demo_visible = (
+        and_(
+            VerificationRun.visibility == DEMO_VISIBILITY,
+            VerificationRun.status == RunStatus.COMPLETED,
+            VerificationRun.evidence_reviewed_at.is_not(None),
+        )
+        if required_scope != "exports"
+        else False
+    )
     run = db.scalar(
         select(VerificationRun).outerjoin(
             ReportShare,
@@ -178,7 +188,7 @@ def get_authorized_run(
         ).where(
             VerificationRun.id == run_id,
             VerificationRun.deleted_at.is_(None),
-            or_(VerificationRun.user_id == viewer_id, ReportShare.id.is_not(None)),
+            or_(VerificationRun.user_id == viewer_id, ReportShare.id.is_not(None), demo_visible),
         )
     )
     if run is None:
