@@ -53,7 +53,7 @@ export function DemoWorkspace() {
           Completed verification runs.
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
-          This Demo displays your {DEMO_RUN_LIMIT} most recently saved, citation-audited full-version reports. It does not accept requests or retrieve new evidence.
+          This Demo displays 12 citation-audited full-version reports. It does not accept requests or retrieve new evidence.
         </p>
         <Button asChild variant="secondary" className="mt-6">
           <Link href="/verify">

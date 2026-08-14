@@ -15,7 +15,10 @@ test("default route renders the read-only Demo archive", async () => {
   assert.doesNotMatch(page, /VerifyForm|HistoryList|StatusStrip/);
   assert.match(workspace, /Read-only demo archive/);
   assert.match(workspace, /Completed verification runs/);
-  assert.match(workspace, /does not accept requests or retrieve new evidence/i);
+  assert.match(
+    workspace,
+    /This Demo displays 12 citation-audited full-version reports\. It does not accept requests or retrieve new evidence\./,
+  );
   assert.match(runs, /DEMO_RUN_LIMIT = 12/);
 });
 
