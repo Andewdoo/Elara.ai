@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { Archive, Asterisk, BookOpenText, FileCheck2, History, PanelLeftClose, PanelLeftOpen, ShieldCheck } from "lucide-react";
+import { Archive, ArrowLeft, Asterisk, BookOpenText, FileCheck2, History, PanelLeftClose, PanelLeftOpen, ShieldCheck } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
 import { AuthControls } from "@/components/app/auth-controls";
@@ -19,7 +19,8 @@ const navItems: Array<{ href: Route; label: string; icon: typeof FileCheck2 }> =
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isDemo = pathname === "/";
+  const isDemoReport = pathname.startsWith("/demo/report/");
+  const isDemo = pathname === "/" || isDemoReport;
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   function closeSidebarOnMobile() {
@@ -35,14 +36,23 @@ export function AppShell({ children }: { children: ReactNode }) {
           Skip to main content
         </a>
         <header className="border-b bg-card">
-          <div className="mx-auto flex min-h-16 max-w-5xl items-center gap-3 px-4 sm:px-6">
-            <Asterisk className="h-7 w-7 shrink-0 text-accent" strokeWidth={1.65} aria-hidden="true" />
-            <span className="font-editorial text-2xl leading-none tracking-[-0.035em] text-foreground">Elara.ai</span>
+          <div className={cn("mx-auto flex min-h-16 items-center gap-3 px-4 sm:px-6", isDemoReport ? "max-w-7xl" : "max-w-5xl")}>
+            <Link href="/" className="flex min-h-11 items-center gap-3 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="Elara.ai Demo home">
+              <Asterisk className="h-7 w-7 shrink-0 text-accent" strokeWidth={1.65} aria-hidden="true" />
+              <span className="font-editorial text-2xl leading-none tracking-[-0.035em] text-foreground">Elara.ai</span>
+            </Link>
             <span className="border-l pl-3 text-sm font-medium text-muted-foreground">Demo</span>
+            {isDemoReport && (
+              <Link href="/" className="ml-auto inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-3 text-sm font-semibold text-primary outline-none transition-colors duration-200 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none">
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden sm:inline">Back to Demo archive</span>
+                <span className="sm:hidden">Back</span>
+              </Link>
+            )}
           </div>
         </header>
         <main id="main-content" className="min-h-[calc(100dvh-4rem)] px-4 py-8 sm:px-6 sm:py-12">
-          <div className="mx-auto max-w-5xl">{children}</div>
+          <div className={cn("mx-auto", isDemoReport ? "max-w-7xl" : "max-w-5xl")}>{children}</div>
         </main>
       </div>
     );

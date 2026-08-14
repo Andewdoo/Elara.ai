@@ -6,8 +6,8 @@ import { Loader2, RefreshCw } from "lucide-react";
 import { ReportWorkspace } from "@/components/report/report-workspace";
 import { useReportData } from "@/hooks/use-report-data";
 
-export function ReportRoute({ runId }: { runId: string }) {
-  const queries = useReportData(runId);
+export function ReportRoute({ runId, demoOnly = false }: { runId: string; demoOnly?: boolean }) {
+  const queries = useReportData(runId, { demoOnly });
   const pending = queries.authLoading || queries.run.isLoading || (queries.run.data?.status === "COMPLETED" && queries.report.isLoading);
   const error = queries.run.error ?? queries.report.error;
 

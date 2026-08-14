@@ -24,13 +24,12 @@ test("default route renders the read-only Demo archive", async () => {
 
 test("Demo uses the shared, designated full-version reports", async () => {
   const workspace = await read("components", "demo", "demo-workspace.tsx");
-  const runs = await read("lib", "demo", "demo-runs.ts");
 
   assert.match(workspace, /fetch\(`\$\{apiBaseUrl\}\/v1\/demo-runs`\)/);
   assert.doesNotMatch(workspace, /authenticatedApiFetch|useFirebaseAuth|saved_only|\/v1\/history/);
   assert.match(workspace, /href="\/verify"/);
   assert.match(workspace, /Open Full Verifier/);
-  assert.match(workspace, /href=\{`\/report\/\$\{run\.run_id\}`\}/);
+  assert.match(workspace, /href=\{`\/demo\/report\/\$\{run\.run_id\}`\}/);
   assert.match(workspace, /grid-cols-3[\s\S]*sm:w-\[27rem\]/);
   assert.doesNotMatch(workspace, /api\/lite|textarea|<form/i);
 });

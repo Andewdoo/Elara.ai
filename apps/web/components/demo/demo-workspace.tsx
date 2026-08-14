@@ -89,7 +89,7 @@ function DemoRunCard({ run }: { run: DemoRun }) {
             <DemoMetric icon={Clock3} label="Audit" value="Complete" />
           </dl>
           <Button asChild size="sm" variant="secondary">
-            <Link href={`/report/${run.run_id}`}>
+            <Link href={`/demo/report/${run.run_id}`}>
               Open report
               <FolderOpen className="h-4 w-4" aria-hidden="true" />
             </Link>
