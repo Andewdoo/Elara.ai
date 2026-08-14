@@ -73,8 +73,8 @@ class Settings(BaseSettings):
     firebase_fresh_token_max_age_seconds: int = Field(default=300, ge=60, le=600)
     firebase_session_same_site: Literal["lax", "strict", "none"] = "lax"
 
-    verification_user_rate_limit: int = Field(default=10, ge=1, le=1_000)
-    verification_ip_rate_limit: int = Field(default=30, ge=1, le=10_000)
+    verification_user_rate_limit: int = Field(default=4, ge=1, le=1_000)
+    verification_ip_rate_limit: int = Field(default=12, ge=1, le=10_000)
     verification_rate_limit_window_seconds: int = Field(default=3_600, ge=60, le=86_400)
     sensitive_action_user_rate_limit: int = Field(default=60, ge=1, le=1_000)
     upload_max_bytes: int = Field(default=25_000_000, ge=100_000, le=100_000_000)

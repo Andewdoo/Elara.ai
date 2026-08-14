@@ -28,6 +28,14 @@ test("history and saved pages use authorized server-owned data", async () => {
   assert.match(history, /method: kind === "save" \? "POST" : "DELETE"/);
 });
 
+test("report routes use public Demo endpoints before private authenticated endpoints", async () => {
+  const reportData = await readFile(join(root, "hooks", "use-report-data.ts"), "utf8");
+
+  assert.match(reportData, /\/v1\/demo-runs\/\$\{runId\}/);
+  assert.match(reportData, /\/v1\/verifications\/\$\{runId\}/);
+  assert.match(reportData, /if \(!user\) throw new Error\("Sign in to view this report\."\)/);
+});
+
 test("report controls expose all feedback categories and private JSON export flow", async () => {
   const controls = await readFile(join(root, "components", "report", "report-actions.tsx"), "utf8");
   const hook = await readFile(join(root, "hooks", "use-report-actions.ts"), "utf8");

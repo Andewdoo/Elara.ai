@@ -26,9 +26,8 @@ test("Demo uses the shared, designated full-version reports", async () => {
   const workspace = await read("components", "demo", "demo-workspace.tsx");
   const runs = await read("lib", "demo", "demo-runs.ts");
 
-  assert.match(workspace, /authenticatedApiFetch/);
-  assert.match(workspace, /"\/v1\/demo-runs"/);
-  assert.doesNotMatch(workspace, /saved_only|\/v1\/history/);
+  assert.match(workspace, /fetch\(`\$\{apiBaseUrl\}\/v1\/demo-runs`\)/);
+  assert.doesNotMatch(workspace, /authenticatedApiFetch|useFirebaseAuth|saved_only|\/v1\/history/);
   assert.match(workspace, /href="\/verify"/);
   assert.match(workspace, /Open Full Verifier/);
   assert.match(workspace, /href=\{`\/report\/\$\{run\.run_id\}`\}/);

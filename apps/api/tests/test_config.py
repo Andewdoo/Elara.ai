@@ -82,6 +82,14 @@ def test_deepseek_request_timeout_is_bounded_by_the_worker_soft_limit():
         )
 
 
+def test_verification_rate_limit_defaults_are_demo_bounded():
+    settings = Settings(environment="test")
+
+    assert settings.verification_user_rate_limit == 4
+    assert settings.verification_ip_rate_limit == 12
+    assert settings.verification_rate_limit_window_seconds == 3_600
+
+
 def test_adaptive_search_defaults_and_supported_ceilings_are_validated():
     settings = Settings(environment="test")
     assert settings.search_policy_version == "adaptive-search-v1"

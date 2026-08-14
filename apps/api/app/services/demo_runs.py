@@ -1,11 +1,54 @@
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+from uuid import UUID
 
 from app.models import RunStatus, VerificationRun
-from app.schemas.verifications import HistoryItemResponse, HistoryResponse
+from app.schemas.verifications import HistoryItemResponse, HistoryResponse, VerificationRunResponse
 
 DEMO_RUN_LIMIT = 12
 DEMO_VISIBILITY = "demo"
+
+
+class DemoRunNotFoundError(LookupError):
+    pass
+
+
+def get_demo_run(db: Session, *, run_id: UUID) -> VerificationRun:
+    run = db.scalar(
+        select(VerificationRun).where(
+            VerificationRun.id == run_id,
+            VerificationRun.visibility == DEMO_VISIBILITY,
+            VerificationRun.status == RunStatus.COMPLETED,
+            VerificationRun.evidence_reviewed_at.is_not(None),
+            VerificationRun.deleted_at.is_(None),
+        )
+    )
+    if run is None:
+        raise DemoRunNotFoundError("Demo report not found")
+    return run
+
+
+def demo_run_response(run: VerificationRun) -> VerificationRunResponse:
+    return VerificationRunResponse(
+        run_id=run.id,
+        status=run.status,
+        input_type=run.input_type,
+        research_depth=run.research_depth,
+        title=run.title,
+        verdict=run.verdict,
+        queued_at=run.queued_at,
+        started_at=run.started_at,
+        completed_at=run.completed_at,
+        failed_at=run.failed_at,
+        cancellation_requested_at=run.cancellation_requested_at,
+        failure_code=None,
+        failure_message=None,
+        updated_at=run.updated_at,
+        saved_at=None,
+        is_owner=False,
+        publication_state=run.publication_state,
+        publication_review_reason=run.publication_review_reason,
+    )
 
 
 def list_demo_runs(db: Session) -> HistoryResponse:

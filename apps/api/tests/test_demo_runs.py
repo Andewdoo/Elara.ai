@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 import pytest
 
+from app.auth.dependencies import get_authenticated_bearer
 from app.models import InputType, ResearchDepth, RunStatus, User, VerificationRun
 from app.services.demo_runs import DEMO_VISIBILITY
 from app.services.verifications import RunNotFoundError, get_authorized_run
@@ -25,7 +26,9 @@ def _completed_run(owner: User, *, visibility: str = "private") -> VerificationR
     )
 
 
-def test_demo_endpoint_returns_only_designated_citation_audited_reports(client, session_factory, owner):
+def test_demo_endpoint_is_public_and_returns_only_designated_citation_audited_reports(
+    client, session_factory, owner
+):
     with session_factory() as db:
         demo = _completed_run(owner, visibility=DEMO_VISIBILITY)
         private = _completed_run(owner)
@@ -34,11 +37,14 @@ def test_demo_endpoint_returns_only_designated_citation_audited_reports(client, 
         db.commit()
         demo_id = demo.id
 
+    client.app.dependency_overrides.pop(get_authenticated_bearer)
     response = client.get("/v1/demo-runs")
 
     assert response.status_code == 200
     assert response.json()["total"] == 1
     assert [item["run_id"] for item in response.json()["items"]] == [str(demo_id)]
+    assert client.get(f"/v1/demo-runs/{demo_id}").status_code == 200
+    assert client.get(f"/v1/verifications/{demo_id}").status_code == 401
 
 
 def test_designated_demo_reports_are_readable_by_every_account_but_not_exportable(

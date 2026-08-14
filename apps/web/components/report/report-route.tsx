@@ -20,7 +20,7 @@ export function ReportRoute({ runId }: { runId: string }) {
     );
   }
 
-  if (!queries.authenticated) {
+  if (!queries.authenticated && !queries.run.data) {
     return <div role="alert" className="rounded-lg border bg-white p-4 text-sm text-muted-foreground">Sign in to view this report.</div>;
   }
 

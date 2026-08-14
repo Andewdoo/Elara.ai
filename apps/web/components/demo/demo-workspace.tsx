@@ -4,11 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock3, FileCheck2, FolderOpen, ShieldCheck } from "lucide-react";
 
-import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { apiErrorMessage, authenticatedApiFetch } from "@/lib/auth";
+import { apiBaseUrl, apiErrorMessage } from "@/lib/auth";
 import { DEMO_RUN_LIMIT, type DemoRun } from "@/lib/demo/demo-runs";
 
 type DemoRunsResponse = {
@@ -22,13 +21,10 @@ const completedDateFormat = new Intl.DateTimeFormat("en-CA", {
 });
 
 export function DemoWorkspace() {
-  const { user, loading: authLoading } = useFirebaseAuth();
   const runsQuery = useQuery({
     queryKey: ["demo-runs"],
-    enabled: Boolean(user),
     queryFn: async () => {
-      if (!user) throw new Error("Sign in to load Demo runs.");
-      const response = await authenticatedApiFetch(user, "/v1/demo-runs");
+      const response = await fetch(`${apiBaseUrl}/v1/demo-runs`);
       if (!response.ok) throw new Error(await apiErrorMessage(response));
       return response.json() as Promise<DemoRunsResponse>;
     },
@@ -65,7 +61,7 @@ export function DemoWorkspace() {
           <span className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">Designated reports only</span>
         </div>
 
-        {authLoading || runsQuery.isLoading ? <LoadingDemoRuns /> : !user ? <SignedOutDemoRuns /> : runsQuery.error ? <DemoRunsError onRetry={() => void runsQuery.refetch()} /> : demoRuns.length ? <div className="grid gap-3">{demoRuns.map((run) => <DemoRunCard key={run.run_id} run={run} />)}</div> : <EmptyDemoRuns />}
+        {runsQuery.isLoading ? <LoadingDemoRuns /> : runsQuery.error ? <DemoRunsError onRetry={() => void runsQuery.refetch()} /> : demoRuns.length ? <div className="grid gap-3">{demoRuns.map((run) => <DemoRunCard key={run.run_id} run={run} />)}</div> : <EmptyDemoRuns />}
       </section>
     </div>
   );
@@ -116,10 +112,6 @@ function DemoMetric({ icon: Icon, label, value }: { icon: typeof ShieldCheck; la
 
 function LoadingDemoRuns() {
   return <Card><CardContent className="flex min-h-40 items-center gap-3 p-6 text-sm text-muted-foreground"><Clock3 className="h-5 w-5 animate-pulse text-primary motion-reduce:animate-none" aria-hidden="true" />Loading shared Demo runs…</CardContent></Card>;
-}
-
-function SignedOutDemoRuns() {
-  return <Card><CardContent className="grid min-h-40 place-items-center p-8 text-center"><div className="max-w-sm"><h3 className="text-base font-semibold text-foreground">Sign in to view Demo reports</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">The designated full-version reports are identical for every account.</p></div></CardContent></Card>;
 }
 
 function DemoRunsError({ onRetry }: { onRetry: () => void }) {
