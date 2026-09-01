@@ -28,10 +28,11 @@ test("history and saved pages use authorized server-owned data", async () => {
   assert.match(history, /method: kind === "save" \? "POST" : "DELETE"/);
 });
 
-test("report routes use public Demo endpoints before private authenticated endpoints", async () => {
+test("report routes use static Demo snapshots before private authenticated endpoints", async () => {
   const reportData = await readFile(join(root, "hooks", "use-report-data.ts"), "utf8");
 
-  assert.match(reportData, /\/v1\/demo-runs\/\$\{runId\}/);
+  assert.match(reportData, /demoArchiveRunResourcePath\(runId, demoResource\)/);
+  assert.doesNotMatch(reportData, /\/v1\/demo-runs/);
   assert.match(reportData, /\/v1\/verifications\/\$\{runId\}/);
   assert.match(reportData, /if \(!user\) throw new Error\("Sign in to view this report\."\)/);
 });

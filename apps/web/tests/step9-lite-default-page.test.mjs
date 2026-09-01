@@ -24,9 +24,15 @@ test("default route renders the read-only Demo archive", async () => {
 
 test("Demo uses the shared, designated full-version reports", async () => {
   const workspace = await read("components", "demo", "demo-workspace.tsx");
+  const runs = await read("lib", "demo", "demo-runs.ts");
 
-  assert.match(workspace, /fetch\(`\$\{apiBaseUrl\}\/v1\/demo-runs`\)/);
+  assert.match(workspace, /fetch\(DEMO_ARCHIVE_MANIFEST_PATH/);
+  assert.match(runs, /DEMO_ARCHIVE_MANIFEST_PATH = "\/demo-archive\/manifest\.json"/);
   assert.doesNotMatch(workspace, /authenticatedApiFetch|useFirebaseAuth|saved_only|\/v1\/history/);
+  assert.doesNotMatch(workspace, /apiBaseUrl|\/v1\/demo-runs/);
+  assert.match(workspace, /signal/);
+  assert.match(workspace, /retry: false/);
+  assert.match(workspace, /The public Demo archive snapshot is unavailable\./);
   assert.match(workspace, /href="\/verify"/);
   assert.match(workspace, /Open Full Verifier/);
   assert.match(workspace, /href=\{`\/demo\/report\/\$\{run\.run_id\}`\}/);

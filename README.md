@@ -18,13 +18,33 @@ for the Full Mode backend stack. Multi-AZ services, autoscaling, Kubernetes,
 managed database/Redis services, WAF, formal on-call, and separate staging and
 production environments are intentionally out of scope.
 
+## Public Report Archive
+
+The default `/` route is a read-only archive of 12 owner-designated,
+citation-audited Full Mode reports. The browser reads only static files under
+`apps/web/public/demo-archive`; viewing the archive and its report, source, and
+source-graph pages does not require FastAPI, PostgreSQL, Redis, Celery, or the EC2
+host to be running.
+
+Refresh the published snapshot while the API is temporarily available:
+
+```powershell
+npm --workspace apps/web run demo:archive:snapshot -- --api-base-url https://api.example.com
+```
+
+The command fails closed unless exactly 12 designated reports are completed,
+publishable, and backed by passing durable citation audits. It replaces the
+static archive as one unit so removed reports do not remain publicly reachable.
+Commit the generated `apps/web/public/demo-archive` files and deploy Vercel; EC2
+may then be stopped without affecting archive reads.
+
 ## Lite Demo
 
-The public demo is Elara Lite Mode. It is a stored-corpus cited RAG experience
+The repository also contains Elara Lite Mode. It is a stored-corpus cited RAG experience
 that runs from the Next.js app on Vercel, retrieves curated evidence chunks from
 Supabase Postgres with pgvector, and uses server-side DeepSeek synthesis plus
-deterministic citation checks. Lite Mode is the first page at `/`; the complete
-Full Mode verifier remains reachable at `/verify`.
+deterministic citation checks. The complete Full Mode verifier remains reachable
+at `/verify`.
 
 Lite Mode demonstrates the Elara report workspace, citation language, source
 presentation, and insufficient-evidence behavior over a bounded public evidence

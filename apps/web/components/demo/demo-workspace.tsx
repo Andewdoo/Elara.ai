@@ -7,8 +7,7 @@ import { ArrowRight, CheckCircle2, Clock3, FileCheck2, FolderOpen, ShieldCheck }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { apiBaseUrl, apiErrorMessage } from "@/lib/auth";
-import { DEMO_RUN_LIMIT, type DemoRun } from "@/lib/demo/demo-runs";
+import { DEMO_ARCHIVE_MANIFEST_PATH, DEMO_RUN_LIMIT, type DemoRun } from "@/lib/demo/demo-runs";
 
 type DemoRunsResponse = {
   items: DemoRun[];
@@ -23,11 +22,17 @@ const completedDateFormat = new Intl.DateTimeFormat("en-CA", {
 export function DemoWorkspace() {
   const runsQuery = useQuery({
     queryKey: ["demo-runs"],
-    queryFn: async () => {
-      const response = await fetch(`${apiBaseUrl}/v1/demo-runs`);
-      if (!response.ok) throw new Error(await apiErrorMessage(response));
-      return response.json() as Promise<DemoRunsResponse>;
+    queryFn: async ({ signal }) => {
+      const response = await fetch(DEMO_ARCHIVE_MANIFEST_PATH, {
+        cache: "no-store",
+        signal,
+      });
+      if (!response.ok) {
+        throw new Error("The public Demo archive snapshot is unavailable.");
+      }
+      return await response.json() as DemoRunsResponse;
     },
+    retry: false,
   });
   const demoRuns = runsQuery.data?.items ?? [];
 
@@ -61,7 +66,7 @@ export function DemoWorkspace() {
           <span className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">Designated reports only</span>
         </div>
 
-        {runsQuery.isLoading ? <LoadingDemoRuns /> : runsQuery.error ? <DemoRunsError onRetry={() => void runsQuery.refetch()} /> : demoRuns.length ? <div className="grid gap-3">{demoRuns.map((run) => <DemoRunCard key={run.run_id} run={run} />)}</div> : <EmptyDemoRuns />}
+        {runsQuery.isLoading ? <LoadingDemoRuns /> : runsQuery.error ? <DemoRunsError error={runsQuery.error} onRetry={() => void runsQuery.refetch()} /> : demoRuns.length ? <div className="grid gap-3">{demoRuns.map((run) => <DemoRunCard key={run.run_id} run={run} />)}</div> : <EmptyDemoRuns />}
       </section>
     </div>
   );
@@ -114,8 +119,8 @@ function LoadingDemoRuns() {
   return <Card><CardContent className="flex min-h-40 items-center gap-3 p-6 text-sm text-muted-foreground"><Clock3 className="h-5 w-5 animate-pulse text-primary motion-reduce:animate-none" aria-hidden="true" />Loading shared Demo runs…</CardContent></Card>;
 }
 
-function DemoRunsError({ onRetry }: { onRetry: () => void }) {
-  return <Card><CardContent className="flex flex-wrap items-center gap-3 p-6 text-sm text-destructive" role="alert"><span>Shared Demo runs could not be loaded.</span><Button size="sm" variant="secondary" onClick={onRetry}>Retry</Button></CardContent></Card>;
+function DemoRunsError({ error, onRetry }: { error: Error; onRetry: () => void }) {
+  return <Card><CardContent className="flex flex-wrap items-center gap-3 p-6 text-sm text-destructive" role="alert"><span>{error.message || "Shared Demo runs could not be loaded."}</span><Button size="sm" variant="secondary" onClick={onRetry}>Retry</Button></CardContent></Card>;
 }
 
 function EmptyDemoRuns() {

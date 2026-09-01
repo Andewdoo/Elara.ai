@@ -25,8 +25,12 @@ test("demo reports retain Demo chrome and do not render the verifier sidebar", a
 
 test("demo-only report data never falls back to private verifier endpoints", async () => {
   const hook = await read("hooks", "use-report-data.ts");
+  const archive = await read("lib", "demo", "demo-runs.ts");
 
-  assert.match(hook, /if \(demoOnly\) throw new Error\(await apiErrorMessage\(demoResponse\)\)/);
+  assert.match(hook, /demoArchiveRunResourcePath\(runId, demoResource\)/);
+  assert.match(hook, /if \(demoOnly\) throw new Error\("This report is not in the published Demo archive\."\)/);
   assert.match(hook, /const queryScope = demoOnly \? "demo"/);
   assert.match(hook, /authenticated: demoOnly \|\| Boolean\(user\)/);
+  assert.doesNotMatch(hook, /\/v1\/demo-runs/);
+  assert.match(archive, /\/demo-archive\/runs\/\$\{encodeURIComponent\(runId\)\}\/\$\{resource\}\.json/);
 });
