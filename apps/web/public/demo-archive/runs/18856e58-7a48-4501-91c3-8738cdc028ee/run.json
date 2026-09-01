@@ -1,0 +1,20 @@
+{
+  "run_id": "18856e58-7a48-4501-91c3-8738cdc028ee",
+  "status": "COMPLETED",
+  "input_type": "CLAIM",
+  "research_depth": "STANDARD",
+  "title": "Botanical Classification of Bananas and Strawberries",
+  "verdict": "Mostly supported",
+  "queued_at": "2026-08-13T22:31:07.140602Z",
+  "started_at": "2026-08-13T22:31:07.214216Z",
+  "completed_at": "2026-08-13T22:32:03.764886Z",
+  "failed_at": null,
+  "cancellation_requested_at": null,
+  "failure_code": null,
+  "failure_message": null,
+  "updated_at": "2026-08-13T22:32:20.358999Z",
+  "saved_at": null,
+  "is_owner": false,
+  "publication_state": "published",
+  "publication_review_reason": null
+}

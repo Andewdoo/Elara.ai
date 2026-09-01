@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import test from "node:test";
 
-import { snapshotDemoArchive } from "../scripts/snapshot-demo-archive.mjs";
+import { snapshotDemoArchive, validateBundledDemoArchive } from "../scripts/snapshot-demo-archive.mjs";
 
 const runId = "01990f2a-6540-7000-8000-000000000001";
 
@@ -63,6 +63,28 @@ test("snapshot command materializes the complete public Demo archive for Vercel"
     for (const resource of ["run", "report", "sources", "source-graph"]) {
       assert.ok(JSON.parse(await readFile(join(outputDir, "runs", runId, `${resource}.json`), "utf8")));
     }
+    assert.equal((await validateBundledDemoArchive({ outputDir, expectedCount: 1 })).count, 1);
+  } finally {
+    await rm(temporaryRoot, { recursive: true, force: true });
+  }
+});
+
+test("bundled archive validation fails when a report resource is absent", async () => {
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "elara-demo-archive-"));
+  const outputDir = join(temporaryRoot, "demo-archive");
+  try {
+    await snapshotDemoArchive({
+      apiBaseUrl: "https://api.example.test",
+      outputDir,
+      expectedCount: 1,
+      fetchImpl: fetchFrom(archiveResponses()),
+    });
+    await rm(join(outputDir, "runs", runId, "report.json"));
+
+    await assert.rejects(
+      validateBundledDemoArchive({ outputDir, expectedCount: 1 }),
+      /bundled Demo archive is missing or malformed/,
+    );
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true });
   }

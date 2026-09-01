@@ -1,0 +1,20 @@
+{
+  "run_id": "16f5b772-d890-47dc-9983-5d56da3b290f",
+  "status": "COMPLETED",
+  "input_type": "CLAIM",
+  "research_depth": "STANDARD",
+  "title": "Effect of Shaving on Hair Regrowth Thickness and Color",
+  "verdict": "Mostly contradicted",
+  "queued_at": "2026-08-13T22:27:11.116618Z",
+  "started_at": "2026-08-13T22:27:11.170669Z",
+  "completed_at": "2026-08-13T22:28:00.795679Z",
+  "failed_at": null,
+  "cancellation_requested_at": null,
+  "failure_code": null,
+  "failure_message": null,
+  "updated_at": "2026-08-13T22:28:43.608378Z",
+  "saved_at": null,
+  "is_owner": false,
+  "publication_state": "published",
+  "publication_review_reason": null
+}

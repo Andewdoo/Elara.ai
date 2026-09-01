@@ -1,0 +1,1104 @@
+{
+  "nodes": [
+    {
+      "id": "cluster:cee0c2a9-8e2b-545d-8b7c-69fbec495ba7",
+      "type": "cluster",
+      "label": "When is a pandemic ‘over’? | Science | AAAS information origin",
+      "data": {
+        "clusterId": "cee0c2a9-8e2b-545d-8b7c-69fbec495ba7",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "metadata": {
+        "representativeSourceId": "de1fe351-c08d-4299-9ed2-c99a05aa6597"
+      }
+    },
+    {
+      "id": "cluster:fddfbd80-6f3f-5608-aecc-801799cbd39d",
+      "type": "cluster",
+      "label": "World Health Organization. WHO Director-General’s opening remarks at the media briefing on COVID-19 - 11 March 2020. [Updated 2020 March 11. Cited 2020 Nov 9.] Available from URL: https://www.who.int/director-general/speeches/detail/who- director-general-s-opening-remarks-at-the-media-briefing-on- covid-19---11-march-2020. information origin",
+      "data": {
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "originType": "shared_data_chain"
+      },
+      "position": {
+        "x": 0,
+        "y": 180
+      },
+      "metadata": {
+        "representativeSourceId": "e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc"
+      }
+    },
+    {
+      "id": "cluster:c3a90cd4-eb4f-5130-ab27-c85163fabd1d",
+      "type": "cluster",
+      "label": "Dr. Tedros Adhanom Ghebreyesus on the Dangers of Politicizing the Coronavirus Pandemic information origin",
+      "data": {
+        "clusterId": "c3a90cd4-eb4f-5130-ab27-c85163fabd1d",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 360
+      },
+      "metadata": {
+        "representativeSourceId": "d3bf3b07-1740-4b8e-a81d-6ed65efe8fb4"
+      }
+    },
+    {
+      "id": "cluster:fab13712-dab4-5738-b4dd-d2c3ba919f1e",
+      "type": "cluster",
+      "label": "INQ000052458 - Speech from WHO Director-General titled opening remarks at the media briefing on COVID-19, dated 11/03/2020. UK Covid-19 Inquiry Archives information origin",
+      "data": {
+        "clusterId": "fab13712-dab4-5738-b4dd-d2c3ba919f1e",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 540
+      },
+      "metadata": {
+        "representativeSourceId": "1fe0ea8b-3201-464c-8015-a82140bd285c"
+      }
+    },
+    {
+      "id": "source:de1fe351-c08d-4299-9ed2-c99a05aa6597",
+      "type": "source",
+      "label": "When is a pandemic ‘over’? | Science | AAAS",
+      "data": {
+        "sourceId": "de1fe351-c08d-4299-9ed2-c99a05aa6597",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "PRIMARY",
+        "clusterId": "cee0c2a9-8e2b-545d-8b7c-69fbec495ba7",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-07-23T02:31:39.649096+00:00",
+        "contentType": null,
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.science.org/content/article/when-pandemic-over",
+        "domain": "www.science.org",
+        "publisher": null,
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2026-07-23T02:31:39.649096+00:00"
+      }
+    },
+    {
+      "id": "snapshot:70fc3bac-7424-404f-b8da-0c90889b9dc8",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "de1fe351-c08d-4299-9ed2-c99a05aa6597",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "PRIMARY",
+        "clusterId": "cee0c2a9-8e2b-545d-8b7c-69fbec495ba7",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      },
+      "metadata": {
+        "snapshotId": "70fc3bac-7424-404f-b8da-0c90889b9dc8",
+        "retrievedAt": "2026-07-23T02:31:39.649096+00:00",
+        "publishedAt": null,
+        "contentHash": null,
+        "parserName": null,
+        "parserVersion": null
+      }
+    },
+    {
+      "id": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "type": "source",
+      "label": "Five Years Since WHO Declared COVID-19 a Global Pandemic",
+      "data": {
+        "sourceId": "fd6cde13-ecb8-469d-b873-cffa38394ff2",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "dependencyMultiplier": 0.1,
+        "firstKnownAppearance": "2025-03-11T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 180
+      },
+      "metadata": {
+        "canonicalUrl": "https://respiratory-therapy.com/disorders-diseases/infectious-diseases/coronavirus/five-years-since-who-declared-covid-19-global-pandemic/",
+        "domain": "respiratory-therapy.com",
+        "publisher": "Respiratory Therapy",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-03-11T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:1e3770f8-6982-4141-bc56-ae8b53103514",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "fd6cde13-ecb8-469d-b873-cffa38394ff2",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 180
+      },
+      "metadata": {
+        "snapshotId": "1e3770f8-6982-4141-bc56-ae8b53103514",
+        "retrievedAt": "2026-07-23T02:31:39.717632+00:00",
+        "publishedAt": "2025-03-11T00:00:00+00:00",
+        "contentHash": "97ff8f22071e6a2e5c9c6d9f14aaf78f26e5e6dab4f7c1b1d3dbd9250d9e9fed",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:d3bf3b07-1740-4b8e-a81d-6ed65efe8fb4",
+      "type": "source",
+      "label": "Dr. Tedros Adhanom Ghebreyesus on the Dangers of Politicizing the Coronavirus Pandemic",
+      "data": {
+        "sourceId": "d3bf3b07-1740-4b8e-a81d-6ed65efe8fb4",
+        "accessStatus": "INACCESSIBLE",
+        "role": "PRIMARY",
+        "clusterId": "c3a90cd4-eb4f-5130-ab27-c85163fabd1d",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-07-23T02:31:40.912409+00:00",
+        "contentType": null,
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 360
+      },
+      "metadata": {
+        "canonicalUrl": "https://time.com/collections/time-100-talks/5891630/tedros-who-politicizing-coronavirus-pandemic/",
+        "domain": "time.com",
+        "publisher": null,
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2026-07-23T02:31:40.912409+00:00"
+      }
+    },
+    {
+      "id": "snapshot:daf18636-0c96-4063-b5ce-39f3c9328474",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "d3bf3b07-1740-4b8e-a81d-6ed65efe8fb4",
+        "accessStatus": "INACCESSIBLE",
+        "role": "PRIMARY",
+        "clusterId": "c3a90cd4-eb4f-5130-ab27-c85163fabd1d",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 360
+      },
+      "metadata": {
+        "snapshotId": "daf18636-0c96-4063-b5ce-39f3c9328474",
+        "retrievedAt": "2026-07-23T02:31:40.912409+00:00",
+        "publishedAt": null,
+        "contentHash": null,
+        "parserName": null,
+        "parserVersion": null
+      }
+    },
+    {
+      "id": "source:f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+      "type": "source",
+      "label": "WHO Director-General's opening remarks at the media briefing on COVID-19 - 11 March 2020 - World",
+      "data": {
+        "sourceId": "f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2020-03-11T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 270
+      },
+      "metadata": {
+        "canonicalUrl": "https://reliefweb.int/report/world/who-director-generals-opening-remarks-media-briefing-covid-19-11-march-2020",
+        "domain": "reliefweb.int",
+        "publisher": "ReliefWeb",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2020-03-11T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:8b5cba5b-0f47-4714-87a7-a2fc2c00d4d4",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 270
+      },
+      "metadata": {
+        "snapshotId": "8b5cba5b-0f47-4714-87a7-a2fc2c00d4d4",
+        "retrievedAt": "2026-07-23T02:31:41.030423+00:00",
+        "publishedAt": "2020-03-11T00:00:00+00:00",
+        "contentHash": "4dfead59a33eed5a9fb39542ec12a2fc9cc111d5b4cfdd6e5d640f72b091c0c2",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+      "type": "source",
+      "label": "World Health Organization. WHO Director-General’s opening remarks at the media briefing on COVID-19",
+      "data": {
+        "sourceId": "e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2014-08-05T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 360
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.sciepub.com/reference/351926",
+        "domain": "www.sciepub.com",
+        "publisher": "World Health Organization. WHO Director-General’s opening remarks at the media briefing on COVID-19",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2014-08-05T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:df43f9b9-503c-4133-a8a1-f37e36c3a8ef",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 360
+      },
+      "metadata": {
+        "snapshotId": "df43f9b9-503c-4133-a8a1-f37e36c3a8ef",
+        "retrievedAt": "2026-07-23T02:31:41.701566+00:00",
+        "publishedAt": "2014-08-05T00:00:00+00:00",
+        "contentHash": "0f573f7c2d35c39dec4e9da8fc9952ce05736bac27b5aa437b86659f117463b1",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:1fe0ea8b-3201-464c-8015-a82140bd285c",
+      "type": "source",
+      "label": "INQ000052458 - Speech from WHO Director-General titled opening remarks at the media briefing on COVID-19, dated 11/03/2020. UK Covid-19 Inquiry Archives",
+      "data": {
+        "sourceId": "1fe0ea8b-3201-464c-8015-a82140bd285c",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "fab13712-dab4-5738-b4dd-d2c3ba919f1e",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-07-23T02:31:42.049764+00:00",
+        "contentType": null,
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://covid19.public-inquiry.uk/documents/inq000052458-speech-from-who-director-general-titled-opening-remarks-at-the-media-briefing-on-covid-19-dated-11-03-2020/",
+        "domain": "covid19.public-inquiry.uk",
+        "publisher": null,
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-07-23T02:31:42.049764+00:00"
+      }
+    },
+    {
+      "id": "snapshot:35700c46-f011-4d5f-b431-737b25ffeded",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "1fe0ea8b-3201-464c-8015-a82140bd285c",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "fab13712-dab4-5738-b4dd-d2c3ba919f1e",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "35700c46-f011-4d5f-b431-737b25ffeded",
+        "retrievedAt": "2026-07-23T02:31:42.049764+00:00",
+        "publishedAt": null,
+        "contentHash": null,
+        "parserName": null,
+        "parserVersion": null
+      }
+    },
+    {
+      "id": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "type": "source",
+      "label": "WHO Global Situational Alert System: a mixed methods multistage approach to identify country-level COVID-19 alerts",
+      "data": {
+        "sourceId": "723200b1-d998-4ec7-90b5-fb3513f08d6b",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2023-07-26T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 450
+      },
+      "metadata": {
+        "canonicalUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10373705/",
+        "domain": "pmc.ncbi.nlm.nih.gov",
+        "publisher": "BMJ Global Health",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2023-07-26T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:b4b3ae2d-cbcd-4761-a95b-84f8015d67db",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "723200b1-d998-4ec7-90b5-fb3513f08d6b",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 450
+      },
+      "metadata": {
+        "snapshotId": "b4b3ae2d-cbcd-4761-a95b-84f8015d67db",
+        "retrievedAt": "2026-07-23T02:31:42.204690+00:00",
+        "publishedAt": "2023-07-26T00:00:00+00:00",
+        "contentHash": "c242fbb75ffa2b7a38f8d90180b55f98c577402c46727a5be9909201c1069f75",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+      "type": "source",
+      "label": "Covid-19: WHO declares pandemic because of “alarming levels” of spread, severity, and inaction",
+      "data": {
+        "sourceId": "2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2020-03-12T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.bmj.com/content/368/bmj.m1036",
+        "domain": "www.bmj.com",
+        "publisher": "The BMJ",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2020-03-12T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:d0776c10-de4f-4233-a00b-74bbe3c2c530",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "d0776c10-de4f-4233-a00b-74bbe3c2c530",
+        "retrievedAt": "2026-07-23T02:31:42.824438+00:00",
+        "publishedAt": "2020-03-12T00:00:00+00:00",
+        "contentHash": "e2f9e2523bd2ae2b85a47d1b2df96dcfc866ca62eeff5a84f3e46d78f0a06aba",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "type": "source",
+      "label": "World Health Organization Declares COVID-19 to be a Pandemic",
+      "data": {
+        "sourceId": "5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2020-03-11T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 630
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.crowell.com/en/insights/client-alerts/world-health-organization-declares-covid-19-to-be-a-pandemic",
+        "domain": "www.crowell.com",
+        "publisher": "Crowell & Moring - World Health Organization Declares COVID-19 to be a Pandemic",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2020-03-11T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:b42f4b31-1697-4a96-af9b-1730c2a27caa",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 630
+      },
+      "metadata": {
+        "snapshotId": "b42f4b31-1697-4a96-af9b-1730c2a27caa",
+        "retrievedAt": "2026-07-23T02:31:44.849146+00:00",
+        "publishedAt": "2020-03-11T00:00:00+00:00",
+        "contentHash": "d76da30333dd65daabdf2a0de3e5f78907a1632a1ce41c1dbe003cf8ee6e6914",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "type": "source",
+      "label": "WHO Declares COVID-19 a Pandemic",
+      "data": {
+        "sourceId": "3ce80aae-9aef-4cfa-9f56-35a679e64146",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2020-03-19T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 720
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.mattioli1885journals.com/index.php/actabiomedica/article/view/9397",
+        "domain": "www.mattioli1885journals.com",
+        "publisher": "Acta Biomedica Atenei Parmensis",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2020-03-19T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:e2092f1d-4c6c-4565-8a48-c422bbc4fb25",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "3ce80aae-9aef-4cfa-9f56-35a679e64146",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "fddfbd80-6f3f-5608-aecc-801799cbd39d",
+        "atomicClaimIds": [
+          "1d65b1cd-7b76-44ba-a0c9-3849e5ee0e62"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 720
+      },
+      "metadata": {
+        "snapshotId": "e2092f1d-4c6c-4565-8a48-c422bbc4fb25",
+        "retrievedAt": "2026-07-23T02:31:44.866502+00:00",
+        "publishedAt": "2020-03-19T00:00:00+00:00",
+        "contentHash": "ac6c9fc4d11c6557bdbadf3470ec1857fdbe60316f34abc5a1cf0996419b20e5",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "cluster-member:cee0c2a9-8e2b-545d-8b7c-69fbec495ba7:de1fe351-c08d-4299-9ed2-c99a05aa6597",
+      "source": "cluster:cee0c2a9-8e2b-545d-8b7c-69fbec495ba7",
+      "target": "source:de1fe351-c08d-4299-9ed2-c99a05aa6597",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:70fc3bac-7424-404f-b8da-0c90889b9dc8",
+      "source": "source:de1fe351-c08d-4299-9ed2-c99a05aa6597",
+      "target": "snapshot:70fc3bac-7424-404f-b8da-0c90889b9dc8",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fddfbd80-6f3f-5608-aecc-801799cbd39d:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "source": "cluster:fddfbd80-6f3f-5608-aecc-801799cbd39d",
+      "target": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:1e3770f8-6982-4141-bc56-ae8b53103514",
+      "source": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "target": "snapshot:1e3770f8-6982-4141-bc56-ae8b53103514",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:c3a90cd4-eb4f-5130-ab27-c85163fabd1d:d3bf3b07-1740-4b8e-a81d-6ed65efe8fb4",
+      "source": "cluster:c3a90cd4-eb4f-5130-ab27-c85163fabd1d",
+      "target": "source:d3bf3b07-1740-4b8e-a81d-6ed65efe8fb4",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:daf18636-0c96-4063-b5ce-39f3c9328474",
+      "source": "source:d3bf3b07-1740-4b8e-a81d-6ed65efe8fb4",
+      "target": "snapshot:daf18636-0c96-4063-b5ce-39f3c9328474",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fddfbd80-6f3f-5608-aecc-801799cbd39d:f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+      "source": "cluster:fddfbd80-6f3f-5608-aecc-801799cbd39d",
+      "target": "source:f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:8b5cba5b-0f47-4714-87a7-a2fc2c00d4d4",
+      "source": "source:f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+      "target": "snapshot:8b5cba5b-0f47-4714-87a7-a2fc2c00d4d4",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fddfbd80-6f3f-5608-aecc-801799cbd39d:e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+      "source": "cluster:fddfbd80-6f3f-5608-aecc-801799cbd39d",
+      "target": "source:e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:df43f9b9-503c-4133-a8a1-f37e36c3a8ef",
+      "source": "source:e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+      "target": "snapshot:df43f9b9-503c-4133-a8a1-f37e36c3a8ef",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fab13712-dab4-5738-b4dd-d2c3ba919f1e:1fe0ea8b-3201-464c-8015-a82140bd285c",
+      "source": "cluster:fab13712-dab4-5738-b4dd-d2c3ba919f1e",
+      "target": "source:1fe0ea8b-3201-464c-8015-a82140bd285c",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:35700c46-f011-4d5f-b431-737b25ffeded",
+      "source": "source:1fe0ea8b-3201-464c-8015-a82140bd285c",
+      "target": "snapshot:35700c46-f011-4d5f-b431-737b25ffeded",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fddfbd80-6f3f-5608-aecc-801799cbd39d:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "source": "cluster:fddfbd80-6f3f-5608-aecc-801799cbd39d",
+      "target": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:b4b3ae2d-cbcd-4761-a95b-84f8015d67db",
+      "source": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "target": "snapshot:b4b3ae2d-cbcd-4761-a95b-84f8015d67db",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fddfbd80-6f3f-5608-aecc-801799cbd39d:2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+      "source": "cluster:fddfbd80-6f3f-5608-aecc-801799cbd39d",
+      "target": "source:2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:d0776c10-de4f-4233-a00b-74bbe3c2c530",
+      "source": "source:2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+      "target": "snapshot:d0776c10-de4f-4233-a00b-74bbe3c2c530",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fddfbd80-6f3f-5608-aecc-801799cbd39d:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "source": "cluster:fddfbd80-6f3f-5608-aecc-801799cbd39d",
+      "target": "source:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:b42f4b31-1697-4a96-af9b-1730c2a27caa",
+      "source": "source:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "target": "snapshot:b42f4b31-1697-4a96-af9b-1730c2a27caa",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fddfbd80-6f3f-5608-aecc-801799cbd39d:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "source": "cluster:fddfbd80-6f3f-5608-aecc-801799cbd39d",
+      "target": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:e2092f1d-4c6c-4565-8a48-c422bbc4fb25",
+      "source": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "target": "snapshot:e2092f1d-4c6c-4565-8a48-c422bbc4fb25",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "dependency:453e7b61-7932-476c-b41f-fcec63c67430",
+      "source": "source:f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+      "target": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:0d61101f-28da-4644-860c-caa5c38dc63d",
+      "source": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "target": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:dfed0ca2-7d24-40fb-b0ee-e76a4cbce99c",
+      "source": "source:2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+      "target": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:cd0c9d74-a367-42c1-a236-9cc6eeb29648",
+      "source": "source:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "target": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:9cedc777-dccf-4ae5-b5b0-077932b9c55f",
+      "source": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "target": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "label": "quotes",
+      "relationship": "QUOTES",
+      "confidence": 0.9638,
+      "data": {
+        "relationship": "QUOTES",
+        "confidence": 0.9638,
+        "detectionMethod": "shared_quotation_first_known"
+      }
+    },
+    {
+      "id": "dependency:d8e402cf-f23b-426d-8652-6f79f4b25fb6",
+      "source": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "target": "source:fd6cde13-ecb8-469d-b873-cffa38394ff2",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:c801271b-5ae1-4806-ab95-57c1f2f9cb49",
+      "source": "source:e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+      "target": "source:f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:ee32bcb2-7c37-4d04-a2bb-f203e057bda2",
+      "source": "source:f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+      "target": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:2a0e78e3-13c5-4870-a545-93d4e6dd6e57",
+      "source": "source:f7c94055-bfa7-42b4-9f25-1953ef30b5a3",
+      "target": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:d61e6c18-afb4-4707-a35a-0b87ec28e762",
+      "source": "source:e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+      "target": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:d566a9cc-90bd-408b-9b4e-df5337c23c8f",
+      "source": "source:e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+      "target": "source:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:ed00fd3e-840a-4227-9068-feaac42c9517",
+      "source": "source:e887d0fa-5e30-4d8e-b6a7-40b9dca9e9cc",
+      "target": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:7f18d139-d60f-4913-866a-75c35975aa00",
+      "source": "source:2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+      "target": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.78,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:70926acf-4a02-41b5-a02e-54230797c4a2",
+      "source": "source:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "target": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:6b098b9c-dc48-4612-a087-6bfdf3a68a66",
+      "source": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "target": "source:723200b1-d998-4ec7-90b5-fb3513f08d6b",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.88,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.88,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:cbf3325b-984b-4b6a-bf26-bf995f6f6f06",
+      "source": "source:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "target": "source:2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:52a613a6-a2f1-4e2b-a08b-cc5a6d84a693",
+      "source": "source:2ceb8345-0f94-44ed-ae84-62c013adf1b5",
+      "target": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:cc862234-a409-486e-ae48-eaa101db0469",
+      "source": "source:5decc5d0-0ea7-4283-a15c-29ad9656d5bd",
+      "target": "source:3ce80aae-9aef-4cfa-9f56-35a679e64146",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    }
+  ]
+}

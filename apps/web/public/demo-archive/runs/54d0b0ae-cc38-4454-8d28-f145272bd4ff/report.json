@@ -1,0 +1,2380 @@
+{
+  "run_id": "54d0b0ae-cc38-4454-8d28-f145272bd4ff",
+  "verdict": "Supported",
+  "scores": {
+    "evidence_support": 95,
+    "attribution_support": 100,
+    "quote_fidelity": 100,
+    "verdict_confidence": 51,
+    "source_independence": 48,
+    "context_completeness": 85
+  },
+  "atomic_claims": [
+    {
+      "id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "claim_text": "The IPCC stated that human influence has warmed the atmosphere, ocean, and land.",
+      "importance_weight": 3,
+      "claim_type": "attribution",
+      "final_label": "Supported",
+      "support_score": 100,
+      "confidence_score": 48,
+      "context_completeness": 85,
+      "ambiguities": [],
+      "gaps": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "39af584d-a832-41c9-8585-21d3953416e8",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "3e4dc8bc-9e6e-53bb-8d50-fb923ab6ac9a",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 1,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.35,
+      "citation_status": "pending",
+      "passage_text": "The report provides warnings about the melting of the Greenland and Antarctic ice sheets, rising oceans, and extreme weather events, such as cyclones and heat waves. More specifically, it describes it is “extremely likely,” with 95-100% certainty, that human activity, as opposed to naturally occurring phenomena, has been the primary cause of climate change, up 5% from the IPCC’s 2007 Fourth Assessment Report (AR4). The report concludes, inter alia , that: heat wave frequency has “likely” increased in parts of Europe, Asia and Australia; annual mean Arctic sea ice decreased over the period 1979 to 2012; Northern Hemisphere snow cover has decreased since the mid-20th century; and global surface temperature change for the end of the 21st century is “likely” to exceed 1.5°C relative to 1850 to 1900 for most scenarios studied by the IPCC, and “likely” or “more likely than not” to exceed 2°C for some of those scenarios.",
+      "source_title": "IPCC Report Finds Warming Unequivocal, Human Influence Dominant Cause",
+      "source_url": "https://sdg.iisd.org/news/ipcc-report-finds-warming-unequivocal-human-influence-dominant-cause",
+      "page_or_position": "paragraph 2"
+    },
+    {
+      "id": "9d665559-f0e4-4a9a-b64f-566b1d667fd8",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "885edc5b-ac6b-5feb-95ae-596c0cbf6e73",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.985,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.34475,
+      "citation_status": "pending",
+      "passage_text": "Since the First assessment Report in 1990, a progression in the understanding if the climate change by the IPCC is noticeable. In particular, it is now considered even more certain  (> 95%), that human influence has been the dominant cause of the observed warming since the mid-20th century.",
+      "source_title": "IPCC 5th Assessment Report",
+      "source_url": "http://www.climasouth.eu/en/node/40",
+      "page_or_position": "paragraph 8"
+    },
+    {
+      "id": "9d241964-9c5f-45af-84b5-09b4de2c7809",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "9139d00b-5e80-5c2c-8bb1-63b16c89ed66",
+      "stance": "NEUTRAL",
+      "base_quality": 0.315,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.11025,
+      "citation_status": "rejected",
+      "passage_text": "The AR6 cycle comes to an end as the world has already warmed 1.1°C. The IPCC’s next cycle, AR7, will likely conclude around 2030 — and by then, we will already have made the decisions that will determine if we limit warming to 1.5°C, or if we surpass it — and by how much. AR6 provides the main scientific information that world leaders will use to make critical climate choices over the next eight years. As UN Secretary-General António Guterres made clear while laying out his priorities for the year ahead: “2023 is a year of reckoning. It must be a year of game-changing climate action.”",
+      "source_title": "The IPCC’s 6th Report Cycle is Ending. Here’s the Latest on the State of Global Climate Science.",
+      "source_url": "https://unfoundation.org/blog/post/8-years-6-reports-and-1-1-degrees-what-we-learned-from-the-ipccs-latest-report-cycle-and-whats-next-for-climate-action/",
+      "page_or_position": "paragraph 27"
+    },
+    {
+      "id": "45ba830a-1cf7-4de6-9857-498c1eecda0c",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "1816e02c-8cf6-58f4-a9a7-0d411177c804",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.765,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.26775,
+      "citation_status": "pending",
+      "passage_text": "In 1990, the IPCC said that emissions from human activities were “substantially increasing” greenhouse gas concentrations in the atmosphere, which would lead to warming.",
+      "source_title": "IPCC Fifth Assessment Report",
+      "source_url": "https://www.c2es.org/content/ipcc-fifth-assessment-report/",
+      "page_or_position": "paragraph 36"
+    },
+    {
+      "id": "8b55f368-dd36-45b2-a6b5-2db7fd593948",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "2cc4e307-66e0-53bf-918a-623973672876",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 1,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.35,
+      "citation_status": "pending",
+      "passage_text": "We are past the days of tempered language on the levels of certainty around human-caused global warming. The first sentence of the AR6 Working Group I Summary for Policymakers reads: “It is unequivocal that human influence has warmed the atmosphere, ocean and land.” What’s more, society has moved beyond the question of whether or not climate change is real. Climate deniers are increasingly on the fringes, and mainstream politics in nearly every country acknowledge the unavoidable reality of the climate crisis.",
+      "source_title": "The IPCC’s 6th Report Cycle is Ending. Here’s the Latest on the State of Global Climate Science.",
+      "source_url": "https://unfoundation.org/blog/post/8-years-6-reports-and-1-1-degrees-what-we-learned-from-the-ipccs-latest-report-cycle-and-whats-next-for-climate-action/",
+      "page_or_position": "paragraph 16"
+    },
+    {
+      "id": "2ea9f05e-9ecf-4423-a057-a76b61e484b9",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "d8ef6c0f-15fd-5449-9930-c5759b76156d",
+      "stance": "NEUTRAL",
+      "base_quality": 0.315,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.11025,
+      "citation_status": "rejected",
+      "passage_text": "The AR6 reports make it clear: We have climate solutions. The IPCC has highlighted strategies to reduce human-caused emissions from land use, analyzed the potential of ecosystem conservation to help nature and humans adapt, and found that every sector has proven solutions that could halve global emissions by 2030. And yet, emissions are increasing, and investments in fossil fuel infrastructure continue. We have the technology, so what is the largest obstacle to combating climate change? The answer, according to the IPCC, is largely a lack of political will. If we can muster political will — something that, so far, many world leaders haven’t done — then the rapid, transformational change that we need is achievable.",
+      "source_title": "The IPCC’s 6th Report Cycle is Ending. Here’s the Latest on the State of Global Climate Science.",
+      "source_url": "https://unfoundation.org/blog/post/8-years-6-reports-and-1-1-degrees-what-we-learned-from-the-ipccs-latest-report-cycle-and-whats-next-for-climate-action/",
+      "page_or_position": "paragraph 22"
+    },
+    {
+      "id": "274fc6aa-8078-4e8f-86b5-984b0a373bd7",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "bd878f4f-4a87-5650-8893-ed223b94318f",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.92648,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.324268,
+      "citation_status": "pending",
+      "passage_text": "The report summarizes the findings of the IPCC's Fifth Assessment Report. It integrates the three working group reports on the physical science basis, impacts/adaptation/vulnerability, and mitigation of climate change. Key findings include: human influence on the climate is clear; continued emissions will cause further warming and changes; and measures exist to limit warming to 2°C but require substantial emissions reductions by 2050 and net zero by 2100. Delaying mitigation will make the goals harder to achieve.",
+      "source_title": "Fifth Assessment Report - Synthesis Report",
+      "source_url": "https://www.slideshare.net/slideshow/fifth-assessment-report-synthesis-report/42521094",
+      "page_or_position": "paragraph 1"
+    },
+    {
+      "id": "66094fbc-3eb7-465c-b059-2fd2e7f81041",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "3bed6a68-be84-5729-96b4-197b59308686",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 1,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.35,
+      "citation_status": "pending",
+      "passage_text": "30 January 2014: The Intergovernmental Panel on Climate Change (IPCC) released the full and finalized report of Working Group I’s contribution to the Fifth Assessment Report (AR5), titled ‘Climate Change 2013: The Physical Science Basis.’ The report concludes that: warming of the climate system is unequivocal; human influence on the climate system has been the dominant cause; limiting climate change will require substantial and sustained emission reductions; and atmospheric greenhouse gas (GHG) concentrations, already at levels not observed in at least 800,000 years, will persist for centuries to come.",
+      "source_title": "IPCC Report Finds Warming Unequivocal, Human Influence Dominant Cause",
+      "source_url": "https://sdg.iisd.org/news/ipcc-report-finds-warming-unequivocal-human-influence-dominant-cause",
+      "page_or_position": "paragraph 1"
+    },
+    {
+      "id": "6f86fce5-9f01-4374-ac37-e4c085c4a585",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "09d38cff-1ac8-5317-a9fe-e3207dd34a47",
+      "stance": "NEUTRAL",
+      "base_quality": 0.1,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.035,
+      "citation_status": "rejected",
+      "passage_text": "exceed 1.5°C relative to 1850 to 1900 for most scenarios studied by the IPCC, and “likely” or “more likely than not” to exceed 2°C for some of those scenarios. The report also states that: Arctic sea ice cover will “very likely” continue to shrink and thin; Northern Hemisphere spring snow cover will decrease during the 21st century; global glacier volume will further decrease; and global mean sea level will continue to rise during the 21st century.",
+      "source_title": "IPCC Report Finds Warming Unequivocal, Human Influence Dominant Cause",
+      "source_url": "https://sdg.iisd.org/news/ipcc-report-finds-warming-unequivocal-human-influence-dominant-cause",
+      "page_or_position": "paragraph 2"
+    },
+    {
+      "id": "24b76867-f58b-4acb-af41-d10fe4141cf9",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "passage_id": "32e888cc-ec1d-5150-9ddd-3bc0734cc034",
+      "stance": "NEUTRAL",
+      "base_quality": 0.1,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.035,
+      "citation_status": "rejected",
+      "passage_text": "After the climate conference, AR6 will be a main input into the Global Stocktake , measuring progress toward meeting the goals of the Paris Agreement. The first Stocktake will conclude at the end of 2023, and countries’ climate actions will be directly compared with what the IPCC reports have found is necessary to limit global warming to 1.5°C. We know from Working Group III that right now, the world is not on track. There is still time to change course — but not much.",
+      "source_title": "The IPCC’s 6th Report Cycle is Ending. Here’s the Latest on the State of Global Climate Science.",
+      "source_url": "https://unfoundation.org/blog/post/8-years-6-reports-and-1-1-degrees-what-we-learned-from-the-ipccs-latest-report-cycle-and-whats-next-for-climate-action/",
+      "page_or_position": "paragraph 26"
+    }
+  ],
+  "source_graph": {
+    "nodes": [
+      {
+        "id": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "type": "cluster",
+        "label": "IPCC Fifth Assessment Report - Wikipedia information origin",
+        "data": {
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "originType": "shared_data_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "metadata": {
+          "representativeSourceId": "eedf8e9c-684b-417c-8b25-fbc1688a2e48"
+        }
+      },
+      {
+        "id": "cluster:39d7d859-693d-56f0-8e6e-6c759a78ff37",
+        "type": "cluster",
+        "label": "The Fifth Assessment Report of the IPCC | UNFCCC information origin",
+        "data": {
+          "clusterId": "39d7d859-693d-56f0-8e6e-6c759a78ff37",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 180
+        },
+        "metadata": {
+          "representativeSourceId": "008d0180-3c28-40a3-9915-2a041768f4b2"
+        }
+      },
+      {
+        "id": "cluster:bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+        "type": "cluster",
+        "label": "Client Challenge information origin",
+        "data": {
+          "clusterId": "bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 360
+        },
+        "metadata": {
+          "representativeSourceId": "cf72d03e-e23c-4366-a9dd-bed5a035decc"
+        }
+      },
+      {
+        "id": "cluster:7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+        "type": "cluster",
+        "label": "IPCC Fifth Assessment Synthesis Report — IPCC information origin",
+        "data": {
+          "clusterId": "7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 540
+        },
+        "metadata": {
+          "representativeSourceId": "faab35c4-7bf4-473f-aa00-3c7b357b9520"
+        }
+      },
+      {
+        "id": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "type": "source",
+        "label": "IPCC Fifth Assessment Report",
+        "data": {
+          "sourceId": "ba0c4423-00ea-4304-b668-433c5965eb7c",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2025-09-16T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 0
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.c2es.org/content/ipcc-fifth-assessment-report/",
+          "domain": "www.c2es.org",
+          "publisher": "Center for Climate and Energy Solutions",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2025-09-16T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:c61cec4e-9030-41a8-9c36-12e5bcf6beab",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "ba0c4423-00ea-4304-b668-433c5965eb7c",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 0
+        },
+        "metadata": {
+          "snapshotId": "c61cec4e-9030-41a8-9c36-12e5bcf6beab",
+          "retrievedAt": "2026-08-13T22:25:25.759938+00:00",
+          "publishedAt": "2025-09-16T00:00:00+00:00",
+          "contentHash": "4cfec8e7afaba2abf4176a4b0ab190bffd8cd787c43cd26977827ed2324f6efc",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "type": "source",
+        "label": "IPCC Report Finds Warming Unequivocal, Human Influence Dominant Cause",
+        "data": {
+          "sourceId": "f8840de3-9562-40ac-9d14-c7aad0024031",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2014-02-03T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 90
+        },
+        "metadata": {
+          "canonicalUrl": "https://sdg.iisd.org/news/ipcc-report-finds-warming-unequivocal-human-influence-dominant-cause",
+          "domain": "sdg.iisd.org",
+          "publisher": "SDG Knowledge Hub",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2014-02-03T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:72b6ada4-1e63-4a37-a67e-5eeefd773649",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "f8840de3-9562-40ac-9d14-c7aad0024031",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 90
+        },
+        "metadata": {
+          "snapshotId": "72b6ada4-1e63-4a37-a67e-5eeefd773649",
+          "retrievedAt": "2026-08-13T22:25:26.319483+00:00",
+          "publishedAt": "2014-02-03T00:00:00+00:00",
+          "contentHash": "f794aca52c77db60d220e41d86dbb95ecf77c65fbe19e11d286b19d4e928cb2c",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:008d0180-3c28-40a3-9915-2a041768f4b2",
+        "type": "source",
+        "label": "The Fifth Assessment Report of the IPCC | UNFCCC",
+        "data": {
+          "sourceId": "008d0180-3c28-40a3-9915-2a041768f4b2",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "39d7d859-693d-56f0-8e6e-6c759a78ff37",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:25:26.803181+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://unfccc.int/topics/science/workstreams/cooperation-with-the-ipcc/the-fifth-assessment-report-of-the-ipcc",
+          "domain": "unfccc.int",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:25:26.803181+00:00"
+        }
+      },
+      {
+        "id": "snapshot:6470a23d-916d-439a-b610-e9d040102782",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "008d0180-3c28-40a3-9915-2a041768f4b2",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "39d7d859-693d-56f0-8e6e-6c759a78ff37",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "6470a23d-916d-439a-b610-e9d040102782",
+          "retrievedAt": "2026-08-13T22:25:26.803181+00:00",
+          "publishedAt": null,
+          "contentHash": "d02032286070b4dd9d8fbd985a7bdca8af8edf52b89ff177db3bfcb2c8a9c43d",
+          "parserName": "playwright",
+          "parserVersion": "1.62.0"
+        }
+      },
+      {
+        "id": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "type": "source",
+        "label": "Fifth Assessment Report - Synthesis Report",
+        "data": {
+          "sourceId": "350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2014-12-09T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.slideshare.net/slideshow/fifth-assessment-report-synthesis-report/42521094",
+          "domain": "www.slideshare.net",
+          "publisher": "Slideshare",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2014-12-09T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:79aca0dd-5829-4f19-9dae-a8398fa2e0a9",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "79aca0dd-5829-4f19-9dae-a8398fa2e0a9",
+          "retrievedAt": "2026-08-13T22:25:27.209506+00:00",
+          "publishedAt": "2014-12-09T00:00:00+00:00",
+          "contentHash": "43d469432dfaf6b6db64c63a019d0e2ad64ab1f842a2b0ccae4f17916e08771e",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "type": "source",
+        "label": "No Time to Waste: The IPCC Special Report on Global Warming of 1.5ºC and Implications for Washington State | Climate Impacts Group",
+        "data": {
+          "sourceId": "aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2026-08-13T22:25:28.289086+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 270
+        },
+        "metadata": {
+          "canonicalUrl": "https://cig.uw.edu/projects/no-time-to-waste/",
+          "domain": "cig.uw.edu",
+          "publisher": "Climate Impacts Group",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:25:28.289086+00:00"
+        }
+      },
+      {
+        "id": "snapshot:97f431dd-37aa-48f4-8cc5-11602d5a3a69",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 270
+        },
+        "metadata": {
+          "snapshotId": "97f431dd-37aa-48f4-8cc5-11602d5a3a69",
+          "retrievedAt": "2026-08-13T22:25:28.289086+00:00",
+          "publishedAt": null,
+          "contentHash": "5220910d2a7cd695e0fb62ecd5e9ceb9f4efd1a71f1e76fc119a0132cee161d1",
+          "parserName": "beautifulsoup4",
+          "parserVersion": "4.15.0"
+        }
+      },
+      {
+        "id": "source:cf72d03e-e23c-4366-a9dd-bed5a035decc",
+        "type": "source",
+        "label": "Client Challenge",
+        "data": {
+          "sourceId": "cf72d03e-e23c-4366-a9dd-bed5a035decc",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:25:28.851096+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.nature.com/articles/s44168-023-00042-9",
+          "domain": "www.nature.com",
+          "publisher": "nature.com",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:25:28.851096+00:00"
+        }
+      },
+      {
+        "id": "snapshot:f4cc101f-fecd-43bf-9f91-6417620d2a26",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "cf72d03e-e23c-4366-a9dd-bed5a035decc",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "f4cc101f-fecd-43bf-9f91-6417620d2a26",
+          "retrievedAt": "2026-08-13T22:25:28.851096+00:00",
+          "publishedAt": null,
+          "contentHash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:faab35c4-7bf4-473f-aa00-3c7b357b9520",
+        "type": "source",
+        "label": "IPCC Fifth Assessment Synthesis Report — IPCC",
+        "data": {
+          "sourceId": "faab35c4-7bf4-473f-aa00-3c7b357b9520",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:25:29.088274+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://ar5-syr.ipcc.ch/",
+          "domain": "ar5-syr.ipcc.ch",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:25:29.088274+00:00"
+        }
+      },
+      {
+        "id": "snapshot:fef86187-b280-4ff5-bacd-4d9a5c552551",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "faab35c4-7bf4-473f-aa00-3c7b357b9520",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "fef86187-b280-4ff5-bacd-4d9a5c552551",
+          "retrievedAt": "2026-08-13T22:25:29.088274+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:64991462-0f66-4537-ab19-3905fe205226",
+        "type": "source",
+        "label": "IPCC 5th Assessment Report",
+        "data": {
+          "sourceId": "64991462-0f66-4537-ab19-3905fe205226",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2017-01-20T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "http://www.climasouth.eu/en/node/40",
+          "domain": "www.climasouth.eu",
+          "publisher": "climasouth.eu",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2017-01-20T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:1438f340-c309-4e4f-906e-a273d1c9915b",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "64991462-0f66-4537-ab19-3905fe205226",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "1438f340-c309-4e4f-906e-a273d1c9915b",
+          "retrievedAt": "2026-08-13T22:25:29.131482+00:00",
+          "publishedAt": "2017-01-20T00:00:00+00:00",
+          "contentHash": "39655594f71447c5c1d480b709d6558c4a22cb9ec526bd93dd4ac564ad0eea69",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "type": "source",
+        "label": "IPCC Fifth Assessment Report - Wikipedia",
+        "data": {
+          "sourceId": "eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2008-09-05T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 450
+        },
+        "metadata": {
+          "canonicalUrl": "https://en.wikipedia.org/wiki/IPCC_Fifth_Assessment_Report",
+          "domain": "en.wikipedia.org",
+          "publisher": "Wikimedia Foundation, Inc.",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2008-09-05T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:e5a2e30e-5867-4db3-8ed7-30e35eec8980",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 450
+        },
+        "metadata": {
+          "snapshotId": "e5a2e30e-5867-4db3-8ed7-30e35eec8980",
+          "retrievedAt": "2026-08-13T22:25:30.066818+00:00",
+          "publishedAt": "2008-09-05T00:00:00+00:00",
+          "contentHash": "f16c5f86248c898dd86c578d5e5c50577e89d959314435e4bc71f172dcbd7694",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "type": "source",
+        "label": "The IPCC’s 6th Report Cycle is Ending. Here’s the Latest on the State of Global Climate Science.",
+        "data": {
+          "sourceId": "d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2023-03-20T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://unfoundation.org/blog/post/8-years-6-reports-and-1-1-degrees-what-we-learned-from-the-ipccs-latest-report-cycle-and-whats-next-for-climate-action/",
+          "domain": "unfoundation.org",
+          "publisher": "unfoundation.org",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2023-03-20T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:a48f5547-8d8d-4a17-a312-5b1695dd6b5a",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+          "atomicClaimIds": [
+            "5a795f42-e8e6-4880-930b-0c2972437873"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "a48f5547-8d8d-4a17-a312-5b1695dd6b5a",
+          "retrievedAt": "2026-08-13T22:25:30.480873+00:00",
+          "publishedAt": "2023-03-20T00:00:00+00:00",
+          "contentHash": "c1f6b34f40e6ec8693b5bb81cf7cd74b1137e306673e666db2ab327d3ac702b3",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:c61cec4e-9030-41a8-9c36-12e5bcf6beab",
+        "source": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "target": "snapshot:c61cec4e-9030-41a8-9c36-12e5bcf6beab",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "target": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:72b6ada4-1e63-4a37-a67e-5eeefd773649",
+        "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "target": "snapshot:72b6ada4-1e63-4a37-a67e-5eeefd773649",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:39d7d859-693d-56f0-8e6e-6c759a78ff37:008d0180-3c28-40a3-9915-2a041768f4b2",
+        "source": "cluster:39d7d859-693d-56f0-8e6e-6c759a78ff37",
+        "target": "source:008d0180-3c28-40a3-9915-2a041768f4b2",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:6470a23d-916d-439a-b610-e9d040102782",
+        "source": "source:008d0180-3c28-40a3-9915-2a041768f4b2",
+        "target": "snapshot:6470a23d-916d-439a-b610-e9d040102782",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "target": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:79aca0dd-5829-4f19-9dae-a8398fa2e0a9",
+        "source": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "target": "snapshot:79aca0dd-5829-4f19-9dae-a8398fa2e0a9",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "target": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:97f431dd-37aa-48f4-8cc5-11602d5a3a69",
+        "source": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "target": "snapshot:97f431dd-37aa-48f4-8cc5-11602d5a3a69",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:bf0f1de8-ddd0-53f5-aa57-184415ddeaf6:cf72d03e-e23c-4366-a9dd-bed5a035decc",
+        "source": "cluster:bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+        "target": "source:cf72d03e-e23c-4366-a9dd-bed5a035decc",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:f4cc101f-fecd-43bf-9f91-6417620d2a26",
+        "source": "source:cf72d03e-e23c-4366-a9dd-bed5a035decc",
+        "target": "snapshot:f4cc101f-fecd-43bf-9f91-6417620d2a26",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902:faab35c4-7bf4-473f-aa00-3c7b357b9520",
+        "source": "cluster:7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+        "target": "source:faab35c4-7bf4-473f-aa00-3c7b357b9520",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:fef86187-b280-4ff5-bacd-4d9a5c552551",
+        "source": "source:faab35c4-7bf4-473f-aa00-3c7b357b9520",
+        "target": "snapshot:fef86187-b280-4ff5-bacd-4d9a5c552551",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:64991462-0f66-4537-ab19-3905fe205226",
+        "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "target": "source:64991462-0f66-4537-ab19-3905fe205226",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:1438f340-c309-4e4f-906e-a273d1c9915b",
+        "source": "source:64991462-0f66-4537-ab19-3905fe205226",
+        "target": "snapshot:1438f340-c309-4e4f-906e-a273d1c9915b",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "target": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:e5a2e30e-5867-4db3-8ed7-30e35eec8980",
+        "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "target": "snapshot:e5a2e30e-5867-4db3-8ed7-30e35eec8980",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "target": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:a48f5547-8d8d-4a17-a312-5b1695dd6b5a",
+        "source": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "target": "snapshot:a48f5547-8d8d-4a17-a312-5b1695dd6b5a",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "dependency:061b4ca5-9de4-4a7b-8af7-d484f4314a61",
+        "source": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "target": "source:008d0180-3c28-40a3-9915-2a041768f4b2",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.85,
+          "detectionMethod": "explicit_named_source"
+        }
+      },
+      {
+        "id": "dependency:adad3478-e755-4281-8a22-3f338e2dcd24",
+        "source": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "target": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.85,
+          "detectionMethod": "explicit_named_source"
+        }
+      },
+      {
+        "id": "dependency:654bb1cc-ad65-4416-81f9-fbadb8ed07d8",
+        "source": "source:64991462-0f66-4537-ab19-3905fe205226",
+        "target": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.85,
+          "detectionMethod": "explicit_named_source"
+        }
+      },
+      {
+        "id": "dependency:1beba7df-fe3f-47f9-993b-d52e966e4c88",
+        "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:2c56f544-1a43-4dbb-8b94-829fe32f0708",
+        "source": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:311615f1-af40-45e7-8a8f-10f23a2f2105",
+        "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.82,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:18a3bfd8-78ef-4c33-a0ba-39c7161e313f",
+        "source": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:91719591-5eb9-41ee-8104-c907851b5f86",
+        "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "target": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:2da51556-fbbc-415c-9c07-c06c586072cc",
+        "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "target": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:a6671de6-b4cd-4e32-be7e-5737d94b951f",
+        "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "target": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.88,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.88,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:c22ae797-bbdd-4ab5-bc3b-7b323558eea0",
+        "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+        "target": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:b7de4b2c-3352-4c9c-9fe2-b1b28f4dc26b",
+        "source": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "target": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:0ee187a8-53a1-468c-9c13-00560d037a5b",
+        "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "target": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.88,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.88,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:9808f9b2-a4c5-4ff9-932e-8b16f6c46aaf",
+        "source": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "target": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:58371958-77c1-445e-9c68-8a11583a5b6b",
+        "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "target": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:3fb42705-5b15-4149-97a3-7ff86ae92f25",
+        "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "target": "source:64991462-0f66-4537-ab19-3905fe205226",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:4d7e78cc-372f-4451-9d90-09d40fc9ae9c",
+        "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "target": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.82,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      }
+    ]
+  },
+  "calculations": [
+    {
+      "id": "bebae118-73ea-42eb-8bfc-4b2100b8ed30",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "1.0",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "1.0",
+        "X": "1.0",
+        "passage_id": "3e4dc8bc-9e6e-53bb-8d50-fb923ab6ac9a"
+      },
+      "result": {
+        "quality": "1.000"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "70402210-11cc-496c-9980-a5d206d30d11",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "1.000",
+        "passage_id": "3e4dc8bc-9e6e-53bb-8d50-fb923ab6ac9a",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.35000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "33a19139-6b37-42e3-bccf-a8b937f00878",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "1.0",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "885edc5b-ac6b-5feb-95ae-596c0cbf6e73"
+      },
+      "result": {
+        "quality": "0.985"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "55aabff2-7803-474b-86f0-21789d166e8e",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.985",
+        "passage_id": "885edc5b-ac6b-5feb-95ae-596c0cbf6e73",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.34475"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "081e40b0-b717-4c90-bccf-fd28b1b8adbb",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "9139d00b-5e80-5c2c-8bb1-63b16c89ed66"
+      },
+      "result": {
+        "quality": "0.315"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f47527be-a288-48c5-a0fc-3ce48ef7583d",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.315",
+        "passage_id": "9139d00b-5e80-5c2c-8bb1-63b16c89ed66",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.11025"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0d2e7f1f-ce5f-4232-a5b8-9109a9e98428",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.7",
+        "D": "0.6",
+        "F": "0.7",
+        "R": "0.8",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "1816e02c-8cf6-58f4-a9a7-0d411177c804"
+      },
+      "result": {
+        "quality": "0.765"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "6851b5cd-f0b5-4fec-a0fa-178e0f9fff4d",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.765",
+        "passage_id": "1816e02c-8cf6-58f4-a9a7-0d411177c804",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.26775"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f9646a42-2f3b-4139-bc95-022a832bf050",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "1.0",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "1.0",
+        "X": "1.0",
+        "passage_id": "2cc4e307-66e0-53bf-918a-623973672876"
+      },
+      "result": {
+        "quality": "1.000"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "14a842a7-0469-4162-a95e-15da58a260ce",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "1.000",
+        "passage_id": "2cc4e307-66e0-53bf-918a-623973672876",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.35000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "6991df10-2983-4aef-ab66-a90688287651",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "d8ef6c0f-15fd-5449-9930-c5759b76156d"
+      },
+      "result": {
+        "quality": "0.315"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "01732ef6-3bf7-4aef-b215-6f2649bdc18b",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.315",
+        "passage_id": "d8ef6c0f-15fd-5449-9930-c5759b76156d",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.11025"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "422a1b4a-36ba-48b4-ad8c-33470e263c6e",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "0.9",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "0.8",
+        "X": "0.9648",
+        "passage_id": "bd878f4f-4a87-5650-8893-ed223b94318f"
+      },
+      "result": {
+        "quality": "0.926480"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1cfa4177-21c6-49d7-95b5-3a77252e5855",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "1.0",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "1.0",
+        "X": "1.0",
+        "passage_id": "3bed6a68-be84-5729-96b4-197b59308686"
+      },
+      "result": {
+        "quality": "1.000"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a7720d8b-2b0c-4d05-8d47-64793795ab64",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.926480",
+        "passage_id": "bd878f4f-4a87-5650-8893-ed223b94318f",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.32426800"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "99e39663-9536-4dca-8bcc-1c09e2034609",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "1.000",
+        "passage_id": "3bed6a68-be84-5729-96b4-197b59308686",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.35000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "72fbf581-f3d3-4804-9e30-df11e6fb2523",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.0",
+        "D": "0.0",
+        "F": "0.0",
+        "R": "0.0",
+        "T": "0.0",
+        "X": "1.0",
+        "passage_id": "09d38cff-1ac8-5317-a9fe-e3207dd34a47"
+      },
+      "result": {
+        "quality": "0.100"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c9024c3f-0fca-4e49-8d13-bf00bbc323a6",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.100",
+        "passage_id": "09d38cff-1ac8-5317-a9fe-e3207dd34a47",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.03500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "9c4c9d0f-6391-484c-8ed5-f515b6b58322",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.0",
+        "D": "0.0",
+        "F": "0.0",
+        "R": "0.0",
+        "T": "0.0",
+        "X": "1.0",
+        "passage_id": "32e888cc-ec1d-5150-9ddd-3bc0734cc034"
+      },
+      "result": {
+        "quality": "0.100"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a12bcced-688e-4ebf-a6cd-a02c8cf34514",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.100",
+        "passage_id": "32e888cc-ec1d-5150-9ddd-3bc0734cc034",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.03500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "2aee9e33-17bb-4f50-adb4-0ab0291652a7",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "quote_fidelity",
+      "formula_text": "weighted mean(0.35 wording, 0.20 speaker, 0.20 completeness, 0.15 sequence, 0.10 translation when applicable)",
+      "inputs": {
+        "passages": [
+          {
+            "components": {
+              "wording": 1,
+              "completeness": 1,
+              "speaker_identity": 1,
+              "sequence_integrity": 1,
+              "translation_accuracy": null
+            },
+            "passage_id": "2cc4e307-66e0-53bf-918a-623973672876",
+            "adjusted_weight": "0.35000"
+          }
+        ]
+      },
+      "result": {
+        "score": "100.0"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "776fd228-8fbf-4a33-8e67-231b5221be75",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "contradicting_weight",
+      "formula_text": "N = sum(max(-stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "3e4dc8bc-9e6e-53bb-8d50-fb923ab6ac9a",
+          "885edc5b-ac6b-5feb-95ae-596c0cbf6e73",
+          "1816e02c-8cf6-58f4-a9a7-0d411177c804",
+          "2cc4e307-66e0-53bf-918a-623973672876",
+          "bd878f4f-4a87-5650-8893-ed223b94318f",
+          "3bed6a68-be84-5729-96b4-197b59308686"
+        ]
+      },
+      "result": {
+        "N": "0E-8"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "87b1254e-6ec7-491b-9df9-a29e4842bae8",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "supporting_weight",
+      "formula_text": "P = sum(max(stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "3e4dc8bc-9e6e-53bb-8d50-fb923ab6ac9a",
+          "885edc5b-ac6b-5feb-95ae-596c0cbf6e73",
+          "1816e02c-8cf6-58f4-a9a7-0d411177c804",
+          "2cc4e307-66e0-53bf-918a-623973672876",
+          "bd878f4f-4a87-5650-8893-ed223b94318f",
+          "3bed6a68-be84-5729-96b4-197b59308686"
+        ]
+      },
+      "result": {
+        "P": "1.8528930000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "00e1cf24-dfa2-4476-8777-9f8b90d5fce9",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_consistency",
+      "formula_text": "100 * abs(P - N) / (P + N)",
+      "inputs": {
+        "N": "0E-8",
+        "P": "1.8528930000"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "878e02ce-6b16-479a-bdbc-f5ac5cc4fc3f",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "evidence_support",
+      "formula_text": "100 * P / (P + N)",
+      "inputs": {
+        "N": "0E-8",
+        "P": "1.8528930000"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c84a2ad4-453e-49e4-ace1-3d6671004416",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "50",
+        "origin_diversity": "50",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "47.50"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "8ee24b6a-8b8e-441d-83ee-4540a2b94b74",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "material_penalties": {
+          "scope_omitted": "15"
+        }
+      },
+      "result": {
+        "score": "85"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c6f5ce97-0794-4701-9469-121f808c6380",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "essential_term_ambiguous": "10.5",
+          "single_information_cluster": "15",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "47.50",
+        "primary_access": "0",
+        "average_quality": "95.37275195896048255256778849"
+      },
+      "result": {
+        "score": "47.84318798974012063814194712"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "72aa1445-54fe-4a25-80f4-1b9078f65f6f",
+      "atomic_claim_id": "5a795f42-e8e6-4880-930b-0c2972437873",
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "85",
+        "support": "100",
+        "confidence": "47.84318798974012063814194712",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "insufficient_evidence_reasons": []
+      },
+      "result": {
+        "label": "Supported"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "570686ea-c5ec-46e8-acaf-9b336387e330",
+      "atomic_claim_id": null,
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "citation_partial_support": "7",
+          "single_information_cluster": "15",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "47.50",
+        "primary_access": "0",
+        "average_quality": "95.37275195896048255256778849"
+      },
+      "result": {
+        "score": "51"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "73744390-343e-49d4-9831-64c67cdcb8ad",
+      "atomic_claim_id": null,
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "50",
+        "origin_diversity": "50",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "47.50"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "21869ea4-5f2d-49a0-b7a6-2c2d800d5c81",
+      "atomic_claim_id": null,
+      "formula_name": "article_factual_accuracy",
+      "formula_text": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "100",
+            "importance_weight": 3
+          }
+        ],
+        "citation_partial_support_penalty": "5"
+      },
+      "result": {
+        "score": "95",
+        "essential_claim_gate": false
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "031f0260-8d3e-4ca1-8e31-bbe309050b55",
+      "atomic_claim_id": null,
+      "formula_name": "research_coverage",
+      "formula_text": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+      "inputs": {
+        "claims": [
+          {
+            "claim_ref": "claim-1-77680f28b74a4e2f",
+            "adequate_evidence": true,
+            "importance_weight": 3
+          }
+        ],
+        "confidence_issues": [
+          "important_source_inaccessible",
+          "primary_evidence_unavailable",
+          "single_information_cluster"
+        ]
+      },
+      "result": {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "5"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d3c592b1-d34e-4df6-8b89-fb84568bbae7",
+      "atomic_claim_id": null,
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "85",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "factual_accuracy": "100",
+        "verdict_confidence": "58.34318798974012063814194712",
+        "insufficient_evidence_reasons": [],
+        "strongly_refuted_essential_claim": false
+      },
+      "result": {
+        "label": "Supported"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "6b6624db-94c3-457a-9188-eb353e5088f6",
+      "atomic_claim_id": null,
+      "formula_name": "quote_fidelity",
+      "formula_text": "weighted mean(0.35 wording, 0.20 speaker, 0.20 completeness, 0.15 sequence, 0.10 translation when applicable)",
+      "inputs": {
+        "claims": [
+          {
+            "score": "100.0",
+            "claim_ref": "claim-1-77680f28b74a4e2f",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "100.0"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f6ae1309-3b2b-40d1-a780-5882ee0560ff",
+      "atomic_claim_id": null,
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "claims": [
+          {
+            "context": "85",
+            "claim_ref": "claim-1-77680f28b74a4e2f",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "85"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "2d06a8fb-9dd8-4e18-93e6-4ae2597c7539",
+      "atomic_claim_id": null,
+      "formula_name": "attribution_support",
+      "formula_text": "sum(attribution_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "100",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d12f42e7-23ab-4ee8-8d0e-13b373f26d17",
+      "atomic_claim_id": null,
+      "formula_name": "citation_partial_support_penalty",
+      "formula_text": "reported score = clamp(original score - partial citation penalty, 0, 100)",
+      "inputs": {
+        "partial_sentence_count": 1,
+        "evidence_support_penalty": "5",
+        "verdict_confidence_penalty": "7"
+      },
+      "result": {
+        "evidence_support": 95,
+        "verdict_confidence": 51
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "methodology_version": "not-recorded",
+  "workflow_version": "1.0.0",
+  "model_versions": {
+    "intake": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1094,
+        "prompt_tokens": 975,
+        "completion_tokens": 119
+      },
+      "provider": "deepseek",
+      "latency_ms": 1708,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "planner": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 2191,
+        "prompt_tokens": 1132,
+        "completion_tokens": 1059
+      },
+      "provider": "deepseek",
+      "latency_ms": 6367,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "embedding": {
+      "status": "unconfigured_fallback",
+      "provider": "deepseek",
+      "retryable": false,
+      "error_code": "embedding_route_unavailable",
+      "latency_ms": 0,
+      "used_model": null,
+      "status_code": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "request_count": 0,
+      "retrieval_mode": "lexical_metadata_fallback",
+      "configured_model": null
+    },
+    "synthesis": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 19917,
+        "prompt_tokens": 19189,
+        "completion_tokens": 728
+      },
+      "provider": "deepseek",
+      "latency_ms": 5215,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "decomposition": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1567,
+        "prompt_tokens": 1355,
+        "completion_tokens": 212
+      },
+      "provider": "deepseek",
+      "latency_ms": 1950,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_audit": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 5805,
+        "prompt_tokens": 4688,
+        "completion_tokens": 1117
+      },
+      "provider": "deepseek",
+      "latency_ms": 6318,
+      "batch_count": 5,
+      "repair_count": 0,
+      "request_count": 5,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_revision": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 6071,
+        "prompt_tokens": 5476,
+        "completion_tokens": 595
+      },
+      "provider": "deepseek",
+      "latency_ms": 3648,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "evidence_classification": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 19102,
+        "prompt_tokens": 17053,
+        "completion_tokens": 2049
+      },
+      "provider": "deepseek",
+      "latency_ms": 9819,
+      "batch_count": 10,
+      "repair_count": 0,
+      "request_count": 10,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    }
+  },
+  "prompt_versions": {
+    "intake": "intake-v2",
+    "planner": "planner-v2",
+    "synthesis": "synthesis-v4",
+    "decomposition": "decomposition-v3",
+    "citation_audit": "citation-audit-v4",
+    "citation_revision": "synthesis-v4",
+    "evidence_classification": "evidence-classification-v4"
+  },
+  "parser_versions": {
+    "playwright": "1.62.0",
+    "trafilatura": "2.2.0",
+    "beautifulsoup4": "4.15.0"
+  },
+  "retrieval_versions": {
+    "implementation": "not-recorded",
+    "version": "not-recorded"
+  },
+  "score_roles": {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured."
+  },
+  "report_sentences": [
+    {
+      "id": "bdecac52-b98c-4349-8d1e-8965aec70712",
+      "report_section": "summary",
+      "sentence_text": "The IPCC has stated that human influence has warmed the atmosphere, ocean, and land.",
+      "passage_id": "2cc4e307-66e0-53bf-918a-623973672876",
+      "audit_status": "passed",
+      "audit_note": "The passage directly quotes the IPCC statement that it is unequivocal that human influence has warmed the atmosphere, ocean, and land, which matches the summary sentence."
+    },
+    {
+      "id": "b27e001d-b636-43b3-b1dd-781531e8df92",
+      "report_section": "factual_finding",
+      "sentence_text": "The IPCC's Sixth Assessment Report states: \"It is unequivocal that human influence has warmed the atmosphere, ocean and land.\"",
+      "passage_id": "2cc4e307-66e0-53bf-918a-623973672876",
+      "audit_status": "passed",
+      "audit_note": "The passage contains the exact quote from the IPCC's Sixth Assessment Report as cited in the fact sentence."
+    },
+    {
+      "id": "7e047b22-88f9-45c4-bb59-1c4409ab09e7",
+      "report_section": "factual_finding",
+      "sentence_text": "The IPCC's Fifth Assessment Report concluded that it is \"extremely likely\" (95-100% certainty) that human activity has been the primary cause of climate change.",
+      "passage_id": "3e4dc8bc-9e6e-53bb-8d50-fb923ab6ac9a",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that it is 'extremely likely' with 95-100% certainty that human activity has been the primary cause of climate change, matching the sentence's claim."
+    },
+    {
+      "id": "6603fa6a-7443-491d-ae67-d497b58e4d6f",
+      "report_section": "factual_finding",
+      "sentence_text": "The IPCC's Fifth Assessment Report concluded that human influence on the climate system has been the dominant cause.",
+      "passage_id": "3bed6a68-be84-5729-96b4-197b59308686",
+      "audit_status": "passed",
+      "audit_note": "The passage directly states that 'human influence on the climate system has been the dominant cause,' which matches the sentence's claim."
+    },
+    {
+      "id": "6b69c04a-10db-45fc-ae06-6656c1d9f956",
+      "report_section": "factual_finding",
+      "sentence_text": "The IPCC's Fifth Assessment Report synthesis states that human influence on the climate is clear.",
+      "passage_id": "bd878f4f-4a87-5650-8893-ed223b94318f",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states 'human influence on the climate is clear', which directly supports the sentence's claim that the IPCC's Fifth Assessment Report synthesis states human influence on the climate is clear."
+    },
+    {
+      "id": "3da7e886-9045-41a5-8d38-4e208140db9e",
+      "report_section": "attribution",
+      "sentence_text": "The claim that the IPCC stated human influence has warmed the atmosphere, ocean, and land is directly supported by the IPCC's Sixth Assessment Report, which states it is \"unequivocal\" that human influence has warmed the atmosphere, ocean, and land.",
+      "passage_id": "2cc4e307-66e0-53bf-918a-623973672876",
+      "audit_status": "passed",
+      "audit_note": "The passage directly quotes the AR6 Working Group I Summary for Policymakers: 'It is unequivocal that human influence has warmed the atmosphere, ocean and land.' This exactly matches the sentence's claim that the IPCC's Sixth Assessment Report states it is 'unequivocal' that human influence has warmed the atmosphere, ocean, and land."
+    },
+    {
+      "id": "3e0da762-15c9-4a85-9df2-746a67827533",
+      "report_section": "attribution",
+      "sentence_text": "The IPCC's Fifth Assessment Report supports the claim that human influence is the dominant cause of observed warming, though it does not explicitly mention the atmosphere, ocean, and land together.",
+      "passage_id": "3e4dc8bc-9e6e-53bb-8d50-fb923ab6ac9a",
+      "audit_status": "passed",
+      "audit_note": "The passage states that it is 'extremely likely' with 95-100% certainty that human activity has been the primary cause of climate change, which supports the claim that human influence is the dominant cause of observed warming. The passage does not mention atmosphere, ocean, and land together, but the sentence does not require that detail."
+    },
+    {
+      "id": "4966e512-b4ea-4283-8faf-265483d41593",
+      "report_section": "attribution",
+      "sentence_text": "The IPCC's Fifth Assessment Report supports the claim that human influence is the dominant cause of observed warming, though it does not explicitly mention the atmosphere, ocean, and land together.",
+      "passage_id": "885edc5b-ac6b-5feb-95ae-596c0cbf6e73",
+      "audit_status": "passed",
+      "audit_note": "The passage states that it is now considered even more certain (>95%) that human influence has been the dominant cause of the observed warming since the mid-20th century, which directly supports the claim. The passage does not mention atmosphere, ocean, and land together, but the sentence does not require that detail."
+    },
+    {
+      "id": "fe74e97b-92ab-4142-99db-62d752e54233",
+      "report_section": "attribution",
+      "sentence_text": "The IPCC's Fifth Assessment Report supports the claim that human influence is the dominant cause of observed warming, though it does not explicitly mention the atmosphere, ocean, and land together.",
+      "passage_id": "3bed6a68-be84-5729-96b4-197b59308686",
+      "audit_status": "passed",
+      "audit_note": "The passage states that the IPCC's AR5 report concludes that 'human influence on the climate system has been the dominant cause,' which directly supports the claim that human influence is the dominant cause of observed warming. The passage does not mention atmosphere, ocean, and land together, but the sentence's caveat about that omission is not contradicted; the core claim is fully supported."
+    },
+    {
+      "id": "cd36641e-07ab-46be-832c-0323b25889f6",
+      "report_section": "attribution",
+      "sentence_text": "The IPCC's Fifth Assessment Report supports the claim that human influence is the dominant cause of observed warming, though it does not explicitly mention the atmosphere, ocean, and land together.",
+      "passage_id": "bd878f4f-4a87-5650-8893-ed223b94318f",
+      "audit_status": "partial",
+      "audit_note": "The passage states that 'human influence on the climate is clear' and mentions continued emissions will cause further warming, but it does not explicitly state that human influence is the dominant cause of observed warming. The support is narrower than the claim, as it asserts influence is clear but not dominant."
+    }
+  ],
+  "evidence_reviewed_at": "2026-08-13T22:25:30.480873Z",
+  "generated_at": "2026-08-13T22:26:23.916644Z",
+  "limitations": [
+    "Inaccessible source: The evidence source could not be accessed safely."
+  ]
+}

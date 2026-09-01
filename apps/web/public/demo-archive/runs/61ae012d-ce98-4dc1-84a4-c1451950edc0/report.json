@@ -1,0 +1,2207 @@
+{
+  "run_id": "61ae012d-ce98-4dc1-84a4-c1451950edc0",
+  "verdict": "Supported",
+  "scores": {
+    "evidence_support": 90,
+    "attribution_support": null,
+    "quote_fidelity": null,
+    "verdict_confidence": 64,
+    "source_independence": 75,
+    "context_completeness": 85
+  },
+  "atomic_claims": [
+    {
+      "id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "claim_text": "Japan is facing a declining population crisis",
+      "importance_weight": 3,
+      "claim_type": "factual",
+      "final_label": "Supported",
+      "support_score": 100,
+      "confidence_score": 67,
+      "context_completeness": 85,
+      "ambiguities": [],
+      "gaps": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "30f08692-34a7-44e0-9274-02e908597474",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "8c6f367e-9655-5029-ba64-21855735fe20",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.965,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.965,
+      "citation_status": "pending",
+      "passage_text": "The Bureau of Statistics also estimates that by 2060, Japan’s total population is expected to decrease by 40 million people. The combination of population decline and extremely high life expectancy has made Japan one of the fastest aging societies in the world. People aged 65 and over account for more than a quarter of the total population, and this proportion is expected to continue to rise in the future At present, the whole country is facing the dual pressure of declining birth rate and aging population.",
+      "source_title": "Demographics of Japan in 2023 - Growth Drivers & Regional Outlook - OOSGA",
+      "source_url": "https://oosga.com/demographics/jpn/",
+      "page_or_position": "paragraph 13"
+    },
+    {
+      "id": "acb3c63c-101b-4c56-86e0-7d1d1da62250",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "223dd9a2-7ecc-5e7a-93d3-af7fa930b01a",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.935,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.32725,
+      "citation_status": "pending",
+      "passage_text": "This trend of falling birth-rates and declining populations is not unique to North-Korea or Japan: projections by the UN indicate that many high-income nations will face population decline in the near future. Two-thirds of the global population is living in a country where the fertility rate is below the 2.1 threshold necessary to maintain population stability. And around 2100, fertility rates are expected to dip below 2.1 in all countries around the world, except twelve.",
+      "source_title": "Japan's Population Decline Isn't as Bad as We Think | Earth.Org",
+      "source_url": "https://earth.org/understanding-japans-demographic-crisis-an-alternative-perspective-on-population-decline/",
+      "page_or_position": "paragraph 14"
+    },
+    {
+      "id": "29f91a20-5531-4b1c-91b1-15dcf3d5fab8",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "6b8019f0-5f7b-5a46-8c82-f17f66b9f0bb",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.945,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.33075,
+      "citation_status": "pending",
+      "passage_text": "Japan and many other countries facing population decline see these demographic projections as concerning trends that require urgent action. But why exactly are they so afraid of population decline, what are they doing about it, and is population decline really a cause worth fighting for?",
+      "source_title": "Japan's Population Decline Isn't as Bad as We Think | Earth.Org",
+      "source_url": "https://earth.org/understanding-japans-demographic-crisis-an-alternative-perspective-on-population-decline/",
+      "page_or_position": "paragraph 15"
+    },
+    {
+      "id": "af32d0be-71aa-400e-8d8b-8917bd4153e8",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "d080b38a-c378-5818-9ec7-e88b49806996",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.835,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.29225,
+      "citation_status": "pending",
+      "passage_text": "In fact, scarcity of human resources naturally incentivises companies to innovate and automate to increase productivity and efficiency. Countries like Finland and Sweden, both of which are experiencing declining populations, have managed to maintain strong economies by prioritising education, research & development (R&S), and innovation. What’s more, the economy of the world’s second-most populated country – China – is projected to grow by 5.2% in 2023 and 4.5% in 2024 despite experiencing a population decline in 2022. And even Japan’s economy is still expected to slightly grow in the coming years despite the rapidly declining and ageing population.",
+      "source_title": "Japan's Population Decline Isn't as Bad as We Think | Earth.Org",
+      "source_url": "https://earth.org/understanding-japans-demographic-crisis-an-alternative-perspective-on-population-decline/",
+      "page_or_position": "paragraph 44"
+    },
+    {
+      "id": "1cc43bb2-9eac-4de9-8360-aed2c6b23522",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "dd6ff367-9609-5a47-935b-71235fc1c4b9",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.965,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.965,
+      "citation_status": "pending",
+      "passage_text": "In recent years, Japan has faced a significant demographic crisis, which was further exacerbated by the coronavirus disease 2019 (COVID-19) pandemic. By 2022, the country experienced a 1.5% decrease in population, which is in contrast to other G7 nations, and had the highest rate of excess mortality among Organization for Economic Co-operation and Development (OECD) countries. This crisis is mainly attributed to aging population, with Japan's aging rate reaching 29.9%, the highest among its peer countries. The Japanese government, led by Prime Minister Fumio Kishida, has proposed policies aimed at addressing these challenges, focusing on increasing fertility rates. Despite these efforts, an evidence-based policymaking (EBPM) analysis reveals that the anticipated impact on fertility rates is marginal, with financial interventions estimated to yield only a slight population increase by 2060. Furthermore, the analysis highlighted the need for a more comprehensive approach, indicating that addressing societal issues such as gender norms and workplace culture might be crucial for a sustainable solution to Japan's demographic challenges.",
+      "source_title": "Japan's Demographic Dilemma: Navigating the Postpandemic Population Decline - PubMed",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/39114623/",
+      "page_or_position": "paragraph 9"
+    },
+    {
+      "id": "9e708a9c-f8ba-448c-a1b9-91e634f3d37d",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "e71e7104-0a93-50d2-bb7b-e52c032e3870",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.945,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.945,
+      "citation_status": "pending",
+      "passage_text": "The main reason for Japan’s rapid population decline is the persistently low birth rate. Japan’s fertility rate has been declining since the mid-1970s, falling to about 1.3 children per woman by the early 2000s, and has remained at about 1.3 in recent years, but unlike East Asian countries such as South Korea and Taiwan, The economy’s TFR in 2021 is still relatively high compared to 0.8 and 1.1 respectively.",
+      "source_title": "Demographics of Japan in 2023 - Growth Drivers & Regional Outlook - OOSGA",
+      "source_url": "https://oosga.com/demographics/jpn/",
+      "page_or_position": "paragraph 14"
+    },
+    {
+      "id": "3d36ec81-cddc-4297-a3c8-2bcfa70a8eac",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "079e87d7-8026-589e-8bd0-794e9d7bc813",
+      "stance": "NEUTRAL",
+      "base_quality": 0.36,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.126,
+      "citation_status": "rejected",
+      "passage_text": "According to NHK, Tokyo is the most populous city in Japan with 14 million residents. The population has continued to grow in the capital city and Chiba Prefecture.",
+      "source_title": "Japan sees record drop in population in 2024",
+      "source_url": "https://www.dw.com/en/japan-sees-record-drop-in-population-in-2024/a-73562758",
+      "page_or_position": "paragraph 10"
+    },
+    {
+      "id": "65136147-9d86-49bb-b87a-fefb8cb925d6",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.945,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.33075,
+      "citation_status": "pending",
+      "passage_text": "Japan’s population has been declining since 2008. By 2050, not only Japan but populations in over 55 – mostly high-income – countries are expected to fall. As shrinking populations are commonly linked to a smaller labour force and a slowing economy, many governments, such as the Japanese one, see this trend as a dire problem that needs to be addressed. But does it really have to be? Or could this be an opportunity to create a more sustainable and stable economy?",
+      "source_title": "Japan's Population Decline Isn't as Bad as We Think | Earth.Org",
+      "source_url": "https://earth.org/understanding-japans-demographic-crisis-an-alternative-perspective-on-population-decline/",
+      "page_or_position": "paragraph 12"
+    },
+    {
+      "id": "826d7f72-3bf2-4ed6-929c-d27f9d21b4fd",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "334f85db-1825-5298-aa91-a91a55f816e4",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.77,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.77,
+      "citation_status": "pending",
+      "passage_text": "Another reason for Japan’s declining marriage rate is the existence of traditional family gender roles. The number of marriages is falling, falling to 514,000 in 2021, according to the government’s white paper on gender equality. According to the survey, a quarter of single people in their 30s do not want to get married. For them, handling housework and childcare poses a significant burden, while Japanese men’s contribution to housework is still low, and the gender imbalance in housework is still significant, which makes it difficult for married women to balance work and family, thus reducing attractiveness of marriage.",
+      "source_title": "Demographics of Japan in 2023 - Growth Drivers & Regional Outlook - OOSGA",
+      "source_url": "https://oosga.com/demographics/jpn/",
+      "page_or_position": "paragraph 17"
+    },
+    {
+      "id": "11df5264-5d00-47a8-b505-9aa7152714c3",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "passage_id": "7449acb7-c831-59d7-b7b9-92710cd30de7",
+      "stance": "NEUTRAL",
+      "base_quality": 0.1,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.1,
+      "citation_status": "rejected",
+      "passage_text": "According to the 2018 census, official data shows that Japan is a racially homogeneous country, with 98 percent of the population considered Japanese, making Japan appear more homogeneous compared to racially diverse countries such as the United States.",
+      "source_title": "Demographics of Japan in 2023 - Growth Drivers & Regional Outlook - OOSGA",
+      "source_url": "https://oosga.com/demographics/jpn/",
+      "page_or_position": "paragraph 29"
+    }
+  ],
+  "source_graph": {
+    "nodes": [
+      {
+        "id": "cluster:6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+        "type": "cluster",
+        "label": "Demographics of Japan in 2023 - Growth Drivers & Regional Outlook - OOSGA information origin",
+        "data": {
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "originType": "shared_data_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "metadata": {
+          "representativeSourceId": "8911abc4-d341-4acb-9e54-83872bf34e5d"
+        }
+      },
+      {
+        "id": "cluster:6e8893a9-6131-5869-9abc-375001f85704",
+        "type": "cluster",
+        "label": "How Japan Lost 3 Million People in Five Years - The New York Times information origin",
+        "data": {
+          "clusterId": "6e8893a9-6131-5869-9abc-375001f85704",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 180
+        },
+        "metadata": {
+          "representativeSourceId": "eec78e81-4c19-4a9f-a8e5-b559f015259e"
+        }
+      },
+      {
+        "id": "cluster:7128e1ad-5e52-54d1-8aad-00bebcc629eb",
+        "type": "cluster",
+        "label": "On to 2050: Life in a shrinking Japan - The Japan Times information origin",
+        "data": {
+          "clusterId": "7128e1ad-5e52-54d1-8aad-00bebcc629eb",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 360
+        },
+        "metadata": {
+          "representativeSourceId": "a446db4c-460c-4e21-8ada-c0c7aa7ad65b"
+        }
+      },
+      {
+        "id": "cluster:dd9597b5-4ae9-5286-b173-0dba22a30045",
+        "type": "cluster",
+        "label": "Japan's Demographic Dilemma: Navigating the Postpandemic Population Decline - PubMed information origin",
+        "data": {
+          "clusterId": "dd9597b5-4ae9-5286-b173-0dba22a30045",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 540
+        },
+        "metadata": {
+          "representativeSourceId": "942c3b7e-b92d-4b4d-be14-b2c6e6e32f48"
+        }
+      },
+      {
+        "id": "source:1b12a169-269b-4362-8b0e-ea76b5f98593",
+        "type": "source",
+        "label": "Japan sees record drop in population in 2024",
+        "data": {
+          "sourceId": "1b12a169-269b-4362-8b0e-ea76b5f98593",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2025-08-07T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "204a344c-374a-4bf2-9e99-c75b01942b60"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 0
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.dw.com/en/japan-sees-record-drop-in-population-in-2024/a-73562758",
+          "domain": "www.dw.com",
+          "publisher": "Deutsche Welle",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2025-08-07T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:5b9b3775-2d33-4ae5-809e-b566557fef6f",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-12",
+        "data": {
+          "sourceId": "1b12a169-269b-4362-8b0e-ea76b5f98593",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "atomicClaimIds": [
+            "204a344c-374a-4bf2-9e99-c75b01942b60"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 0
+        },
+        "metadata": {
+          "snapshotId": "5b9b3775-2d33-4ae5-809e-b566557fef6f",
+          "retrievedAt": "2026-08-12T23:33:19.463015+00:00",
+          "publishedAt": "2025-08-07T00:00:00+00:00",
+          "contentHash": "c8b7b7893d8da1e98f78b9593f5e8c803f45d65628a1ca20f5683c64f26fdb51",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:8911abc4-d341-4acb-9e54-83872bf34e5d",
+        "type": "source",
+        "label": "Demographics of Japan in 2023 - Growth Drivers & Regional Outlook - OOSGA",
+        "data": {
+          "sourceId": "8911abc4-d341-4acb-9e54-83872bf34e5d",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2023-10-30T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "204a344c-374a-4bf2-9e99-c75b01942b60"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 90
+        },
+        "metadata": {
+          "canonicalUrl": "https://oosga.com/demographics/jpn/",
+          "domain": "oosga.com",
+          "publisher": "OOSGA",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2023-10-30T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:e68cc969-f0a2-4104-98c1-1183aba88f90",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-12",
+        "data": {
+          "sourceId": "8911abc4-d341-4acb-9e54-83872bf34e5d",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "atomicClaimIds": [
+            "204a344c-374a-4bf2-9e99-c75b01942b60"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 90
+        },
+        "metadata": {
+          "snapshotId": "e68cc969-f0a2-4104-98c1-1183aba88f90",
+          "retrievedAt": "2026-08-12T23:33:20.517264+00:00",
+          "publishedAt": "2023-10-30T00:00:00+00:00",
+          "contentHash": "57dd264171df888dac4b83207a6456201483d1530d01447a98f11d87325f1894",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:86638ea7-0000-4b12-9745-4ca2a9f54e51",
+        "type": "source",
+        "label": "Japan Population Growth Rate (1961-2025)",
+        "data": {
+          "sourceId": "86638ea7-0000-4b12-9745-4ca2a9f54e51",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2026-01-01T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.macrotrends.net/global-metrics/countries/jpn/japan/population-growth-rate",
+          "domain": "www.macrotrends.net",
+          "publisher": "Japan Population Growth Rate (1961-2025)",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-01-01T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:fa3d5acc-ceb3-4c8f-b4fe-632cd8fc5ec9",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-12",
+        "data": {
+          "sourceId": "86638ea7-0000-4b12-9745-4ca2a9f54e51",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "fa3d5acc-ceb3-4c8f-b4fe-632cd8fc5ec9",
+          "retrievedAt": "2026-08-12T23:33:22.982812+00:00",
+          "publishedAt": "2026-01-01T00:00:00+00:00",
+          "contentHash": "9a9666532dbdc84a0699a9201ba6dd6f1bb9d15fc6cb59edca994d1b418b60e3",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+        "type": "source",
+        "label": "Japan's population declines over 900,000 in 2024",
+        "data": {
+          "sourceId": "edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2025-08-06T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 270
+        },
+        "metadata": {
+          "canonicalUrl": "http://www.china.org.cn/world/Off_the_Wire/2025-08/06/content_118013766.shtml",
+          "domain": "www.china.org.cn",
+          "publisher": "china.org.cn",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2025-08-06T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:8813822d-f966-42ad-8aee-07ab7d0ee325",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 270
+        },
+        "metadata": {
+          "snapshotId": "8813822d-f966-42ad-8aee-07ab7d0ee325",
+          "retrievedAt": "2026-08-13T01:02:37.617341+00:00",
+          "publishedAt": "2025-08-06T00:00:00+00:00",
+          "contentHash": "a8de7806dbbc99116d0353e7c0ceb89217f891fe6095c8d969878a068ca3916e",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:4aab8a95-c228-4a9e-a77a-62fc4aeb9119",
+        "type": "source",
+        "label": "Japan’s Population Falls Again in 2024",
+        "data": {
+          "sourceId": "4aab8a95-c228-4a9e-a77a-62fc4aeb9119",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2025-08-13T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.nippon.com/en/japan-data/h02503/",
+          "domain": "www.nippon.com",
+          "publisher": "nippon.com",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2025-08-13T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:14c21e6c-c05e-4e49-b00c-28ca0a98e358",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "4aab8a95-c228-4a9e-a77a-62fc4aeb9119",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "14c21e6c-c05e-4e49-b00c-28ca0a98e358",
+          "retrievedAt": "2026-08-13T01:02:38.489988+00:00",
+          "publishedAt": "2025-08-13T00:00:00+00:00",
+          "contentHash": "14cde34051cbb2d2ed7eb4f49a9e9d255932fc47d4c4414443ad5a01f743d3d8",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:eec78e81-4c19-4a9f-a8e5-b559f015259e",
+        "type": "source",
+        "label": "How Japan Lost 3 Million People in Five Years - The New York Times",
+        "data": {
+          "sourceId": "eec78e81-4c19-4a9f-a8e5-b559f015259e",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "6e8893a9-6131-5869-9abc-375001f85704",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-12T23:33:24.664805+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.nytimes.com/interactive/2026/05/29/world/asia/japan-census-population-decline.html",
+          "domain": "www.nytimes.com",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-12T23:33:24.664805+00:00"
+        }
+      },
+      {
+        "id": "snapshot:09fbbeb7-79b7-413d-a6ef-4c04b5c28683",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-12",
+        "data": {
+          "sourceId": "eec78e81-4c19-4a9f-a8e5-b559f015259e",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "6e8893a9-6131-5869-9abc-375001f85704",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "09fbbeb7-79b7-413d-a6ef-4c04b5c28683",
+          "retrievedAt": "2026-08-12T23:33:24.664805+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:a446db4c-460c-4e21-8ada-c0c7aa7ad65b",
+        "type": "source",
+        "label": "On to 2050: Life in a shrinking Japan - The Japan Times",
+        "data": {
+          "sourceId": "a446db4c-460c-4e21-8ada-c0c7aa7ad65b",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "7128e1ad-5e52-54d1-8aad-00bebcc629eb",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-12T23:33:24.857968+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.japantimes.co.jp/news/2025/12/29/japan/society/japan-2050-predections-depopulation/",
+          "domain": "www.japantimes.co.jp",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-12T23:33:24.857968+00:00"
+        }
+      },
+      {
+        "id": "snapshot:9662a569-1877-4b28-b6e4-1920c8b48c49",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-12",
+        "data": {
+          "sourceId": "a446db4c-460c-4e21-8ada-c0c7aa7ad65b",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "7128e1ad-5e52-54d1-8aad-00bebcc629eb",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "9662a569-1877-4b28-b6e4-1920c8b48c49",
+          "retrievedAt": "2026-08-12T23:33:24.857968+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:942c3b7e-b92d-4b4d-be14-b2c6e6e32f48",
+        "type": "source",
+        "label": "Japan's Demographic Dilemma: Navigating the Postpandemic Population Decline - PubMed",
+        "data": {
+          "sourceId": "942c3b7e-b92d-4b4d-be14-b2c6e6e32f48",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "dd9597b5-4ae9-5286-b173-0dba22a30045",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-12T23:33:24.951242+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "204a344c-374a-4bf2-9e99-c75b01942b60"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://pubmed.ncbi.nlm.nih.gov/39114623/",
+          "domain": "pubmed.ncbi.nlm.nih.gov",
+          "publisher": "PubMed",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-12T23:33:24.951242+00:00"
+        }
+      },
+      {
+        "id": "snapshot:453994d2-e646-4cc5-9ce6-4151a1dc105e",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-12",
+        "data": {
+          "sourceId": "942c3b7e-b92d-4b4d-be14-b2c6e6e32f48",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "dd9597b5-4ae9-5286-b173-0dba22a30045",
+          "atomicClaimIds": [
+            "204a344c-374a-4bf2-9e99-c75b01942b60"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "453994d2-e646-4cc5-9ce6-4151a1dc105e",
+          "retrievedAt": "2026-08-12T23:33:24.951242+00:00",
+          "publishedAt": null,
+          "contentHash": "37076d53debf5d63b3d6801896ae204a57c1f80dcfb8576a3776a953b31c9b2e",
+          "parserName": "playwright",
+          "parserVersion": "1.62.0"
+        }
+      },
+      {
+        "id": "source:ab600d67-be16-40e3-8ea9-125f548ca8be",
+        "type": "source",
+        "label": "Japan's Population Decline Isn't as Bad as We Think | Earth.Org",
+        "data": {
+          "sourceId": "ab600d67-be16-40e3-8ea9-125f548ca8be",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2024-02-05T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "204a344c-374a-4bf2-9e99-c75b01942b60"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 450
+        },
+        "metadata": {
+          "canonicalUrl": "https://earth.org/understanding-japans-demographic-crisis-an-alternative-perspective-on-population-decline/",
+          "domain": "earth.org",
+          "publisher": "Earth.Org",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2024-02-05T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:a580b615-40ea-41bb-8545-7ebcb51557e3",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-12",
+        "data": {
+          "sourceId": "ab600d67-be16-40e3-8ea9-125f548ca8be",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "atomicClaimIds": [
+            "204a344c-374a-4bf2-9e99-c75b01942b60"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 450
+        },
+        "metadata": {
+          "snapshotId": "a580b615-40ea-41bb-8545-7ebcb51557e3",
+          "retrievedAt": "2026-08-12T23:33:25.133783+00:00",
+          "publishedAt": "2024-02-05T00:00:00+00:00",
+          "contentHash": "1021c7038412f763a887593f5bd4f50b8cc42d8a95341342ea27814fb10bb666",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:5d67e2de-bdfe-49d3-836a-ce1843317bff",
+        "type": "source",
+        "label": "Japan Population (1960-2026) & Projected decline",
+        "data": {
+          "sourceId": "5d67e2de-bdfe-49d3-836a-ce1843317bff",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2025-10-22T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://georank.org/population/japan",
+          "domain": "georank.org",
+          "publisher": "GeoRank",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2025-10-22T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:0fc3e99d-3116-4593-a7dd-a0621954867b",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-12",
+        "data": {
+          "sourceId": "5d67e2de-bdfe-49d3-836a-ce1843317bff",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "0fc3e99d-3116-4593-a7dd-a0621954867b",
+          "retrievedAt": "2026-08-12T23:33:25.345764+00:00",
+          "publishedAt": "2025-10-22T00:00:00+00:00",
+          "contentHash": "06d550fe7291a846c3e08c96856df6505200c215bc14fcaa15567f4aa3f980c2",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "cluster-member:6c3c82aa-d709-5a7f-8b6b-e570b959eea7:1b12a169-269b-4362-8b0e-ea76b5f98593",
+        "source": "cluster:6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+        "target": "source:1b12a169-269b-4362-8b0e-ea76b5f98593",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:5b9b3775-2d33-4ae5-809e-b566557fef6f",
+        "source": "source:1b12a169-269b-4362-8b0e-ea76b5f98593",
+        "target": "snapshot:5b9b3775-2d33-4ae5-809e-b566557fef6f",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:6c3c82aa-d709-5a7f-8b6b-e570b959eea7:8911abc4-d341-4acb-9e54-83872bf34e5d",
+        "source": "cluster:6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+        "target": "source:8911abc4-d341-4acb-9e54-83872bf34e5d",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:e68cc969-f0a2-4104-98c1-1183aba88f90",
+        "source": "source:8911abc4-d341-4acb-9e54-83872bf34e5d",
+        "target": "snapshot:e68cc969-f0a2-4104-98c1-1183aba88f90",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:6c3c82aa-d709-5a7f-8b6b-e570b959eea7:86638ea7-0000-4b12-9745-4ca2a9f54e51",
+        "source": "cluster:6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+        "target": "source:86638ea7-0000-4b12-9745-4ca2a9f54e51",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:fa3d5acc-ceb3-4c8f-b4fe-632cd8fc5ec9",
+        "source": "source:86638ea7-0000-4b12-9745-4ca2a9f54e51",
+        "target": "snapshot:fa3d5acc-ceb3-4c8f-b4fe-632cd8fc5ec9",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:6c3c82aa-d709-5a7f-8b6b-e570b959eea7:edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+        "source": "cluster:6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+        "target": "source:edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:8813822d-f966-42ad-8aee-07ab7d0ee325",
+        "source": "source:edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+        "target": "snapshot:8813822d-f966-42ad-8aee-07ab7d0ee325",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:6c3c82aa-d709-5a7f-8b6b-e570b959eea7:4aab8a95-c228-4a9e-a77a-62fc4aeb9119",
+        "source": "cluster:6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+        "target": "source:4aab8a95-c228-4a9e-a77a-62fc4aeb9119",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:14c21e6c-c05e-4e49-b00c-28ca0a98e358",
+        "source": "source:4aab8a95-c228-4a9e-a77a-62fc4aeb9119",
+        "target": "snapshot:14c21e6c-c05e-4e49-b00c-28ca0a98e358",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:6e8893a9-6131-5869-9abc-375001f85704:eec78e81-4c19-4a9f-a8e5-b559f015259e",
+        "source": "cluster:6e8893a9-6131-5869-9abc-375001f85704",
+        "target": "source:eec78e81-4c19-4a9f-a8e5-b559f015259e",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:09fbbeb7-79b7-413d-a6ef-4c04b5c28683",
+        "source": "source:eec78e81-4c19-4a9f-a8e5-b559f015259e",
+        "target": "snapshot:09fbbeb7-79b7-413d-a6ef-4c04b5c28683",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:7128e1ad-5e52-54d1-8aad-00bebcc629eb:a446db4c-460c-4e21-8ada-c0c7aa7ad65b",
+        "source": "cluster:7128e1ad-5e52-54d1-8aad-00bebcc629eb",
+        "target": "source:a446db4c-460c-4e21-8ada-c0c7aa7ad65b",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:9662a569-1877-4b28-b6e4-1920c8b48c49",
+        "source": "source:a446db4c-460c-4e21-8ada-c0c7aa7ad65b",
+        "target": "snapshot:9662a569-1877-4b28-b6e4-1920c8b48c49",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:dd9597b5-4ae9-5286-b173-0dba22a30045:942c3b7e-b92d-4b4d-be14-b2c6e6e32f48",
+        "source": "cluster:dd9597b5-4ae9-5286-b173-0dba22a30045",
+        "target": "source:942c3b7e-b92d-4b4d-be14-b2c6e6e32f48",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:453994d2-e646-4cc5-9ce6-4151a1dc105e",
+        "source": "source:942c3b7e-b92d-4b4d-be14-b2c6e6e32f48",
+        "target": "snapshot:453994d2-e646-4cc5-9ce6-4151a1dc105e",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:6c3c82aa-d709-5a7f-8b6b-e570b959eea7:ab600d67-be16-40e3-8ea9-125f548ca8be",
+        "source": "cluster:6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+        "target": "source:ab600d67-be16-40e3-8ea9-125f548ca8be",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:a580b615-40ea-41bb-8545-7ebcb51557e3",
+        "source": "source:ab600d67-be16-40e3-8ea9-125f548ca8be",
+        "target": "snapshot:a580b615-40ea-41bb-8545-7ebcb51557e3",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:6c3c82aa-d709-5a7f-8b6b-e570b959eea7:5d67e2de-bdfe-49d3-836a-ce1843317bff",
+        "source": "cluster:6c3c82aa-d709-5a7f-8b6b-e570b959eea7",
+        "target": "source:5d67e2de-bdfe-49d3-836a-ce1843317bff",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:0fc3e99d-3116-4593-a7dd-a0621954867b",
+        "source": "source:5d67e2de-bdfe-49d3-836a-ce1843317bff",
+        "target": "snapshot:0fc3e99d-3116-4593-a7dd-a0621954867b",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "dependency:2dceccaa-0a50-4945-ad01-25916db22cb4",
+        "source": "source:edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+        "target": "source:1b12a169-269b-4362-8b0e-ea76b5f98593",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:39b1199b-e6bd-430a-8b22-fa914b5b2792",
+        "source": "source:1b12a169-269b-4362-8b0e-ea76b5f98593",
+        "target": "source:4aab8a95-c228-4a9e-a77a-62fc4aeb9119",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:95a25b1c-9f96-45fd-820d-8613c592dfd3",
+        "source": "source:ab600d67-be16-40e3-8ea9-125f548ca8be",
+        "target": "source:1b12a169-269b-4362-8b0e-ea76b5f98593",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:91acd543-cf45-4cdd-ba9d-b7150624fd67",
+        "source": "source:8911abc4-d341-4acb-9e54-83872bf34e5d",
+        "target": "source:ab600d67-be16-40e3-8ea9-125f548ca8be",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:0eae0520-e025-4a95-874a-e4f277e5c669",
+        "source": "source:8911abc4-d341-4acb-9e54-83872bf34e5d",
+        "target": "source:5d67e2de-bdfe-49d3-836a-ce1843317bff",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:9e3532b1-7bdf-4868-94c9-b2c3a1d46e9e",
+        "source": "source:5d67e2de-bdfe-49d3-836a-ce1843317bff",
+        "target": "source:86638ea7-0000-4b12-9745-4ca2a9f54e51",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.82,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:438b58d2-1463-40b9-82ab-5a492c825f47",
+        "source": "source:edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+        "target": "source:4aab8a95-c228-4a9e-a77a-62fc4aeb9119",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:6ea04cae-7275-4dd0-ace5-9a5eb3ab67e9",
+        "source": "source:ab600d67-be16-40e3-8ea9-125f548ca8be",
+        "target": "source:edaf38de-14d3-4bb4-9e30-fb29a20ca757",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      }
+    ]
+  },
+  "calculations": [
+    {
+      "id": "78017a24-068f-4ae3-b0da-ec77ce77fe19",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "8c6f367e-9655-5029-ba64-21855735fe20"
+      },
+      "result": {
+        "quality": "0.965"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "59a467c4-ba28-4b2d-a7f4-2eb259fabc3c",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.965",
+        "passage_id": "8c6f367e-9655-5029-ba64-21855735fe20",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.96500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d7aba1f1-65db-4d15-8a95-67d1022328d6",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "223dd9a2-7ecc-5e7a-93d3-af7fa930b01a"
+      },
+      "result": {
+        "quality": "0.935"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a6261f41-e705-413e-b864-7e0824b86e78",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.935",
+        "passage_id": "223dd9a2-7ecc-5e7a-93d3-af7fa930b01a",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.32725"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "6c2523b6-16c3-4ec8-bec3-b54584dfc1c4",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "6b8019f0-5f7b-5a46-8c82-f17f66b9f0bb"
+      },
+      "result": {
+        "quality": "0.945"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "2fd246c5-9bb1-4bd4-8935-93eb47cc1570",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.945",
+        "passage_id": "6b8019f0-5f7b-5a46-8c82-f17f66b9f0bb",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.33075"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "68366db9-e31b-419e-8556-cbed1feeb194",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.835",
+        "passage_id": "d080b38a-c378-5818-9ec7-e88b49806996",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.29225"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "cdbab7e3-aab5-4c7a-aabf-95e7152ece3b",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.7",
+        "D": "0.8",
+        "F": "0.9",
+        "R": "0.9",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "d080b38a-c378-5818-9ec7-e88b49806996"
+      },
+      "result": {
+        "quality": "0.835"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "503d27f4-aec9-48a7-8207-acae2261127c",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "dd6ff367-9609-5a47-935b-71235fc1c4b9"
+      },
+      "result": {
+        "quality": "0.965"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "dbf216ac-0ced-40ab-b37d-fdde9cf6bfa9",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.965",
+        "passage_id": "dd6ff367-9609-5a47-935b-71235fc1c4b9",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.96500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e74a1b9a-97dd-4761-99f9-4e7d756a8c84",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "e71e7104-0a93-50d2-bb7b-e52c032e3870"
+      },
+      "result": {
+        "quality": "0.945"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a40bcff3-4831-481c-b2c3-30ef41002f6a",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.945",
+        "passage_id": "e71e7104-0a93-50d2-bb7b-e52c032e3870",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.94500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "049cbd54-d1b9-44cb-8093-2181debb663c",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.360",
+        "passage_id": "079e87d7-8026-589e-8bd0-794e9d7bc813",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.12600"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "6c768cde-9765-4dd6-bf30-36699ebd542c",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "079e87d7-8026-589e-8bd0-794e9d7bc813"
+      },
+      "result": {
+        "quality": "0.360"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "eeeb9be0-df84-4089-9a55-9c77f32d7bae",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "2cb43c95-c6e6-575c-8a67-c87a1086662f"
+      },
+      "result": {
+        "quality": "0.945"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "ff47ff0c-56e7-42ca-bb89-0f1336ce2658",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.945",
+        "passage_id": "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.33075"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "3f57d71b-2157-47f7-b6ac-7c95e1851720",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.7",
+        "D": "0.6",
+        "F": "0.9",
+        "R": "0.8",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "334f85db-1825-5298-aa91-a91a55f816e4"
+      },
+      "result": {
+        "quality": "0.770"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "aa014065-6ea4-41d1-b349-643f3d1cbc52",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.770",
+        "passage_id": "334f85db-1825-5298-aa91-a91a55f816e4",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.77000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1d7c2acf-af36-461b-a1fe-03e05639d990",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.0",
+        "D": "0.0",
+        "F": "0.0",
+        "R": "0.0",
+        "T": "0.0",
+        "X": "1.0",
+        "passage_id": "7449acb7-c831-59d7-b7b9-92710cd30de7"
+      },
+      "result": {
+        "quality": "0.100"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "97a3d606-9953-4943-acb0-51dce67f5437",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.100",
+        "passage_id": "7449acb7-c831-59d7-b7b9-92710cd30de7",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.10000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f8e36b69-33f4-4c32-9628-3b5950420c70",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "supporting_weight",
+      "formula_text": "P = sum(max(stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "8c6f367e-9655-5029-ba64-21855735fe20",
+          "223dd9a2-7ecc-5e7a-93d3-af7fa930b01a",
+          "6b8019f0-5f7b-5a46-8c82-f17f66b9f0bb",
+          "d080b38a-c378-5818-9ec7-e88b49806996",
+          "dd6ff367-9609-5a47-935b-71235fc1c4b9",
+          "e71e7104-0a93-50d2-bb7b-e52c032e3870",
+          "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+          "334f85db-1825-5298-aa91-a91a55f816e4"
+        ]
+      },
+      "result": {
+        "P": "4.3948750"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7427bc8e-434b-47d1-8c76-13e21fb13751",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "contradicting_weight",
+      "formula_text": "N = sum(max(-stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "8c6f367e-9655-5029-ba64-21855735fe20",
+          "223dd9a2-7ecc-5e7a-93d3-af7fa930b01a",
+          "6b8019f0-5f7b-5a46-8c82-f17f66b9f0bb",
+          "d080b38a-c378-5818-9ec7-e88b49806996",
+          "dd6ff367-9609-5a47-935b-71235fc1c4b9",
+          "e71e7104-0a93-50d2-bb7b-e52c032e3870",
+          "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+          "334f85db-1825-5298-aa91-a91a55f816e4"
+        ]
+      },
+      "result": {
+        "N": "0.00000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "118cfeef-9742-4632-9435-b5926cc68d22",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_support",
+      "formula_text": "100 * P / (P + N)",
+      "inputs": {
+        "N": "0.00000",
+        "P": "4.3948750"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "6c6ba744-0134-471e-a067-c65aa7326078",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "evidence_consistency",
+      "formula_text": "100 * abs(P - N) / (P + N)",
+      "inputs": {
+        "N": "0.00000",
+        "P": "4.3948750"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e9913119-9df6-4441-9180-cda8a145d6be",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "75.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "254f165e-e5df-409b-a6ea-d9be71c9b65d",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "essential_term_ambiguous": "10.5",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "75.00",
+        "primary_access": "0",
+        "average_quality": "91.82907023954526999593991068"
+      },
+      "result": {
+        "score": "67.45726755988631749898497767"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d4d6a0fa-0bc9-436c-9b69-60c97cadc10a",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "material_penalties": {
+          "scope_omitted": "15"
+        }
+      },
+      "result": {
+        "score": "85"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "83cb686c-a6d5-4cbb-97b0-e992b1c6d6fb",
+      "atomic_claim_id": "204a344c-374a-4bf2-9e99-c75b01942b60",
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "85",
+        "support": "100",
+        "confidence": "67.45726755988631749898497767",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "insufficient_evidence_reasons": []
+      },
+      "result": {
+        "label": "Supported"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "67e7fadc-aa7c-451c-93a2-53a71a9fc165",
+      "atomic_claim_id": null,
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "75.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "26d5bf90-b998-4737-9d64-3ff28a0c025d",
+      "atomic_claim_id": null,
+      "formula_name": "article_factual_accuracy",
+      "formula_text": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "100",
+            "importance_weight": 3
+          }
+        ],
+        "citation_partial_support_penalty": "10"
+      },
+      "result": {
+        "score": "90",
+        "essential_claim_gate": false
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "8e33bdb6-88e1-48db-bb5e-39b544770855",
+      "atomic_claim_id": null,
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "citation_partial_support": "14",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "75.00",
+        "primary_access": "0",
+        "average_quality": "91.82907023954526999593991068"
+      },
+      "result": {
+        "score": "64"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "91790017-68a6-4ff9-9674-f583fa445e93",
+      "atomic_claim_id": null,
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "85",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "factual_accuracy": "100",
+        "verdict_confidence": "77.95726755988631749898497767",
+        "insufficient_evidence_reasons": [],
+        "strongly_refuted_essential_claim": false
+      },
+      "result": {
+        "label": "Supported"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "9cdba4a7-f0c2-46ba-8020-3e287386f385",
+      "atomic_claim_id": null,
+      "formula_name": "research_coverage",
+      "formula_text": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+      "inputs": {
+        "claims": [
+          {
+            "claim_ref": "claim-1-efaf4f601126aeb4",
+            "adequate_evidence": true,
+            "importance_weight": 3
+          }
+        ],
+        "confidence_issues": [
+          "important_source_inaccessible",
+          "primary_evidence_unavailable"
+        ]
+      },
+      "result": {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "5"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "51246699-041c-43c7-af02-2d8a1f46ae2d",
+      "atomic_claim_id": null,
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "claims": [
+          {
+            "context": "85",
+            "claim_ref": "claim-1-efaf4f601126aeb4",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "85"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "3a733f7b-a358-4dcb-94da-e57c4c85c58a",
+      "atomic_claim_id": null,
+      "formula_name": "citation_partial_support_penalty",
+      "formula_text": "reported score = clamp(original score - partial citation penalty, 0, 100)",
+      "inputs": {
+        "partial_sentence_count": 2,
+        "evidence_support_penalty": "10",
+        "verdict_confidence_penalty": "14"
+      },
+      "result": {
+        "evidence_support": 90,
+        "verdict_confidence": 64
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "methodology_version": "not-recorded",
+  "workflow_version": "1.0.0",
+  "model_versions": {
+    "intake": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1075,
+        "prompt_tokens": 967,
+        "completion_tokens": 108
+      },
+      "provider": "deepseek",
+      "latency_ms": 1705,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "planner": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1875,
+        "prompt_tokens": 1105,
+        "completion_tokens": 770
+      },
+      "provider": "deepseek",
+      "latency_ms": 5149,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "embedding": {
+      "status": "unconfigured_fallback",
+      "provider": "deepseek",
+      "retryable": false,
+      "error_code": "embedding_route_unavailable",
+      "latency_ms": 0,
+      "used_model": null,
+      "status_code": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "request_count": 0,
+      "retrieval_mode": "lexical_metadata_fallback",
+      "configured_model": null
+    },
+    "synthesis": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 16149,
+        "prompt_tokens": 15286,
+        "completion_tokens": 863
+      },
+      "provider": "deepseek",
+      "latency_ms": 6206,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "decomposition": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1485,
+        "prompt_tokens": 1344,
+        "completion_tokens": 141
+      },
+      "provider": "deepseek",
+      "latency_ms": 1663,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_audit": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 7654,
+        "prompt_tokens": 6335,
+        "completion_tokens": 1319
+      },
+      "provider": "deepseek",
+      "latency_ms": 7774,
+      "batch_count": 7,
+      "repair_count": 0,
+      "request_count": 7,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_revision": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 6453,
+        "prompt_tokens": 5701,
+        "completion_tokens": 752
+      },
+      "provider": "deepseek",
+      "latency_ms": 4478,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "evidence_classification": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 18808,
+        "prompt_tokens": 16837,
+        "completion_tokens": 1971
+      },
+      "provider": "deepseek",
+      "latency_ms": 9927,
+      "batch_count": 10,
+      "repair_count": 0,
+      "request_count": 10,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    }
+  },
+  "prompt_versions": {
+    "intake": "intake-v2",
+    "planner": "planner-v2",
+    "synthesis": "synthesis-v4",
+    "decomposition": "decomposition-v3",
+    "citation_audit": "citation-audit-v4",
+    "citation_revision": "synthesis-v4",
+    "evidence_classification": "evidence-classification-v4"
+  },
+  "parser_versions": {
+    "playwright": "1.62.0",
+    "trafilatura": "2.2.0"
+  },
+  "retrieval_versions": {
+    "implementation": "not-recorded",
+    "version": "not-recorded"
+  },
+  "score_roles": {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured."
+  },
+  "report_sentences": [
+    {
+      "id": "3136868f-6f75-4a8d-b40d-95b0669b00a3",
+      "report_section": "summary",
+      "sentence_text": "Japan's population has been declining since 2008, and by 2060, its total population is expected to decrease by 40 million people.",
+      "passage_id": "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+      "audit_status": "partial",
+      "audit_note": "The passage confirms population decline since 2008 but does not mention the 2060 projection of a 40 million decrease; it only mentions a 2050 decline for multiple countries."
+    },
+    {
+      "id": "389f3745-f638-4930-bcb7-63dbc0144f8a",
+      "report_section": "summary",
+      "sentence_text": "Japan's population has been declining since 2008, and by 2060, its total population is expected to decrease by 40 million people.",
+      "passage_id": "8c6f367e-9655-5029-ba64-21855735fe20",
+      "audit_status": "partial",
+      "audit_note": "The passage confirms the 2060 projection of a 40 million decrease but does not mention the decline since 2008."
+    },
+    {
+      "id": "4a1ff463-2123-432c-81d2-b3aa6b5cb0bb",
+      "report_section": "summary",
+      "sentence_text": "Japan faces a demographic crisis driven by an aging population and persistently low birth rates, which the Japanese government views as a dire problem.",
+      "passage_id": "dd6ff367-9609-5a47-935b-71235fc1c4b9",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that Japan faces a significant demographic crisis, attributes it to an aging population, and notes the government's view of it as a dire problem, aligning with the sentence."
+    },
+    {
+      "id": "44fc092b-49ce-448d-9896-60a5f3082e29",
+      "report_section": "summary",
+      "sentence_text": "Japan faces a demographic crisis driven by an aging population and persistently low birth rates, which the Japanese government views as a dire problem.",
+      "passage_id": "e71e7104-0a93-50d2-bb7b-e52c032e3870",
+      "audit_status": "partial",
+      "audit_note": "The passage confirms persistently low birth rates as a reason for population decline, but does not mention the government's view of the crisis as dire, which is part of the sentence."
+    },
+    {
+      "id": "b85dceed-612c-45e5-8059-82628f124045",
+      "report_section": "summary",
+      "sentence_text": "Japan faces a demographic crisis driven by an aging population and persistently low birth rates, which the Japanese government views as a dire problem.",
+      "passage_id": "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+      "audit_status": "partial",
+      "audit_note": "The passage supports that Japan's population is declining and that the Japanese government sees this trend as a dire problem, but it does not explicitly mention 'aging population' or 'persistently low birth rates' as the causes. The passage mentions shrinking populations linked to smaller labour force and slowing economy, but not the specific demographic drivers stated in the sentence."
+    },
+    {
+      "id": "a8f3866c-6b52-4fb3-9ada-280424a0bf6a",
+      "report_section": "factual_finding",
+      "sentence_text": "Japan's population has been declining since 2008.",
+      "passage_id": "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states 'Japan’s population has been declining since 2008,' which directly matches the sentence."
+    },
+    {
+      "id": "dbc7ebf5-1a04-4db3-bde3-a18c5f769b0a",
+      "report_section": "factual_finding",
+      "sentence_text": "By 2060, Japan's total population is expected to decrease by 40 million people.",
+      "passage_id": "8c6f367e-9655-5029-ba64-21855735fe20",
+      "audit_status": "passed",
+      "audit_note": "The passage states that by 2060, Japan's total population is expected to decrease by 40 million people, which directly matches the sentence."
+    },
+    {
+      "id": "985bfcc8-05c1-4cb6-b898-f26523f96e1f",
+      "report_section": "factual_finding",
+      "sentence_text": "Japan's population decline is rapid and attributed to a persistently low birth rate.",
+      "passage_id": "e71e7104-0a93-50d2-bb7b-e52c032e3870",
+      "audit_status": "passed",
+      "audit_note": "The passage states that the main reason for Japan's rapid population decline is the persistently low birth rate, which supports the sentence's claim that the decline is rapid and attributed to a persistently low birth rate."
+    },
+    {
+      "id": "a219791e-b7e8-4673-abd7-7b291951bf28",
+      "report_section": "factual_finding",
+      "sentence_text": "By 2022, Japan experienced a 1.5% decrease in population, and its aging rate reached 29.9%, the highest among its peer countries.",
+      "passage_id": "dd6ff367-9609-5a47-935b-71235fc1c4b9",
+      "audit_status": "passed",
+      "audit_note": "The passage states that by 2022 Japan experienced a 1.5% decrease in population and its aging rate reached 29.9%, the highest among its peer countries, directly supporting the sentence."
+    },
+    {
+      "id": "40937e23-f105-4348-ae5e-836dff76ff63",
+      "report_section": "factual_finding",
+      "sentence_text": "Japan is among countries facing declining populations due to falling birth-rates.",
+      "passage_id": "223dd9a2-7ecc-5e7a-93d3-af7fa930b01a",
+      "audit_status": "passed",
+      "audit_note": "The passage mentions falling birth-rates and declining populations in high-income nations, including Japan, and notes that many countries face population decline due to low fertility rates, which supports the sentence."
+    },
+    {
+      "id": "d0869968-4533-46e9-b148-e1f61f83f109",
+      "report_section": "factual_finding",
+      "sentence_text": "The Japanese government sees this trend as a dire problem that needs to be addressed.",
+      "passage_id": "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+      "audit_status": "passed",
+      "audit_note": "The passage states that many governments, such as the Japanese one, see this trend as a dire problem that needs to be addressed, which directly supports the sentence."
+    },
+    {
+      "id": "7400826b-0582-40fb-8b64-f78629c1bf98",
+      "report_section": "strongest_contradiction",
+      "sentence_text": "Some perspectives argue that population decline is not necessarily a crisis, as countries like Finland and Sweden have maintained strong economies despite declining populations, and Japan's economy is still expected to slightly grow in the coming years.",
+      "passage_id": "d080b38a-c378-5818-9ec7-e88b49806996",
+      "audit_status": "passed",
+      "audit_note": "The passage mentions that countries like Finland and Sweden have maintained strong economies despite declining populations, and that Japan's economy is still expected to slightly grow, which supports the sentence's claims."
+    },
+    {
+      "id": "66787f16-84db-4d43-abdf-84a0ececaa64",
+      "report_section": "attribution",
+      "sentence_text": "The Japanese government views the population decline as a dire problem that needs to be addressed.",
+      "passage_id": "2cb43c95-c6e6-575c-8a67-c87a1086662f",
+      "audit_status": "passed",
+      "audit_note": "The passage states that many governments, such as the Japanese one, see the population decline as a dire problem that needs to be addressed, which directly supports the sentence."
+    }
+  ],
+  "evidence_reviewed_at": "2026-08-12T23:33:25.345764Z",
+  "generated_at": "2026-08-12T23:34:19.240110Z",
+  "limitations": [
+    "Inaccessible source: The evidence source denied automated retrieval.",
+    "Inaccessible source: The evidence source denied automated retrieval."
+  ]
+}

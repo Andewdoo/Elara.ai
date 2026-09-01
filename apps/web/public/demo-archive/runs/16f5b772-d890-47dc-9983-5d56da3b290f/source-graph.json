@@ -1,0 +1,974 @@
+{
+  "nodes": [
+    {
+      "id": "cluster:fc6f2d34-dd58-5265-939a-660ff5f746fa",
+      "type": "cluster",
+      "label": "Shaving Hair Growth Myth – Thick Hair Fact or Fiction? information origin",
+      "data": {
+        "clusterId": "fc6f2d34-dd58-5265-939a-660ff5f746fa",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "metadata": {
+        "representativeSourceId": "08cbe6b5-7aa3-4544-afb8-e2f2122834c2"
+      }
+    },
+    {
+      "id": "cluster:dc321b7c-f923-524b-bf4c-041583cc6499",
+      "type": "cluster",
+      "label": "Hair Growth After Shaving: Separating Myth from Fact information origin",
+      "data": {
+        "clusterId": "dc321b7c-f923-524b-bf4c-041583cc6499",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 180
+      },
+      "metadata": {
+        "representativeSourceId": "b24a073a-0bd6-4c29-a894-5a4e748427cc"
+      }
+    },
+    {
+      "id": "cluster:c8450042-8f63-55ce-9811-a759ce45c8ba",
+      "type": "cluster",
+      "label": "Does Shaving Make Hair Darker? What Science Says information origin",
+      "data": {
+        "clusterId": "c8450042-8f63-55ce-9811-a759ce45c8ba",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 360
+      },
+      "metadata": {
+        "representativeSourceId": "bf0c843c-4082-474f-8281-652a41ce6529"
+      }
+    },
+    {
+      "id": "cluster:d6928c73-7e72-5145-afc5-1a3e16d4fc8a",
+      "type": "cluster",
+      "label": "Does Shaving Make Your Hair Darker? - Necole Bitchie information origin",
+      "data": {
+        "clusterId": "d6928c73-7e72-5145-afc5-1a3e16d4fc8a",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 540
+      },
+      "metadata": {
+        "representativeSourceId": "688797de-b39b-4a79-801c-b1570cdff89a"
+      }
+    },
+    {
+      "id": "cluster:26d7062b-b1d9-5439-894e-fd53d3cfd8ed",
+      "type": "cluster",
+      "label": "Does Shaving Make Your Hair Grow Back Thicker and Darker? - The Skin Company information origin",
+      "data": {
+        "clusterId": "26d7062b-b1d9-5439-894e-fd53d3cfd8ed",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 720
+      },
+      "metadata": {
+        "representativeSourceId": "05c3dafd-844b-4d1a-b99b-b471fecc9e2f"
+      }
+    },
+    {
+      "id": "cluster:2d492fcb-05ac-5607-b30c-1b8728a019bc",
+      "type": "cluster",
+      "label": "Does Shaving Make Hair Thicker? The Myths Explained information origin",
+      "data": {
+        "clusterId": "2d492fcb-05ac-5607-b30c-1b8728a019bc",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 900
+      },
+      "metadata": {
+        "representativeSourceId": "daa9b6fd-34ec-43de-9feb-21f993d427ae"
+      }
+    },
+    {
+      "id": "cluster:b306f920-eb20-5e13-80ba-495dfe6b12eb",
+      "type": "cluster",
+      "label": "Does shaving hair make it thicker? Myth vs. Science Explained information origin",
+      "data": {
+        "clusterId": "b306f920-eb20-5e13-80ba-495dfe6b12eb",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1080
+      },
+      "metadata": {
+        "representativeSourceId": "b93b48de-2c49-47e8-a3e2-2e767a279be9"
+      }
+    },
+    {
+      "id": "cluster:707e0c01-200b-5509-939e-7f19900dfa41",
+      "type": "cluster",
+      "label": "Does Shaving Make Hair Grow Back Thicker, Darker or Faster? information origin",
+      "data": {
+        "clusterId": "707e0c01-200b-5509-939e-7f19900dfa41",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1260
+      },
+      "metadata": {
+        "representativeSourceId": "a1780194-e9a1-4f8d-b9dd-62ee9097323e"
+      }
+    },
+    {
+      "id": "cluster:1cc1273c-49db-5b77-807b-cda0eff62466",
+      "type": "cluster",
+      "label": "Shaving Hair Affects Hair Color or Growth - Fact or Myth? information origin",
+      "data": {
+        "clusterId": "1cc1273c-49db-5b77-807b-cda0eff62466",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1440
+      },
+      "metadata": {
+        "representativeSourceId": "8e069d27-901d-4cc9-bbb3-37bb443a283c"
+      }
+    },
+    {
+      "id": "cluster:3767f5db-338f-5c10-9bec-f5d2d4cd93bd",
+      "type": "cluster",
+      "label": "The Effects of Shaving on Hair Growth - ZAP! Electrolysis information origin",
+      "data": {
+        "clusterId": "3767f5db-338f-5c10-9bec-f5d2d4cd93bd",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1620
+      },
+      "metadata": {
+        "representativeSourceId": "c500e151-aea1-4c21-baa0-6fc19c15777e"
+      }
+    },
+    {
+      "id": "source:08cbe6b5-7aa3-4544-afb8-e2f2122834c2",
+      "type": "source",
+      "label": "Shaving Hair Growth Myth – Thick Hair Fact or Fiction?",
+      "data": {
+        "sourceId": "08cbe6b5-7aa3-4544-afb8-e2f2122834c2",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fc6f2d34-dd58-5265-939a-660ff5f746fa",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-01-30T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      },
+      "metadata": {
+        "canonicalUrl": "https://toniandguysalon.in/shaving-hair-growth-myth/",
+        "domain": "toniandguysalon.in",
+        "publisher": "Toni and Guy",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-01-30T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:97681fe6-0550-410a-84ad-b1102aab76a7",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "08cbe6b5-7aa3-4544-afb8-e2f2122834c2",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fc6f2d34-dd58-5265-939a-660ff5f746fa",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      },
+      "metadata": {
+        "snapshotId": "97681fe6-0550-410a-84ad-b1102aab76a7",
+        "retrievedAt": "2026-08-13T22:27:25.274631+00:00",
+        "publishedAt": "2026-01-30T00:00:00+00:00",
+        "contentHash": "91e07840b980d2a11d71713d92fbb69be694949050639e009b86c6d4b5a41404",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:bf0c843c-4082-474f-8281-652a41ce6529",
+      "type": "source",
+      "label": "Does Shaving Make Hair Darker? What Science Says",
+      "data": {
+        "sourceId": "bf0c843c-4082-474f-8281-652a41ce6529",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "c8450042-8f63-55ce-9811-a759ce45c8ba",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-03-03T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 360
+      },
+      "metadata": {
+        "canonicalUrl": "https://biologyinsights.com/does-shaving-make-hair-darker-what-science-says/",
+        "domain": "biologyinsights.com",
+        "publisher": "Biology Insights",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-03-03T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:023d4d24-68f0-4576-832f-fe089d7b72e9",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "bf0c843c-4082-474f-8281-652a41ce6529",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "c8450042-8f63-55ce-9811-a759ce45c8ba",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 360
+      },
+      "metadata": {
+        "snapshotId": "023d4d24-68f0-4576-832f-fe089d7b72e9",
+        "retrievedAt": "2026-08-13T22:27:26.397275+00:00",
+        "publishedAt": "2026-03-03T00:00:00+00:00",
+        "contentHash": "8d73886dfbe04d9f7d1aea410c5a87be397485c51da28867765ed64b82a9f49e",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:688797de-b39b-4a79-801c-b1570cdff89a",
+      "type": "source",
+      "label": "Does Shaving Make Your Hair Darker? - Necole Bitchie",
+      "data": {
+        "sourceId": "688797de-b39b-4a79-801c-b1570cdff89a",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "d6928c73-7e72-5145-afc5-1a3e16d4fc8a",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:27:26.952726+00:00",
+        "contentType": null,
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://necolebitchie.com/does-shaving-make-your-hair-darker/",
+        "domain": "necolebitchie.com",
+        "publisher": null,
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:27:26.952726+00:00"
+      }
+    },
+    {
+      "id": "snapshot:714134f8-e3ae-4bab-9813-3772c8fc637a",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "688797de-b39b-4a79-801c-b1570cdff89a",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "d6928c73-7e72-5145-afc5-1a3e16d4fc8a",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "714134f8-e3ae-4bab-9813-3772c8fc637a",
+        "retrievedAt": "2026-08-13T22:27:26.952726+00:00",
+        "publishedAt": null,
+        "contentHash": null,
+        "parserName": null,
+        "parserVersion": null
+      }
+    },
+    {
+      "id": "source:05c3dafd-844b-4d1a-b99b-b471fecc9e2f",
+      "type": "source",
+      "label": "Does Shaving Make Your Hair Grow Back Thicker and Darker? - The Skin Company",
+      "data": {
+        "sourceId": "05c3dafd-844b-4d1a-b99b-b471fecc9e2f",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "26d7062b-b1d9-5439-894e-fd53d3cfd8ed",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2024-08-05T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 720
+      },
+      "metadata": {
+        "canonicalUrl": "https://theskincompany.com/does-shaving-makes-your-hair-grow-back-thicker-and-darker/",
+        "domain": "theskincompany.com",
+        "publisher": "The Skin Company",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2024-08-05T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:f4dbc33e-40aa-4749-a843-92924ef2736e",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "05c3dafd-844b-4d1a-b99b-b471fecc9e2f",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "26d7062b-b1d9-5439-894e-fd53d3cfd8ed",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 720
+      },
+      "metadata": {
+        "snapshotId": "f4dbc33e-40aa-4749-a843-92924ef2736e",
+        "retrievedAt": "2026-08-13T22:27:27.070531+00:00",
+        "publishedAt": "2024-08-05T00:00:00+00:00",
+        "contentHash": "4196fce0b22ee698501a188833fcd97206dfde4abee70444216da9cbea0b99b2",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:daa9b6fd-34ec-43de-9feb-21f993d427ae",
+      "type": "source",
+      "label": "Does Shaving Make Hair Thicker? The Myths Explained",
+      "data": {
+        "sourceId": "daa9b6fd-34ec-43de-9feb-21f993d427ae",
+        "accessStatus": "INACCESSIBLE",
+        "role": "UNKNOWN",
+        "clusterId": "2d492fcb-05ac-5607-b30c-1b8728a019bc",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:27:27.848262+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 900
+      },
+      "metadata": {
+        "canonicalUrl": "https://georestrictions.getlabtest.com/index.html",
+        "domain": "georestrictions.getlabtest.com",
+        "publisher": null,
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:27:27.848262+00:00"
+      }
+    },
+    {
+      "id": "snapshot:36bc4674-3ca8-4f88-924b-be27b9f5be95",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "daa9b6fd-34ec-43de-9feb-21f993d427ae",
+        "accessStatus": "INACCESSIBLE",
+        "role": "UNKNOWN",
+        "clusterId": "2d492fcb-05ac-5607-b30c-1b8728a019bc",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 900
+      },
+      "metadata": {
+        "snapshotId": "36bc4674-3ca8-4f88-924b-be27b9f5be95",
+        "retrievedAt": "2026-08-13T22:27:27.848262+00:00",
+        "publishedAt": null,
+        "contentHash": "a77c4be89bb44148d90f58b4e88ba6438d11e3952da172dea291cec5f157dfac",
+        "parserName": "playwright",
+        "parserVersion": "1.62.0"
+      }
+    },
+    {
+      "id": "source:b93b48de-2c49-47e8-a3e2-2e767a279be9",
+      "type": "source",
+      "label": "Does shaving hair make it thicker? Myth vs. Science Explained",
+      "data": {
+        "sourceId": "b93b48de-2c49-47e8-a3e2-2e767a279be9",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "b306f920-eb20-5e13-80ba-495dfe6b12eb",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2025-03-23T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 1080
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.qr678.com/blog/does-shaving-head-increase-hair-growth/",
+        "domain": "www.qr678.com",
+        "publisher": "QR678",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-03-23T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:adc5d86d-e662-42bc-b7d3-177fa09cc81a",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "b93b48de-2c49-47e8-a3e2-2e767a279be9",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "b306f920-eb20-5e13-80ba-495dfe6b12eb",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 1080
+      },
+      "metadata": {
+        "snapshotId": "adc5d86d-e662-42bc-b7d3-177fa09cc81a",
+        "retrievedAt": "2026-08-13T22:27:28.235496+00:00",
+        "publishedAt": "2025-03-23T00:00:00+00:00",
+        "contentHash": "a3d5e070a6b3d520dd008ae5c27baa02cc89f828885dd40a7a2cea29eaaaaaa0",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:a1780194-e9a1-4f8d-b9dd-62ee9097323e",
+      "type": "source",
+      "label": "Does Shaving Make Hair Grow Back Thicker, Darker or Faster?",
+      "data": {
+        "sourceId": "a1780194-e9a1-4f8d-b9dd-62ee9097323e",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "707e0c01-200b-5509-939e-7f19900dfa41",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2025-06-23T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 1260
+      },
+      "metadata": {
+        "canonicalUrl": "https://luibody.com/blogs/journal/does-shaving-make-hair-grow-back-thicker-or-darker",
+        "domain": "luibody.com",
+        "publisher": "LUI",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-06-23T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:03ee8a16-cb0c-4ba1-83f2-172943e24488",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "a1780194-e9a1-4f8d-b9dd-62ee9097323e",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "707e0c01-200b-5509-939e-7f19900dfa41",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 1260
+      },
+      "metadata": {
+        "snapshotId": "03ee8a16-cb0c-4ba1-83f2-172943e24488",
+        "retrievedAt": "2026-08-13T22:27:28.992084+00:00",
+        "publishedAt": "2025-06-23T00:00:00+00:00",
+        "contentHash": "9b189f3331a81362b1d5e9ffb8b5356ef4dd1e74134b1c29e5e9973d171be3de",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:8e069d27-901d-4cc9-bbb3-37bb443a283c",
+      "type": "source",
+      "label": "Shaving Hair Affects Hair Color or Growth - Fact or Myth?",
+      "data": {
+        "sourceId": "8e069d27-901d-4cc9-bbb3-37bb443a283c",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "1cc1273c-49db-5b77-807b-cda0eff62466",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2016-03-15T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 1440
+      },
+      "metadata": {
+        "canonicalUrl": "https://factmyth.com/factoids/shaving-hair-affects-hair-color-or-growth/",
+        "domain": "factmyth.com",
+        "publisher": "Fact / Myth",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2016-03-15T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:7307fcca-d738-4424-877e-631aa55ee207",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "8e069d27-901d-4cc9-bbb3-37bb443a283c",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "1cc1273c-49db-5b77-807b-cda0eff62466",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 1440
+      },
+      "metadata": {
+        "snapshotId": "7307fcca-d738-4424-877e-631aa55ee207",
+        "retrievedAt": "2026-08-13T22:27:29.487966+00:00",
+        "publishedAt": "2016-03-15T00:00:00+00:00",
+        "contentHash": "12f454ea74f7e21ee171e8caabe37f4884f39f13d873f00822a7f156a22c6c7c",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:c500e151-aea1-4c21-baa0-6fc19c15777e",
+      "type": "source",
+      "label": "The Effects of Shaving on Hair Growth - ZAP! Electrolysis",
+      "data": {
+        "sourceId": "c500e151-aea1-4c21-baa0-6fc19c15777e",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "3767f5db-338f-5c10-9bec-f5d2d4cd93bd",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2025-08-06T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 1620
+      },
+      "metadata": {
+        "canonicalUrl": "https://zapahair.com/newz/the-effects-of-shaving-on-hair-growth/",
+        "domain": "zapahair.com",
+        "publisher": "ZAP! Electrolysis",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-08-06T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:30c0cc6b-45ce-4f60-8073-0c30b73d4e2a",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "c500e151-aea1-4c21-baa0-6fc19c15777e",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "3767f5db-338f-5c10-9bec-f5d2d4cd93bd",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 1620
+      },
+      "metadata": {
+        "snapshotId": "30c0cc6b-45ce-4f60-8073-0c30b73d4e2a",
+        "retrievedAt": "2026-08-13T22:27:30.227955+00:00",
+        "publishedAt": "2025-08-06T00:00:00+00:00",
+        "contentHash": "1621052e32cb52f61c6e331afbd27d1f71e2fa39ab41650b7ad63006f9040a5b",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:b24a073a-0bd6-4c29-a894-5a4e748427cc",
+      "type": "source",
+      "label": "Hair Growth After Shaving: Separating Myth from Fact",
+      "data": {
+        "sourceId": "b24a073a-0bd6-4c29-a894-5a4e748427cc",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "dc321b7c-f923-524b-bf4c-041583cc6499",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-03-27T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 180
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.groomie.club/blogs/news/hair-growth-after-shaving",
+        "domain": "www.groomie.club",
+        "publisher": "Groomie Club",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-03-27T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:77278062-826e-416b-b767-dacb49aaa11c",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "b24a073a-0bd6-4c29-a894-5a4e748427cc",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "dc321b7c-f923-524b-bf4c-041583cc6499",
+        "atomicClaimIds": [
+          "fef9d49a-b1c0-4c98-b60c-f02f3a3fbbc8"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 180
+      },
+      "metadata": {
+        "snapshotId": "77278062-826e-416b-b767-dacb49aaa11c",
+        "retrievedAt": "2026-08-13T22:27:30.602277+00:00",
+        "publishedAt": "2026-03-27T00:00:00+00:00",
+        "contentHash": "2e44d2c2192dffcb4d4bb5e49857a4f35e2057e409e94708604a0b6eb5c1d933",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "cluster-member:fc6f2d34-dd58-5265-939a-660ff5f746fa:08cbe6b5-7aa3-4544-afb8-e2f2122834c2",
+      "source": "cluster:fc6f2d34-dd58-5265-939a-660ff5f746fa",
+      "target": "source:08cbe6b5-7aa3-4544-afb8-e2f2122834c2",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:97681fe6-0550-410a-84ad-b1102aab76a7",
+      "source": "source:08cbe6b5-7aa3-4544-afb8-e2f2122834c2",
+      "target": "snapshot:97681fe6-0550-410a-84ad-b1102aab76a7",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:c8450042-8f63-55ce-9811-a759ce45c8ba:bf0c843c-4082-474f-8281-652a41ce6529",
+      "source": "cluster:c8450042-8f63-55ce-9811-a759ce45c8ba",
+      "target": "source:bf0c843c-4082-474f-8281-652a41ce6529",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:023d4d24-68f0-4576-832f-fe089d7b72e9",
+      "source": "source:bf0c843c-4082-474f-8281-652a41ce6529",
+      "target": "snapshot:023d4d24-68f0-4576-832f-fe089d7b72e9",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:d6928c73-7e72-5145-afc5-1a3e16d4fc8a:688797de-b39b-4a79-801c-b1570cdff89a",
+      "source": "cluster:d6928c73-7e72-5145-afc5-1a3e16d4fc8a",
+      "target": "source:688797de-b39b-4a79-801c-b1570cdff89a",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:714134f8-e3ae-4bab-9813-3772c8fc637a",
+      "source": "source:688797de-b39b-4a79-801c-b1570cdff89a",
+      "target": "snapshot:714134f8-e3ae-4bab-9813-3772c8fc637a",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:26d7062b-b1d9-5439-894e-fd53d3cfd8ed:05c3dafd-844b-4d1a-b99b-b471fecc9e2f",
+      "source": "cluster:26d7062b-b1d9-5439-894e-fd53d3cfd8ed",
+      "target": "source:05c3dafd-844b-4d1a-b99b-b471fecc9e2f",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:f4dbc33e-40aa-4749-a843-92924ef2736e",
+      "source": "source:05c3dafd-844b-4d1a-b99b-b471fecc9e2f",
+      "target": "snapshot:f4dbc33e-40aa-4749-a843-92924ef2736e",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:2d492fcb-05ac-5607-b30c-1b8728a019bc:daa9b6fd-34ec-43de-9feb-21f993d427ae",
+      "source": "cluster:2d492fcb-05ac-5607-b30c-1b8728a019bc",
+      "target": "source:daa9b6fd-34ec-43de-9feb-21f993d427ae",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:36bc4674-3ca8-4f88-924b-be27b9f5be95",
+      "source": "source:daa9b6fd-34ec-43de-9feb-21f993d427ae",
+      "target": "snapshot:36bc4674-3ca8-4f88-924b-be27b9f5be95",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:b306f920-eb20-5e13-80ba-495dfe6b12eb:b93b48de-2c49-47e8-a3e2-2e767a279be9",
+      "source": "cluster:b306f920-eb20-5e13-80ba-495dfe6b12eb",
+      "target": "source:b93b48de-2c49-47e8-a3e2-2e767a279be9",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:adc5d86d-e662-42bc-b7d3-177fa09cc81a",
+      "source": "source:b93b48de-2c49-47e8-a3e2-2e767a279be9",
+      "target": "snapshot:adc5d86d-e662-42bc-b7d3-177fa09cc81a",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:707e0c01-200b-5509-939e-7f19900dfa41:a1780194-e9a1-4f8d-b9dd-62ee9097323e",
+      "source": "cluster:707e0c01-200b-5509-939e-7f19900dfa41",
+      "target": "source:a1780194-e9a1-4f8d-b9dd-62ee9097323e",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:03ee8a16-cb0c-4ba1-83f2-172943e24488",
+      "source": "source:a1780194-e9a1-4f8d-b9dd-62ee9097323e",
+      "target": "snapshot:03ee8a16-cb0c-4ba1-83f2-172943e24488",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:1cc1273c-49db-5b77-807b-cda0eff62466:8e069d27-901d-4cc9-bbb3-37bb443a283c",
+      "source": "cluster:1cc1273c-49db-5b77-807b-cda0eff62466",
+      "target": "source:8e069d27-901d-4cc9-bbb3-37bb443a283c",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:7307fcca-d738-4424-877e-631aa55ee207",
+      "source": "source:8e069d27-901d-4cc9-bbb3-37bb443a283c",
+      "target": "snapshot:7307fcca-d738-4424-877e-631aa55ee207",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:3767f5db-338f-5c10-9bec-f5d2d4cd93bd:c500e151-aea1-4c21-baa0-6fc19c15777e",
+      "source": "cluster:3767f5db-338f-5c10-9bec-f5d2d4cd93bd",
+      "target": "source:c500e151-aea1-4c21-baa0-6fc19c15777e",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:30c0cc6b-45ce-4f60-8073-0c30b73d4e2a",
+      "source": "source:c500e151-aea1-4c21-baa0-6fc19c15777e",
+      "target": "snapshot:30c0cc6b-45ce-4f60-8073-0c30b73d4e2a",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:dc321b7c-f923-524b-bf4c-041583cc6499:b24a073a-0bd6-4c29-a894-5a4e748427cc",
+      "source": "cluster:dc321b7c-f923-524b-bf4c-041583cc6499",
+      "target": "source:b24a073a-0bd6-4c29-a894-5a4e748427cc",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:77278062-826e-416b-b767-dacb49aaa11c",
+      "source": "source:b24a073a-0bd6-4c29-a894-5a4e748427cc",
+      "target": "snapshot:77278062-826e-416b-b767-dacb49aaa11c",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    }
+  ]
+}

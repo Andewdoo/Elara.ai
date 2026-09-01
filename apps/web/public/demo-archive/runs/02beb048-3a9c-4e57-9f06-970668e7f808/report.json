@@ -1,0 +1,2313 @@
+{
+  "run_id": "02beb048-3a9c-4e57-9f06-970668e7f808",
+  "verdict": "Contradicted",
+  "scores": {
+    "evidence_support": 0,
+    "attribution_support": null,
+    "quote_fidelity": null,
+    "verdict_confidence": 87,
+    "source_independence": 100,
+    "context_completeness": 100
+  },
+  "atomic_claims": [
+    {
+      "id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "claim_text": "U.S. Federal Reserve to increase interest rates.",
+      "importance_weight": 3,
+      "claim_type": "prediction",
+      "final_label": "Contradicted",
+      "support_score": 0,
+      "confidence_score": 94,
+      "context_completeness": 100,
+      "ambiguities": [],
+      "gaps": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "2947e0fb-dcd4-493c-ad1c-5133c4e28bc3",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "07b4eb23-845c-5ae8-8558-44a832cf3880",
+      "stance": "NEUTRAL",
+      "base_quality": 0.36,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.126,
+      "citation_status": "rejected",
+      "passage_text": "\"If inflation is a choice, the Federal Reserve meeting today shows no sign of taking steps to bring it under control with its primary monetary tool which is interest rates,\" Rupkey said, referencing Warsh's repeated comment that \"inflation is a choice.\"",
+      "source_title": "Fed meeting recap: Warsh says Fed won't hesitate to stop inflation, but bond market has doubts",
+      "source_url": "https://www.cnbc.com/2026/07/29/fed-meeting-today-live-updates.html",
+      "page_or_position": "paragraph 147"
+    },
+    {
+      "id": "bdcce07f-cb96-41be-8e50-c3a57c1356c1",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "4a7c8587-a5da-5cae-90ae-fbaa8dcb9c72",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.98,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.98,
+      "citation_status": "pending",
+      "passage_text": "WASHINGTON (AP) — The Federal Reserve left its key interest rate unchanged Wednesday, although three officials dissented in favor of higher rates as the central bank wrestles with how to deal with persistently high inflation.",
+      "source_title": "Fed leaves interest rate unchanged but with 3 dissents as Warsh praises 'good family fight'",
+      "source_url": "https://apnews.com/article/federal-reserve-inflation-interest-rates-iran-war-ad10c177cb8d96f9e3ed122e12352a74",
+      "page_or_position": "paragraph 17"
+    },
+    {
+      "id": "6572adfc-1b0e-44ac-a924-367162eb3cec",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "603f8949-bed1-52bf-aa7c-56708e3cf911",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.955,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.33425,
+      "citation_status": "pending",
+      "passage_text": "The United States Federal Reserve is set to hold interest rates steady as inflationary pressures mount, driven by heightened fuel prices as tensions between the US and Iran continue.",
+      "source_title": "US Fed holds interest rates steady, citing ‘elevated’ inflation",
+      "source_url": "https://www.aljazeera.com/economy/2026/7/29/us-fed-holds-interest-rates-steady-citing-elevated-inflation",
+      "page_or_position": "paragraph 4"
+    },
+    {
+      "id": "6e4d924d-68c6-4020-b54c-391fc08cf67f",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "644d4224-57cc-534c-9dd9-7864d9ee18dc",
+      "stance": "NEUTRAL",
+      "base_quality": 0.36,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.126,
+      "citation_status": "rejected",
+      "passage_text": "When asked by a reporter about the argument to \"pause\" interest rates rather than hike or cut them, Federal Reserve Chairman Kevin Warsh said he wouldn't characterize the decision that way.",
+      "source_title": "Fed meeting recap: Warsh says Fed won't hesitate to stop inflation, but bond market has doubts",
+      "source_url": "https://www.cnbc.com/2026/07/29/fed-meeting-today-live-updates.html",
+      "page_or_position": "paragraph 113"
+    },
+    {
+      "id": "ad6603ad-6979-4ce7-8c8a-b014e799052f",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "8b09dcb2-ae0a-5bb3-95e1-9e0297293cb7",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.98,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.343,
+      "citation_status": "pending",
+      "passage_text": "The Federal Reserve released its latest interest rate decision on Wednesday, opting to keep rates at a range of 3.5% to 3.75%.",
+      "source_title": "Fed meeting recap: Warsh says Fed won't hesitate to stop inflation, but bond market has doubts",
+      "source_url": "https://www.cnbc.com/2026/07/29/fed-meeting-today-live-updates.html",
+      "page_or_position": "paragraph 82"
+    },
+    {
+      "id": "502d2a80-5ab6-4972-9d1d-d22f3e3e1f54",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "8e830c90-0f8b-5c94-9a08-b47d1e7a1155",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.815,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.28525,
+      "citation_status": "pending",
+      "passage_text": "While a Federal Reserve Governor, Stephen Miran pushed for lower interest rates. Now, he thinks the central bank at least should stay on hold rather than considering hiking.",
+      "source_title": "Fed meeting recap: Warsh says Fed won't hesitate to stop inflation, but bond market has doubts",
+      "source_url": "https://www.cnbc.com/2026/07/29/fed-meeting-today-live-updates.html",
+      "page_or_position": "paragraph 221"
+    },
+    {
+      "id": "7e755018-5fdf-4d4f-8d0d-e0b70c51e548",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "9fb9f3f2-4de4-5014-9ece-efe02afc70bf",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.98,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.343,
+      "citation_status": "pending",
+      "passage_text": "At the conclusion of its July meeting, the Federal Reserve kept its key interest rate at the target range of 3.5% to 3.75%.",
+      "source_title": "Fed meeting recap: Warsh says Fed won't hesitate to stop inflation, but bond market has doubts",
+      "source_url": "https://www.cnbc.com/2026/07/29/fed-meeting-today-live-updates.html",
+      "page_or_position": "paragraph 163"
+    },
+    {
+      "id": "ae1ed3c7-4668-4a4d-9466-fecdba59124d",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "b40801c8-dfe4-5207-be1a-8aae6adc02c4",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.98,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.343,
+      "citation_status": "pending",
+      "passage_text": "The Federal Reserve said on Wednesday that it is leaving its benchmark interest rate unchanged, a sign policymakers expect inflation to ebb despite higher energy costs due to the war in Iran .",
+      "source_title": "Federal Reserve holds interest rates steady, but 3 officials vote for hike",
+      "source_url": "https://www.cbsnews.com/news/federal-reserve-interest-rates-kevin-warsh-july-206/",
+      "page_or_position": "paragraph 2"
+    },
+    {
+      "id": "a108bc7e-011f-481a-ab09-ffa1df6fbb73",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "b797d872-cc0f-564e-9bd6-dc3c3b979836",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.98,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.98,
+      "citation_status": "pending",
+      "passage_text": "The US Federal Reserve held interest rates steady on Wednesday in a divided vote, indicating growing pressure on the central bank to address heightened inflation.",
+      "source_title": "Fed holds interest rates steady despite Trump’s renewed calls to lower them",
+      "source_url": "https://www.theguardian.com/business/2026/jul/29/federal-reserve-interest-rates",
+      "page_or_position": "paragraph 2"
+    },
+    {
+      "id": "095aa7ff-1f1d-45e0-9daf-b822016ac5da",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "passage_id": "1a66686d-9d3d-52ee-a848-02aa6c034e59",
+      "stance": "PARTIALLY_CONTRADICTS",
+      "base_quality": 0.8899,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.8899,
+      "citation_status": "pending",
+      "passage_text": "The Federal Reserve left the federal funds rate unchanged at 3.50%–3.75% for a fifth consecutive meeting in July 2026, in line with expectations, despite markets assigning roughly a one-in-three probability to a rate hike. Notably, three FOMC members dissented, preferring to raise the policy rate by 25 basis points, which leaves the door open to a rate increase in September. The central bank noted that economic activity is expanding at a solid pace despite elevated uncertainty that owes, in part, to the conflict in the Middle East. Productivity growth and capital investment are strong. Job gains have kept pace with the workforce, and the unemployment rate has changed little. Inflation remains elevated relative to the 2% goal, in part reflecting supply shocks that have driven price increases in certain sectors, including energy. The central bank reiterated its commitment to deliver price stability. source: Federal Reserve",
+      "source_title": "United States Fed Funds Interest Rate",
+      "source_url": "https://tradingeconomics.com/united-states/interest-rate",
+      "page_or_position": "paragraph 1"
+    }
+  ],
+  "source_graph": {
+    "nodes": [
+      {
+        "id": "cluster:3f18ca40-0b47-587a-afbb-d50906236ca5",
+        "type": "cluster",
+        "label": "United States Fed Funds Interest Rate information origin",
+        "data": {
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "originType": "shared_data_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "metadata": {
+          "representativeSourceId": "937b9b2c-79e1-4c01-b6ac-45bdfd84ac39"
+        }
+      },
+      {
+        "id": "cluster:c0a755d3-eea6-53ab-8611-63c2b027b9ff",
+        "type": "cluster",
+        "label": "A divided Federal Reserve holds interest rates steady despite high inflation information origin",
+        "data": {
+          "clusterId": "c0a755d3-eea6-53ab-8611-63c2b027b9ff",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 180
+        },
+        "metadata": {
+          "representativeSourceId": "0b8b431e-3847-4b9d-8609-550397a9cbc1"
+        }
+      },
+      {
+        "id": "cluster:152d3f57-9116-59ad-a36d-8bdb640c5882",
+        "type": "cluster",
+        "label": "Fed holds interest rates steady despite Trump’s renewed calls to lower them information origin",
+        "data": {
+          "clusterId": "152d3f57-9116-59ad-a36d-8bdb640c5882",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 360
+        },
+        "metadata": {
+          "representativeSourceId": "229b1595-1424-468a-9fc3-7aeb21563748"
+        }
+      },
+      {
+        "id": "cluster:d0376f81-ed12-5251-8f44-5cde000d8733",
+        "type": "cluster",
+        "label": "Fed Leaves Interest Rates Unchanged, Despite Three Votes for an Increase - The New York Times information origin",
+        "data": {
+          "clusterId": "d0376f81-ed12-5251-8f44-5cde000d8733",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 540
+        },
+        "metadata": {
+          "representativeSourceId": "68b0a591-5dcf-4d74-ab64-5712809e476b"
+        }
+      },
+      {
+        "id": "cluster:f7f14109-e09f-5301-85ce-4bc079fbd2d0",
+        "type": "cluster",
+        "label": "Federal Reserve Cuts Interest Rates in Late 2025 | Congress.gov | Library of Congress information origin",
+        "data": {
+          "clusterId": "f7f14109-e09f-5301-85ce-4bc079fbd2d0",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 720
+        },
+        "metadata": {
+          "representativeSourceId": "5a7fdff7-a940-42ca-89e4-dc4c6de2b330"
+        }
+      },
+      {
+        "id": "source:937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+        "type": "source",
+        "label": "United States Fed Funds Interest Rate",
+        "data": {
+          "sourceId": "937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 0
+        },
+        "metadata": {
+          "canonicalUrl": "https://tradingeconomics.com/united-states/interest-rate",
+          "domain": "tradingeconomics.com",
+          "publisher": "TRADING ECONOMICS",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:3db9e8dd-6ead-434e-a4c1-c187e0de25e4",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 0
+        },
+        "metadata": {
+          "snapshotId": "3db9e8dd-6ead-434e-a4c1-c187e0de25e4",
+          "retrievedAt": "2026-08-11T23:13:42.143343+00:00",
+          "publishedAt": "2026-07-29T00:00:00+00:00",
+          "contentHash": "d313c01c57f6ad78216650dafa17b82f199b7b6aad89907da247d7fc3db40da4",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+        "type": "source",
+        "label": "Fed leaves interest rate unchanged but with 3 dissents as Warsh praises 'good family fight'",
+        "data": {
+          "sourceId": "348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 90
+        },
+        "metadata": {
+          "canonicalUrl": "https://apnews.com/article/federal-reserve-inflation-interest-rates-iran-war-ad10c177cb8d96f9e3ed122e12352a74",
+          "domain": "apnews.com",
+          "publisher": "AP News",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:0f88288e-34c2-41a6-a528-a945d144e852",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 90
+        },
+        "metadata": {
+          "snapshotId": "0f88288e-34c2-41a6-a528-a945d144e852",
+          "retrievedAt": "2026-08-11T23:13:42.208423+00:00",
+          "publishedAt": "2026-07-29T00:00:00+00:00",
+          "contentHash": "bd9d680c24ed94270c36ec5ae4ec4304ebd3bb7abba80bad1b9098f0cd84279d",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:ea590479-72dd-4bc9-9138-23e58c02035c",
+        "type": "source",
+        "label": "US Fed holds interest rates steady, citing ‘elevated’ inflation",
+        "data": {
+          "sourceId": "ea590479-72dd-4bc9-9138-23e58c02035c",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.aljazeera.com/economy/2026/7/29/us-fed-holds-interest-rates-steady-citing-elevated-inflation",
+          "domain": "www.aljazeera.com",
+          "publisher": "Al Jazeera",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:7aa9866f-86b2-45c8-965b-a793c0aeb057",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "ea590479-72dd-4bc9-9138-23e58c02035c",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "7aa9866f-86b2-45c8-965b-a793c0aeb057",
+          "retrievedAt": "2026-08-11T23:13:42.231459+00:00",
+          "publishedAt": "2026-07-29T00:00:00+00:00",
+          "contentHash": "21fe0fccac58f216eed4a5193ace2fecdd9dc6e494bbae0b73d4096d18a85023",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:229b1595-1424-468a-9fc3-7aeb21563748",
+        "type": "source",
+        "label": "Fed holds interest rates steady despite Trump’s renewed calls to lower them",
+        "data": {
+          "sourceId": "229b1595-1424-468a-9fc3-7aeb21563748",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "152d3f57-9116-59ad-a36d-8bdb640c5882",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.theguardian.com/business/2026/jul/29/federal-reserve-interest-rates",
+          "domain": "www.theguardian.com",
+          "publisher": "The Guardian",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:41c07593-d59c-4db3-b7ce-f8ac9f29ef65",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "229b1595-1424-468a-9fc3-7aeb21563748",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "152d3f57-9116-59ad-a36d-8bdb640c5882",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "41c07593-d59c-4db3-b7ce-f8ac9f29ef65",
+          "retrievedAt": "2026-08-11T23:13:42.858653+00:00",
+          "publishedAt": "2026-07-29T00:00:00+00:00",
+          "contentHash": "75567fc76e619c728a71ed86d8d6ae19fa4216577b33adb731b7cba52a06d40a",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:4595139a-0877-4a4e-8113-71772153e924",
+        "type": "source",
+        "label": "Fed meeting recap: Warsh says Fed won't hesitate to stop inflation, but bond market has doubts",
+        "data": {
+          "sourceId": "4595139a-0877-4a4e-8113-71772153e924",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 270
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.cnbc.com/2026/07/29/fed-meeting-today-live-updates.html",
+          "domain": "www.cnbc.com",
+          "publisher": "CNBC",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:7702ce0a-9ebf-4e27-a0d9-38d57914c7e7",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "4595139a-0877-4a4e-8113-71772153e924",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 270
+        },
+        "metadata": {
+          "snapshotId": "7702ce0a-9ebf-4e27-a0d9-38d57914c7e7",
+          "retrievedAt": "2026-08-11T23:13:43.164587+00:00",
+          "publishedAt": "2026-07-29T00:00:00+00:00",
+          "contentHash": "20c32b9dd4f6fc4b60a6bd24a58ce47e28219eaad4b7df52e2269ec0dfcdf90d",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:68b0a591-5dcf-4d74-ab64-5712809e476b",
+        "type": "source",
+        "label": "Fed Leaves Interest Rates Unchanged, Despite Three Votes for an Increase - The New York Times",
+        "data": {
+          "sourceId": "68b0a591-5dcf-4d74-ab64-5712809e476b",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "PRIMARY",
+          "clusterId": "d0376f81-ed12-5251-8f44-5cde000d8733",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-11T23:13:43.196971+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.nytimes.com/live/2026/07/29/business/fed-meeting-rates-kevin-warsh",
+          "domain": "www.nytimes.com",
+          "publisher": null,
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-08-11T23:13:43.196971+00:00"
+        }
+      },
+      {
+        "id": "snapshot:bb0a8fd2-31c5-4e1a-bfa9-2988a73ac2c9",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "68b0a591-5dcf-4d74-ab64-5712809e476b",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "PRIMARY",
+          "clusterId": "d0376f81-ed12-5251-8f44-5cde000d8733",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "bb0a8fd2-31c5-4e1a-bfa9-2988a73ac2c9",
+          "retrievedAt": "2026-08-11T23:13:43.196971+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:020d332e-d682-4b5b-9f40-688d12b0ba43",
+        "type": "source",
+        "label": "Federal Reserve holds interest rates steady, but 3 officials vote for hike",
+        "data": {
+          "sourceId": "020d332e-d682-4b5b-9f40-688d12b0ba43",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.cbsnews.com/news/federal-reserve-interest-rates-kevin-warsh-july-206/",
+          "domain": "www.cbsnews.com",
+          "publisher": "CBS News",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:f5db8b64-904b-409a-97c6-b45dd42069e5",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "020d332e-d682-4b5b-9f40-688d12b0ba43",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "atomicClaimIds": [
+            "e5d659de-e7b7-41af-baad-c0675c0d5047"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "f5db8b64-904b-409a-97c6-b45dd42069e5",
+          "retrievedAt": "2026-08-11T23:13:43.391090+00:00",
+          "publishedAt": "2026-07-29T00:00:00+00:00",
+          "contentHash": "c0e2645934e7abae875d59c408bd565633bab6d2f56c4358ac69463dcfa230b4",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:5a7fdff7-a940-42ca-89e4-dc4c6de2b330",
+        "type": "source",
+        "label": "Federal Reserve Cuts Interest Rates in Late 2025 | Congress.gov | Library of Congress",
+        "data": {
+          "sourceId": "5a7fdff7-a940-42ca-89e4-dc4c6de2b330",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "f7f14109-e09f-5301-85ce-4bc079fbd2d0",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-11T23:13:43.648886+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 720
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.congress.gov/crs-product/IN12635",
+          "domain": "www.congress.gov",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-11T23:13:43.648886+00:00"
+        }
+      },
+      {
+        "id": "snapshot:750bc2eb-8b4b-43e9-93ec-ff85be09f6c8",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "5a7fdff7-a940-42ca-89e4-dc4c6de2b330",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "f7f14109-e09f-5301-85ce-4bc079fbd2d0",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 720
+        },
+        "metadata": {
+          "snapshotId": "750bc2eb-8b4b-43e9-93ec-ff85be09f6c8",
+          "retrievedAt": "2026-08-11T23:13:43.648886+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "type": "source",
+        "label": "Fed meeting recap: The FOMC held rates steady for the fifth time this year, but dissent is growing",
+        "data": {
+          "sourceId": "09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 450
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.businessinsider.com/fed-meeting-fomc-interest-rate-decision-live-updates-2026-7",
+          "domain": "www.businessinsider.com",
+          "publisher": "Business Insider",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-07-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:5f9dd1ad-ad4a-4383-8965-11136495bdf5",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-11",
+        "data": {
+          "sourceId": "09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "3f18ca40-0b47-587a-afbb-d50906236ca5",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 450
+        },
+        "metadata": {
+          "snapshotId": "5f9dd1ad-ad4a-4383-8965-11136495bdf5",
+          "retrievedAt": "2026-08-11T23:13:43.741625+00:00",
+          "publishedAt": "2026-07-29T00:00:00+00:00",
+          "contentHash": "e542748f87071067dc5c131291532a2dd1bdb7ea22ae80a988010d1b6f311ce8",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:0b8b431e-3847-4b9d-8609-550397a9cbc1",
+        "type": "source",
+        "label": "A divided Federal Reserve holds interest rates steady despite high inflation",
+        "data": {
+          "sourceId": "0b8b431e-3847-4b9d-8609-550397a9cbc1",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "c0a755d3-eea6-53ab-8611-63c2b027b9ff",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T01:13:22.944650+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.npr.org/2026/07/29/nx-s1-5910558/federal-reserve-interest-rates-inflation",
+          "domain": "www.npr.org",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T01:13:22.944650+00:00"
+        }
+      },
+      {
+        "id": "snapshot:17a0b312-c597-4b6b-87cd-2c657384fa96",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "0b8b431e-3847-4b9d-8609-550397a9cbc1",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "c0a755d3-eea6-53ab-8611-63c2b027b9ff",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "17a0b312-c597-4b6b-87cd-2c657384fa96",
+          "retrievedAt": "2026-08-13T01:14:43.506339+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "cluster-member:3f18ca40-0b47-587a-afbb-d50906236ca5:937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+        "source": "cluster:3f18ca40-0b47-587a-afbb-d50906236ca5",
+        "target": "source:937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:3db9e8dd-6ead-434e-a4c1-c187e0de25e4",
+        "source": "source:937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+        "target": "snapshot:3db9e8dd-6ead-434e-a4c1-c187e0de25e4",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:3f18ca40-0b47-587a-afbb-d50906236ca5:348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+        "source": "cluster:3f18ca40-0b47-587a-afbb-d50906236ca5",
+        "target": "source:348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:0f88288e-34c2-41a6-a528-a945d144e852",
+        "source": "source:348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+        "target": "snapshot:0f88288e-34c2-41a6-a528-a945d144e852",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:3f18ca40-0b47-587a-afbb-d50906236ca5:ea590479-72dd-4bc9-9138-23e58c02035c",
+        "source": "cluster:3f18ca40-0b47-587a-afbb-d50906236ca5",
+        "target": "source:ea590479-72dd-4bc9-9138-23e58c02035c",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:7aa9866f-86b2-45c8-965b-a793c0aeb057",
+        "source": "source:ea590479-72dd-4bc9-9138-23e58c02035c",
+        "target": "snapshot:7aa9866f-86b2-45c8-965b-a793c0aeb057",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:152d3f57-9116-59ad-a36d-8bdb640c5882:229b1595-1424-468a-9fc3-7aeb21563748",
+        "source": "cluster:152d3f57-9116-59ad-a36d-8bdb640c5882",
+        "target": "source:229b1595-1424-468a-9fc3-7aeb21563748",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:41c07593-d59c-4db3-b7ce-f8ac9f29ef65",
+        "source": "source:229b1595-1424-468a-9fc3-7aeb21563748",
+        "target": "snapshot:41c07593-d59c-4db3-b7ce-f8ac9f29ef65",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:3f18ca40-0b47-587a-afbb-d50906236ca5:4595139a-0877-4a4e-8113-71772153e924",
+        "source": "cluster:3f18ca40-0b47-587a-afbb-d50906236ca5",
+        "target": "source:4595139a-0877-4a4e-8113-71772153e924",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:7702ce0a-9ebf-4e27-a0d9-38d57914c7e7",
+        "source": "source:4595139a-0877-4a4e-8113-71772153e924",
+        "target": "snapshot:7702ce0a-9ebf-4e27-a0d9-38d57914c7e7",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:d0376f81-ed12-5251-8f44-5cde000d8733:68b0a591-5dcf-4d74-ab64-5712809e476b",
+        "source": "cluster:d0376f81-ed12-5251-8f44-5cde000d8733",
+        "target": "source:68b0a591-5dcf-4d74-ab64-5712809e476b",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:bb0a8fd2-31c5-4e1a-bfa9-2988a73ac2c9",
+        "source": "source:68b0a591-5dcf-4d74-ab64-5712809e476b",
+        "target": "snapshot:bb0a8fd2-31c5-4e1a-bfa9-2988a73ac2c9",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:3f18ca40-0b47-587a-afbb-d50906236ca5:020d332e-d682-4b5b-9f40-688d12b0ba43",
+        "source": "cluster:3f18ca40-0b47-587a-afbb-d50906236ca5",
+        "target": "source:020d332e-d682-4b5b-9f40-688d12b0ba43",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:f5db8b64-904b-409a-97c6-b45dd42069e5",
+        "source": "source:020d332e-d682-4b5b-9f40-688d12b0ba43",
+        "target": "snapshot:f5db8b64-904b-409a-97c6-b45dd42069e5",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:f7f14109-e09f-5301-85ce-4bc079fbd2d0:5a7fdff7-a940-42ca-89e4-dc4c6de2b330",
+        "source": "cluster:f7f14109-e09f-5301-85ce-4bc079fbd2d0",
+        "target": "source:5a7fdff7-a940-42ca-89e4-dc4c6de2b330",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:750bc2eb-8b4b-43e9-93ec-ff85be09f6c8",
+        "source": "source:5a7fdff7-a940-42ca-89e4-dc4c6de2b330",
+        "target": "snapshot:750bc2eb-8b4b-43e9-93ec-ff85be09f6c8",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:3f18ca40-0b47-587a-afbb-d50906236ca5:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "source": "cluster:3f18ca40-0b47-587a-afbb-d50906236ca5",
+        "target": "source:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:5f9dd1ad-ad4a-4383-8965-11136495bdf5",
+        "source": "source:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "target": "snapshot:5f9dd1ad-ad4a-4383-8965-11136495bdf5",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:c0a755d3-eea6-53ab-8611-63c2b027b9ff:0b8b431e-3847-4b9d-8609-550397a9cbc1",
+        "source": "cluster:c0a755d3-eea6-53ab-8611-63c2b027b9ff",
+        "target": "source:0b8b431e-3847-4b9d-8609-550397a9cbc1",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:17a0b312-c597-4b6b-87cd-2c657384fa96",
+        "source": "source:0b8b431e-3847-4b9d-8609-550397a9cbc1",
+        "target": "snapshot:17a0b312-c597-4b6b-87cd-2c657384fa96",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "dependency:f87753db-92c8-47cb-a2be-019ceba4ed9c",
+        "source": "source:937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+        "target": "source:4595139a-0877-4a4e-8113-71772153e924",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:e4fcb624-da53-4960-ba89-ee7e5af6ac2b",
+        "source": "source:937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+        "target": "source:020d332e-d682-4b5b-9f40-688d12b0ba43",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:2e2f57ed-db9d-435c-845e-63961cd3bfe1",
+        "source": "source:937b9b2c-79e1-4c01-b6ac-45bdfd84ac39",
+        "target": "source:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:70110dd1-c70c-4106-8c46-ee07ea08bc7f",
+        "source": "source:348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+        "target": "source:ea590479-72dd-4bc9-9138-23e58c02035c",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:6a54a11b-cd01-49c8-b0eb-fddb3e7df90d",
+        "source": "source:348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+        "target": "source:4595139a-0877-4a4e-8113-71772153e924",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:1cd726aa-8b53-4230-8227-70b666b8c5f9",
+        "source": "source:348ca685-d9c2-4630-afbc-a0fa1eb4fbfd",
+        "target": "source:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:fc6202c2-261b-4fc7-8fc6-38ce87212340",
+        "source": "source:ea590479-72dd-4bc9-9138-23e58c02035c",
+        "target": "source:020d332e-d682-4b5b-9f40-688d12b0ba43",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:48e12438-feab-463c-a9e9-744b8035b5d8",
+        "source": "source:ea590479-72dd-4bc9-9138-23e58c02035c",
+        "target": "source:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:4d56d769-afdd-461c-a2d3-639ebd87a89c",
+        "source": "source:4595139a-0877-4a4e-8113-71772153e924",
+        "target": "source:020d332e-d682-4b5b-9f40-688d12b0ba43",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:7909217e-6347-43fc-a9eb-9a25a7828629",
+        "source": "source:4595139a-0877-4a4e-8113-71772153e924",
+        "target": "source:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.82,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:ce824eb1-5e0e-4b67-84c6-c06467115c95",
+        "source": "source:020d332e-d682-4b5b-9f40-688d12b0ba43",
+        "target": "source:09ede706-02be-4528-bd2a-c1b0ae40ea8a",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.82,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      }
+    ]
+  },
+  "calculations": [
+    {
+      "id": "28937f73-7c81-463b-b3a8-1c6fc51d01bf",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "07b4eb23-845c-5ae8-8558-44a832cf3880"
+      },
+      "result": {
+        "quality": "0.360"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "586266d0-9562-4cb4-8bd4-c03dc92a0b13",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.360",
+        "passage_id": "07b4eb23-845c-5ae8-8558-44a832cf3880",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.12600"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "de3389bd-f1b4-4536-8ef1-124540e7c242",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "1.0",
+        "X": "1.0",
+        "passage_id": "4a7c8587-a5da-5cae-90ae-fbaa8dcb9c72"
+      },
+      "result": {
+        "quality": "0.980"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "458e7b76-8490-4ef3-896f-542155b2a3fd",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.980",
+        "passage_id": "4a7c8587-a5da-5cae-90ae-fbaa8dcb9c72",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.98000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "61cfe82d-554e-428a-ba5e-36ac97bf880f",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "1.0",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "603f8949-bed1-52bf-aa7c-56708e3cf911"
+      },
+      "result": {
+        "quality": "0.955"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "96e903b5-fe3a-4c27-ad93-c5289a42c3f7",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.955",
+        "passage_id": "603f8949-bed1-52bf-aa7c-56708e3cf911",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.33425"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0e932ab0-cde2-4770-b886-39a75a5ec874",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.360",
+        "passage_id": "644d4224-57cc-534c-9dd9-7864d9ee18dc",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.12600"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "617126ec-b31c-43be-a49e-b9525b8e99c8",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "644d4224-57cc-534c-9dd9-7864d9ee18dc"
+      },
+      "result": {
+        "quality": "0.360"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "9abfacdb-6c58-4704-87c7-b16918be0807",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.980",
+        "passage_id": "8b09dcb2-ae0a-5bb3-95e1-9e0297293cb7",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.34300"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "fa10e732-90ec-4b95-a1a7-47ad436b5b23",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "1.0",
+        "X": "1.0",
+        "passage_id": "8b09dcb2-ae0a-5bb3-95e1-9e0297293cb7"
+      },
+      "result": {
+        "quality": "0.980"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "3ac275dd-d467-4b1d-9214-80862b6d999e",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.7",
+        "D": "0.8",
+        "F": "0.7",
+        "R": "0.9",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "8e830c90-0f8b-5c94-9a08-b47d1e7a1155"
+      },
+      "result": {
+        "quality": "0.815"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "670b42ab-d28c-4588-8aab-da98294688b0",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "1.0",
+        "X": "1.0",
+        "passage_id": "9fb9f3f2-4de4-5014-9ece-efe02afc70bf"
+      },
+      "result": {
+        "quality": "0.980"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f5a3c334-3fe8-48aa-ae42-34f46b7a31f1",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.815",
+        "passage_id": "8e830c90-0f8b-5c94-9a08-b47d1e7a1155",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.28525"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "89d4ecf5-a001-43c3-ab7c-69160f802711",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.980",
+        "passage_id": "9fb9f3f2-4de4-5014-9ece-efe02afc70bf",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.34300"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "48cfadfe-6132-40d4-b1d6-63105d7f6a9b",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "1.0",
+        "X": "1.0",
+        "passage_id": "b40801c8-dfe4-5207-be1a-8aae6adc02c4"
+      },
+      "result": {
+        "quality": "0.980"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7ed91d95-6f7e-4bd4-b20c-c1e90ca490d0",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.980",
+        "passage_id": "b40801c8-dfe4-5207-be1a-8aae6adc02c4",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.34300"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "61eb305b-62c9-48a5-8d97-ec4e3a66d7ac",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "1.0",
+        "X": "1.0",
+        "passage_id": "b797d872-cc0f-564e-9bd6-dc3c3b979836"
+      },
+      "result": {
+        "quality": "0.980"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "49373f5e-347e-4dfd-a5f9-4336be6006d4",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.9",
+        "D": "0.8",
+        "F": "0.9",
+        "R": "0.9",
+        "T": "0.9",
+        "X": "0.999",
+        "passage_id": "1a66686d-9d3d-52ee-a848-02aa6c034e59"
+      },
+      "result": {
+        "quality": "0.88990"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "8a4fd114-1671-400c-88ce-1e44fbd29bbe",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.980",
+        "passage_id": "b797d872-cc0f-564e-9bd6-dc3c3b979836",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.98000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "9a8addb9-22bb-44f3-bff1-a81541fbe09b",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.88990",
+        "passage_id": "1a66686d-9d3d-52ee-a848-02aa6c034e59",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.8899000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "08e11cb1-c86d-4f76-81c7-a1db119ba34d",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "supporting_weight",
+      "formula_text": "P = sum(max(stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "4a7c8587-a5da-5cae-90ae-fbaa8dcb9c72",
+          "603f8949-bed1-52bf-aa7c-56708e3cf911",
+          "8b09dcb2-ae0a-5bb3-95e1-9e0297293cb7",
+          "8e830c90-0f8b-5c94-9a08-b47d1e7a1155",
+          "9fb9f3f2-4de4-5014-9ece-efe02afc70bf",
+          "b40801c8-dfe4-5207-be1a-8aae6adc02c4",
+          "b797d872-cc0f-564e-9bd6-dc3c3b979836",
+          "1a66686d-9d3d-52ee-a848-02aa6c034e59"
+        ]
+      },
+      "result": {
+        "P": "0E-7"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "87643dbf-eb52-45d7-9be4-84da120060d0",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "contradicting_weight",
+      "formula_text": "N = sum(max(-stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "4a7c8587-a5da-5cae-90ae-fbaa8dcb9c72",
+          "603f8949-bed1-52bf-aa7c-56708e3cf911",
+          "8b09dcb2-ae0a-5bb3-95e1-9e0297293cb7",
+          "8e830c90-0f8b-5c94-9a08-b47d1e7a1155",
+          "9fb9f3f2-4de4-5014-9ece-efe02afc70bf",
+          "b40801c8-dfe4-5207-be1a-8aae6adc02c4",
+          "b797d872-cc0f-564e-9bd6-dc3c3b979836",
+          "1a66686d-9d3d-52ee-a848-02aa6c034e59"
+        ]
+      },
+      "result": {
+        "N": "4.053450000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a6661999-e23a-4d81-ad4a-9714509371e7",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_support",
+      "formula_text": "100 * P / (P + N)",
+      "inputs": {
+        "N": "4.053450000",
+        "P": "0E-7"
+      },
+      "result": {
+        "score": "0E+2"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "62177549-97fc-45dd-8ec9-e2d235ed6ed4",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "100",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "100.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "716659c1-1470-4267-8d80-0453a29e88f4",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "evidence_consistency",
+      "formula_text": "100 * abs(P - N) / (P + N)",
+      "inputs": {
+        "N": "4.053450000",
+        "P": "0E-7"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "144f3aca-5aa8-43c5-8ce7-d78e34c55be4",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "100.00",
+        "primary_access": "100",
+        "average_quality": "94.98553952516450293437666726"
+      },
+      "result": {
+        "score": "93.74638488129112573359416682"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "3ac98e12-d9b6-4fef-bb7e-7eb69cbaa245",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "material_penalties": {}
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "878950e3-c278-4cb2-9392-16997f827763",
+      "atomic_claim_id": "e5d659de-e7b7-41af-baad-c0675c0d5047",
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "100",
+        "support": "0E+2",
+        "confidence": "93.74638488129112573359416682",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "insufficient_evidence_reasons": []
+      },
+      "result": {
+        "label": "Contradicted"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "3af6640d-4ccb-4743-9a59-3c91000914d1",
+      "atomic_claim_id": null,
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "100",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "100.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1aaa1709-0145-4aa4-b7c8-c8896ae6b42f",
+      "atomic_claim_id": null,
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "citation_partial_support": "7",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "100.00",
+        "primary_access": "100",
+        "average_quality": "94.98553952516450293437666726"
+      },
+      "result": {
+        "score": "87"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f2a47cb7-a39a-489a-a011-eed212e7c2a6",
+      "atomic_claim_id": null,
+      "formula_name": "article_factual_accuracy",
+      "formula_text": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "0E+2",
+            "importance_weight": 3
+          }
+        ],
+        "citation_partial_support_penalty": "5"
+      },
+      "result": {
+        "score": "0",
+        "essential_claim_gate": true
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "b08d0da8-5a0a-4d01-95b4-2ce679ced784",
+      "atomic_claim_id": null,
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "100",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "factual_accuracy": "0",
+        "verdict_confidence": "93.74638488129112573359416682",
+        "insufficient_evidence_reasons": [],
+        "strongly_refuted_essential_claim": true
+      },
+      "result": {
+        "label": "Contradicted"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "gated"
+    },
+    {
+      "id": "7c5bc3d7-264e-4b7f-98d0-1a0b6d203159",
+      "atomic_claim_id": null,
+      "formula_name": "research_coverage",
+      "formula_text": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+      "inputs": {
+        "claims": [
+          {
+            "claim_ref": "claim-1-9ed5b88aa80c4ca9",
+            "adequate_evidence": true,
+            "importance_weight": 3
+          }
+        ],
+        "confidence_issues": [
+          "important_source_inaccessible"
+        ]
+      },
+      "result": {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "5"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c4c37fc1-2495-40bf-ae4f-9ceafb44067a",
+      "atomic_claim_id": null,
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "claims": [
+          {
+            "context": "100",
+            "claim_ref": "claim-1-9ed5b88aa80c4ca9",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0c6aee97-ce82-45b8-8c71-e8c13de9485f",
+      "atomic_claim_id": null,
+      "formula_name": "citation_partial_support_penalty",
+      "formula_text": "reported score = clamp(original score - partial citation penalty, 0, 100)",
+      "inputs": {
+        "partial_sentence_count": 1,
+        "evidence_support_penalty": "5",
+        "verdict_confidence_penalty": "7"
+      },
+      "result": {
+        "evidence_support": 0,
+        "verdict_confidence": 87
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "methodology_version": "not-recorded",
+  "workflow_version": "1.0.0",
+  "model_versions": {
+    "intake": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1085,
+        "prompt_tokens": 969,
+        "completion_tokens": 116
+      },
+      "provider": "deepseek",
+      "latency_ms": 1613,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "planner": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1775,
+        "prompt_tokens": 1131,
+        "completion_tokens": 644
+      },
+      "provider": "deepseek",
+      "latency_ms": 4536,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "embedding": {
+      "status": "unconfigured_fallback",
+      "provider": "deepseek",
+      "retryable": false,
+      "error_code": "embedding_route_unavailable",
+      "latency_ms": 0,
+      "used_model": null,
+      "status_code": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "request_count": 0,
+      "retrieval_mode": "lexical_metadata_fallback",
+      "configured_model": null
+    },
+    "synthesis": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 20921,
+        "prompt_tokens": 19733,
+        "completion_tokens": 1188
+      },
+      "provider": "deepseek",
+      "latency_ms": 9140,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "decomposition": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1513,
+        "prompt_tokens": 1352,
+        "completion_tokens": 161
+      },
+      "provider": "deepseek",
+      "latency_ms": 2185,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_audit": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 10253,
+        "prompt_tokens": 8315,
+        "completion_tokens": 1938
+      },
+      "provider": "deepseek",
+      "latency_ms": 11007,
+      "batch_count": 10,
+      "repair_count": 0,
+      "request_count": 10,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_revision": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 8137,
+        "prompt_tokens": 7320,
+        "completion_tokens": 817
+      },
+      "provider": "deepseek",
+      "latency_ms": 5117,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "evidence_classification": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 18603,
+        "prompt_tokens": 16383,
+        "completion_tokens": 2220
+      },
+      "provider": "deepseek",
+      "latency_ms": 12069,
+      "batch_count": 10,
+      "repair_count": 0,
+      "request_count": 10,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    }
+  },
+  "prompt_versions": {
+    "intake": "intake-v2",
+    "planner": "planner-v2",
+    "synthesis": "synthesis-v4",
+    "decomposition": "decomposition-v3",
+    "citation_audit": "citation-audit-v4",
+    "citation_revision": "synthesis-v4",
+    "evidence_classification": "evidence-classification-v4"
+  },
+  "parser_versions": {
+    "trafilatura": "2.2.0"
+  },
+  "retrieval_versions": {
+    "implementation": "not-recorded",
+    "version": "not-recorded"
+  },
+  "score_roles": {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured."
+  },
+  "report_sentences": [
+    {
+      "id": "0ec70757-a1c4-4c9f-b677-3a108e4050f6",
+      "report_section": "summary",
+      "sentence_text": "The claim that the U.S. Federal Reserve will increase interest rates is not supported by its July 2026 meeting, where the central bank held rates steady, though some members preferred a hike.",
+      "passage_id": "4a7c8587-a5da-5cae-90ae-fbaa8dcb9c72",
+      "audit_status": "passed",
+      "audit_note": "The passage states the Fed left rates unchanged, with three officials dissenting in favor of higher rates, which directly supports the sentence's claim that the Fed held rates steady and some members preferred a hike."
+    },
+    {
+      "id": "7673b77e-931e-498f-a059-2b189ee22ee8",
+      "report_section": "summary",
+      "sentence_text": "The claim that the U.S. Federal Reserve will increase interest rates is not supported by its July 2026 meeting, where the central bank held rates steady, though some members preferred a hike.",
+      "passage_id": "603f8949-bed1-52bf-aa7c-56708e3cf911",
+      "audit_status": "partial",
+      "audit_note": "The passage says the Fed is set to hold rates steady, but does not mention any members preferring a hike, so it partially supports the sentence but lacks the detail about dissenting members."
+    },
+    {
+      "id": "da765547-4858-43b4-bba6-01917d80ef6d",
+      "report_section": "summary",
+      "sentence_text": "The claim that the U.S. Federal Reserve will increase interest rates is not supported by its July 2026 meeting, where the central bank held rates steady, though some members preferred a hike.",
+      "passage_id": "8b09dcb2-ae0a-5bb3-95e1-9e0297293cb7",
+      "audit_status": "partial",
+      "audit_note": "The passage confirms the Fed held rates steady, but does not mention any members preferring a hike, so the claim's additional detail is unsupported."
+    },
+    {
+      "id": "4b40686d-c123-44df-8965-446b9bdddc2a",
+      "report_section": "summary",
+      "sentence_text": "The claim that the U.S. Federal Reserve will increase interest rates is not supported by its July 2026 meeting, where the central bank held rates steady, though some members preferred a hike.",
+      "passage_id": "9fb9f3f2-4de4-5014-9ece-efe02afc70bf",
+      "audit_status": "partial",
+      "audit_note": "The passage confirms the Fed kept rates steady at the July meeting, but does not mention any members preferring a hike, so the claim's additional detail is unsupported."
+    },
+    {
+      "id": "1ffed217-9ef8-40d9-94da-08dba024a8a2",
+      "report_section": "summary",
+      "sentence_text": "The claim that the U.S. Federal Reserve will increase interest rates is not supported by its July 2026 meeting, where the central bank held rates steady, though some members preferred a hike.",
+      "passage_id": "b40801c8-dfe4-5207-be1a-8aae6adc02c4",
+      "audit_status": "passed",
+      "audit_note": "The passage states the Fed left its benchmark interest rate unchanged, directly supporting the sentence's claim that the Fed held rates steady and did not increase them."
+    },
+    {
+      "id": "41433102-e5d2-4248-9fb0-8d03f883fb34",
+      "report_section": "summary",
+      "sentence_text": "The claim that the U.S. Federal Reserve will increase interest rates is not supported by its July 2026 meeting, where the central bank held rates steady, though some members preferred a hike.",
+      "passage_id": "b797d872-cc0f-564e-9bd6-dc3c3b979836",
+      "audit_status": "passed",
+      "audit_note": "The passage confirms the Fed held rates steady in a divided vote, supporting the sentence's statement that rates were held steady and that some members preferred a hike (implied by 'divided vote')."
+    },
+    {
+      "id": "42530ebd-5ed4-45af-a369-b69f97d02d81",
+      "report_section": "summary",
+      "sentence_text": "The claim that the U.S. Federal Reserve will increase interest rates is not supported by its July 2026 meeting, where the central bank held rates steady, though some members preferred a hike.",
+      "passage_id": "1a66686d-9d3d-52ee-a848-02aa6c034e59",
+      "audit_status": "passed",
+      "audit_note": "The passage states the Fed left rates unchanged in July 2026, and that three members dissented preferring a hike, which matches the sentence's claim that the Fed held rates steady though some preferred a hike. The sentence's framing that a rate increase is 'not supported' is consistent with the passage's factual content."
+    },
+    {
+      "id": "8fd5ab6f-8033-4694-b5da-8511a9d345d6",
+      "report_section": "factual_finding",
+      "sentence_text": "At its July 2026 meeting, the Federal Reserve left the federal funds rate unchanged at a target range of 3.5% to 3.75%.",
+      "passage_id": "1a66686d-9d3d-52ee-a848-02aa6c034e59",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states the Federal Reserve left the federal funds rate unchanged at 3.50%–3.75% in July 2026, which directly supports the sentence's claim."
+    },
+    {
+      "id": "ab3fe4d4-e556-4cf7-8a49-2ea2a7b834ac",
+      "report_section": "factual_finding",
+      "sentence_text": "At its July 2026 meeting, the Federal Reserve left the federal funds rate unchanged at a target range of 3.5% to 3.75%.",
+      "passage_id": "9fb9f3f2-4de4-5014-9ece-efe02afc70bf",
+      "audit_status": "passed",
+      "audit_note": "The passage states that the Federal Reserve kept its key interest rate at the target range of 3.5% to 3.75% at its July meeting, which directly supports the sentence's claim about the unchanged rate and target range."
+    },
+    {
+      "id": "914070f2-acba-49df-99d3-4fee2475956d",
+      "report_section": "factual_finding",
+      "sentence_text": "Three Federal Open Market Committee members dissented, preferring to raise the policy rate by 25 basis points, which leaves the door open to a rate increase in September.",
+      "passage_id": "1a66686d-9d3d-52ee-a848-02aa6c034e59",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly mentions that three FOMC members dissented, preferring to raise the policy rate by 25 basis points, and that this leaves the door open to a rate increase in September, matching the sentence's content."
+    },
+    {
+      "id": "0040cd2e-5769-4688-823f-511de77bd288",
+      "report_section": "factual_finding",
+      "sentence_text": "The Federal Reserve cited elevated inflation and economic uncertainty, partly due to the conflict in the Middle East, as factors in its decision.",
+      "passage_id": "1a66686d-9d3d-52ee-a848-02aa6c034e59",
+      "audit_status": "passed",
+      "audit_note": "The passage states that the Fed noted elevated uncertainty owing in part to the Middle East conflict and that inflation remains elevated, directly supporting the sentence's claim about citing elevated inflation and economic uncertainty partly due to the conflict."
+    },
+    {
+      "id": "4afa98f5-eca4-49ac-9f6d-607d28f81c2b",
+      "report_section": "strongest_contradiction",
+      "sentence_text": "The Federal Reserve left its key interest rate unchanged Wednesday, although three officials dissented in favor of higher rates as the central bank wrestles with how to deal with persistently high inflation.",
+      "passage_id": "4a7c8587-a5da-5cae-90ae-fbaa8dcb9c72",
+      "audit_status": "passed",
+      "audit_note": "The passage exactly matches the sentence, stating the Fed left rates unchanged with three dissents favoring higher rates due to persistently high inflation."
+    },
+    {
+      "id": "ec8d1c5a-4010-4bcb-b4f5-51dd6d505919",
+      "report_section": "attribution",
+      "sentence_text": "The claim that the Federal Reserve will increase interest rates is not supported by the evidence; instead, the evidence shows the Fed held rates steady at its July 2026 meeting.",
+      "passage_id": "4a7c8587-a5da-5cae-90ae-fbaa8dcb9c72",
+      "audit_status": "passed",
+      "audit_note": "The passage states the Fed left its key interest rate unchanged, directly supporting the sentence's claim that the Fed held rates steady."
+    },
+    {
+      "id": "ad1e2468-cce9-494e-97db-7f5f4b281f9d",
+      "report_section": "attribution",
+      "sentence_text": "The claim that the Federal Reserve will increase interest rates is not supported by the evidence; instead, the evidence shows the Fed held rates steady at its July 2026 meeting.",
+      "passage_id": "603f8949-bed1-52bf-aa7c-56708e3cf911",
+      "audit_status": "passed",
+      "audit_note": "The passage states the Fed is set to hold interest rates steady, which supports the sentence's claim that the Fed held rates steady."
+    },
+    {
+      "id": "69abb9ce-da0f-4fc8-a36a-3a77b22ed7dd",
+      "report_section": "attribution",
+      "sentence_text": "The claim that the Federal Reserve will increase interest rates is not supported by the evidence; instead, the evidence shows the Fed held rates steady at its July 2026 meeting.",
+      "passage_id": "8b09dcb2-ae0a-5bb3-95e1-9e0297293cb7",
+      "audit_status": "passed",
+      "audit_note": "The passage states the Fed kept rates at 3.5%-3.75%, directly supporting the sentence's claim that the Fed held rates steady, contradicting the unsupported claim of an increase."
+    },
+    {
+      "id": "326cae6e-bebb-4fba-a51e-5521eed595e2",
+      "report_section": "attribution",
+      "sentence_text": "The claim that the Federal Reserve will increase interest rates is not supported by the evidence; instead, the evidence shows the Fed held rates steady at its July 2026 meeting.",
+      "passage_id": "9fb9f3f2-4de4-5014-9ece-efe02afc70bf",
+      "audit_status": "passed",
+      "audit_note": "The passage confirms the Fed kept its key interest rate at 3.5%-3.75% at the July meeting, directly supporting the sentence's assertion that the Fed held rates steady."
+    },
+    {
+      "id": "aceba734-251f-4e8d-819d-41f912a1833c",
+      "report_section": "attribution",
+      "sentence_text": "The claim that the Federal Reserve will increase interest rates is not supported by the evidence; instead, the evidence shows the Fed held rates steady at its July 2026 meeting.",
+      "passage_id": "b40801c8-dfe4-5207-be1a-8aae6adc02c4",
+      "audit_status": "passed",
+      "audit_note": "The passage states the Fed left its benchmark interest rate unchanged, directly supporting the sentence's claim that the Fed held rates steady."
+    },
+    {
+      "id": "16678343-4fa8-4ae1-a3c6-acfa4c2b4a20",
+      "report_section": "attribution",
+      "sentence_text": "The claim that the Federal Reserve will increase interest rates is not supported by the evidence; instead, the evidence shows the Fed held rates steady at its July 2026 meeting.",
+      "passage_id": "b797d872-cc0f-564e-9bd6-dc3c3b979836",
+      "audit_status": "passed",
+      "audit_note": "The passage states the Fed held interest rates steady, directly supporting the sentence's claim that the Fed held rates steady."
+    },
+    {
+      "id": "bc72e390-5af1-4db7-87a2-b440576d5bab",
+      "report_section": "attribution",
+      "sentence_text": "The claim that the Federal Reserve will increase interest rates is not supported by the evidence; instead, the evidence shows the Fed held rates steady at its July 2026 meeting.",
+      "passage_id": "1a66686d-9d3d-52ee-a848-02aa6c034e59",
+      "audit_status": "passed",
+      "audit_note": "The passage states that the Federal Reserve left the federal funds rate unchanged at its July 2026 meeting, directly contradicting the claim of a rate increase. The sentence accurately reflects this by saying the evidence shows the Fed held rates steady."
+    }
+  ],
+  "evidence_reviewed_at": "2026-08-11T23:13:49.091084Z",
+  "generated_at": "2026-08-11T23:15:12.249674Z",
+  "limitations": [
+    "Inaccessible source: The evidence source was temporarily unavailable.",
+    "Inaccessible source: The evidence source denied automated retrieval.",
+    "Inaccessible source: The evidence source denied automated retrieval.",
+    "1 calculation audit(s) require review; inspect audit_status and inputs."
+  ]
+}

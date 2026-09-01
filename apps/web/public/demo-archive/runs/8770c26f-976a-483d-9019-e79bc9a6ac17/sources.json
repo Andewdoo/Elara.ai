@@ -1,0 +1,2107 @@
+{
+  "sources": [
+    {
+      "id": "81278a55-8666-4691-be9f-5b6789d4f044",
+      "canonical_url": "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
+      "domain": "www.ajmc.com",
+      "title": "Increased Social Media Use Linked to Rising Depressive Symptoms in Early Adolescents | AJMC",
+      "author": "Giuliana Grossi",
+      "publisher": "AJMC - Managed Care News, Research, and Expert Insights",
+      "source_type": "UNKNOWN",
+      "content_type": "text/html",
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": null,
+      "snapshot_id": "857098ec-603b-47d2-94c6-e668edac699f",
+      "snapshot_version": 1,
+      "access_status": "FETCHED",
+      "retrieved_at": "2026-08-13T22:39:05.969645Z",
+      "published_at": "2025-05-21T00:00:00Z",
+      "content_hash": "067c46272c2730b530c81ddbb9d23456c0e1a6f1d3f8c48add5f43f4938023d5",
+      "parser_name": "trafilatura",
+      "parser_version": "2.2.0",
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "cache_hit": false,
+        "final_url": "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
+        "extraction": {
+          "title": "Increased Social Media Use Linked to Rising Depressive Symptoms in Early Adolescents | AJMC",
+          "author": "Giuliana Grossi",
+          "headings": [],
+          "publisher": "AJMC - Managed Care News, Research, and Expert Insights",
+          "parser_name": "trafilatura",
+          "quote_count": 0,
+          "table_count": 0,
+          "outbound_links": [],
+          "page_positions": [],
+          "parser_version": "2.2.0",
+          "fallback_reason": null,
+          "correction_notices": [],
+          "fallback_attempted": false,
+          "inaccessible_status": null,
+          "extraction_certainty": 1
+        },
+        "search_phase": "broad_phase_one",
+        "requested_url": "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
+        "source_origin": "brave_discovery",
+        "content_length": 518816,
+        "quality_checks": {
+          "truncation_detected": false,
+          "duplicate_line_ratio": 0,
+          "hidden_element_count": 0,
+          "expected_term_overlap": 0.8333,
+          "malformed_table_count": 0,
+          "minimum_readable_text": true,
+          "title_body_consistent": true
+        },
+        "redirect_chain": [],
+        "fetch_latency_ms": 1268.647,
+        "origin_fetched_at": "2026-08-13T22:39:07.236469+00:00",
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "extraction_certainty": 1,
+        "authority_source_role": null,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": null,
+      "passages": [
+        {
+          "id": "97677516-a65b-567c-bae9-8995b38d12f0",
+          "text": "Increased Social Media Use Linked to Rising Depressive Symptoms in Early Adolescents",
+          "heading_path": null,
+          "page_or_position": "paragraph 1",
+          "paragraph_index": 1,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "6c00c4cc-f2bb-5426-9161-b136a9dbc988",
+          "text": "Key Takeaways",
+          "heading_path": null,
+          "page_or_position": "paragraph 2",
+          "paragraph_index": 2,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "0762f58f-3674-5f32-98b5-86f7401165bd",
+          "text": "- Increased social media use in early adolescence is linked to higher depressive symptoms a year later, suggesting a one-way relationship.",
+          "heading_path": null,
+          "page_or_position": "paragraph 3",
+          "paragraph_index": 3,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": [
+            {
+              "id": "2a5f4680-16d2-4ed3-8b99-f5ebbba36614",
+              "report_section": "summary",
+              "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+              "passage_id": "0762f58f-3674-5f32-98b5-86f7401165bd",
+              "audit_status": "partial",
+              "audit_note": "The passage states a link between social media use and depressive symptoms, suggesting a one-way relationship, but does not establish causation. This partially supports the sentence's claim that studies show associations but do not establish causation."
+            },
+            {
+              "id": "c502102a-1167-425a-ab1c-a93900d013f3",
+              "report_section": "factual_finding",
+              "sentence_text": "Increased social media use in early adolescence is linked to higher depressive symptoms a year later, suggesting a one-way relationship.",
+              "passage_id": "0762f58f-3674-5f32-98b5-86f7401165bd",
+              "audit_status": "passed",
+              "audit_note": "The passage exactly states that increased social media use in early adolescence is linked to higher depressive symptoms a year later, suggesting a one-way relationship, which is identical to the sentence."
+            }
+          ]
+        },
+        {
+          "id": "f8c7d4bb-7c5d-51ad-ba86-1e79d514ad46",
+          "text": "- The study provides longitudinal data on younger adolescents, addressing a gap highlighted by the US Surgeon General's Advisory.",
+          "heading_path": null,
+          "page_or_position": "paragraph 4",
+          "paragraph_index": 4,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "66ad09f0-31fc-5066-9c98-61ad574788cc",
+          "text": "As concerns grow nationally about the mental health of young people, a new study provides insight into ongoing debates about social media’s role.",
+          "heading_path": null,
+          "page_or_position": "paragraph 5",
+          "paragraph_index": 5,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "4678bd51-6528-5865-8665-dbafd06c6b37",
+          "text": "Increased social media use and rising depressive symptoms during early adolescence exhibited a significant association in new findings published today in",
+          "heading_path": null,
+          "page_or_position": "paragraph 6",
+          "paragraph_index": 6,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "f85f5380-a88b-57df-917f-e40762237a06",
+          "text": "Concerns surrounding declining mental health in the US have garnered heightened awareness and increased investigation in recent years. The number of young people grappling with mental health conditions",
+          "heading_path": null,
+          "page_or_position": "paragraph 7",
+          "paragraph_index": 7,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "3e7b80be-9787-52a9-b4b7-1bec28ae56b1",
+          "text": "Social Media Use May Precede Mental Health Decline",
+          "heading_path": null,
+          "page_or_position": "paragraph 8",
+          "paragraph_index": 8,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+          "text": "The new study analyzed data from 11,876 participants, aged 9 to 10 years at baseline, over a 3-year period, assessing both self-reported time spent on social media and depressive symptoms annually.1 After accounting for individual differences and demographic factors, the study found that within-person increases in social media use were significantly associated with greater depressive symptoms a year later. This pattern was consistent from year 1 to year 2 (β = 0.07; P = .01) and from year 2 to year 3 (β = 0.09; P < .001).",
+          "heading_path": null,
+          "page_or_position": "paragraph 9",
+          "paragraph_index": 9,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": [
+            {
+              "id": "64e87348-82f9-4461-80c4-1d238902e923",
+              "report_section": "summary",
+              "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+              "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+              "audit_status": "partial",
+              "audit_note": "The passage describes a study finding significant associations between social media use and depressive symptoms, but it does not explicitly state that causation is not established. It provides evidence of association, which partially supports the sentence's claim that studies show associations but do not establish causation."
+            },
+            {
+              "id": "542899d2-e746-4a64-b82c-abf5924cebd3",
+              "report_section": "factual_finding",
+              "sentence_text": "A study of 11,876 participants aged 9 to 10 at baseline found that within-person increases in social media use were significantly associated with greater depressive symptoms a year later, with effects from year 1 to year 2 (β = 0.07; P = .01) and year 2 to year 3 (β = 0.09; P < .001).",
+              "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+              "audit_status": "passed",
+              "audit_note": "The passage reports the same study details: 11,876 participants aged 9-10 at baseline, within-person increases in social media use associated with greater depressive symptoms a year later, with the same beta coefficients and p-values for year 1-2 and year 2-3."
+            },
+            {
+              "id": "cfbcaf98-10ea-46d5-bba0-58da46c3db55",
+              "report_section": "attribution",
+              "sentence_text": "The evidence for an association between social media use and depression in adolescents is attributed to multiple sources, including a systematic review, a longitudinal study, a meta-analysis, and professional organizations such as the American Academy of Pediatrics.",
+              "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+              "audit_status": "partial",
+              "audit_note": "The passage describes a longitudinal study that found an association between social media use and depressive symptoms, but it does not mention a systematic review, meta-analysis, or the American Academy of Pediatrics. Thus, it partially supports the sentence's claim about multiple sources."
+            }
+          ]
+        },
+        {
+          "id": "80124825-4af8-5f34-99ba-806ec673738e",
+          "text": "Importantly, the reverse was not true; elevated depressive symptoms did not predict increased social media use in the following year, indicating a one-way relationship in which more time online appears to precede worsening mental health.",
+          "heading_path": null,
+          "page_or_position": "paragraph 10",
+          "paragraph_index": 10,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "72c3e0bc-03b9-511e-9e70-40a5d15e4c22",
+          "text": "Filling a Critical Research Gap in Youth Mental Health",
+          "heading_path": null,
+          "page_or_position": "paragraph 11",
+          "paragraph_index": 11,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "f68a6c9d-85c5-5744-a6d5-60de1b51da01",
+          "text": "The research addresses an important issue highlighted in the 2023 US Surgeon General’s Advisory on Social Media and Youth Mental Health, which stressed the necessity for more robust longitudinal data.3 Most existing studies have been cross-sectional or concentrated on older teens and young adults. In contrast, this study provides a unique perspective by examining younger adolescents, beginning at age 9, and tracking their development through the critical early teen years.1",
+          "heading_path": null,
+          "page_or_position": "paragraph 12",
+          "paragraph_index": 12,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "6072293f-ab61-5d5a-9ad9-1eb723b9f51b",
+          "text": "“These findings provide initial evidence of temporal ordering and could suggest that social media use is a potential contributing factor to adolescent depressive symptoms rather than merely a correlate or consequence of such symptoms,” the authors wrote.",
+          "heading_path": null,
+          "page_or_position": "paragraph 13",
+          "paragraph_index": 13,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "dfa1a2b1-4315-5810-973b-73f62f83e9b8",
+          "text": "No Evidence of Baseline Risk Driving Social Media Use",
+          "heading_path": null,
+          "page_or_position": "paragraph 14",
+          "paragraph_index": 14,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "cb633cd4-a088-59fa-b307-9cdbadbeee93",
+          "text": "Contrary to concerns that young people with depressive symptoms may be turning to social media as a coping mechanism, this investigation found no evidence that preexisting depression led to increased social media use. Nor did differences between individuals in average time spent on social media predict depressive symptoms when controlling for family and demographic factors. Increases in usage beyond an individual's typical amount predicted worsening mood in the following year.",
+          "heading_path": null,
+          "page_or_position": "paragraph 15",
+          "paragraph_index": 15,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "0996c7a2-eec5-5d15-807f-741a1bea4688",
+          "text": "“Although our findings suggest that there is a unidirectional association between social media use and depression, with increases in social media use associated with depressive symptoms through subsequent years, prior research on adolescents, especially those with depressive symptoms, has shown that they can shift from maladaptive to more positive patterns of social media use when they become aware of its impact on their mood,” the authors noted.",
+          "heading_path": null,
+          "page_or_position": "paragraph 16",
+          "paragraph_index": 16,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": [
+            {
+              "id": "b7fb7412-cc9e-484a-ab5c-65cd5f9dbd92",
+              "report_section": "summary",
+              "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+              "passage_id": "0996c7a2-eec5-5d15-807f-741a1bea4688",
+              "audit_status": "partial",
+              "audit_note": "The passage mentions a unidirectional association between social media use and depression, but it does not explicitly state that causation is not established; it focuses on patterns of use and mood, providing narrower support for the claim about lack of causation."
+            },
+            {
+              "id": "fba23749-351b-4ecb-9eae-f2afbbabb717",
+              "report_section": "factual_finding",
+              "sentence_text": "The authors of that study noted that their findings suggest a unidirectional association between social media use and depression, but prior research shows adolescents can shift to more positive patterns when aware of its impact.",
+              "passage_id": "0996c7a2-eec5-5d15-807f-741a1bea4688",
+              "audit_status": "passed",
+              "audit_note": "The passage directly states the authors noted a unidirectional association between social media use and depression, and that prior research shows adolescents can shift to more positive patterns when aware of its impact. The sentence accurately paraphrases this content without adding or omitting key information."
+            }
+          ]
+        },
+        {
+          "id": "b8127c92-c4fd-571d-93f3-8ddae1500c7a",
+          "text": "Changes in individual social media habits, especially increases during early adolescence, may indicate a risk for developing depressive symptoms, according to the study. The authors recommend that clinicians provide anticipatory guidance to families regarding the mental health effects of screen time and social media use.",
+          "heading_path": null,
+          "page_or_position": "paragraph 17",
+          "paragraph_index": 17,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "7a4ffeb0-645c-55be-b7b4-e455d807ddd8",
+          "text": "References",
+          "heading_path": null,
+          "page_or_position": "paragraph 18",
+          "paragraph_index": 18,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "f448578b-0c19-578b-8ed8-eb5781637c10",
+          "text": "1. Nagata JM, Otmar CD, Shim J, et al. Social media use and depressive symptoms during early adolescence. JAMA Netw Open. 2025;8(5):e2511704. doi:10.1001/jamanetworkopen.2025.11704",
+          "heading_path": null,
+          "page_or_position": "paragraph 19",
+          "paragraph_index": 19,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "0dcdf8f1-dcf4-5547-864a-2d2af2e7ee02",
+          "text": "2. Grossi G. Mental health diagnoses, care challenges rise among US youth, report finds. AJMC®. April 26, 2024. Accessed May 21, 2025.",
+          "heading_path": null,
+          "page_or_position": "paragraph 20",
+          "paragraph_index": 20,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "d3a022a4-ed9e-594d-bddb-32cf1d2d87e9",
+          "text": "3. Office of the US Surgeon General. Social media and youth mental health: the US Surgeon General’s Advisory. 2023. Accessed May 21, 2025.",
+          "heading_path": null,
+          "page_or_position": "paragraph 21",
+          "paragraph_index": 21,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        }
+      ]
+    },
+    {
+      "id": "0326fb08-355a-44ab-a458-186b2e24d656",
+      "canonical_url": "https://www.mdpi.com/2076-328X/15/11/1450",
+      "domain": "www.mdpi.com",
+      "title": "Associations Between Social Media Use and Mental Disorders in Adolescents and Young Adults: A Systematic Review and Meta-Analysis of Recent Evidence",
+      "author": null,
+      "publisher": null,
+      "source_type": "UNKNOWN",
+      "content_type": null,
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": "The evidence source denied automated retrieval.",
+      "snapshot_id": "401a1b57-248e-49de-b03c-91019a315da7",
+      "snapshot_version": 1,
+      "access_status": "BOT_BLOCKED",
+      "retrieved_at": "2026-08-13T22:39:07.238421Z",
+      "published_at": null,
+      "content_hash": null,
+      "parser_name": null,
+      "parser_version": null,
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "search_phase": "broad_phase_one",
+        "source_origin": "brave_discovery",
+        "fetch_latency_ms": 185.591,
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "authority_source_role": null,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "inaccessible_reason_code": "SOURCE_BOT_BLOCKED",
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": "The evidence source denied automated retrieval.",
+      "passages": []
+    },
+    {
+      "id": "e98f8c42-fcd5-43eb-aaba-0b71b911294c",
+      "canonical_url": "https://www.mdpi.com/2254-9625/15/11/222",
+      "domain": "www.mdpi.com",
+      "title": "Reducing Social Media Use Decreases Depression Symptoms: A Meta-Analysis of Randomised Controlled Trials",
+      "author": null,
+      "publisher": null,
+      "source_type": "UNKNOWN",
+      "content_type": null,
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": "The evidence source denied automated retrieval.",
+      "snapshot_id": "cf35c647-8933-46dd-bfe0-7067fc53a885",
+      "snapshot_version": 1,
+      "access_status": "BOT_BLOCKED",
+      "retrieved_at": "2026-08-13T22:39:07.424190Z",
+      "published_at": null,
+      "content_hash": null,
+      "parser_name": null,
+      "parser_version": null,
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "search_phase": "broad_phase_one",
+        "source_origin": "brave_discovery",
+        "fetch_latency_ms": 99.964,
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "authority_source_role": null,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "inaccessible_reason_code": "SOURCE_BOT_BLOCKED",
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": "The evidence source denied automated retrieval.",
+      "passages": []
+    },
+    {
+      "id": "aaa98ec5-1a8c-4b6a-9059-15bcae56b4cc",
+      "canonical_url": "https://mental.jmir.org/2022/4/e33450",
+      "domain": "mental.jmir.org",
+      "title": "JMIR Mental Health - Problematic Social Media Use in Adolescents and Young Adults: Systematic Review and Meta-analysis",
+      "author": null,
+      "publisher": null,
+      "source_type": "UNKNOWN",
+      "content_type": "text/html",
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": "rendered page contained insufficient readable content",
+      "snapshot_id": "52e9088c-0b3d-494c-b136-a0ac824119b4",
+      "snapshot_version": 1,
+      "access_status": "INACCESSIBLE",
+      "retrieved_at": "2026-08-13T22:39:07.524294Z",
+      "published_at": null,
+      "content_hash": "b851ceb12bf528912d192275c1c32876fff536b13bde886ff9b47b57a5046ab6",
+      "parser_name": "playwright",
+      "parser_version": "1.62.0",
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "cache_hit": false,
+        "final_url": "https://mental.jmir.org/2022/4/e33450",
+        "extraction": {
+          "parser_name": "playwright",
+          "parser_version": "1.62.0",
+          "fallback_reason": "static_extraction_failed_for_important_source",
+          "fallback_attempted": true,
+          "inaccessible_status": "INACCESSIBLE",
+          "extraction_certainty": null
+        },
+        "search_phase": "broad_phase_one",
+        "requested_url": "https://mental.jmir.org/2022/4/e33450",
+        "source_origin": "brave_discovery",
+        "content_length": 2121,
+        "redirect_chain": [],
+        "fetch_latency_ms": 199.065,
+        "origin_fetched_at": "2026-08-13T22:39:07.721022+00:00",
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "authority_source_role": null,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": "rendered page contained insufficient readable content",
+      "passages": []
+    },
+    {
+      "id": "f6edc6ac-9ff5-49b9-9e7e-193a9844c5e4",
+      "canonical_url": "https://scientiapsychiatrica.com/index.php/SciPsy/article/view/175",
+      "domain": "scientiapsychiatrica.com",
+      "title": "The Impact of Social Media on Adolescent Mental Health: A Meta-Analysis",
+      "author": "Tiffany Gabrielle; Mathius Sonne; Niama Nina Indolo",
+      "publisher": "Scientia Psychiatrica - HM Publisher",
+      "source_type": "UNKNOWN",
+      "content_type": "text/html",
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": null,
+      "snapshot_id": "fb8a72a6-66a3-4b79-a274-92a74ab188a3",
+      "snapshot_version": 1,
+      "access_status": "FETCHED",
+      "retrieved_at": "2026-08-13T22:39:07.723489Z",
+      "published_at": "2024-07-25T00:00:00Z",
+      "content_hash": "efbf17b69ded757dc5e3d010d063ac573b9fa83776dd830b3b25445fb8a60175",
+      "parser_name": "trafilatura",
+      "parser_version": "2.2.0",
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "cache_hit": false,
+        "final_url": "https://scientiapsychiatrica.com/index.php/SciPsy/article/view/175",
+        "extraction": {
+          "title": "The Impact of Social Media on Adolescent Mental Health: A Meta-Analysis",
+          "author": "Tiffany Gabrielle; Mathius Sonne; Niama Nina Indolo",
+          "headings": [
+            "Article Sidebar",
+            "Main Article Content",
+            "Abstract",
+            "Keywords",
+            "Article Details"
+          ],
+          "publisher": "Scientia Psychiatrica - HM Publisher",
+          "parser_name": "trafilatura",
+          "quote_count": 0,
+          "table_count": 0,
+          "outbound_links": [
+            "https://scientiapsychiatrica.com/index.php/SciPsy/issue/view/23",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/article/view/175/258",
+            "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/acm-sig-proceedings?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/acs-nano?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/apa?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/associacao-brasileira-de-normas-tecnicas?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/chicago-author-date?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/harvard-cite-them-right?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/ieee?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/modern-language-association?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/turabian-fullnote-bibliography?submissionId=175",
+            "https://scientiapsychiatrica.com/index.php/SciPsy/citationstylelanguage/get/vancouver?submissionId=175",
+            "https://scholar.google.com/scholar?q=10.37275/scipsy.v5i3.175",
+            "http://europepmc.org/search?scope=fulltext&query=(REF:10.37275/scipsy.v5i3.175)",
+            "https://plu.mx/plum/a/?doi=10.37275/scipsy.v5i3.175"
+          ],
+          "page_positions": [],
+          "parser_version": "2.2.0",
+          "fallback_reason": null,
+          "correction_notices": [],
+          "fallback_attempted": false,
+          "inaccessible_status": null,
+          "extraction_certainty": 1
+        },
+        "search_phase": "broad_phase_one",
+        "requested_url": "https://scientiapsychiatrica.com/index.php/SciPsy/article/view/175",
+        "source_origin": "brave_discovery",
+        "content_length": 36597,
+        "quality_checks": {
+          "truncation_detected": false,
+          "duplicate_line_ratio": 0,
+          "hidden_element_count": 0,
+          "expected_term_overlap": 0.6667,
+          "malformed_table_count": 0,
+          "minimum_readable_text": true,
+          "title_body_consistent": true
+        },
+        "redirect_chain": [],
+        "fetch_latency_ms": 504.79,
+        "structure_parser": "beautifulsoup4",
+        "origin_fetched_at": "2026-08-13T22:39:08.226337+00:00",
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "extraction_certainty": 1,
+        "hidden_element_count": 0,
+        "authority_source_role": null,
+        "malformed_table_count": 0,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": null,
+      "passages": [
+        {
+          "id": "119b8103-7df3-564d-abbc-2a4cc1a966cf",
+          "text": "Introduction: The proliferation of social media has raised significant concerns about its potential effects on the mental health of adolescents. This meta-analysis aims to provide a comprehensive assessment of the existing research on the relationship between social media use and various mental health outcomes in adolescents.",
+          "heading_path": "Abstract",
+          "page_or_position": "paragraph 1",
+          "paragraph_index": 1,
+          "speaker": "Introduction",
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "transcript_turn",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "d32c628b-b992-50f0-9715-711328636549",
+          "text": "Methods: A systematic search of electronic databases (PubMed, PsycINFO, Scopus, Web of Science) from January 2018 to June 2024 was conducted to identify relevant studies. Studies were included if they examined the association between social media use and mental health outcomes in adolescents (aged 10-19) and reported quantitative data. Effect sizes were calculated and pooled using random-effects models.",
+          "heading_path": "Abstract",
+          "page_or_position": "paragraph 2",
+          "paragraph_index": 2,
+          "speaker": "Methods",
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "transcript_turn",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "ae098469-1daa-5127-a72e-85c4a3eb69f6",
+          "text": "Results: A total of 45 studies (N = 153,285 adolescents) met the inclusion criteria. The meta-analysis revealed small but significant associations between increased social media use and increased depressive symptoms (r = 0.12), anxiety (r = 0.10), and loneliness (r = 0.15). Furthermore, a significant negative association was found between social media use and self-esteem (r = -0.08). The analysis also identified several moderators of these effects, including gender, age, and type of social media platform.",
+          "heading_path": "Abstract",
+          "page_or_position": "paragraph 3",
+          "paragraph_index": 3,
+          "speaker": "Results",
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "transcript_turn",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+          "text": "Conclusion: The findings of this meta-analysis suggest that increased social media use is associated with a range of negative mental health outcomes in adolescents. However, the effects are small, and the relationship is complex, with several moderating factors. Further research is needed to understand the mechanisms underlying these associations and to develop effective interventions to mitigate the potential negative effects of social media on adolescent mental health.",
+          "heading_path": "Abstract",
+          "page_or_position": "paragraph 4",
+          "paragraph_index": 4,
+          "speaker": "Conclusion",
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "transcript_turn",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": [
+            {
+              "id": "0b2a15a5-06e2-4b90-89a4-552b72cf392c",
+              "report_section": "summary",
+              "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+              "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+              "audit_status": "passed",
+              "audit_note": "The passage concludes that increased social media use is associated with negative mental health outcomes but notes the effects are small and the relationship is complex, and calls for further research to understand mechanisms, which supports the sentence's statement that studies show associations but do not establish causation."
+            },
+            {
+              "id": "23583fa9-cf42-4fb8-891c-a28fc89b6655",
+              "report_section": "factual_finding",
+              "sentence_text": "A meta-analysis concluded that increased social media use is associated with negative mental health outcomes in adolescents, but the effects are small and the relationship is complex, with several moderating factors.",
+              "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+              "audit_status": "passed",
+              "audit_note": "The passage's conclusion explicitly states that increased social media use is associated with negative mental health outcomes in adolescents, the effects are small, and the relationship is complex with several moderating factors. The sentence accurately reflects this conclusion."
+            },
+            {
+              "id": "dc7c5b05-cae7-42a5-9f8d-57e5750f7f63",
+              "report_section": "attribution",
+              "sentence_text": "The evidence for an association between social media use and depression in adolescents is attributed to multiple sources, including a systematic review, a longitudinal study, a meta-analysis, and professional organizations such as the American Academy of Pediatrics.",
+              "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+              "audit_status": "partial",
+              "audit_note": "The passage is a meta-analysis conclusion that supports an association between social media use and negative mental health outcomes, but it does not mention a systematic review, longitudinal study, or the American Academy of Pediatrics. Thus, it partially supports the sentence's claim about multiple sources."
+            }
+          ]
+        },
+        {
+          "id": "580bbe8e-8464-5739-8dc1-7090aabb3f6e",
+          "text": "As our aim is to disseminate original research article, hence the publishing right is a necessary one. The publishing right is needed in order to reach the agreement between the author and publisher. As the journal is fully open access, the authors will sign an exclusive license agreement.",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 5",
+          "paragraph_index": 5,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "9e13c605-9538-595a-899f-19eab7fec93b",
+          "text": "The authors have the right to:",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 6",
+          "paragraph_index": 6,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "bbed1015-88d8-5df1-a258-581926d1b0f8",
+          "text": "Share their article in the same ways permitted to third parties under the relevant user license.",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 7",
+          "paragraph_index": 7,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "2e010a15-e8a4-556f-92be-09498d0be5c7",
+          "text": "Retain copyright, patent, trademark and other intellectual property rights including research data.",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 8",
+          "paragraph_index": 8,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "cf89660c-287d-5e50-9e05-df3fbd12a552",
+          "text": "Proper attribution and credit for the published work.",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 9",
+          "paragraph_index": 9,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "96f3ca37-8bfa-5875-bfa7-ac78e9a44a6d",
+          "text": "For the open access article, the publisher is granted to the following right.",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 10",
+          "paragraph_index": 10,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "02babfed-51d8-5ad2-9306-be352c9b7048",
+          "text": "The non-exclusive right to publish the article and grant right to others.",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 11",
+          "paragraph_index": 11,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "7b1750df-8e59-59cc-ad66-af8ff5f4dd37",
+          "text": "For the published article, the publisher applied for the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 12",
+          "paragraph_index": 12,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "8f953d9b-ef20-50a0-99d0-8e747cdc4d11",
+          "text": "ACM",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 13",
+          "paragraph_index": 13,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "92c31e36-2932-5804-8f3a-5f327c04ee7b",
+          "text": "ACS",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 14",
+          "paragraph_index": 14,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "63740f34-5379-55a6-a7ed-8628b60eb945",
+          "text": "APA",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 15",
+          "paragraph_index": 15,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "680ca38a-b128-50e8-9a43-6269c420d7b6",
+          "text": "ABNT",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 16",
+          "paragraph_index": 16,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "87a79277-c587-521b-839c-fce94fa04ed6",
+          "text": "Chicago",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 17",
+          "paragraph_index": 17,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "58a64c77-7d85-54cf-a966-8f678b37a682",
+          "text": "Harvard",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 18",
+          "paragraph_index": 18,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "60c420c5-f88e-510b-bca0-9d4661ac5d87",
+          "text": "IEEE",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 19",
+          "paragraph_index": 19,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "1f73d4e3-a0df-5914-b819-4553e7e1be72",
+          "text": "MLA",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 20",
+          "paragraph_index": 20,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "35be1043-7898-50dd-b7c5-7249f53ef9b2",
+          "text": "Turabian",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 21",
+          "paragraph_index": 21,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "bac8adb9-ce9d-5139-89e2-803f111eaf28",
+          "text": "Vancouver",
+          "heading_path": "Article Details",
+          "page_or_position": "paragraph 22",
+          "paragraph_index": 22,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        }
+      ]
+    },
+    {
+      "id": "479436ed-4996-4d3e-b0ea-0aa1de725c96",
+      "canonical_url": "https://www.sciencedirect.com/science/article/pii/S0165032724014265",
+      "domain": "www.sciencedirect.com",
+      "title": "Social media use, mental health and sleep: A systematic review with meta-analyses - ScienceDirect",
+      "author": null,
+      "publisher": null,
+      "source_type": "UNKNOWN",
+      "content_type": null,
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": "The evidence source denied automated retrieval.",
+      "snapshot_id": "70d9c149-24f9-41c6-890f-7076937e180d",
+      "snapshot_version": 1,
+      "access_status": "BOT_BLOCKED",
+      "retrieved_at": "2026-08-13T22:39:08.228407Z",
+      "published_at": null,
+      "content_hash": null,
+      "parser_name": null,
+      "parser_version": null,
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "search_phase": "broad_phase_one",
+        "source_origin": "brave_discovery",
+        "fetch_latency_ms": 103.682,
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "authority_source_role": null,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "inaccessible_reason_code": "SOURCE_BOT_BLOCKED",
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": "The evidence source denied automated retrieval.",
+      "passages": []
+    },
+    {
+      "id": "b7ed2cfb-9095-40b5-8afc-22776374f0df",
+      "canonical_url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2834349",
+      "domain": "jamanetwork.com",
+      "title": "Social Media Use and Depressive Symptoms During Early Adolescence | Pediatrics | JAMA Network Open | JAMA Network",
+      "author": null,
+      "publisher": null,
+      "source_type": "UNKNOWN",
+      "content_type": null,
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": "The evidence source denied automated retrieval.",
+      "snapshot_id": "58f039db-00e3-4bde-b4a1-d50e49289baf",
+      "snapshot_version": 1,
+      "access_status": "BOT_BLOCKED",
+      "retrieved_at": "2026-08-13T22:39:08.332292Z",
+      "published_at": null,
+      "content_hash": null,
+      "parser_name": null,
+      "parser_version": null,
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "search_phase": "broad_phase_one",
+        "source_origin": "brave_discovery",
+        "fetch_latency_ms": 66.469,
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "authority_source_role": null,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "inaccessible_reason_code": "SOURCE_BOT_BLOCKED",
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": "The evidence source denied automated retrieval.",
+      "passages": []
+    },
+    {
+      "id": "f784acf3-0c26-4e2b-992c-7e6b20538089",
+      "canonical_url": "https://www.nature.com/articles/s41598-025-29258-x",
+      "domain": "www.nature.com",
+      "title": "Client Challenge",
+      "author": null,
+      "publisher": "nature.com",
+      "source_type": "UNKNOWN",
+      "content_type": "text/html",
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": null,
+      "snapshot_id": "645d6bf9-439f-46b9-a77f-e6ac8fd6df16",
+      "snapshot_version": 1,
+      "access_status": "FETCHED",
+      "retrieved_at": "2026-08-13T22:39:08.398913Z",
+      "published_at": null,
+      "content_hash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+      "parser_name": "trafilatura",
+      "parser_version": "2.2.0",
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "cache_hit": false,
+        "final_url": "https://www.nature.com/articles/s41598-025-29258-x",
+        "extraction": {
+          "title": "Client Challenge",
+          "author": null,
+          "headings": [],
+          "publisher": "nature.com",
+          "parser_name": "trafilatura",
+          "quote_count": 0,
+          "table_count": 0,
+          "outbound_links": [],
+          "page_positions": [],
+          "parser_version": "2.2.0",
+          "fallback_reason": null,
+          "correction_notices": [],
+          "fallback_attempted": false,
+          "inaccessible_status": null,
+          "extraction_certainty": 0.5174
+        },
+        "search_phase": "broad_phase_one",
+        "requested_url": "https://www.nature.com/articles/s41598-025-29258-x",
+        "source_origin": "brave_discovery",
+        "content_length": 3038,
+        "quality_checks": {
+          "truncation_detected": false,
+          "duplicate_line_ratio": 0,
+          "hidden_element_count": 0,
+          "expected_term_overlap": 0,
+          "malformed_table_count": 0,
+          "minimum_readable_text": true,
+          "title_body_consistent": false
+        },
+        "redirect_chain": [],
+        "fetch_latency_ms": 212.378,
+        "origin_fetched_at": "2026-08-13T22:39:08.609107+00:00",
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "extraction_certainty": 0.5174,
+        "authority_source_role": null,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": null,
+      "passages": [
+        {
+          "id": "ac4d92b5-fa37-53d1-ba7c-01f354127d72",
+          "text": "A required part of this site couldn’t load. This may be due to a browser",
+          "heading_path": null,
+          "page_or_position": "paragraph 1",
+          "paragraph_index": 1,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 0.5174,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "3a26e85a-7825-57ff-9e16-be043f261812",
+          "text": "extension, network issues, or browser settings. Please check your",
+          "heading_path": null,
+          "page_or_position": "paragraph 2",
+          "paragraph_index": 2,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 0.5174,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "421e2ca9-d3eb-535b-9b2a-c5632428ec10",
+          "text": "connection, disable any ad blockers, or try using a different browser.",
+          "heading_path": null,
+          "page_or_position": "paragraph 3",
+          "paragraph_index": 3,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 0.5174,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        }
+      ]
+    },
+    {
+      "id": "7f07462e-4b2a-4f8e-b744-6e45433fd924",
+      "canonical_url": "https://www.nature.com/articles/s41598-025-89762-y",
+      "domain": "www.nature.com",
+      "title": "Client Challenge",
+      "author": null,
+      "publisher": "nature.com",
+      "source_type": "UNKNOWN",
+      "content_type": "text/html",
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": null,
+      "snapshot_id": "14ca77fd-2a8b-448b-b24f-a9d5e0a49eeb",
+      "snapshot_version": 1,
+      "access_status": "FETCHED",
+      "retrieved_at": "2026-08-13T22:39:08.611426Z",
+      "published_at": null,
+      "content_hash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+      "parser_name": "trafilatura",
+      "parser_version": "2.2.0",
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "cache_hit": false,
+        "final_url": "https://www.nature.com/articles/s41598-025-89762-y",
+        "extraction": {
+          "title": "Client Challenge",
+          "author": null,
+          "headings": [],
+          "publisher": "nature.com",
+          "parser_name": "trafilatura",
+          "quote_count": 0,
+          "table_count": 0,
+          "outbound_links": [],
+          "page_positions": [],
+          "parser_version": "2.2.0",
+          "fallback_reason": null,
+          "correction_notices": [],
+          "fallback_attempted": false,
+          "inaccessible_status": null,
+          "extraction_certainty": 0.5174
+        },
+        "search_phase": "broad_phase_one",
+        "requested_url": "https://www.nature.com/articles/s41598-025-89762-y",
+        "source_origin": "brave_discovery",
+        "content_length": 3038,
+        "quality_checks": {
+          "truncation_detected": false,
+          "duplicate_line_ratio": 0,
+          "hidden_element_count": 0,
+          "expected_term_overlap": 0,
+          "malformed_table_count": 0,
+          "minimum_readable_text": true,
+          "title_body_consistent": false
+        },
+        "redirect_chain": [],
+        "fetch_latency_ms": 167.652,
+        "origin_fetched_at": "2026-08-13T22:39:08.777132+00:00",
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "extraction_certainty": 0.5174,
+        "authority_source_role": null,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": null,
+      "passages": [
+        {
+          "id": "88344188-b58e-5264-b22d-f12ad9df9916",
+          "text": "A required part of this site couldn’t load. This may be due to a browser",
+          "heading_path": null,
+          "page_or_position": "paragraph 1",
+          "paragraph_index": 1,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 0.5174,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "a4e0aeba-9296-5473-bfe9-f690a63cc803",
+          "text": "extension, network issues, or browser settings. Please check your",
+          "heading_path": null,
+          "page_or_position": "paragraph 2",
+          "paragraph_index": 2,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 0.5174,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "b28dd2da-23b6-5602-8617-2fe948268ad2",
+          "text": "connection, disable any ad blockers, or try using a different browser.",
+          "heading_path": null,
+          "page_or_position": "paragraph 3",
+          "paragraph_index": 3,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 0.5174,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        }
+      ]
+    },
+    {
+      "id": "f026f592-0894-487d-a3e2-535b4c3b238c",
+      "canonical_url": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+      "domain": "law.stanford.edu",
+      "title": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School",
+      "author": "Stanford Law School",
+      "publisher": "Stanford Law School",
+      "source_type": "UNKNOWN",
+      "content_type": "text/html",
+      "role": "UNKNOWN",
+      "retrieval_reason": "Brave result for primary objective obj-62c638638f09edc9",
+      "inaccessible_reason": null,
+      "snapshot_id": "4693b3a2-c255-4505-8ffa-09aaf8b468cb",
+      "snapshot_version": 1,
+      "access_status": "FETCHED",
+      "retrieved_at": "2026-08-13T22:39:08.779213Z",
+      "published_at": "2024-05-20T00:00:00Z",
+      "content_hash": "b110dcbfd30c4ee32142ecd6927774c572ea916572c4e6a1f7ddaafa118b45f5",
+      "parser_name": "trafilatura",
+      "parser_version": "2.2.0",
+      "correction_status": null,
+      "correction_history": [],
+      "snapshot_metadata": {
+        "cache_hit": false,
+        "final_url": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+        "extraction": {
+          "title": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School",
+          "author": "Stanford Law School",
+          "headings": [],
+          "publisher": "Stanford Law School",
+          "parser_name": "trafilatura",
+          "quote_count": 0,
+          "table_count": 0,
+          "outbound_links": [
+            "https://www.washingtonpost.com/technology/2024/01/25/nyc-social-media-health-hazard-toxin/",
+            "https://acpeds.org/position-statements/media-use-and-screen-time-its-impact-on-children-adolescents-and-families",
+            "https://www.apa.org/monitor/2024/04/teen-social-use-mental-health",
+            "https://www.apa.org/monitor/2023/09/protecting-teens-on-social-media",
+            "https://doi.org/10.1001/jamapediatrics.2014.146",
+            "https://www.axios.com/2024/02/14/new-york-city-sues-social-media-companies-for-negligence-public-nuisance",
+            "https://doi.org/10.1080/17482798.2014.863486",
+            "https://doi.org/10.1080/02673843.2019.1590851",
+            "https://doi.org/10.1542/peds.2016-1878",
+            "https://www.nimh.nih.gov/health/statistics/mental-illness",
+            "https://law.stanford.edu/wp-content/uploads/2024/05/surgeon-general-youth-mental-health-advisory.pdf",
+            "https://doi.org/10.1177/2167702617723376",
+            "https://doi.org/10.1016/j.pmedr.2018.10.003"
+          ],
+          "page_positions": [],
+          "parser_version": "2.2.0",
+          "fallback_reason": null,
+          "correction_notices": [],
+          "fallback_attempted": false,
+          "inaccessible_status": null,
+          "extraction_certainty": 1
+        },
+        "search_phase": "broad_phase_one",
+        "requested_url": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+        "source_origin": "brave_discovery",
+        "content_length": 164113,
+        "quality_checks": {
+          "truncation_detected": false,
+          "duplicate_line_ratio": 0,
+          "hidden_element_count": 2,
+          "expected_term_overlap": 1,
+          "malformed_table_count": 0,
+          "minimum_readable_text": true,
+          "title_body_consistent": true
+        },
+        "redirect_chain": [],
+        "fetch_latency_ms": 358.455,
+        "structure_parser": "beautifulsoup4",
+        "origin_fetched_at": "2026-08-13T22:39:09.135524+00:00",
+        "untrusted_evidence": true,
+        "authority_claim_ref": null,
+        "extraction_certainty": 1,
+        "hidden_element_count": 2,
+        "authority_source_role": null,
+        "malformed_table_count": 0,
+        "authority_match_status": "not_evaluated",
+        "authority_match_reasons": [],
+        "authority_profile_version": null,
+        "authority_registry_version": null
+      },
+      "failure_reason": null,
+      "passages": [
+        {
+          "id": "6216d90d-d2e9-59af-b7c1-d925b6a53e1d",
+          "text": "Kenta Minamitani, Stanford LLM 2024",
+          "heading_path": null,
+          "page_or_position": "paragraph 1",
+          "paragraph_index": 1,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "2711835d-7586-5cac-a1cb-1017eaa83b40",
+          "text": "The Growing Mental Health Crisis and Social Media",
+          "heading_path": null,
+          "page_or_position": "paragraph 2",
+          "paragraph_index": 2,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "ba0ba72b-7b66-5bcc-b653-36088db561a6",
+          "text": "Mental health problems have become a major public health issue in the United States, affecting a significant portion of the population. According to the National Institute of Mental Health (NIMH), nearly one in five U.S. adults is living with a mental illness, and the prevalence of mental health problems among youth is even more alarming (NIMH, 2023). The widespread use of social networking sites has been identified as a contributing factor to the growing mental health crisis, especially among younger generations.",
+          "heading_path": null,
+          "page_or_position": "paragraph 3",
+          "paragraph_index": 3,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "6292dcc2-431f-5479-b708-153fbec2e06b",
+          "text": "The Link Between Social Media and Mental Health Issues",
+          "heading_path": null,
+          "page_or_position": "paragraph 4",
+          "paragraph_index": 4,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+          "text": "The link between social media and mental health issues has been well documented in numerous studies and research papers. A systematic review found that the use of social networking sites is associated with an increased risk of depression, anxiety, and psychological distress (Keles, et al., 2020). The associations, though not by itself proof of causation, at least some reason for concern. Additionally, this association is particularly strong in adolescents compared to younger children (Twenge & Campbell, 2018). Moreover, in the United States, the 12-month prevalence of major depressive episodes among adolescents increased from 8.7% in 2005 to 11.3% in 2014 (Mojtabai, et al., 2016). The new media screen activities have been suggested as one of the causes of the increase in adolescent depression and suicide (Twenge, et al., 2017).",
+          "heading_path": null,
+          "page_or_position": "paragraph 5",
+          "paragraph_index": 5,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": [
+            {
+              "id": "70cabd5e-3cea-4da5-a3d8-42c9083ad0ba",
+              "report_section": "summary",
+              "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+              "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+              "audit_status": "passed",
+              "audit_note": "The passage explicitly states that studies show associations between social media use and depression but do not establish causation, directly supporting the sentence's claim."
+            },
+            {
+              "id": "36fded2f-5708-4c10-b93d-6bab79ea8003",
+              "report_section": "factual_finding",
+              "sentence_text": "A systematic review found that use of social networking sites is associated with an increased risk of depression, anxiety, and psychological distress, but the associations are not by themselves proof of causation.",
+              "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+              "audit_status": "passed",
+              "audit_note": "The passage states that a systematic review found an association between social networking site use and increased risk of depression, anxiety, and psychological distress, and that the associations are not proof of causation. This directly matches the sentence's claims."
+            },
+            {
+              "id": "52c9ddaa-1310-465b-a3d6-deac7e073f14",
+              "report_section": "attribution",
+              "sentence_text": "The evidence for an association between social media use and depression in adolescents is attributed to multiple sources, including a systematic review, a longitudinal study, a meta-analysis, and professional organizations such as the American Academy of Pediatrics.",
+              "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+              "audit_status": "partial",
+              "audit_note": "The passage mentions a systematic review (Keles et al., 2020) and a longitudinal study (Twenge & Campbell, 2018) and a meta-analysis? Actually, it mentions a systematic review and a study by Twenge & Campbell, but does not explicitly mention a meta-analysis or the American Academy of Pediatrics. The passage does not attribute the evidence to a meta-analysis or professional organizations like the AAP. Therefore, the support is partial because some sources are mentioned but not all."
+            }
+          ]
+        },
+        {
+          "id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+          "text": "Although research has not necessarily shown that the use of social media has a causal relationship with poorer mental health in young people, health professionals and policy makers are becoming increasingly wary of the use. The U.S. Department of Health and Human Services is calling for increased transparency and for companies to prioritize user wellbeing over revenue, as various studies have shown negative effects on social media use, especially on the mental health of youth. (Surgeon General, 2021). In addition, the American Academy of Pediatrics warns that “media use and screen time are associated with increased risks for children and adolescents, such as attention deficits, increased aggression, low self-esteem, and depression” (American College of Pediatricians, 2020). The American Psychological Association (APA) also highlights the correlation between high social media use and poor mental health among adolescents (APA, 2024).",
+          "heading_path": null,
+          "page_or_position": "paragraph 6",
+          "paragraph_index": 6,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": [
+            {
+              "id": "27f8f997-1678-4bfd-85fd-0bdd97c9ad66",
+              "report_section": "summary",
+              "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+              "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+              "audit_status": "passed",
+              "audit_note": "The passage explicitly states that research has not shown a causal relationship between social media use and poorer mental health, and describes associations and correlations, which directly supports the sentence's claim that studies show associations but do not establish causation."
+            },
+            {
+              "id": "7c31412e-4153-449b-85b9-ee09c5ac804c",
+              "report_section": "factual_finding",
+              "sentence_text": "The American Academy of Pediatrics warns that media use and screen time are associated with increased risks for children and adolescents, such as depression, but research has not necessarily shown a causal relationship.",
+              "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+              "audit_status": "passed",
+              "audit_note": "The passage directly quotes the American Academy of Pediatrics warning that media use and screen time are associated with increased risks such as depression, and also states that research has not necessarily shown a causal relationship, matching the sentence's claims."
+            },
+            {
+              "id": "f5bc8e49-90ab-4734-b333-793c7014f62f",
+              "report_section": "strongest_contradiction",
+              "sentence_text": "Research has not necessarily shown that social media use has a causal relationship with poorer mental health in young people.",
+              "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+              "audit_status": "passed",
+              "audit_note": "The passage states 'Although research has not necessarily shown that the use of social media has a causal relationship with poorer mental health in young people', which directly matches the sentence's claim that research has not necessarily shown a causal relationship."
+            },
+            {
+              "id": "6d6d80cc-e230-49a7-bdae-1783f80866a5",
+              "report_section": "attribution",
+              "sentence_text": "The evidence for an association between social media use and depression in adolescents is attributed to multiple sources, including a systematic review, a longitudinal study, a meta-analysis, and professional organizations such as the American Academy of Pediatrics.",
+              "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+              "audit_status": "partial",
+              "audit_note": "The passage mentions the American Academy of Pediatrics warning about risks including depression, and also references the Surgeon General and APA, but it does not mention a systematic review, a longitudinal study, or a meta-analysis as sources. Thus, the sentence's attribution to those specific source types is not fully supported."
+            }
+          ]
+        },
+        {
+          "id": "4394e9e5-ae9d-5c54-94f6-6cc2b9f67752",
+          "text": "New York City’s Unprecedented Action",
+          "heading_path": null,
+          "page_or_position": "paragraph 7",
+          "paragraph_index": 7,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "c36c26d9-d7ad-5d16-8bde-d0b119ec0dee",
+          "text": "Recognizing the severity of the problem, New York City has taken the unprecedented step of classifying social networking sites as a public health threat (Ables, 2024). The City of New York, the New York Department of Education, and the New York City Health and Hospitals Corporation have filed a lawsuit against TikTok, Meta, Snap, and YouTube to hold the companies responsible for “fueling the nationwide youth mental health crisis” (Gold, 2024).",
+          "heading_path": null,
+          "page_or_position": "paragraph 8",
+          "paragraph_index": 8,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "ecca97e1-37b2-5da9-8c29-071f6c8ca4b1",
+          "text": "The lawsuit filed by New York City is a significant development in the ongoing debate about the responsibility of social media companies to address the negative impact of their platforms on mental health. The U.S. Surgeon General has called on these companies to improve the safety, health, and well-being of their users (Surgeon General, 2021). This includes implementing stricter moderation policies, providing resources for mental health support, and collaborating with researchers and health professionals to better understand the impact of social media on mental health.",
+          "heading_path": null,
+          "page_or_position": "paragraph 9",
+          "paragraph_index": 9,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "2d9ccac8-acc6-57ec-ba54-143c3d20a9ab",
+          "text": "A Multi-Faceted Approach to Addressing the Issue",
+          "heading_path": null,
+          "page_or_position": "paragraph 10",
+          "paragraph_index": 10,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "496360e0-10dd-51a8-a539-c43fa2ae56bc",
+          "text": "However, addressing the complex relationship between social media and mental health requires a multifaceted approach that goes beyond the actions of social media companies. From a legal perspective, this could include government regulation and individual legal action. Policymakers could consider implementing stricter rules and guidelines for social media companies to follow, such as requiring them to prioritize user well-being and mental health over engagement and profits. This could include mandating regular mental health impact assessments, providing resources for mental health support, and implementing stricter content moderation policies to reduce the spread of harmful and toxic content. However, since strong opposition is expected from users and companies on human rights grounds, including violations of freedom of expression, it is crucial to organize the evidence to date and explain convincingly that the restriction is urgently needed for public health reasons and that there are no other measures that could be taken.",
+          "heading_path": null,
+          "page_or_position": "paragraph 11",
+          "paragraph_index": 11,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "19363b1b-8892-519f-ac09-3a3e1a7f3dbc",
+          "text": "Mental health professionals must adapt to the changing landscape of technology and incorporate social media literacy into their treatment plans. The NIMH emphasizes the importance of teaching individuals how to maintain a healthy relationship with social media, including setting limits on use, engaging in offline activities, and seeking support when needed (NIMH, 2023).",
+          "heading_path": null,
+          "page_or_position": "paragraph 12",
+          "paragraph_index": 12,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "162403bf-2f82-58ac-9936-d340d67ff6dd",
+          "text": "Educational institutions also have a critical role to play in promoting digital literacy and responsible social media use among students. Schools should incorporate digital literacy education into their curricula and teach students how to navigate social media in a healthy and productive way. Parents and caregivers must also be involved in this process by setting appropriate boundaries and modeling responsible social media use, as parental media monitoring has protective effects on a variety of academic, social, and physical outcomes for children (Gentile, et al., 2014).",
+          "heading_path": null,
+          "page_or_position": "paragraph 13",
+          "paragraph_index": 13,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "86d09231-0b42-58f5-b251-0457860446c9",
+          "text": "As individuals, we must take responsibility for our own mental health and well-being in the digital age. This means being mindful of the time we spend on social networking sites, curating our feeds to include positive and uplifting content, and prioritizing offline activities and relationships. In this case, we can use the guidelines or recommendations published by the professionals; for example, the APA has published “Social Media Recommendations” to advocate the appropriate use of social media based on scientific evidence (APA, 2023).",
+          "heading_path": null,
+          "page_or_position": "paragraph 14",
+          "paragraph_index": 14,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "84cb6bac-5ce2-5ee6-9d99-462c8cdb8a0c",
+          "text": "Looking Ahead",
+          "heading_path": null,
+          "page_or_position": "paragraph 15",
+          "paragraph_index": 15,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "a7aebda4-e781-5976-a77c-9e8f95e646b6",
+          "text": "As we look to the future, it is clear that the issue of social networking and mental health will continue to be a pressing concern. As technology advances and new platforms emerge, it is critical that we remain vigilant and proactive in addressing the potential risks associated with these services. Increased research and collaboration among policymakers, legal experts, social media companies, mental health professionals, and educators is needed to address this growing issue and develop effective strategies to promote healthy social media use and mitigate its potential harms.",
+          "heading_path": null,
+          "page_or_position": "paragraph 16",
+          "paragraph_index": 16,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "2b9de03e-dca7-5592-9e43-f61da156c136",
+          "text": "References",
+          "heading_path": null,
+          "page_or_position": "paragraph 17",
+          "paragraph_index": 17,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "972c2994-bf87-5333-af7a-540f75532197",
+          "text": "Ables, K. (2024, January 25). New York City designates social media a public health hazard. The Washington Post. https://www.washingtonpost.com/technology/2024/01/25/nyc-social-media-health-hazard-toxin/",
+          "heading_path": null,
+          "page_or_position": "paragraph 18",
+          "paragraph_index": 18,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "df41d108-d1cf-5004-90a5-a2cefae8bfda",
+          "text": "American College of Pediatricians. (2020). Media Use and Screen Time – Its Impact on Children, Adolescents, and Families. https://acpeds.org/position-statements/media-use-and-screen-time-its-impact-on-children-adolescents-and-families",
+          "heading_path": null,
+          "page_or_position": "paragraph 19",
+          "paragraph_index": 19,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "891ced35-7ce0-5614-a1ff-08a83bb348c3",
+          "text": "American Psychological Association. (2024). Teens are spending nearly 5 hours daily on social media. Here are the mental health outcomes. https://www.apa.org/monitor/2024/04/teen-social-use-mental-health",
+          "heading_path": null,
+          "page_or_position": "paragraph 20",
+          "paragraph_index": 20,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "65f8059c-0903-5fdc-aad3-8711aa0b2b8c",
+          "text": "American Psychological Association. (2023). Social media brings benefits and risks to teens. Here’s how psychology can help identify a path forward. https://www.apa.org/monitor/2023/09/protecting-teens-on-social-media",
+          "heading_path": null,
+          "page_or_position": "paragraph 21",
+          "paragraph_index": 21,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "48af2cc6-f3b1-56ec-accc-361132ab26c9",
+          "text": "Gentile DA, et al. (2014) Protective Effects of Parental Monitoring of Children’s Media Use: A Prospective Study. JAMA Pediatr. 168(5):479–484. https://doi.org/10.1001/jamapediatrics.2014.146",
+          "heading_path": null,
+          "page_or_position": "paragraph 22",
+          "paragraph_index": 22,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "f24d7f7b-ca6b-56ab-ab8d-bf1f853fd43a",
+          "text": "Gold, A. (2024, February 14). New York City sues social media companies for negligence, public nuisance. Axios. https://www.axios.com/2024/02/14/new-york-city-sues-social-media-companies-for-negligence-public-nuisance",
+          "heading_path": null,
+          "page_or_position": "paragraph 23",
+          "paragraph_index": 23,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "0503550d-6a6e-59bc-9c21-285ad2e5883c",
+          "text": "Guernsey L (2014). Garbled in translation: Getting media research to the press and public. Journal of Children and Media, 8(1), 87–94. https://doi.org/10.1080/17482798.2014.863486",
+          "heading_path": null,
+          "page_or_position": "paragraph 24",
+          "paragraph_index": 24,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "3c51c668-c1cf-50b1-ae71-af2a4a596f2d",
+          "text": "Keles, B., et al. (2020). A systematic review: The influence of social media on depression, anxiety and psychological distress in adolescents. International Journal of Adolescence and Youth, 25(1), 79-93. https://doi.org/10.1080/02673843.2019.1590851",
+          "heading_path": null,
+          "page_or_position": "paragraph 25",
+          "paragraph_index": 25,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "193255e1-829b-51c4-b064-d7811f2f987b",
+          "text": "Mojtabai R, et al. (2016). National trends in the prevalence and treatment of depression in adolescents and young adults. Pediatrics, 138(6), e20161878. https://doi.org/10.1542/peds.2016-1878",
+          "heading_path": null,
+          "page_or_position": "paragraph 26",
+          "paragraph_index": 26,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "34cf3575-7bc1-5bcb-8365-c8b9666b7d3c",
+          "text": "National Institute of Mental Health. (2023). Mental illness. https://www.nimh.nih.gov/health/statistics/mental-illness",
+          "heading_path": null,
+          "page_or_position": "paragraph 27",
+          "paragraph_index": 27,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "47d08a70-e93d-5eea-8c29-b3f7219943f0",
+          "text": "Robinson JP, et al. (2002). The Internet and other uses of time. In Wellman B & Haythornthwaite C (Eds.), The Internet in Everyday Life (pp. 244–262). Blackwell.",
+          "heading_path": null,
+          "page_or_position": "paragraph 28",
+          "paragraph_index": 28,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "a555e52a-b91b-5eb9-9924-229de925f36d",
+          "text": "Surgeon General. (2021). Protecting youth mental health: The U.S. Surgeon General’s advisory. https://www.hhs.gov/sites/default/files/surgeon-general-youth-mental-health-advisory.pdf",
+          "heading_path": null,
+          "page_or_position": "paragraph 29",
+          "paragraph_index": 29,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "3de4ad37-eaea-5a53-876d-b6eaae97929e",
+          "text": "Twenge JM, et al. (2017). Increases in depressive symptoms, suicide-related outcomes, and suicide rates among US adolescents after 2010 and links to increased new media screen time. Clinical Psychological Science, 6(1), 3–17. https://doi.org/10.1177/2167702617723376",
+          "heading_path": null,
+          "page_or_position": "paragraph 30",
+          "paragraph_index": 30,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        },
+        {
+          "id": "f8869607-7a50-59c3-96bc-455460a859c5",
+          "text": "Twenge, J. M., & Campbell, W. K. (2018). Associations between screen time and lower psychological well-being among children and adolescents: Evidence from a population-based study. Preventive medicine reports, 12, 271–283. https://doi.org/10.1016/j.pmedr.2018.10.003",
+          "heading_path": null,
+          "page_or_position": "paragraph 31",
+          "paragraph_index": 31,
+          "speaker": null,
+          "table_ref": null,
+          "extraction_certainty": 1,
+          "metadata": {
+            "block_kind": "paragraph",
+            "part_index": 1,
+            "untrusted_evidence": true,
+            "has_boundary_overlap": false
+          },
+          "citations": []
+        }
+      ]
+    }
+  ]
+}

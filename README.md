@@ -38,6 +38,11 @@ static archive as one unit so removed reports do not remain publicly reachable.
 Commit the generated `apps/web/public/demo-archive` files and deploy Vercel; EC2
 may then be stopped without affecting archive reads.
 
+`npm --workspace apps/web run build` validates the complete bundled archive
+before compiling. A deployment fails instead of publishing the archive UI when
+the manifest, any designated run, or any report/source/graph resource is absent
+or malformed.
+
 ## Lite Demo
 
 The repository also contains Elara Lite Mode. It is a stored-corpus cited RAG experience

@@ -1,0 +1,977 @@
+{
+  "nodes": [
+    {
+      "id": "cluster:5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+      "type": "cluster",
+      "label": "New Study: 80% of World Diamond Reserves Held by 3 Countries information origin",
+      "data": {
+        "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+        "originType": "shared_data_chain"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "metadata": {
+        "representativeSourceId": "e42b778f-7b54-4770-b2a0-ab965f15f99e"
+      }
+    },
+    {
+      "id": "cluster:7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+      "type": "cluster",
+      "label": "Diamond reserves worldwide by country 2025| Statista information origin",
+      "data": {
+        "clusterId": "7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 180
+      },
+      "metadata": {
+        "representativeSourceId": "caf73819-c68f-40bb-8e49-7e1e7d62a00c"
+      }
+    },
+    {
+      "id": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+      "type": "cluster",
+      "label": "Are gem-quality diamonds common? information origin",
+      "data": {
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "originType": "shared_data_chain"
+      },
+      "position": {
+        "x": 0,
+        "y": 360
+      },
+      "metadata": {
+        "representativeSourceId": "05c134f5-940a-4ed2-925c-050b4676d1de"
+      }
+    },
+    {
+      "id": "cluster:570c7728-9d6c-58e6-858d-019a002a408b",
+      "type": "cluster",
+      "label": "Diamond Reserves by Country 2026 information origin",
+      "data": {
+        "clusterId": "570c7728-9d6c-58e6-858d-019a002a408b",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 540
+      },
+      "metadata": {
+        "representativeSourceId": "d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e"
+      }
+    },
+    {
+      "id": "cluster:64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+      "type": "cluster",
+      "label": "How Are Natural Diamonds Formed? Everything You Need to Know information origin",
+      "data": {
+        "clusterId": "64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 720
+      },
+      "metadata": {
+        "representativeSourceId": "8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5"
+      }
+    },
+    {
+      "id": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+      "type": "source",
+      "label": "The five countries with the world's biggest diamond reserves",
+      "data": {
+        "sourceId": "e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+        "dependencyMultiplier": 0.1,
+        "firstKnownAppearance": "2024-12-14T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.express.co.uk/news/world/1986259/five-countries-worlds-biggest-diamond-reserves",
+        "domain": "www.express.co.uk",
+        "publisher": "Daily Express",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2024-12-14T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:040799f9-ded6-4aa4-9c4a-4a413b29d656",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      },
+      "metadata": {
+        "snapshotId": "040799f9-ded6-4aa4-9c4a-4a413b29d656",
+        "retrievedAt": "2026-07-23T18:54:05.115249+00:00",
+        "publishedAt": "2024-12-14T00:00:00+00:00",
+        "contentHash": "8fa2ceba4eeba6f3853d2d5fe3a4e48bdb06f5e5e9c3c7d1120519ba249721eb",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+      "type": "source",
+      "label": "Unveiling the Truth: Are Diamonds Really Rare?",
+      "data": {
+        "sourceId": "c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2024-07-25T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 360
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.luxuria.diamonds/blog/are-diamonds-really-rare/",
+        "domain": "www.luxuria.diamonds",
+        "publisher": "Luxuria Diamonds",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2024-07-25T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:bf3dc570-fe8c-4214-97ed-81753be98229",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 360
+      },
+      "metadata": {
+        "snapshotId": "bf3dc570-fe8c-4214-97ed-81753be98229",
+        "retrievedAt": "2026-07-23T18:54:05.653721+00:00",
+        "publishedAt": "2024-07-25T00:00:00+00:00",
+        "contentHash": "1e8d1c29ccdd7ca354d76942853f174d648b850867c1529f8330eec3d6a99cd7",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:3d170f54-156f-475a-85c3-98bce13f1f13",
+      "type": "source",
+      "label": "There Are 'Quadrillions' Of Diamonds To Be Found Beneath Earth's Surface",
+      "data": {
+        "sourceId": "3d170f54-156f-475a-85c3-98bce13f1f13",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2018-07-18T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 450
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.forbes.com/sites/davidbressan/2018/07/18/there-are-quadrillions-of-diamonds-to-be-found-beneath-earths-surface/",
+        "domain": "www.forbes.com",
+        "publisher": "Forbes",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2018-07-18T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:06e6b1d3-5ac1-4944-b280-7f0886cc4fff",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "3d170f54-156f-475a-85c3-98bce13f1f13",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 450
+      },
+      "metadata": {
+        "snapshotId": "06e6b1d3-5ac1-4944-b280-7f0886cc4fff",
+        "retrievedAt": "2026-07-23T18:54:07.693907+00:00",
+        "publishedAt": "2018-07-18T00:00:00+00:00",
+        "contentHash": "a64e99d1cd383e6b6ad0b6809aff0e6277a0573803810b86387c3ddaaf6311f6",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+      "type": "source",
+      "label": "[Solved] Which of the following country is the largest producer of di",
+      "data": {
+        "sourceId": "82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2026-07-22T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://testbook.com/question-answer/which-of-the-following-country-is-the-largest-prod--60bf4f46ea3f14738697b1d2",
+        "domain": "testbook.com",
+        "publisher": "Testbook",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2026-07-22T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:e7c28c59-c06f-4bab-9b39-a16592f0a6d8",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "e7c28c59-c06f-4bab-9b39-a16592f0a6d8",
+        "retrievedAt": "2026-07-23T18:54:08.970394+00:00",
+        "publishedAt": "2026-07-22T00:00:00+00:00",
+        "contentHash": "48af0a23af381fef3a00fa11e4fa24ce390b8ce2347836c6c167aec9f19114bb",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+      "type": "source",
+      "label": "Diamond Reserves by Country 2026",
+      "data": {
+        "sourceId": "d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "570c7728-9d6c-58e6-858d-019a002a408b",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-07-17T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://worldpopulationreview.com/country-rankings/diamond-reserves-by-country",
+        "domain": "worldpopulationreview.com",
+        "publisher": "World Population Review",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2026-07-17T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:f084f25c-2d72-448a-880d-42a70bfa1524",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "570c7728-9d6c-58e6-858d-019a002a408b",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "f084f25c-2d72-448a-880d-42a70bfa1524",
+        "retrievedAt": "2026-07-23T18:54:09.178981+00:00",
+        "publishedAt": "2026-07-17T00:00:00+00:00",
+        "contentHash": "5af31312770bcd5124bb5a762d413563297c12561f13ab61e4d1345bc2d15eb2",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+      "type": "source",
+      "label": "How Are Diamonds Formed: The Science Behind the Sparkle",
+      "data": {
+        "sourceId": "d0268dff-66d6-4fc6-b42f-992e5ae13722",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2024-05-15T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 630
+      },
+      "metadata": {
+        "canonicalUrl": "https://diamondrensu.com/blogs/education/how-are-diamonds-formed",
+        "domain": "diamondrensu.com",
+        "publisher": "Diamondrensu",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2024-05-15T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:a68a7919-f391-4b7c-a4bc-49abe774ed5d",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "d0268dff-66d6-4fc6-b42f-992e5ae13722",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 630
+      },
+      "metadata": {
+        "snapshotId": "a68a7919-f391-4b7c-a4bc-49abe774ed5d",
+        "retrievedAt": "2026-07-23T18:54:09.318268+00:00",
+        "publishedAt": "2024-05-15T00:00:00+00:00",
+        "contentHash": "9ac64ec752feecdbab4d84d327b3effaa7477cb4dcc2915c11fff920fd97740b",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+      "type": "source",
+      "label": "New Study: 80% of World Diamond Reserves Held by 3 Countries",
+      "data": {
+        "sourceId": "e42b778f-7b54-4770-b2a0-ab965f15f99e",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2020-05-19T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 90
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.middiamonds.com/the-diamond-blog/more-than-80-percent-of-world-diamond-reserves-held-by-only-three-countries-says-new-study/",
+        "domain": "www.middiamonds.com",
+        "publisher": "MID House Of Diamonds",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2020-05-19T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:ff260bb3-c887-4ce8-af16-9e04463d0f81",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "e42b778f-7b54-4770-b2a0-ab965f15f99e",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 90
+      },
+      "metadata": {
+        "snapshotId": "ff260bb3-c887-4ce8-af16-9e04463d0f81",
+        "retrievedAt": "2026-07-23T18:54:09.856989+00:00",
+        "publishedAt": "2020-05-19T00:00:00+00:00",
+        "contentHash": "ccffd13c2910f1b2cf1bb046b783013d5114f48ea4544456d855abf0faa2a2a0",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+      "type": "source",
+      "label": "Are gem-quality diamonds common?",
+      "data": {
+        "sourceId": "05c134f5-940a-4ed2-925c-050b4676d1de",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2017-05-03T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 720
+      },
+      "metadata": {
+        "canonicalUrl": "https://skeptics.stackexchange.com/questions/19573/are-gem-quality-diamonds-common",
+        "domain": "skeptics.stackexchange.com",
+        "publisher": "Skeptics Stack Exchange",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2017-05-03T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:32add11c-4600-46df-92db-f93d7549d62a",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "05c134f5-940a-4ed2-925c-050b4676d1de",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 720
+      },
+      "metadata": {
+        "snapshotId": "32add11c-4600-46df-92db-f93d7549d62a",
+        "retrievedAt": "2026-07-23T18:54:11.475495+00:00",
+        "publishedAt": "2017-05-03T00:00:00+00:00",
+        "contentHash": "ddfa41d693c53a25357b8514c52a8514a5e5eb06db31e270f5f7e9fa754d0bfd",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+      "type": "source",
+      "label": "How Are Natural Diamonds Formed? Everything You Need to Know",
+      "data": {
+        "sourceId": "8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-03-10T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 720
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.greenwichjewelers.com/blogs/journal/how-are-natural-diamonds-formed-everything-you-need-to-know",
+        "domain": "www.greenwichjewelers.com",
+        "publisher": "Greenwich St. Jewelers",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2026-03-10T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:60e91d7a-fa07-4d1e-ab1d-73fc8572bd91",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+        "atomicClaimIds": [
+          "82287762-1add-4f74-aede-569fcc151ffc"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 720
+      },
+      "metadata": {
+        "snapshotId": "60e91d7a-fa07-4d1e-ab1d-73fc8572bd91",
+        "retrievedAt": "2026-07-23T18:54:11.721774+00:00",
+        "publishedAt": "2026-03-10T00:00:00+00:00",
+        "contentHash": "329e85fa8309eca0f161c05dc5cc758b1c53cb3c637614b6eb3a320c23f3136d",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+      "type": "source",
+      "label": "Diamond reserves worldwide by country 2025| Statista",
+      "data": {
+        "sourceId": "caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-02-05T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 180
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.statista.com/statistics/267905/world-diamond-reserves-by-country/",
+        "domain": "www.statista.com",
+        "publisher": "Statista",
+        "sourceType": "PRIMARY",
+        "firstKnownAppearance": "2026-02-05T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:dc9051d4-14df-4975-a13f-3d81342d22f5",
+      "type": "snapshot",
+      "label": "Snapshot 2026-07-23",
+      "data": {
+        "sourceId": "caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+        "accessStatus": "FETCHED",
+        "role": "PRIMARY",
+        "clusterId": "7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 180
+      },
+      "metadata": {
+        "snapshotId": "dc9051d4-14df-4975-a13f-3d81342d22f5",
+        "retrievedAt": "2026-07-23T18:54:12.228553+00:00",
+        "publishedAt": "2026-02-05T00:00:00+00:00",
+        "contentHash": "9cd5c5f72e69b3b800e1c9e5bb9d30050973b29c5a2cf3c0399c430e92221750",
+        "parserName": "trafilatura",
+        "parserVersion": "2.1.0"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "cluster-member:5ebfe4c1-8529-571a-b297-3ae536a0f7f9:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+      "source": "cluster:5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+      "target": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:040799f9-ded6-4aa4-9c4a-4a413b29d656",
+      "source": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+      "target": "snapshot:040799f9-ded6-4aa4-9c4a-4a413b29d656",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+      "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+      "target": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:bf3dc570-fe8c-4214-97ed-81753be98229",
+      "source": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+      "target": "snapshot:bf3dc570-fe8c-4214-97ed-81753be98229",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:3d170f54-156f-475a-85c3-98bce13f1f13",
+      "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+      "target": "source:3d170f54-156f-475a-85c3-98bce13f1f13",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:06e6b1d3-5ac1-4944-b280-7f0886cc4fff",
+      "source": "source:3d170f54-156f-475a-85c3-98bce13f1f13",
+      "target": "snapshot:06e6b1d3-5ac1-4944-b280-7f0886cc4fff",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+      "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+      "target": "source:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:e7c28c59-c06f-4bab-9b39-a16592f0a6d8",
+      "source": "source:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+      "target": "snapshot:e7c28c59-c06f-4bab-9b39-a16592f0a6d8",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:570c7728-9d6c-58e6-858d-019a002a408b:d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+      "source": "cluster:570c7728-9d6c-58e6-858d-019a002a408b",
+      "target": "source:d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:f084f25c-2d72-448a-880d-42a70bfa1524",
+      "source": "source:d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+      "target": "snapshot:f084f25c-2d72-448a-880d-42a70bfa1524",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+      "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+      "target": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:a68a7919-f391-4b7c-a4bc-49abe774ed5d",
+      "source": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+      "target": "snapshot:a68a7919-f391-4b7c-a4bc-49abe774ed5d",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:5ebfe4c1-8529-571a-b297-3ae536a0f7f9:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+      "source": "cluster:5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+      "target": "source:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:ff260bb3-c887-4ce8-af16-9e04463d0f81",
+      "source": "source:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+      "target": "snapshot:ff260bb3-c887-4ce8-af16-9e04463d0f81",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:05c134f5-940a-4ed2-925c-050b4676d1de",
+      "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+      "target": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:32add11c-4600-46df-92db-f93d7549d62a",
+      "source": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+      "target": "snapshot:32add11c-4600-46df-92db-f93d7549d62a",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c:8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+      "source": "cluster:64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+      "target": "source:8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:60e91d7a-fa07-4d1e-ab1d-73fc8572bd91",
+      "source": "source:8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+      "target": "snapshot:60e91d7a-fa07-4d1e-ab1d-73fc8572bd91",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+      "source": "cluster:7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+      "target": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:dc9051d4-14df-4975-a13f-3d81342d22f5",
+      "source": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+      "target": "snapshot:dc9051d4-14df-4975-a13f-3d81342d22f5",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "dependency:0a70f6fb-3d5b-47e5-b5f0-241715871d94",
+      "source": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+      "target": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:b6bf8c92-5e04-4936-9425-fa2dda9e7798",
+      "source": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+      "target": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.99,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.99,
+        "detectionMethod": "explicit_outbound_link"
+      }
+    },
+    {
+      "id": "dependency:9ef0acec-9d4f-4da6-a82f-35c1941d7fd8",
+      "source": "source:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+      "target": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:7bd2990e-708e-4a43-87a3-f4eb3bd55ef9",
+      "source": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+      "target": "source:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:ee49b787-ae5a-41da-b5a2-41251f21e5e1",
+      "source": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+      "target": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:fc11906c-7b78-447b-a0ee-95e87344fc1f",
+      "source": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+      "target": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.74,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:11dc6420-9f48-4c8c-9364-2030df04ed7a",
+      "source": "source:3d170f54-156f-475a-85c3-98bce13f1f13",
+      "target": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    }
+  ]
+}

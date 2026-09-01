@@ -1,0 +1,1091 @@
+{
+  "nodes": [
+    {
+      "id": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+      "type": "cluster",
+      "label": "IPCC Fifth Assessment Report - Wikipedia information origin",
+      "data": {
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "originType": "shared_data_chain"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "metadata": {
+        "representativeSourceId": "eedf8e9c-684b-417c-8b25-fbc1688a2e48"
+      }
+    },
+    {
+      "id": "cluster:39d7d859-693d-56f0-8e6e-6c759a78ff37",
+      "type": "cluster",
+      "label": "The Fifth Assessment Report of the IPCC | UNFCCC information origin",
+      "data": {
+        "clusterId": "39d7d859-693d-56f0-8e6e-6c759a78ff37",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 180
+      },
+      "metadata": {
+        "representativeSourceId": "008d0180-3c28-40a3-9915-2a041768f4b2"
+      }
+    },
+    {
+      "id": "cluster:bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+      "type": "cluster",
+      "label": "Client Challenge information origin",
+      "data": {
+        "clusterId": "bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 360
+      },
+      "metadata": {
+        "representativeSourceId": "cf72d03e-e23c-4366-a9dd-bed5a035decc"
+      }
+    },
+    {
+      "id": "cluster:7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+      "type": "cluster",
+      "label": "IPCC Fifth Assessment Synthesis Report — IPCC information origin",
+      "data": {
+        "clusterId": "7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 540
+      },
+      "metadata": {
+        "representativeSourceId": "faab35c4-7bf4-473f-aa00-3c7b357b9520"
+      }
+    },
+    {
+      "id": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "type": "source",
+      "label": "IPCC Fifth Assessment Report",
+      "data": {
+        "sourceId": "ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2025-09-16T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.c2es.org/content/ipcc-fifth-assessment-report/",
+        "domain": "www.c2es.org",
+        "publisher": "Center for Climate and Energy Solutions",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-09-16T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:c61cec4e-9030-41a8-9c36-12e5bcf6beab",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "ba0c4423-00ea-4304-b668-433c5965eb7c",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      },
+      "metadata": {
+        "snapshotId": "c61cec4e-9030-41a8-9c36-12e5bcf6beab",
+        "retrievedAt": "2026-08-13T22:25:25.759938+00:00",
+        "publishedAt": "2025-09-16T00:00:00+00:00",
+        "contentHash": "4cfec8e7afaba2abf4176a4b0ab190bffd8cd787c43cd26977827ed2324f6efc",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "type": "source",
+      "label": "IPCC Report Finds Warming Unequivocal, Human Influence Dominant Cause",
+      "data": {
+        "sourceId": "f8840de3-9562-40ac-9d14-c7aad0024031",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2014-02-03T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 90
+      },
+      "metadata": {
+        "canonicalUrl": "https://sdg.iisd.org/news/ipcc-report-finds-warming-unequivocal-human-influence-dominant-cause",
+        "domain": "sdg.iisd.org",
+        "publisher": "SDG Knowledge Hub",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2014-02-03T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:72b6ada4-1e63-4a37-a67e-5eeefd773649",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "f8840de3-9562-40ac-9d14-c7aad0024031",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 90
+      },
+      "metadata": {
+        "snapshotId": "72b6ada4-1e63-4a37-a67e-5eeefd773649",
+        "retrievedAt": "2026-08-13T22:25:26.319483+00:00",
+        "publishedAt": "2014-02-03T00:00:00+00:00",
+        "contentHash": "f794aca52c77db60d220e41d86dbb95ecf77c65fbe19e11d286b19d4e928cb2c",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:008d0180-3c28-40a3-9915-2a041768f4b2",
+      "type": "source",
+      "label": "The Fifth Assessment Report of the IPCC | UNFCCC",
+      "data": {
+        "sourceId": "008d0180-3c28-40a3-9915-2a041768f4b2",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "39d7d859-693d-56f0-8e6e-6c759a78ff37",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:25:26.803181+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 180
+      },
+      "metadata": {
+        "canonicalUrl": "https://unfccc.int/topics/science/workstreams/cooperation-with-the-ipcc/the-fifth-assessment-report-of-the-ipcc",
+        "domain": "unfccc.int",
+        "publisher": null,
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:25:26.803181+00:00"
+      }
+    },
+    {
+      "id": "snapshot:6470a23d-916d-439a-b610-e9d040102782",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "008d0180-3c28-40a3-9915-2a041768f4b2",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "39d7d859-693d-56f0-8e6e-6c759a78ff37",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 180
+      },
+      "metadata": {
+        "snapshotId": "6470a23d-916d-439a-b610-e9d040102782",
+        "retrievedAt": "2026-08-13T22:25:26.803181+00:00",
+        "publishedAt": null,
+        "contentHash": "d02032286070b4dd9d8fbd985a7bdca8af8edf52b89ff177db3bfcb2c8a9c43d",
+        "parserName": "playwright",
+        "parserVersion": "1.62.0"
+      }
+    },
+    {
+      "id": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "type": "source",
+      "label": "Fifth Assessment Report - Synthesis Report",
+      "data": {
+        "sourceId": "350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2014-12-09T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 180
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.slideshare.net/slideshow/fifth-assessment-report-synthesis-report/42521094",
+        "domain": "www.slideshare.net",
+        "publisher": "Slideshare",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2014-12-09T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:79aca0dd-5829-4f19-9dae-a8398fa2e0a9",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 180
+      },
+      "metadata": {
+        "snapshotId": "79aca0dd-5829-4f19-9dae-a8398fa2e0a9",
+        "retrievedAt": "2026-08-13T22:25:27.209506+00:00",
+        "publishedAt": "2014-12-09T00:00:00+00:00",
+        "contentHash": "43d469432dfaf6b6db64c63a019d0e2ad64ab1f842a2b0ccae4f17916e08771e",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+      "type": "source",
+      "label": "No Time to Waste: The IPCC Special Report on Global Warming of 1.5ºC and Implications for Washington State | Climate Impacts Group",
+      "data": {
+        "sourceId": "aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2026-08-13T22:25:28.289086+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 270
+      },
+      "metadata": {
+        "canonicalUrl": "https://cig.uw.edu/projects/no-time-to-waste/",
+        "domain": "cig.uw.edu",
+        "publisher": "Climate Impacts Group",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:25:28.289086+00:00"
+      }
+    },
+    {
+      "id": "snapshot:97f431dd-37aa-48f4-8cc5-11602d5a3a69",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 270
+      },
+      "metadata": {
+        "snapshotId": "97f431dd-37aa-48f4-8cc5-11602d5a3a69",
+        "retrievedAt": "2026-08-13T22:25:28.289086+00:00",
+        "publishedAt": null,
+        "contentHash": "5220910d2a7cd695e0fb62ecd5e9ceb9f4efd1a71f1e76fc119a0132cee161d1",
+        "parserName": "beautifulsoup4",
+        "parserVersion": "4.15.0"
+      }
+    },
+    {
+      "id": "source:cf72d03e-e23c-4366-a9dd-bed5a035decc",
+      "type": "source",
+      "label": "Client Challenge",
+      "data": {
+        "sourceId": "cf72d03e-e23c-4366-a9dd-bed5a035decc",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:25:28.851096+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 360
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.nature.com/articles/s44168-023-00042-9",
+        "domain": "www.nature.com",
+        "publisher": "nature.com",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:25:28.851096+00:00"
+      }
+    },
+    {
+      "id": "snapshot:f4cc101f-fecd-43bf-9f91-6417620d2a26",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "cf72d03e-e23c-4366-a9dd-bed5a035decc",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 360
+      },
+      "metadata": {
+        "snapshotId": "f4cc101f-fecd-43bf-9f91-6417620d2a26",
+        "retrievedAt": "2026-08-13T22:25:28.851096+00:00",
+        "publishedAt": null,
+        "contentHash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:faab35c4-7bf4-473f-aa00-3c7b357b9520",
+      "type": "source",
+      "label": "IPCC Fifth Assessment Synthesis Report — IPCC",
+      "data": {
+        "sourceId": "faab35c4-7bf4-473f-aa00-3c7b357b9520",
+        "accessStatus": "INACCESSIBLE",
+        "role": "UNKNOWN",
+        "clusterId": "7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:25:29.088274+00:00",
+        "contentType": null,
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://ar5-syr.ipcc.ch/",
+        "domain": "ar5-syr.ipcc.ch",
+        "publisher": null,
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:25:29.088274+00:00"
+      }
+    },
+    {
+      "id": "snapshot:fef86187-b280-4ff5-bacd-4d9a5c552551",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "faab35c4-7bf4-473f-aa00-3c7b357b9520",
+        "accessStatus": "INACCESSIBLE",
+        "role": "UNKNOWN",
+        "clusterId": "7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "fef86187-b280-4ff5-bacd-4d9a5c552551",
+        "retrievedAt": "2026-08-13T22:25:29.088274+00:00",
+        "publishedAt": null,
+        "contentHash": null,
+        "parserName": null,
+        "parserVersion": null
+      }
+    },
+    {
+      "id": "source:64991462-0f66-4537-ab19-3905fe205226",
+      "type": "source",
+      "label": "IPCC 5th Assessment Report",
+      "data": {
+        "sourceId": "64991462-0f66-4537-ab19-3905fe205226",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2017-01-20T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 360
+      },
+      "metadata": {
+        "canonicalUrl": "http://www.climasouth.eu/en/node/40",
+        "domain": "www.climasouth.eu",
+        "publisher": "climasouth.eu",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2017-01-20T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:1438f340-c309-4e4f-906e-a273d1c9915b",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "64991462-0f66-4537-ab19-3905fe205226",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 360
+      },
+      "metadata": {
+        "snapshotId": "1438f340-c309-4e4f-906e-a273d1c9915b",
+        "retrievedAt": "2026-08-13T22:25:29.131482+00:00",
+        "publishedAt": "2017-01-20T00:00:00+00:00",
+        "contentHash": "39655594f71447c5c1d480b709d6558c4a22cb9ec526bd93dd4ac564ad0eea69",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "type": "source",
+      "label": "IPCC Fifth Assessment Report - Wikipedia",
+      "data": {
+        "sourceId": "eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2008-09-05T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 450
+      },
+      "metadata": {
+        "canonicalUrl": "https://en.wikipedia.org/wiki/IPCC_Fifth_Assessment_Report",
+        "domain": "en.wikipedia.org",
+        "publisher": "Wikimedia Foundation, Inc.",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2008-09-05T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:e5a2e30e-5867-4db3-8ed7-30e35eec8980",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 450
+      },
+      "metadata": {
+        "snapshotId": "e5a2e30e-5867-4db3-8ed7-30e35eec8980",
+        "retrievedAt": "2026-08-13T22:25:30.066818+00:00",
+        "publishedAt": "2008-09-05T00:00:00+00:00",
+        "contentHash": "f16c5f86248c898dd86c578d5e5c50577e89d959314435e4bc71f172dcbd7694",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+      "type": "source",
+      "label": "The IPCC’s 6th Report Cycle is Ending. Here’s the Latest on the State of Global Climate Science.",
+      "data": {
+        "sourceId": "d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2023-03-20T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://unfoundation.org/blog/post/8-years-6-reports-and-1-1-degrees-what-we-learned-from-the-ipccs-latest-report-cycle-and-whats-next-for-climate-action/",
+        "domain": "unfoundation.org",
+        "publisher": "unfoundation.org",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2023-03-20T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:a48f5547-8d8d-4a17-a312-5b1695dd6b5a",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+        "atomicClaimIds": [
+          "5a795f42-e8e6-4880-930b-0c2972437873"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "a48f5547-8d8d-4a17-a312-5b1695dd6b5a",
+        "retrievedAt": "2026-08-13T22:25:30.480873+00:00",
+        "publishedAt": "2023-03-20T00:00:00+00:00",
+        "contentHash": "c1f6b34f40e6ec8693b5bb81cf7cd74b1137e306673e666db2ab327d3ac702b3",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+      "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:c61cec4e-9030-41a8-9c36-12e5bcf6beab",
+      "source": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "target": "snapshot:c61cec4e-9030-41a8-9c36-12e5bcf6beab",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+      "target": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:72b6ada4-1e63-4a37-a67e-5eeefd773649",
+      "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "target": "snapshot:72b6ada4-1e63-4a37-a67e-5eeefd773649",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:39d7d859-693d-56f0-8e6e-6c759a78ff37:008d0180-3c28-40a3-9915-2a041768f4b2",
+      "source": "cluster:39d7d859-693d-56f0-8e6e-6c759a78ff37",
+      "target": "source:008d0180-3c28-40a3-9915-2a041768f4b2",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:6470a23d-916d-439a-b610-e9d040102782",
+      "source": "source:008d0180-3c28-40a3-9915-2a041768f4b2",
+      "target": "snapshot:6470a23d-916d-439a-b610-e9d040102782",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+      "target": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:79aca0dd-5829-4f19-9dae-a8398fa2e0a9",
+      "source": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "target": "snapshot:79aca0dd-5829-4f19-9dae-a8398fa2e0a9",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+      "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+      "target": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:97f431dd-37aa-48f4-8cc5-11602d5a3a69",
+      "source": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+      "target": "snapshot:97f431dd-37aa-48f4-8cc5-11602d5a3a69",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:bf0f1de8-ddd0-53f5-aa57-184415ddeaf6:cf72d03e-e23c-4366-a9dd-bed5a035decc",
+      "source": "cluster:bf0f1de8-ddd0-53f5-aa57-184415ddeaf6",
+      "target": "source:cf72d03e-e23c-4366-a9dd-bed5a035decc",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:f4cc101f-fecd-43bf-9f91-6417620d2a26",
+      "source": "source:cf72d03e-e23c-4366-a9dd-bed5a035decc",
+      "target": "snapshot:f4cc101f-fecd-43bf-9f91-6417620d2a26",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902:faab35c4-7bf4-473f-aa00-3c7b357b9520",
+      "source": "cluster:7a5fa9f3-6b41-5bac-a0f7-ff9b4c8f0902",
+      "target": "source:faab35c4-7bf4-473f-aa00-3c7b357b9520",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:fef86187-b280-4ff5-bacd-4d9a5c552551",
+      "source": "source:faab35c4-7bf4-473f-aa00-3c7b357b9520",
+      "target": "snapshot:fef86187-b280-4ff5-bacd-4d9a5c552551",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:64991462-0f66-4537-ab19-3905fe205226",
+      "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+      "target": "source:64991462-0f66-4537-ab19-3905fe205226",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:1438f340-c309-4e4f-906e-a273d1c9915b",
+      "source": "source:64991462-0f66-4537-ab19-3905fe205226",
+      "target": "snapshot:1438f340-c309-4e4f-906e-a273d1c9915b",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+      "target": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:e5a2e30e-5867-4db3-8ed7-30e35eec8980",
+      "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "target": "snapshot:e5a2e30e-5867-4db3-8ed7-30e35eec8980",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:11fed1cb-bdcf-53b8-976d-6be9802e2fef:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+      "source": "cluster:11fed1cb-bdcf-53b8-976d-6be9802e2fef",
+      "target": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:a48f5547-8d8d-4a17-a312-5b1695dd6b5a",
+      "source": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+      "target": "snapshot:a48f5547-8d8d-4a17-a312-5b1695dd6b5a",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "dependency:061b4ca5-9de4-4a7b-8af7-d484f4314a61",
+      "source": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "target": "source:008d0180-3c28-40a3-9915-2a041768f4b2",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:adad3478-e755-4281-8a22-3f338e2dcd24",
+      "source": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "target": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:654bb1cc-ad65-4416-81f9-fbadb8ed07d8",
+      "source": "source:64991462-0f66-4537-ab19-3905fe205226",
+      "target": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:1beba7df-fe3f-47f9-993b-d52e966e4c88",
+      "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:2c56f544-1a43-4dbb-8b94-829fe32f0708",
+      "source": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.78,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:311615f1-af40-45e7-8a8f-10f23a2f2105",
+      "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.82,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:18a3bfd8-78ef-4c33-a0ba-39c7161e313f",
+      "source": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+      "target": "source:ba0c4423-00ea-4304-b668-433c5965eb7c",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:91719591-5eb9-41ee-8104-c907851b5f86",
+      "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "target": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.78,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:2da51556-fbbc-415c-9c07-c06c586072cc",
+      "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "target": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:a6671de6-b4cd-4e32-be7e-5737d94b951f",
+      "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "target": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.88,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.88,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:c22ae797-bbdd-4ab5-bc3b-7b323558eea0",
+      "source": "source:f8840de3-9562-40ac-9d14-c7aad0024031",
+      "target": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:b7de4b2c-3352-4c9c-9fe2-b1b28f4dc26b",
+      "source": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "target": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:0ee187a8-53a1-468c-9c13-00560d037a5b",
+      "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "target": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.88,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.88,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:9808f9b2-a4c5-4ff9-932e-8b16f6c46aaf",
+      "source": "source:350b5212-1ea1-4c7b-9ce1-f53053ca8097",
+      "target": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.78,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:58371958-77c1-445e-9c68-8a11583a5b6b",
+      "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "target": "source:aa9d0551-f387-4a2b-b9df-21a90c46ecf8",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.78,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:3fb42705-5b15-4149-97a3-7ff86ae92f25",
+      "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "target": "source:64991462-0f66-4537-ab19-3905fe205226",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.78,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:4d7e78cc-372f-4451-9d90-09d40fc9ae9c",
+      "source": "source:eedf8e9c-684b-417c-8b25-fbc1688a2e48",
+      "target": "source:d9825cca-1f40-482f-a2b7-b10ef1c971f8",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.82,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    }
+  ]
+}

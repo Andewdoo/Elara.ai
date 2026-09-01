@@ -1,0 +1,2244 @@
+{
+  "run_id": "890dcba9-4148-41c2-bb2c-ed72e21cbf3c",
+  "verdict": "Mostly contradicted",
+  "scores": {
+    "evidence_support": 8,
+    "attribution_support": null,
+    "quote_fidelity": null,
+    "verdict_confidence": 47,
+    "source_independence": 75,
+    "context_completeness": 55
+  },
+  "atomic_claims": [
+    {
+      "id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "claim_text": "Violent video games cause violent behavior in teenagers.",
+      "importance_weight": 3,
+      "claim_type": "causal",
+      "final_label": "Mostly contradicted",
+      "support_score": 13,
+      "confidence_score": 43,
+      "context_completeness": 55,
+      "ambiguities": [],
+      "gaps": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "88e31948-9e81-49a5-b9ec-327b57145d52",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "3a7b4062-e993-51a2-a729-83cc78657b4a",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.92833,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.92833,
+      "citation_status": "pending",
+      "passage_text": "The role of media violence (including video games) in such a model is not causal. Rather,\nviolent video games may act as stylistic catalysts. When an individual high in violence\nproneness decides to act violently, this person may then model violence that he or she has\nseen in the media. As such, the style or form of violence may be socially modeled but not\nthe desire to act violently itself. Thus, an individual may model violent behaviors he or she\nhas witnessed in a video game, but had that video game been removed from that individual’s\nsphere of modeling opportunities, the violence would still occur in another form. Therefore,\nvideo game violence does not cause violent behavior but may have an impact on its form.",
+      "source_title": "CJB311719.qxd",
+      "source_url": "https://www.christopherjferguson.com/CJBGames.pdf",
+      "page_or_position": "page 5"
+    },
+    {
+      "id": "92eb91e1-e2be-4346-8292-0b249315cb61",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "bbba7939-f02f-58d5-b11d-d3a731bbb976",
+      "stance": "NEUTRAL",
+      "base_quality": 0.39833,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.139416,
+      "citation_status": "rejected",
+      "passage_text": "There are many ethical challenges when testing the effects of violent video\ngames on the action of youth that play them and these challenges are handled by\nstudying aggression vs violence. Violence cannot be ethically induced in a laboratory\nbecause violence is aggressive behavior with intent to cause extreme harm to others\n(Anderson, 2012).This project will explore 3 different experimental methods for\nmeasuring aggression.\nStudy 1:Observational study of over 1,000 7th and 8th graders (Kutner and Olsen 2008).\nStudy 2: Craig A. Anderson and his coworkers in et al. (2006) measured heart rate and\nGalvanic skin response to real footage of violent actions after playing violent and\nnonviolent video games.",
+      "source_title": "No Slide Title",
+      "source_url": "https://www.csuohio.edu/sites/default/files/46%20Does%20Playing%20Violent%20Video%20Games%20Cause%20Aggressive%20Behavior%20in%20Middle%20School%20and%20High%20School%20Kids%20(age%2011-18).pdf",
+      "page_or_position": "page 1"
+    },
+    {
+      "id": "fd1f9e75-951e-4250-b79b-c5ef4ea2c588",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "093be1f8-2dc9-5ec7-bbda-1026c5aa004c",
+      "stance": "PARTIALLY_CONTRADICTS",
+      "base_quality": 0.82,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.287,
+      "citation_status": "pending",
+      "passage_text": "Violence is a form of aggression, but not all aggressive behaviors are violent. Very few studies have looked at whether playing violent video games increases the chances of later delinquency, criminal behavior, or lethal violence. Such studies are difficult to conduct, and require very large numbers of children. It makes sense that since playing violent video games tends to increase the level of aggressive behavior it would also results in more lethal violence or other criminal behaviors, but there is no clear evidence to support that assumption.",
+      "source_title": "Violent Video Games and Aggression",
+      "source_url": "https://www.center4research.org/violent-video-games-can-increase-aggression/",
+      "page_or_position": "paragraph 7"
+    },
+    {
+      "id": "aa87fdd9-0b84-48e8-84c6-9a45bbdd335f",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "16cc3817-35bc-519b-bdce-70162a081e7c",
+      "stance": "NEUTRAL",
+      "base_quality": 0.545,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.545,
+      "citation_status": "rejected",
+      "passage_text": "In a cross-lagged panel study, researchers assess the same variables at different time points to determine whether one variable is likely the cause of another. The idea is that causes can influence future outcomes but cannot influence past ones. Therefore, if a variable is a cause of another, it will be more strongly associated with future values of that variable than with its past values. Conversely, the consequence will be more strongly associated with past values of its cause than with its future values. The researchers used this design to explore whether physical aggression leads to a preference for violent video games or if it is violent video games that increase aggression in adolescents.",
+      "source_title": "Study finds little evidence linking violent video games to increased aggression in adolescents",
+      "source_url": "https://www.psypost.org/study-finds-little-evidence-linking-violent-video-games-to-increased-aggression-in-adolescents/",
+      "page_or_position": "paragraph 11"
+    },
+    {
+      "id": "5e153ae3-7ee4-42b0-ac2f-ff85b31c48c4",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.935,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.935,
+      "citation_status": "pending",
+      "passage_text": "On the other hand, the within-person findings—those looking at how changes in an individual’s gaming habits relate to changes in their behavior over time—were particularly revealing. The researchers did not find that an increase or decrease in the level of violence in the games played by participants over the study period had any significant effect on changes in aggression or empathy. This suggests that violent video games are not a direct cause of increased aggression.",
+      "source_title": "Study finds little evidence linking violent video games to increased aggression in adolescents",
+      "source_url": "https://www.psypost.org/study-finds-little-evidence-linking-violent-video-games-to-increased-aggression-in-adolescents/",
+      "page_or_position": "paragraph 16"
+    },
+    {
+      "id": "2b27637e-0b12-4667-a00d-2a3a93e2b54a",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "ac2f3570-e57e-5a22-b300-89de7f807529",
+      "stance": "NEUTRAL",
+      "base_quality": 0.62,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.217,
+      "citation_status": "rejected",
+      "passage_text": "In the aftermath of the Parkland shooting in Florida in 2018, policymakers are again questioning the influence of violent video games. The Entertainment Software Rating Board (ESRB) affirms that their rating system is effective, but the APA Task Force on Violent Media recommends that the ESRB revise their rating system to make the level of violence clearer. The Task Force also recommends that further research must be done using delinquency, violence, and criminal behavior as outcomes to determine whether or not violent video games are linked to violence.",
+      "source_title": "Violent Video Games and Aggression",
+      "source_url": "https://www.center4research.org/violent-video-games-can-increase-aggression/",
+      "page_or_position": "paragraph 8"
+    },
+    {
+      "id": "05848b8b-ff85-49d7-9847-f2edaedd5a2f",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "ff907ba7-bcda-5b54-a7c5-515009b43cf5",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.905,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.31675,
+      "citation_status": "pending",
+      "passage_text": "Studies have shown that playing violent video games can increase aggressive thoughts, behaviors, and feelings in both the short-term and long-term. [2] Violent video games can also desensitize people to seeing aggressive behavior and decrease prosocial behaviors such as helping another person and feeling empathy (the ability to understand others). The longer that individuals are exposed to violent video games, the more likely they are to have aggressive behaviors, thoughts, and feelings. These effects have been seen in studies in both Eastern and Western countries. Although males spend more time than females playing violent video games, violent video game exposure can increase aggressive thoughts, behaviors, and feelings in both sexes.",
+      "source_title": "Violent Video Games and Aggression",
+      "source_url": "https://www.center4research.org/violent-video-games-can-increase-aggression/",
+      "page_or_position": "paragraph 3"
+    },
+    {
+      "id": "bc8001fa-cf18-4cbd-a01d-f9612e5eaf8a",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "1ee51300-7241-5309-bf36-2d476263f78c",
+      "stance": "NEUTRAL",
+      "base_quality": 0.35333,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.35333,
+      "citation_status": "rejected",
+      "passage_text": "oncerns that video games promote violent behavior in players began shortly after the\ninception of commercial product availability in the 1970s. The first major controversy\noccurred with the release of a game entitled “Death Race” (Exidy) in 1976 (Kent, 2001).\nThis game featured the player as an automobile driver whose goal was to run over scream-\ning “gremlins,” transforming them into tombstones. Primitive graphics caused the “grem-\nlins” to look like stick-figure humans; thus, the game appeared to condone the massacre of\ninnocent civilians with a car. The uproar was fueled by the game’s working title, “Pedestrian,”\nand protestors reportedly pulled some machines out of arcades and burned them. With\nensuing waves of protest, the production of “Death Race” was cancelled. Renewed atten-\ntion to the potential effects of violent video games occurred in the early 1990s with the",
+      "source_title": "CJB311719.qxd",
+      "source_url": "https://www.christopherjferguson.com/CJBGames.pdf",
+      "page_or_position": "page 1"
+    },
+    {
+      "id": "c767b9b0-1fb2-490e-afa4-cdf9adbd3613",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "2dee473c-4e20-5594-8277-2671e29828b7",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.92833,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.92833,
+      "citation_status": "pending",
+      "passage_text": "Results from this study provide several important answers related to the hypotheses dis-\ncussed earlier. The analyses presented here fail to support the hypothesis that exposure to\na violent video game causes short-term aggression in a laboratory environment. Individuals\nwho played Medal of Honor were no more aggressive after playing than were individuals\nwho played Myst III. Thus, it does not appear that aggressive behavior is modeled after a\nshort-term exposure to violent video games, as had been predicted by the GAM. Similarly,\nlong-term exposure to violent video games, as indicated by self-reported exposure to\nviolent games and violent graphics, produced no differences in measured laboratory\naggression. Post hoc comparisons, effect-size confidence intervals, and group-difference\nconfidence intervals support that no group differences exist. These results are consistent\nwith the catalyst model but are not supportive of the GAM.",
+      "source_title": "CJB311719.qxd",
+      "source_url": "https://www.christopherjferguson.com/CJBGames.pdf",
+      "page_or_position": "page 13"
+    },
+    {
+      "id": "5b1e1e6a-106e-4eeb-8e1e-701b96f709af",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "passage_id": "4c00c83b-0e1a-5b14-8a15-44894165e9f2",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.61833,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.216416,
+      "citation_status": "pending",
+      "passage_text": "violent video games and acts of aggression. Understanding how and how much violent video games influences youths behavior can help us understand the types of measures need to reduce aggression in our society.",
+      "source_title": "No Slide Title",
+      "source_url": "https://www.csuohio.edu/sites/default/files/46%20Does%20Playing%20Violent%20Video%20Games%20Cause%20Aggressive%20Behavior%20in%20Middle%20School%20and%20High%20School%20Kids%20(age%2011-18).pdf",
+      "page_or_position": "page 1"
+    }
+  ],
+  "source_graph": {
+    "nodes": [
+      {
+        "id": "cluster:70453484-2bf3-59ba-bd8f-0e7174e0f969",
+        "type": "cluster",
+        "label": "The effects of violent video games on aggression. A meta-analysis | Request PDF information origin",
+        "data": {
+          "clusterId": "70453484-2bf3-59ba-bd8f-0e7174e0f969",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "metadata": {
+          "representativeSourceId": "c91c8e92-698f-4ac5-ac7e-ab3363bec60a"
+        }
+      },
+      {
+        "id": "cluster:9fe3dee5-4e91-5843-82ab-37390b8da80c",
+        "type": "cluster",
+        "label": "Violent Video Games and Aggression: The Connection Is Dubious, at Best information origin",
+        "data": {
+          "clusterId": "9fe3dee5-4e91-5843-82ab-37390b8da80c",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 180
+        },
+        "metadata": {
+          "representativeSourceId": "46d19f81-3344-441b-874a-c85046c684eb"
+        }
+      },
+      {
+        "id": "cluster:30c4f3b7-d33f-56a7-8f95-eafea274ad63",
+        "type": "cluster",
+        "label": "Study finds little evidence linking violent video games to increased aggression in adolescents information origin",
+        "data": {
+          "clusterId": "30c4f3b7-d33f-56a7-8f95-eafea274ad63",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 360
+        },
+        "metadata": {
+          "representativeSourceId": "556bcc5a-f54f-4a8f-93c4-ec37e10e76a4"
+        }
+      },
+      {
+        "id": "cluster:b131495a-e04b-5260-a34b-b2d25e29b0f2",
+        "type": "cluster",
+        "label": "CJB311719.qxd information origin",
+        "data": {
+          "clusterId": "b131495a-e04b-5260-a34b-b2d25e29b0f2",
+          "originType": "shared_data_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 540
+        },
+        "metadata": {
+          "representativeSourceId": "10bcaf17-a9d1-48d4-a555-64088db00868"
+        }
+      },
+      {
+        "id": "cluster:f1a5635f-c5a3-5a40-abc7-c3b147697f51",
+        "type": "cluster",
+        "label": "Does violence in video games impact aggression and empathy? A longitudinal study of Czech adolescents to differentiate within- and between-person effects - ScienceDirect information origin",
+        "data": {
+          "clusterId": "f1a5635f-c5a3-5a40-abc7-c3b147697f51",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 720
+        },
+        "metadata": {
+          "representativeSourceId": "2c0c58af-885b-4be9-a384-15e245a4991e"
+        }
+      },
+      {
+        "id": "cluster:5966398e-0704-5ca6-8603-1282ca2f496e",
+        "type": "cluster",
+        "label": "Client Challenge information origin",
+        "data": {
+          "clusterId": "5966398e-0704-5ca6-8603-1282ca2f496e",
+          "originType": "syndication_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 900
+        },
+        "metadata": {
+          "representativeSourceId": "a379a042-2f7b-4812-aeb2-9a815014a8a9"
+        }
+      },
+      {
+        "id": "cluster:af5e6e36-c90d-5c15-8424-d7da35a2085d",
+        "type": "cluster",
+        "label": "Effect of Exposure to Gun Violence in Video Games on Children’s Dangerous Behavior With Real Guns: A Randomized Clinical Trial | Pediatrics | JAMA Network Open | JAMA Network information origin",
+        "data": {
+          "clusterId": "af5e6e36-c90d-5c15-8424-d7da35a2085d",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 1080
+        },
+        "metadata": {
+          "representativeSourceId": "f86263b6-0062-4a3f-b1ff-b7e8ecc4df33"
+        }
+      },
+      {
+        "id": "source:c91c8e92-698f-4ac5-ac7e-ab3363bec60a",
+        "type": "source",
+        "label": "The effects of violent video games on aggression. A meta-analysis | Request PDF",
+        "data": {
+          "sourceId": "c91c8e92-698f-4ac5-ac7e-ab3363bec60a",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "70453484-2bf3-59ba-bd8f-0e7174e0f969",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:36:55.280777+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 0
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.researchgate.net/publication/227627846_The_effects_of_violent_video_games_on_aggression_A_meta-analysis",
+          "domain": "www.researchgate.net",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:36:55.280777+00:00"
+        }
+      },
+      {
+        "id": "snapshot:1c6818d4-179b-4b0f-8f74-6ee63b0ab90c",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "c91c8e92-698f-4ac5-ac7e-ab3363bec60a",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "70453484-2bf3-59ba-bd8f-0e7174e0f969",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 0
+        },
+        "metadata": {
+          "snapshotId": "1c6818d4-179b-4b0f-8f74-6ee63b0ab90c",
+          "retrievedAt": "2026-08-13T22:36:55.280777+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:556bcc5a-f54f-4a8f-93c4-ec37e10e76a4",
+        "type": "source",
+        "label": "Study finds little evidence linking violent video games to increased aggression in adolescents",
+        "data": {
+          "sourceId": "556bcc5a-f54f-4a8f-93c4-ec37e10e76a4",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "30c4f3b7-d33f-56a7-8f95-eafea274ad63",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2024-08-27T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "28b7007b-d8c1-425d-a7b5-abef6bd6ab81"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.psypost.org/study-finds-little-evidence-linking-violent-video-games-to-increased-aggression-in-adolescents/",
+          "domain": "www.psypost.org",
+          "publisher": "PsyPost - Psychology News",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2024-08-27T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:49854358-a668-4655-816f-6437d6a58ede",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "556bcc5a-f54f-4a8f-93c4-ec37e10e76a4",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "30c4f3b7-d33f-56a7-8f95-eafea274ad63",
+          "atomicClaimIds": [
+            "28b7007b-d8c1-425d-a7b5-abef6bd6ab81"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "49854358-a668-4655-816f-6437d6a58ede",
+          "retrievedAt": "2026-08-13T22:36:55.377923+00:00",
+          "publishedAt": "2024-08-27T00:00:00+00:00",
+          "contentHash": "e0d9d09d0f488f7f71ae2312522e557294ebcdec7d6775ed2d9affff4633029d",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:2c0c58af-885b-4be9-a384-15e245a4991e",
+        "type": "source",
+        "label": "Does violence in video games impact aggression and empathy? A longitudinal study of Czech adolescents to differentiate within- and between-person effects - ScienceDirect",
+        "data": {
+          "sourceId": "2c0c58af-885b-4be9-a384-15e245a4991e",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "f1a5635f-c5a3-5a40-abc7-c3b147697f51",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:36:55.637411+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 720
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.sciencedirect.com/science/article/pii/S0747563224002097",
+          "domain": "www.sciencedirect.com",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:36:55.637411+00:00"
+        }
+      },
+      {
+        "id": "snapshot:00170c0e-5965-4b17-9902-3d06cac9ec87",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "2c0c58af-885b-4be9-a384-15e245a4991e",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "f1a5635f-c5a3-5a40-abc7-c3b147697f51",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 720
+        },
+        "metadata": {
+          "snapshotId": "00170c0e-5965-4b17-9902-3d06cac9ec87",
+          "retrievedAt": "2026-08-13T22:36:55.637411+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:1fe78999-b923-40ea-864e-47f622cff9ef",
+        "type": "source",
+        "label": "Violent Video Games and Aggression",
+        "data": {
+          "sourceId": "1fe78999-b923-40ea-864e-47f622cff9ef",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "b131495a-e04b-5260-a34b-b2d25e29b0f2",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2018-03-27T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "28b7007b-d8c1-425d-a7b5-abef6bd6ab81"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.center4research.org/violent-video-games-can-increase-aggression/",
+          "domain": "www.center4research.org",
+          "publisher": "National Center for Health Research",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2018-03-27T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:83358cb0-adc3-474f-84e2-c1734437aafe",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "1fe78999-b923-40ea-864e-47f622cff9ef",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "b131495a-e04b-5260-a34b-b2d25e29b0f2",
+          "atomicClaimIds": [
+            "28b7007b-d8c1-425d-a7b5-abef6bd6ab81"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "83358cb0-adc3-474f-84e2-c1734437aafe",
+          "retrievedAt": "2026-08-13T22:36:55.817767+00:00",
+          "publishedAt": "2018-03-27T00:00:00+00:00",
+          "contentHash": "d05a82692f2698fc8e4a36c58ff67201638642109c8f1869b0108f15836f8459",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:a379a042-2f7b-4812-aeb2-9a815014a8a9",
+        "type": "source",
+        "label": "Client Challenge",
+        "data": {
+          "sourceId": "a379a042-2f7b-4812-aeb2-9a815014a8a9",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "5966398e-0704-5ca6-8603-1282ca2f496e",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:36:56.424975+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 900
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.nature.com/articles/s41380-018-0031-7",
+          "domain": "www.nature.com",
+          "publisher": "nature.com",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:36:56.424975+00:00"
+        }
+      },
+      {
+        "id": "snapshot:26a4bd9b-731c-4845-9ad0-58e7f83635c1",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "a379a042-2f7b-4812-aeb2-9a815014a8a9",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "5966398e-0704-5ca6-8603-1282ca2f496e",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 900
+        },
+        "metadata": {
+          "snapshotId": "26a4bd9b-731c-4845-9ad0-58e7f83635c1",
+          "retrievedAt": "2026-08-13T22:36:56.424975+00:00",
+          "publishedAt": null,
+          "contentHash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:f86263b6-0062-4a3f-b1ff-b7e8ecc4df33",
+        "type": "source",
+        "label": "Effect of Exposure to Gun Violence in Video Games on Children’s Dangerous Behavior With Real Guns: A Randomized Clinical Trial | Pediatrics | JAMA Network Open | JAMA Network",
+        "data": {
+          "sourceId": "f86263b6-0062-4a3f-b1ff-b7e8ecc4df33",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "af5e6e36-c90d-5c15-8424-d7da35a2085d",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:36:56.617810+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 1080
+        },
+        "metadata": {
+          "canonicalUrl": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2734799",
+          "domain": "jamanetwork.com",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:36:56.617810+00:00"
+        }
+      },
+      {
+        "id": "snapshot:7d9ee0fb-43de-4d90-85fc-5da9a4166dfe",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "f86263b6-0062-4a3f-b1ff-b7e8ecc4df33",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "af5e6e36-c90d-5c15-8424-d7da35a2085d",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 1080
+        },
+        "metadata": {
+          "snapshotId": "7d9ee0fb-43de-4d90-85fc-5da9a4166dfe",
+          "retrievedAt": "2026-08-13T22:36:56.617810+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:da797f3c-87c9-4ad5-8560-84e70698a883",
+        "type": "source",
+        "label": "Client Challenge",
+        "data": {
+          "sourceId": "da797f3c-87c9-4ad5-8560-84e70698a883",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "5966398e-0704-5ca6-8603-1282ca2f496e",
+          "dependencyMultiplier": 0,
+          "firstKnownAppearance": "2026-08-13T22:36:56.713658+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 990
+        },
+        "metadata": {
+          "canonicalUrl": "https://link.springer.com/chapter/10.1007/978-3-031-69362-5_79",
+          "domain": "link.springer.com",
+          "publisher": "link.springer.com",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:36:56.713658+00:00"
+        }
+      },
+      {
+        "id": "snapshot:c10eaad7-4632-4524-9543-bda75b367763",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "da797f3c-87c9-4ad5-8560-84e70698a883",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "5966398e-0704-5ca6-8603-1282ca2f496e",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 990
+        },
+        "metadata": {
+          "snapshotId": "c10eaad7-4632-4524-9543-bda75b367763",
+          "retrievedAt": "2026-08-13T22:36:56.713658+00:00",
+          "publishedAt": null,
+          "contentHash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:10bcaf17-a9d1-48d4-a555-64088db00868",
+        "type": "source",
+        "label": "CJB311719.qxd",
+        "data": {
+          "sourceId": "10bcaf17-a9d1-48d4-a555-64088db00868",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "b131495a-e04b-5260-a34b-b2d25e29b0f2",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2007-11-22T17:50:11+00:00",
+          "contentType": "application/pdf",
+          "atomicClaimIds": [
+            "28b7007b-d8c1-425d-a7b5-abef6bd6ab81"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 630
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.christopherjferguson.com/CJBGames.pdf",
+          "domain": "www.christopherjferguson.com",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2007-11-22T17:50:11+00:00"
+        }
+      },
+      {
+        "id": "snapshot:8afc1f6d-59bf-4970-840a-6bb22df6d33f",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "10bcaf17-a9d1-48d4-a555-64088db00868",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "b131495a-e04b-5260-a34b-b2d25e29b0f2",
+          "atomicClaimIds": [
+            "28b7007b-d8c1-425d-a7b5-abef6bd6ab81"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 630
+        },
+        "metadata": {
+          "snapshotId": "8afc1f6d-59bf-4970-840a-6bb22df6d33f",
+          "retrievedAt": "2026-08-13T22:36:56.870986+00:00",
+          "publishedAt": "2007-11-22T17:50:11+00:00",
+          "contentHash": "e1888885673dfbb099119ef37ba1b0b4d3ec71c4f8b9805a22d023cfac9ed623",
+          "parserName": "pymupdf",
+          "parserVersion": "1.28.2"
+        }
+      },
+      {
+        "id": "source:51901e40-4428-44ec-821b-4383a8692694",
+        "type": "source",
+        "label": "No Slide Title",
+        "data": {
+          "sourceId": "51901e40-4428-44ec-821b-4383a8692694",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "b131495a-e04b-5260-a34b-b2d25e29b0f2",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2018-09-17T09:39:45+00:00",
+          "contentType": "application/pdf",
+          "atomicClaimIds": [
+            "28b7007b-d8c1-425d-a7b5-abef6bd6ab81"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 720
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.csuohio.edu/sites/default/files/46%20Does%20Playing%20Violent%20Video%20Games%20Cause%20Aggressive%20Behavior%20in%20Middle%20School%20and%20High%20School%20Kids%20(age%2011-18).pdf",
+          "domain": "www.csuohio.edu",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2018-09-17T09:39:45+00:00"
+        }
+      },
+      {
+        "id": "snapshot:7a3948ed-2ec0-4651-b875-88c645132074",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "51901e40-4428-44ec-821b-4383a8692694",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "b131495a-e04b-5260-a34b-b2d25e29b0f2",
+          "atomicClaimIds": [
+            "28b7007b-d8c1-425d-a7b5-abef6bd6ab81"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 720
+        },
+        "metadata": {
+          "snapshotId": "7a3948ed-2ec0-4651-b875-88c645132074",
+          "retrievedAt": "2026-08-13T22:36:57.630980+00:00",
+          "publishedAt": "2018-09-17T09:39:45+00:00",
+          "contentHash": "d7c0ce89d5978e75cb7bb94ad8a8db09068a69d2cf024209cf1902c91f36f110",
+          "parserName": "pymupdf",
+          "parserVersion": "1.28.2"
+        }
+      },
+      {
+        "id": "source:46d19f81-3344-441b-874a-c85046c684eb",
+        "type": "source",
+        "label": "Violent Video Games and Aggression: The Connection Is Dubious, at Best",
+        "data": {
+          "sourceId": "46d19f81-3344-441b-874a-c85046c684eb",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "9fe3dee5-4e91-5843-82ab-37390b8da80c",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2020-09-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.psychologicalscience.org/news/releases/2020-sept-violent-video-games.html",
+          "domain": "www.psychologicalscience.org",
+          "publisher": "Association for Psychological Science - APS",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2020-09-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:b58444e9-69e8-41da-b845-61baad3adc8e",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "46d19f81-3344-441b-874a-c85046c684eb",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "9fe3dee5-4e91-5843-82ab-37390b8da80c",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "b58444e9-69e8-41da-b845-61baad3adc8e",
+          "retrievedAt": "2026-08-13T22:36:58.067059+00:00",
+          "publishedAt": "2020-09-29T00:00:00+00:00",
+          "contentHash": "6c6a46b64c7bfccced38c447ee4cefe0640ba930615d3dd3f3f3da4268da39ba",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "cluster-member:70453484-2bf3-59ba-bd8f-0e7174e0f969:c91c8e92-698f-4ac5-ac7e-ab3363bec60a",
+        "source": "cluster:70453484-2bf3-59ba-bd8f-0e7174e0f969",
+        "target": "source:c91c8e92-698f-4ac5-ac7e-ab3363bec60a",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:1c6818d4-179b-4b0f-8f74-6ee63b0ab90c",
+        "source": "source:c91c8e92-698f-4ac5-ac7e-ab3363bec60a",
+        "target": "snapshot:1c6818d4-179b-4b0f-8f74-6ee63b0ab90c",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:30c4f3b7-d33f-56a7-8f95-eafea274ad63:556bcc5a-f54f-4a8f-93c4-ec37e10e76a4",
+        "source": "cluster:30c4f3b7-d33f-56a7-8f95-eafea274ad63",
+        "target": "source:556bcc5a-f54f-4a8f-93c4-ec37e10e76a4",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:49854358-a668-4655-816f-6437d6a58ede",
+        "source": "source:556bcc5a-f54f-4a8f-93c4-ec37e10e76a4",
+        "target": "snapshot:49854358-a668-4655-816f-6437d6a58ede",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:f1a5635f-c5a3-5a40-abc7-c3b147697f51:2c0c58af-885b-4be9-a384-15e245a4991e",
+        "source": "cluster:f1a5635f-c5a3-5a40-abc7-c3b147697f51",
+        "target": "source:2c0c58af-885b-4be9-a384-15e245a4991e",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:00170c0e-5965-4b17-9902-3d06cac9ec87",
+        "source": "source:2c0c58af-885b-4be9-a384-15e245a4991e",
+        "target": "snapshot:00170c0e-5965-4b17-9902-3d06cac9ec87",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:b131495a-e04b-5260-a34b-b2d25e29b0f2:1fe78999-b923-40ea-864e-47f622cff9ef",
+        "source": "cluster:b131495a-e04b-5260-a34b-b2d25e29b0f2",
+        "target": "source:1fe78999-b923-40ea-864e-47f622cff9ef",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:83358cb0-adc3-474f-84e2-c1734437aafe",
+        "source": "source:1fe78999-b923-40ea-864e-47f622cff9ef",
+        "target": "snapshot:83358cb0-adc3-474f-84e2-c1734437aafe",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:5966398e-0704-5ca6-8603-1282ca2f496e:a379a042-2f7b-4812-aeb2-9a815014a8a9",
+        "source": "cluster:5966398e-0704-5ca6-8603-1282ca2f496e",
+        "target": "source:a379a042-2f7b-4812-aeb2-9a815014a8a9",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:26a4bd9b-731c-4845-9ad0-58e7f83635c1",
+        "source": "source:a379a042-2f7b-4812-aeb2-9a815014a8a9",
+        "target": "snapshot:26a4bd9b-731c-4845-9ad0-58e7f83635c1",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:af5e6e36-c90d-5c15-8424-d7da35a2085d:f86263b6-0062-4a3f-b1ff-b7e8ecc4df33",
+        "source": "cluster:af5e6e36-c90d-5c15-8424-d7da35a2085d",
+        "target": "source:f86263b6-0062-4a3f-b1ff-b7e8ecc4df33",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:7d9ee0fb-43de-4d90-85fc-5da9a4166dfe",
+        "source": "source:f86263b6-0062-4a3f-b1ff-b7e8ecc4df33",
+        "target": "snapshot:7d9ee0fb-43de-4d90-85fc-5da9a4166dfe",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:5966398e-0704-5ca6-8603-1282ca2f496e:da797f3c-87c9-4ad5-8560-84e70698a883",
+        "source": "cluster:5966398e-0704-5ca6-8603-1282ca2f496e",
+        "target": "source:da797f3c-87c9-4ad5-8560-84e70698a883",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:c10eaad7-4632-4524-9543-bda75b367763",
+        "source": "source:da797f3c-87c9-4ad5-8560-84e70698a883",
+        "target": "snapshot:c10eaad7-4632-4524-9543-bda75b367763",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:b131495a-e04b-5260-a34b-b2d25e29b0f2:10bcaf17-a9d1-48d4-a555-64088db00868",
+        "source": "cluster:b131495a-e04b-5260-a34b-b2d25e29b0f2",
+        "target": "source:10bcaf17-a9d1-48d4-a555-64088db00868",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:8afc1f6d-59bf-4970-840a-6bb22df6d33f",
+        "source": "source:10bcaf17-a9d1-48d4-a555-64088db00868",
+        "target": "snapshot:8afc1f6d-59bf-4970-840a-6bb22df6d33f",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:b131495a-e04b-5260-a34b-b2d25e29b0f2:51901e40-4428-44ec-821b-4383a8692694",
+        "source": "cluster:b131495a-e04b-5260-a34b-b2d25e29b0f2",
+        "target": "source:51901e40-4428-44ec-821b-4383a8692694",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:7a3948ed-2ec0-4651-b875-88c645132074",
+        "source": "source:51901e40-4428-44ec-821b-4383a8692694",
+        "target": "snapshot:7a3948ed-2ec0-4651-b875-88c645132074",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:9fe3dee5-4e91-5843-82ab-37390b8da80c:46d19f81-3344-441b-874a-c85046c684eb",
+        "source": "cluster:9fe3dee5-4e91-5843-82ab-37390b8da80c",
+        "target": "source:46d19f81-3344-441b-874a-c85046c684eb",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:b58444e9-69e8-41da-b845-61baad3adc8e",
+        "source": "source:46d19f81-3344-441b-874a-c85046c684eb",
+        "target": "snapshot:b58444e9-69e8-41da-b845-61baad3adc8e",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "dependency:bfe2ebbc-5c3a-49d7-aab6-b82afd3fa5b8",
+        "source": "source:2c0c58af-885b-4be9-a384-15e245a4991e",
+        "target": "source:556bcc5a-f54f-4a8f-93c4-ec37e10e76a4",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.99,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.99,
+          "detectionMethod": "explicit_outbound_link"
+        }
+      },
+      {
+        "id": "dependency:ec4584ae-ac38-4276-9cc8-8160dc367157",
+        "source": "source:1fe78999-b923-40ea-864e-47f622cff9ef",
+        "target": "source:10bcaf17-a9d1-48d4-a555-64088db00868",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.85,
+          "detectionMethod": "explicit_named_source"
+        }
+      },
+      {
+        "id": "dependency:f782ed67-1857-4adc-ab91-862eb0474955",
+        "source": "source:10bcaf17-a9d1-48d4-a555-64088db00868",
+        "target": "source:1fe78999-b923-40ea-864e-47f622cff9ef",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.86,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.86,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:8fbdfd85-06f2-49f3-9f9d-405a566d0d2e",
+        "source": "source:a379a042-2f7b-4812-aeb2-9a815014a8a9",
+        "target": "source:da797f3c-87c9-4ad5-8560-84e70698a883",
+        "label": "republishes",
+        "relationship": "REPUBLISHES",
+        "confidence": 1,
+        "data": {
+          "relationship": "REPUBLISHES",
+          "confidence": 1,
+          "detectionMethod": "identical_content"
+        }
+      },
+      {
+        "id": "dependency:cce44c3e-55a6-43ff-b309-ac940da9eec4",
+        "source": "source:10bcaf17-a9d1-48d4-a555-64088db00868",
+        "target": "source:51901e40-4428-44ec-821b-4383a8692694",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.82,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      }
+    ]
+  },
+  "calculations": [
+    {
+      "id": "65db10cd-df1c-4f6b-933a-06afa05239ae",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "0.9333",
+        "passage_id": "3a7b4062-e993-51a2-a729-83cc78657b4a"
+      },
+      "result": {
+        "quality": "0.928330"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "779f24ea-b0bd-4f0b-a253-e8973a1d3477",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.928330",
+        "passage_id": "3a7b4062-e993-51a2-a729-83cc78657b4a",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.92833000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "11c2bbbc-0272-4a41-94c8-a20058505ab0",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.2",
+        "D": "0.2",
+        "F": "0.5",
+        "R": "0.4",
+        "T": "0.5",
+        "X": "0.9333",
+        "passage_id": "bbba7939-f02f-58d5-b11d-d3a731bbb976"
+      },
+      "result": {
+        "quality": "0.398330"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "efbd6030-2799-4d7c-ba46-64318567e046",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.398330",
+        "passage_id": "bbba7939-f02f-58d5-b11d-d3a731bbb976",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.13941550"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "5e0af5fa-9067-417c-8585-6910cc1538eb",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.6",
+        "D": "0.8",
+        "F": "0.8",
+        "R": "0.9",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "093be1f8-2dc9-5ec7-bbda-1026c5aa004c"
+      },
+      "result": {
+        "quality": "0.820"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "39b4800d-63f6-4e82-a6c5-90649aca0740",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.820",
+        "passage_id": "093be1f8-2dc9-5ec7-bbda-1026c5aa004c",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.28700"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "2acd8bc7-860e-40d4-a9a4-846b1511dadd",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.3",
+        "D": "0.4",
+        "F": "0.5",
+        "R": "0.6",
+        "T": "0.7",
+        "X": "1.0",
+        "passage_id": "16cc3817-35bc-519b-bdce-70162a081e7c"
+      },
+      "result": {
+        "quality": "0.545"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d518eee9-723a-450c-b077-c830ed18bc68",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.545",
+        "passage_id": "16cc3817-35bc-519b-bdce-70162a081e7c",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.54500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1a78ae1e-0397-4d14-add0-240286ac5f8b",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "3411fba6-6e77-57ab-97b4-9e506eabd8fa"
+      },
+      "result": {
+        "quality": "0.935"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "07fe5a50-05cf-46ac-b255-74e486d5bd10",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.935",
+        "passage_id": "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.93500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e66d714e-bfac-409d-8ff9-caf7e45b6048",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.5",
+        "D": "0.4",
+        "F": "0.7",
+        "R": "0.6",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "ac2f3570-e57e-5a22-b300-89de7f807529"
+      },
+      "result": {
+        "quality": "0.620"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7999d318-7f3f-4e65-9a69-5bec02d5d6c4",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.620",
+        "passage_id": "ac2f3570-e57e-5a22-b300-89de7f807529",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.21700"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d0c0774a-611f-4f1f-8ff3-3ac5e632484e",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.7",
+        "X": "1.0",
+        "passage_id": "ff907ba7-bcda-5b54-a7c5-515009b43cf5"
+      },
+      "result": {
+        "quality": "0.905"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "fc25f7f3-5677-410e-a65b-1bfc715b5d03",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.905",
+        "passage_id": "ff907ba7-bcda-5b54-a7c5-515009b43cf5",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.31675"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a9564523-dfe2-4e5f-990b-e6515faa5160",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.8",
+        "X": "0.9333",
+        "passage_id": "1ee51300-7241-5309-bf36-2d476263f78c"
+      },
+      "result": {
+        "quality": "0.353330"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "65da8446-6b4c-408e-8b6c-002d16e90826",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.353330",
+        "passage_id": "1ee51300-7241-5309-bf36-2d476263f78c",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.35333000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "67812d1e-704e-4219-a2b2-166aff7926be",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "0.9333",
+        "passage_id": "2dee473c-4e20-5594-8277-2671e29828b7"
+      },
+      "result": {
+        "quality": "0.928330"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "00de25e5-907f-4cfa-9147-e217b4b4dd3d",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.928330",
+        "passage_id": "2dee473c-4e20-5594-8277-2671e29828b7",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.92833000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f7ec74d9-6096-48b8-933f-6f6ef0e13580",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.4",
+        "D": "0.6",
+        "F": "0.5",
+        "R": "0.8",
+        "T": "0.5",
+        "X": "0.9333",
+        "passage_id": "4c00c83b-0e1a-5b14-8a15-44894165e9f2"
+      },
+      "result": {
+        "quality": "0.618330"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0ab323a2-6697-477b-9505-712099c4e3cc",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.618330",
+        "passage_id": "4c00c83b-0e1a-5b14-8a15-44894165e9f2",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.21641550"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "787f949f-dd70-402c-a0fe-f00f6dcad532",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "supporting_weight",
+      "formula_text": "P = sum(max(stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "3a7b4062-e993-51a2-a729-83cc78657b4a",
+          "093be1f8-2dc9-5ec7-bbda-1026c5aa004c",
+          "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+          "ff907ba7-bcda-5b54-a7c5-515009b43cf5",
+          "2dee473c-4e20-5594-8277-2671e29828b7",
+          "4c00c83b-0e1a-5b14-8a15-44894165e9f2"
+        ]
+      },
+      "result": {
+        "P": "0.4249577500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "5b59453f-3b89-4d91-b555-15bc642c2ef5",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "contradicting_weight",
+      "formula_text": "N = sum(max(-stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "3a7b4062-e993-51a2-a729-83cc78657b4a",
+          "093be1f8-2dc9-5ec7-bbda-1026c5aa004c",
+          "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+          "ff907ba7-bcda-5b54-a7c5-515009b43cf5",
+          "2dee473c-4e20-5594-8277-2671e29828b7",
+          "4c00c83b-0e1a-5b14-8a15-44894165e9f2"
+        ]
+      },
+      "result": {
+        "N": "2.9351600000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7574500f-9fe2-44fa-be3a-6e88507df664",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_support",
+      "formula_text": "100 * P / (P + N)",
+      "inputs": {
+        "N": "2.9351600000",
+        "P": "0.4249577500"
+      },
+      "result": {
+        "score": "12.64710886991981158993609673"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e0fd0a21-0b03-4077-8469-498db505640e",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "evidence_consistency",
+      "formula_text": "100 * abs(P - N) / (P + N)",
+      "inputs": {
+        "N": "2.9351600000",
+        "P": "0.4249577500"
+      },
+      "result": {
+        "score": "74.70578226016037682012780653"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e5ce4fd2-62a4-4b49-8445-03d5b6f917d3",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "75.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7e1a03a8-1741-475d-8168-d2b70793d9f4",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "developing_event_low": "5",
+          "essential_term_ambiguous": "10.5",
+          "single_information_cluster": "15",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "74.70578226016037682012780653",
+        "independence": "75.00",
+        "primary_access": "0",
+        "average_quality": "90.08278843800731790613915318"
+      },
+      "result": {
+        "score": "43.22656444852588599955395928"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "2f598733-0674-426f-a024-f200fc110486",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "material_penalties": {
+          "key_term_undefined": "20",
+          "correlation_as_causation": "25"
+        }
+      },
+      "result": {
+        "score": "55"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a78189d6-1025-44ac-b960-cf43670b384b",
+      "atomic_claim_id": "28b7007b-d8c1-425d-a7b5-abef6bd6ab81",
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "55",
+        "support": "12.64710886991981158993609673",
+        "confidence": "43.22656444852588599955395928",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "insufficient_evidence_reasons": []
+      },
+      "result": {
+        "label": "Mostly contradicted"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d2fb978a-bfec-4e58-8019-bf894fbef397",
+      "atomic_claim_id": null,
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "75.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "44692915-cc9d-4cdd-843c-99efd6d614e2",
+      "atomic_claim_id": null,
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "developing_event_low": "5",
+          "citation_partial_support": "7",
+          "single_information_cluster": "15",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "74.70578226016037682012780653",
+        "independence": "75.00",
+        "primary_access": "0",
+        "average_quality": "90.08278843800731790613915318"
+      },
+      "result": {
+        "score": "47"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1a9e35e4-8077-4081-a653-5488aaa784f1",
+      "atomic_claim_id": null,
+      "formula_name": "article_factual_accuracy",
+      "formula_text": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "12.64710886991981158993609673",
+            "importance_weight": 3
+          }
+        ],
+        "citation_partial_support_penalty": "5"
+      },
+      "result": {
+        "score": "7",
+        "essential_claim_gate": false
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "ed718c18-958f-4d6d-8b3c-c4b58fedc37d",
+      "atomic_claim_id": null,
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "55",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "factual_accuracy": "12.64710886991981158993609673",
+        "verdict_confidence": "53.72656444852588599955395928",
+        "insufficient_evidence_reasons": [],
+        "strongly_refuted_essential_claim": false
+      },
+      "result": {
+        "label": "Mostly contradicted"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "20ac4821-3fdc-4be9-8168-1c7e9bd29520",
+      "atomic_claim_id": null,
+      "formula_name": "research_coverage",
+      "formula_text": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+      "inputs": {
+        "claims": [
+          {
+            "claim_ref": "claim-1-fe51c1d41998b752",
+            "adequate_evidence": true,
+            "importance_weight": 3
+          }
+        ],
+        "confidence_issues": [
+          "developing_event_low",
+          "important_source_inaccessible",
+          "primary_evidence_unavailable",
+          "single_information_cluster"
+        ]
+      },
+      "result": {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "5"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "88b191c4-f5d2-4f26-8625-8bc08730ebfc",
+      "atomic_claim_id": null,
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "claims": [
+          {
+            "context": "55",
+            "claim_ref": "claim-1-fe51c1d41998b752",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "55"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c8435ea4-16af-43af-8e2e-8fd93b287d8f",
+      "atomic_claim_id": null,
+      "formula_name": "citation_partial_support_penalty",
+      "formula_text": "reported score = clamp(original score - partial citation penalty, 0, 100)",
+      "inputs": {
+        "partial_sentence_count": 1,
+        "evidence_support_penalty": "5",
+        "verdict_confidence_penalty": "7"
+      },
+      "result": {
+        "evidence_support": 8,
+        "verdict_confidence": 47
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "methodology_version": "not-recorded",
+  "workflow_version": "1.0.0",
+  "model_versions": {
+    "intake": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1092,
+        "prompt_tokens": 969,
+        "completion_tokens": 123
+      },
+      "provider": "deepseek",
+      "latency_ms": 1432,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "planner": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 2476,
+        "prompt_tokens": 1124,
+        "completion_tokens": 1352
+      },
+      "provider": "deepseek",
+      "latency_ms": 8955,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "embedding": {
+      "status": "unconfigured_fallback",
+      "provider": "deepseek",
+      "retryable": false,
+      "error_code": "embedding_route_unavailable",
+      "latency_ms": 0,
+      "used_model": null,
+      "status_code": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "request_count": 0,
+      "retrieval_mode": "lexical_metadata_fallback",
+      "configured_model": null
+    },
+    "synthesis": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 13342,
+        "prompt_tokens": 12245,
+        "completion_tokens": 1097
+      },
+      "provider": "deepseek",
+      "latency_ms": 7676,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "decomposition": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1522,
+        "prompt_tokens": 1359,
+        "completion_tokens": 163
+      },
+      "provider": "deepseek",
+      "latency_ms": 1635,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_audit": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 9464,
+        "prompt_tokens": 7703,
+        "completion_tokens": 1761
+      },
+      "provider": "deepseek",
+      "latency_ms": 8554,
+      "batch_count": 8,
+      "repair_count": 0,
+      "request_count": 8,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_revision": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 6743,
+        "prompt_tokens": 5831,
+        "completion_tokens": 912
+      },
+      "provider": "deepseek",
+      "latency_ms": 5398,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "evidence_classification": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 19471,
+        "prompt_tokens": 17127,
+        "completion_tokens": 2344
+      },
+      "provider": "deepseek",
+      "latency_ms": 11036,
+      "batch_count": 10,
+      "repair_count": 0,
+      "request_count": 10,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    }
+  },
+  "prompt_versions": {
+    "intake": "intake-v2",
+    "planner": "planner-v2",
+    "synthesis": "synthesis-v4",
+    "decomposition": "decomposition-v3",
+    "citation_audit": "citation-audit-v4",
+    "citation_revision": "synthesis-v4",
+    "evidence_classification": "evidence-classification-v4"
+  },
+  "parser_versions": {
+    "pymupdf": "1.28.2",
+    "trafilatura": "2.2.0"
+  },
+  "retrieval_versions": {
+    "implementation": "not-recorded",
+    "version": "not-recorded"
+  },
+  "score_roles": {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured."
+  },
+  "report_sentences": [
+    {
+      "id": "95a5873d-7cc1-4949-83ab-2e0a9b9d4035",
+      "report_section": "summary",
+      "sentence_text": "The claim that violent video games cause violent behavior in teenagers is mostly contradicted by the approved evidence.",
+      "passage_id": "3a7b4062-e993-51a2-a729-83cc78657b4a",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that video game violence does not cause violent behavior, directly supporting the claim that the claim is contradicted by the evidence."
+    },
+    {
+      "id": "e432f705-bb05-49f0-9355-0810c4d9aa4f",
+      "report_section": "summary",
+      "sentence_text": "The claim that violent video games cause violent behavior in teenagers is mostly contradicted by the approved evidence.",
+      "passage_id": "093be1f8-2dc9-5ec7-bbda-1026c5aa004c",
+      "audit_status": "passed",
+      "audit_note": "The passage states there is no clear evidence that violent video games increase criminal behavior or lethal violence, which contradicts the claim that they cause violent behavior."
+    },
+    {
+      "id": "403c931b-2794-498b-b82b-2f213e2c3f51",
+      "report_section": "summary",
+      "sentence_text": "The claim that violent video games cause violent behavior in teenagers is mostly contradicted by the approved evidence.",
+      "passage_id": "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+      "audit_status": "passed",
+      "audit_note": "The passage directly states that violent video games are not a direct cause of increased aggression, which supports the claim that the evidence contradicts the idea that they cause violent behavior."
+    },
+    {
+      "id": "bb8b5c24-7b07-4a97-81f4-6a65428351be",
+      "report_section": "summary",
+      "sentence_text": "The claim that violent video games cause violent behavior in teenagers is mostly contradicted by the approved evidence.",
+      "passage_id": "2dee473c-4e20-5594-8277-2671e29828b7",
+      "audit_status": "passed",
+      "audit_note": "The passage reports that exposure to violent video games did not produce differences in aggression, supporting the claim that the evidence contradicts the causal link."
+    },
+    {
+      "id": "4e348e6f-d8c2-4ea7-b2ad-cbdc80e7e170",
+      "report_section": "summary",
+      "sentence_text": "Several studies found no causal link between violent video game exposure and violent behavior.",
+      "passage_id": "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+      "audit_status": "passed",
+      "audit_note": "The passage states that researchers did not find a significant effect of changes in violent game level on aggression or empathy, and that violent video games are not a direct cause of increased aggression. This directly supports the claim that studies found no causal link between violent video game exposure and violent behavior."
+    },
+    {
+      "id": "de43e5a1-bc27-41c3-822c-50da67cef071",
+      "report_section": "summary",
+      "sentence_text": "Several studies found no causal link between violent video game exposure and violent behavior.",
+      "passage_id": "2dee473c-4e20-5594-8277-2671e29828b7",
+      "audit_status": "passed",
+      "audit_note": "The passage reports that the study failed to support the hypothesis that violent video game exposure causes short-term aggression, and that long-term exposure produced no differences in measured aggression. This directly supports the claim that studies found no causal link between violent video game exposure and violent behavior."
+    },
+    {
+      "id": "e0d05751-73bd-4d9e-8374-73d3e68d9b78",
+      "report_section": "factual_finding",
+      "sentence_text": "A study on adolescents found that changes in the level of violence in games played had no significant effect on changes in aggression or empathy, suggesting violent video games are not a direct cause of increased aggression.",
+      "passage_id": "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+      "audit_status": "passed",
+      "audit_note": "The passage directly states that changes in violence level had no significant effect on changes in aggression or empathy, and concludes that violent video games are not a direct cause of increased aggression, matching the sentence."
+    },
+    {
+      "id": "9b05288f-a027-4481-9bc5-b543e6c4b7e9",
+      "report_section": "factual_finding",
+      "sentence_text": "Research found no support for the hypothesis that exposure to a violent video game causes short-term aggression in a laboratory environment, and long-term exposure produced no differences in measured laboratory aggression.",
+      "passage_id": "2dee473c-4e20-5594-8277-2671e29828b7",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that the analyses fail to support the hypothesis that exposure to a violent video game causes short-term aggression in a laboratory environment, and that long-term exposure produced no differences in measured laboratory aggression, matching the sentence."
+    },
+    {
+      "id": "403415af-4186-48f1-8f7e-8271de241e7b",
+      "report_section": "factual_finding",
+      "sentence_text": "A review states that video game violence does not cause violent behavior but may have an impact on its form, acting as a stylistic catalyst rather than a causal factor.",
+      "passage_id": "3a7b4062-e993-51a2-a729-83cc78657b4a",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that video game violence does not cause violent behavior but may have an impact on its form, acting as a stylistic catalyst rather than a causal factor, which directly matches the sentence."
+    },
+    {
+      "id": "49141c8e-dda4-4138-b8bd-cc5714b81db6",
+      "report_section": "factual_finding",
+      "sentence_text": "There is no clear evidence that playing violent video games increases the chances of later delinquency, criminal behavior, or lethal violence.",
+      "passage_id": "093be1f8-2dc9-5ec7-bbda-1026c5aa004c",
+      "audit_status": "passed",
+      "audit_note": "The passage states that there is no clear evidence to support the assumption that playing violent video games increases the chances of later delinquency, criminal behavior, or lethal violence, which directly supports the sentence."
+    },
+    {
+      "id": "dae3f849-583d-43df-983a-ab72c37670a0",
+      "report_section": "factual_finding",
+      "sentence_text": "Some studies have shown that playing violent video games can increase aggressive thoughts, behaviors, and feelings in both the short-term and long-term, with longer exposure linked to more aggressive behaviors.",
+      "passage_id": "ff907ba7-bcda-5b54-a7c5-515009b43cf5",
+      "audit_status": "passed",
+      "audit_note": "The passage directly states that playing violent video games can increase aggressive thoughts, behaviors, and feelings in both the short-term and long-term, and that longer exposure is linked to more aggressive behaviors, matching the sentence's claims."
+    },
+    {
+      "id": "34f1252b-d66e-42e9-94cf-112c1e4b00c1",
+      "report_section": "strongest_contradiction",
+      "sentence_text": "The researchers did not find that an increase or decrease in the level of violence in the games played by participants over the study period had any significant effect on changes in aggression or empathy. This suggests that violent video games are not a direct cause of increased aggression.",
+      "passage_id": "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that the researchers did not find a significant effect of changes in game violence on changes in aggression or empathy, and concludes that violent video games are not a direct cause of increased aggression, which directly supports the sentence."
+    },
+    {
+      "id": "b4f19df2-9ade-4bc4-8240-fac13b708183",
+      "report_section": "attribution",
+      "sentence_text": "The evidence includes a study reporting no significant effect of violent game violence on aggression, and a paper concluding no causal relationship.",
+      "passage_id": "3411fba6-6e77-57ab-97b4-9e506eabd8fa",
+      "audit_status": "passed",
+      "audit_note": "The passage states that researchers did not find a significant effect of changes in violent game content on aggression or empathy, directly supporting the sentence's claim of no significant effect."
+    },
+    {
+      "id": "4e7c7a74-affb-43f3-b51d-24ba8b127322",
+      "report_section": "attribution",
+      "sentence_text": "The evidence includes a study reporting no significant effect of violent game violence on aggression, and a paper concluding no causal relationship.",
+      "passage_id": "2dee473c-4e20-5594-8277-2671e29828b7",
+      "audit_status": "passed",
+      "audit_note": "The passage reports that analyses fail to support the hypothesis that violent video game exposure causes short-term aggression and that long-term exposure produced no differences in aggression, supporting the sentence's claim of no causal relationship."
+    },
+    {
+      "id": "f9d38343-e7e7-4c6d-9597-b916a99e49e0",
+      "report_section": "attribution",
+      "sentence_text": "A source states that while violent games may increase aggressive thoughts and feelings, there is no clear evidence linking them to violent behavior.",
+      "passage_id": "ff907ba7-bcda-5b54-a7c5-515009b43cf5",
+      "audit_status": "partial",
+      "audit_note": "The passage supports that violent games increase aggressive thoughts and feelings, but it also states they increase aggressive behaviors, which the sentence does not mention. The sentence's claim about no clear evidence linking to violent behavior is not addressed in this passage."
+    },
+    {
+      "id": "a3d38273-ebd0-4c4d-88cd-b28878b7200a",
+      "report_section": "attribution",
+      "sentence_text": "A source states that while violent games may increase aggressive thoughts and feelings, there is no clear evidence linking them to violent behavior.",
+      "passage_id": "093be1f8-2dc9-5ec7-bbda-1026c5aa004c",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that there is no clear evidence to support the assumption that violent video games lead to more lethal violence or criminal behavior, which aligns with the sentence's claim about no clear evidence linking violent games to violent behavior."
+    }
+  ],
+  "evidence_reviewed_at": "2026-08-13T22:36:58.067059Z",
+  "generated_at": "2026-08-13T22:37:51.368416Z",
+  "limitations": [
+    "Inaccessible source: The evidence source denied automated retrieval.",
+    "Inaccessible source: The evidence source denied automated retrieval.",
+    "Inaccessible source: The evidence source denied automated retrieval."
+  ]
+}

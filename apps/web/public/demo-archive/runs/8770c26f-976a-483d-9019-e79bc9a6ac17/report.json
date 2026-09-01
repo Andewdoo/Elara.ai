@@ -1,0 +1,2211 @@
+{
+  "run_id": "8770c26f-976a-483d-9019-e79bc9a6ac17",
+  "verdict": "Technically supported but misleading",
+  "scores": {
+    "evidence_support": 90,
+    "attribution_support": null,
+    "quote_fidelity": null,
+    "verdict_confidence": 57,
+    "source_independence": 75,
+    "context_completeness": 15
+  },
+  "atomic_claims": [
+    {
+      "id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "claim_text": "Social media use causes depression in adolescents.",
+      "importance_weight": 3,
+      "claim_type": "causal",
+      "final_label": "Technically supported but misleading",
+      "support_score": 100,
+      "confidence_score": 60,
+      "context_completeness": 15,
+      "ambiguities": [],
+      "gaps": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "7fd3c7d2-a271-4997-92e3-e656cf57777a",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.795,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.795,
+      "citation_status": "pending",
+      "passage_text": "The link between social media and mental health issues has been well documented in numerous studies and research papers. A systematic review found that the use of social networking sites is associated with an increased risk of depression, anxiety, and psychological distress (Keles, et al., 2020). The associations, though not by itself proof of causation, at least some reason for concern. Additionally, this association is particularly strong in adolescents compared to younger children (Twenge & Campbell, 2018). Moreover, in the United States, the 12-month prevalence of major depressive episodes among adolescents increased from 8.7% in 2005 to 11.3% in 2014 (Mojtabai, et al., 2016). The new media screen activities have been suggested as one of the causes of the increase in adolescent depression and suicide (Twenge, et al., 2017).",
+      "source_title": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School",
+      "source_url": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+      "page_or_position": "paragraph 5"
+    },
+    {
+      "id": "3abc8346-364a-4099-8273-6d616017b6e2",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "0996c7a2-eec5-5d15-807f-741a1bea4688",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.795,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.795,
+      "citation_status": "pending",
+      "passage_text": "“Although our findings suggest that there is a unidirectional association between social media use and depression, with increases in social media use associated with depressive symptoms through subsequent years, prior research on adolescents, especially those with depressive symptoms, has shown that they can shift from maladaptive to more positive patterns of social media use when they become aware of its impact on their mood,” the authors noted.",
+      "source_title": "Increased Social Media Use Linked to Rising Depressive Symptoms in Early Adolescents | AJMC",
+      "source_url": "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
+      "page_or_position": "paragraph 16"
+    },
+    {
+      "id": "aa4c09d1-ad06-4fb9-b13d-58a44eaba1ba",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "119b8103-7df3-564d-abbc-2a4cc1a966cf",
+      "stance": "NEUTRAL",
+      "base_quality": 0.435,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.435,
+      "citation_status": "rejected",
+      "passage_text": "Introduction: The proliferation of social media has raised significant concerns about its potential effects on the mental health of adolescents. This meta-analysis aims to provide a comprehensive assessment of the existing research on the relationship between social media use and various mental health outcomes in adolescents.",
+      "source_title": "The Impact of Social Media on Adolescent Mental Health: A Meta-Analysis",
+      "source_url": "https://scientiapsychiatrica.com/index.php/SciPsy/article/view/175",
+      "page_or_position": "paragraph 1"
+    },
+    {
+      "id": "18f1c875-76fb-47ac-bc6b-170b9343ae27",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "3c51c668-c1cf-50b1-ae71-af2a4a596f2d",
+      "stance": "NEUTRAL",
+      "base_quality": 0.515,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.515,
+      "citation_status": "rejected",
+      "passage_text": "Keles, B., et al. (2020). A systematic review: The influence of social media on depression, anxiety and psychological distress in adolescents. International Journal of Adolescence and Youth, 25(1), 79-93. https://doi.org/10.1080/02673843.2019.1590851",
+      "source_title": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School",
+      "source_url": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+      "page_or_position": "paragraph 25"
+    },
+    {
+      "id": "df3165ff-fbd4-4200-9261-ce0d3d513069",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.795,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.795,
+      "citation_status": "pending",
+      "passage_text": "Although research has not necessarily shown that the use of social media has a causal relationship with poorer mental health in young people, health professionals and policy makers are becoming increasingly wary of the use. The U.S. Department of Health and Human Services is calling for increased transparency and for companies to prioritize user wellbeing over revenue, as various studies have shown negative effects on social media use, especially on the mental health of youth. (Surgeon General, 2021). In addition, the American Academy of Pediatrics warns that “media use and screen time are associated with increased risks for children and adolescents, such as attention deficits, increased aggression, low self-esteem, and depression” (American College of Pediatricians, 2020). The American Psychological Association (APA) also highlights the correlation between high social media use and poor mental health among adolescents (APA, 2024).",
+      "source_title": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School",
+      "source_url": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+      "page_or_position": "paragraph 6"
+    },
+    {
+      "id": "64cb5bbc-51fb-4078-a9a2-dc3c89ec298e",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.84,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.84,
+      "citation_status": "pending",
+      "passage_text": "Conclusion: The findings of this meta-analysis suggest that increased social media use is associated with a range of negative mental health outcomes in adolescents. However, the effects are small, and the relationship is complex, with several moderating factors. Further research is needed to understand the mechanisms underlying these associations and to develop effective interventions to mitigate the potential negative effects of social media on adolescent mental health.",
+      "source_title": "The Impact of Social Media on Adolescent Mental Health: A Meta-Analysis",
+      "source_url": "https://scientiapsychiatrica.com/index.php/SciPsy/article/view/175",
+      "page_or_position": "paragraph 4"
+    },
+    {
+      "id": "fb51d93c-8bc2-4b5c-811d-2b7f5d207e7b",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "0762f58f-3674-5f32-98b5-86f7401165bd",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.795,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.795,
+      "citation_status": "pending",
+      "passage_text": "- Increased social media use in early adolescence is linked to higher depressive symptoms a year later, suggesting a one-way relationship.",
+      "source_title": "Increased Social Media Use Linked to Rising Depressive Symptoms in Early Adolescents | AJMC",
+      "source_url": "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
+      "page_or_position": "paragraph 3"
+    },
+    {
+      "id": "c5607669-c43b-4af0-bbcf-08a4065d3e99",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "162403bf-2f82-58ac-9936-d340d67ff6dd",
+      "stance": "NEUTRAL",
+      "base_quality": 0.29,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.29,
+      "citation_status": "rejected",
+      "passage_text": "Educational institutions also have a critical role to play in promoting digital literacy and responsible social media use among students. Schools should incorporate digital literacy education into their curricula and teach students how to navigate social media in a healthy and productive way. Parents and caregivers must also be involved in this process by setting appropriate boundaries and modeling responsible social media use, as parental media monitoring has protective effects on a variety of academic, social, and physical outcomes for children (Gentile, et al., 2014).",
+      "source_title": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School",
+      "source_url": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+      "page_or_position": "paragraph 13"
+    },
+    {
+      "id": "063b6cbe-49cf-4160-bd29-69057b0069cb",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "19363b1b-8892-519f-ac09-3a3e1a7f3dbc",
+      "stance": "NEUTRAL",
+      "base_quality": 0.36,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.36,
+      "citation_status": "rejected",
+      "passage_text": "Mental health professionals must adapt to the changing landscape of technology and incorporate social media literacy into their treatment plans. The NIMH emphasizes the importance of teaching individuals how to maintain a healthy relationship with social media, including setting limits on use, engaging in offline activities, and seeking support when needed (NIMH, 2023).",
+      "source_title": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School",
+      "source_url": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+      "page_or_position": "paragraph 12"
+    },
+    {
+      "id": "a1510d18-8ce3-4f93-beef-98f107002dbf",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.915,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.915,
+      "citation_status": "pending",
+      "passage_text": "The new study analyzed data from 11,876 participants, aged 9 to 10 years at baseline, over a 3-year period, assessing both self-reported time spent on social media and depressive symptoms annually.1 After accounting for individual differences and demographic factors, the study found that within-person increases in social media use were significantly associated with greater depressive symptoms a year later. This pattern was consistent from year 1 to year 2 (β = 0.07; P = .01) and from year 2 to year 3 (β = 0.09; P < .001).",
+      "source_title": "Increased Social Media Use Linked to Rising Depressive Symptoms in Early Adolescents | AJMC",
+      "source_url": "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
+      "page_or_position": "paragraph 9"
+    }
+  ],
+  "source_graph": {
+    "nodes": [
+      {
+        "id": "cluster:4d3171a7-fb52-5bc8-a2cd-8ddd5a5094c5",
+        "type": "cluster",
+        "label": "Increased Social Media Use Linked to Rising Depressive Symptoms in Early Adolescents | AJMC information origin",
+        "data": {
+          "clusterId": "4d3171a7-fb52-5bc8-a2cd-8ddd5a5094c5",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "metadata": {
+          "representativeSourceId": "81278a55-8666-4691-be9f-5b6789d4f044"
+        }
+      },
+      {
+        "id": "cluster:cb9a71f0-6e30-5e81-aab9-d991b544b64a",
+        "type": "cluster",
+        "label": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School information origin",
+        "data": {
+          "clusterId": "cb9a71f0-6e30-5e81-aab9-d991b544b64a",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 180
+        },
+        "metadata": {
+          "representativeSourceId": "f026f592-0894-487d-a3e2-535b4c3b238c"
+        }
+      },
+      {
+        "id": "cluster:b878e71d-2dcb-51e2-9ccd-5e8f6401f5a2",
+        "type": "cluster",
+        "label": "Associations Between Social Media Use and Mental Disorders in Adolescents and Young Adults: A Systematic Review and Meta-Analysis of Recent Evidence information origin",
+        "data": {
+          "clusterId": "b878e71d-2dcb-51e2-9ccd-5e8f6401f5a2",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 360
+        },
+        "metadata": {
+          "representativeSourceId": "0326fb08-355a-44ab-a458-186b2e24d656"
+        }
+      },
+      {
+        "id": "cluster:a9917403-80e9-58ff-bd22-31ea5a15f1bd",
+        "type": "cluster",
+        "label": "Reducing Social Media Use Decreases Depression Symptoms: A Meta-Analysis of Randomised Controlled Trials information origin",
+        "data": {
+          "clusterId": "a9917403-80e9-58ff-bd22-31ea5a15f1bd",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 540
+        },
+        "metadata": {
+          "representativeSourceId": "e98f8c42-fcd5-43eb-aaba-0b71b911294c"
+        }
+      },
+      {
+        "id": "cluster:f8ae77fe-116b-51b6-aba6-f706f3df553a",
+        "type": "cluster",
+        "label": "JMIR Mental Health - Problematic Social Media Use in Adolescents and Young Adults: Systematic Review and Meta-analysis information origin",
+        "data": {
+          "clusterId": "f8ae77fe-116b-51b6-aba6-f706f3df553a",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 720
+        },
+        "metadata": {
+          "representativeSourceId": "aaa98ec5-1a8c-4b6a-9059-15bcae56b4cc"
+        }
+      },
+      {
+        "id": "cluster:f233b664-13a1-5a36-9b99-6f11331014eb",
+        "type": "cluster",
+        "label": "The Impact of Social Media on Adolescent Mental Health: A Meta-Analysis information origin",
+        "data": {
+          "clusterId": "f233b664-13a1-5a36-9b99-6f11331014eb",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 900
+        },
+        "metadata": {
+          "representativeSourceId": "f6edc6ac-9ff5-49b9-9e7e-193a9844c5e4"
+        }
+      },
+      {
+        "id": "cluster:dea72688-b000-5865-8c37-e55d6b916ebc",
+        "type": "cluster",
+        "label": "Social media use, mental health and sleep: A systematic review with meta-analyses - ScienceDirect information origin",
+        "data": {
+          "clusterId": "dea72688-b000-5865-8c37-e55d6b916ebc",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 1080
+        },
+        "metadata": {
+          "representativeSourceId": "479436ed-4996-4d3e-b0ea-0aa1de725c96"
+        }
+      },
+      {
+        "id": "cluster:b2d72403-160e-5a5b-ad02-deb30f48c189",
+        "type": "cluster",
+        "label": "Social Media Use and Depressive Symptoms During Early Adolescence | Pediatrics | JAMA Network Open | JAMA Network information origin",
+        "data": {
+          "clusterId": "b2d72403-160e-5a5b-ad02-deb30f48c189",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 1260
+        },
+        "metadata": {
+          "representativeSourceId": "b7ed2cfb-9095-40b5-8afc-22776374f0df"
+        }
+      },
+      {
+        "id": "cluster:010cac8a-c461-5a35-99d6-ca26eba644dc",
+        "type": "cluster",
+        "label": "Client Challenge information origin",
+        "data": {
+          "clusterId": "010cac8a-c461-5a35-99d6-ca26eba644dc",
+          "originType": "syndication_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 1440
+        },
+        "metadata": {
+          "representativeSourceId": "f784acf3-0c26-4e2b-992c-7e6b20538089"
+        }
+      },
+      {
+        "id": "source:81278a55-8666-4691-be9f-5b6789d4f044",
+        "type": "source",
+        "label": "Increased Social Media Use Linked to Rising Depressive Symptoms in Early Adolescents | AJMC",
+        "data": {
+          "sourceId": "81278a55-8666-4691-be9f-5b6789d4f044",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "4d3171a7-fb52-5bc8-a2cd-8ddd5a5094c5",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2025-05-21T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "d3e37b6e-231c-4b3c-a06d-68d7b8680d78"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 0
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
+          "domain": "www.ajmc.com",
+          "publisher": "AJMC - Managed Care News, Research, and Expert Insights",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2025-05-21T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:857098ec-603b-47d2-94c6-e668edac699f",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "81278a55-8666-4691-be9f-5b6789d4f044",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "4d3171a7-fb52-5bc8-a2cd-8ddd5a5094c5",
+          "atomicClaimIds": [
+            "d3e37b6e-231c-4b3c-a06d-68d7b8680d78"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 0
+        },
+        "metadata": {
+          "snapshotId": "857098ec-603b-47d2-94c6-e668edac699f",
+          "retrievedAt": "2026-08-13T22:39:05.969645+00:00",
+          "publishedAt": "2025-05-21T00:00:00+00:00",
+          "contentHash": "067c46272c2730b530c81ddbb9d23456c0e1a6f1d3f8c48add5f43f4938023d5",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:0326fb08-355a-44ab-a458-186b2e24d656",
+        "type": "source",
+        "label": "Associations Between Social Media Use and Mental Disorders in Adolescents and Young Adults: A Systematic Review and Meta-Analysis of Recent Evidence",
+        "data": {
+          "sourceId": "0326fb08-355a-44ab-a458-186b2e24d656",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "b878e71d-2dcb-51e2-9ccd-5e8f6401f5a2",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:39:07.238421+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.mdpi.com/2076-328X/15/11/1450",
+          "domain": "www.mdpi.com",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:39:07.238421+00:00"
+        }
+      },
+      {
+        "id": "snapshot:401a1b57-248e-49de-b03c-91019a315da7",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "0326fb08-355a-44ab-a458-186b2e24d656",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "b878e71d-2dcb-51e2-9ccd-5e8f6401f5a2",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "401a1b57-248e-49de-b03c-91019a315da7",
+          "retrievedAt": "2026-08-13T22:39:07.238421+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:e98f8c42-fcd5-43eb-aaba-0b71b911294c",
+        "type": "source",
+        "label": "Reducing Social Media Use Decreases Depression Symptoms: A Meta-Analysis of Randomised Controlled Trials",
+        "data": {
+          "sourceId": "e98f8c42-fcd5-43eb-aaba-0b71b911294c",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "a9917403-80e9-58ff-bd22-31ea5a15f1bd",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:39:07.424190+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.mdpi.com/2254-9625/15/11/222",
+          "domain": "www.mdpi.com",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:39:07.424190+00:00"
+        }
+      },
+      {
+        "id": "snapshot:cf35c647-8933-46dd-bfe0-7067fc53a885",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "e98f8c42-fcd5-43eb-aaba-0b71b911294c",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "a9917403-80e9-58ff-bd22-31ea5a15f1bd",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "cf35c647-8933-46dd-bfe0-7067fc53a885",
+          "retrievedAt": "2026-08-13T22:39:07.424190+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:aaa98ec5-1a8c-4b6a-9059-15bcae56b4cc",
+        "type": "source",
+        "label": "JMIR Mental Health - Problematic Social Media Use in Adolescents and Young Adults: Systematic Review and Meta-analysis",
+        "data": {
+          "sourceId": "aaa98ec5-1a8c-4b6a-9059-15bcae56b4cc",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "f8ae77fe-116b-51b6-aba6-f706f3df553a",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:39:07.524294+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 720
+        },
+        "metadata": {
+          "canonicalUrl": "https://mental.jmir.org/2022/4/e33450",
+          "domain": "mental.jmir.org",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:39:07.524294+00:00"
+        }
+      },
+      {
+        "id": "snapshot:52e9088c-0b3d-494c-b136-a0ac824119b4",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "aaa98ec5-1a8c-4b6a-9059-15bcae56b4cc",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "f8ae77fe-116b-51b6-aba6-f706f3df553a",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 720
+        },
+        "metadata": {
+          "snapshotId": "52e9088c-0b3d-494c-b136-a0ac824119b4",
+          "retrievedAt": "2026-08-13T22:39:07.524294+00:00",
+          "publishedAt": null,
+          "contentHash": "b851ceb12bf528912d192275c1c32876fff536b13bde886ff9b47b57a5046ab6",
+          "parserName": "playwright",
+          "parserVersion": "1.62.0"
+        }
+      },
+      {
+        "id": "source:f6edc6ac-9ff5-49b9-9e7e-193a9844c5e4",
+        "type": "source",
+        "label": "The Impact of Social Media on Adolescent Mental Health: A Meta-Analysis",
+        "data": {
+          "sourceId": "f6edc6ac-9ff5-49b9-9e7e-193a9844c5e4",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "f233b664-13a1-5a36-9b99-6f11331014eb",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2024-07-25T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "d3e37b6e-231c-4b3c-a06d-68d7b8680d78"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 900
+        },
+        "metadata": {
+          "canonicalUrl": "https://scientiapsychiatrica.com/index.php/SciPsy/article/view/175",
+          "domain": "scientiapsychiatrica.com",
+          "publisher": "Scientia Psychiatrica - HM Publisher",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2024-07-25T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:fb8a72a6-66a3-4b79-a274-92a74ab188a3",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "f6edc6ac-9ff5-49b9-9e7e-193a9844c5e4",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "f233b664-13a1-5a36-9b99-6f11331014eb",
+          "atomicClaimIds": [
+            "d3e37b6e-231c-4b3c-a06d-68d7b8680d78"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 900
+        },
+        "metadata": {
+          "snapshotId": "fb8a72a6-66a3-4b79-a274-92a74ab188a3",
+          "retrievedAt": "2026-08-13T22:39:07.723489+00:00",
+          "publishedAt": "2024-07-25T00:00:00+00:00",
+          "contentHash": "efbf17b69ded757dc5e3d010d063ac573b9fa83776dd830b3b25445fb8a60175",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:479436ed-4996-4d3e-b0ea-0aa1de725c96",
+        "type": "source",
+        "label": "Social media use, mental health and sleep: A systematic review with meta-analyses - ScienceDirect",
+        "data": {
+          "sourceId": "479436ed-4996-4d3e-b0ea-0aa1de725c96",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "dea72688-b000-5865-8c37-e55d6b916ebc",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:39:08.228407+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 1080
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.sciencedirect.com/science/article/pii/S0165032724014265",
+          "domain": "www.sciencedirect.com",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:39:08.228407+00:00"
+        }
+      },
+      {
+        "id": "snapshot:70d9c149-24f9-41c6-890f-7076937e180d",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "479436ed-4996-4d3e-b0ea-0aa1de725c96",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "dea72688-b000-5865-8c37-e55d6b916ebc",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 1080
+        },
+        "metadata": {
+          "snapshotId": "70d9c149-24f9-41c6-890f-7076937e180d",
+          "retrievedAt": "2026-08-13T22:39:08.228407+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:b7ed2cfb-9095-40b5-8afc-22776374f0df",
+        "type": "source",
+        "label": "Social Media Use and Depressive Symptoms During Early Adolescence | Pediatrics | JAMA Network Open | JAMA Network",
+        "data": {
+          "sourceId": "b7ed2cfb-9095-40b5-8afc-22776374f0df",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "b2d72403-160e-5a5b-ad02-deb30f48c189",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:39:08.332292+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 1260
+        },
+        "metadata": {
+          "canonicalUrl": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2834349",
+          "domain": "jamanetwork.com",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:39:08.332292+00:00"
+        }
+      },
+      {
+        "id": "snapshot:58f039db-00e3-4bde-b4a1-d50e49289baf",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "b7ed2cfb-9095-40b5-8afc-22776374f0df",
+          "accessStatus": "BOT_BLOCKED",
+          "role": "UNKNOWN",
+          "clusterId": "b2d72403-160e-5a5b-ad02-deb30f48c189",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 1260
+        },
+        "metadata": {
+          "snapshotId": "58f039db-00e3-4bde-b4a1-d50e49289baf",
+          "retrievedAt": "2026-08-13T22:39:08.332292+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:f784acf3-0c26-4e2b-992c-7e6b20538089",
+        "type": "source",
+        "label": "Client Challenge",
+        "data": {
+          "sourceId": "f784acf3-0c26-4e2b-992c-7e6b20538089",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "010cac8a-c461-5a35-99d6-ca26eba644dc",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:39:08.398913+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 1440
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.nature.com/articles/s41598-025-29258-x",
+          "domain": "www.nature.com",
+          "publisher": "nature.com",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:39:08.398913+00:00"
+        }
+      },
+      {
+        "id": "snapshot:645d6bf9-439f-46b9-a77f-e6ac8fd6df16",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "f784acf3-0c26-4e2b-992c-7e6b20538089",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "010cac8a-c461-5a35-99d6-ca26eba644dc",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 1440
+        },
+        "metadata": {
+          "snapshotId": "645d6bf9-439f-46b9-a77f-e6ac8fd6df16",
+          "retrievedAt": "2026-08-13T22:39:08.398913+00:00",
+          "publishedAt": null,
+          "contentHash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:7f07462e-4b2a-4f8e-b744-6e45433fd924",
+        "type": "source",
+        "label": "Client Challenge",
+        "data": {
+          "sourceId": "7f07462e-4b2a-4f8e-b744-6e45433fd924",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "010cac8a-c461-5a35-99d6-ca26eba644dc",
+          "dependencyMultiplier": 0,
+          "firstKnownAppearance": "2026-08-13T22:39:08.611426+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 1530
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.nature.com/articles/s41598-025-89762-y",
+          "domain": "www.nature.com",
+          "publisher": "nature.com",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:39:08.611426+00:00"
+        }
+      },
+      {
+        "id": "snapshot:14ca77fd-2a8b-448b-b24f-a9d5e0a49eeb",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "7f07462e-4b2a-4f8e-b744-6e45433fd924",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "010cac8a-c461-5a35-99d6-ca26eba644dc",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 1530
+        },
+        "metadata": {
+          "snapshotId": "14ca77fd-2a8b-448b-b24f-a9d5e0a49eeb",
+          "retrievedAt": "2026-08-13T22:39:08.611426+00:00",
+          "publishedAt": null,
+          "contentHash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:f026f592-0894-487d-a3e2-535b4c3b238c",
+        "type": "source",
+        "label": "Social Media Addiction and Mental Health: The Growing Concern for Youth Well-Being | Stanford Law School",
+        "data": {
+          "sourceId": "f026f592-0894-487d-a3e2-535b4c3b238c",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "cb9a71f0-6e30-5e81-aab9-d991b544b64a",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2024-05-20T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "d3e37b6e-231c-4b3c-a06d-68d7b8680d78"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://law.stanford.edu/2024/05/20/social-media-addiction-and-mental-health-the-growing-concern-for-youth-well-being/",
+          "domain": "law.stanford.edu",
+          "publisher": "Stanford Law School",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2024-05-20T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:4693b3a2-c255-4505-8ffa-09aaf8b468cb",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "f026f592-0894-487d-a3e2-535b4c3b238c",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "cb9a71f0-6e30-5e81-aab9-d991b544b64a",
+          "atomicClaimIds": [
+            "d3e37b6e-231c-4b3c-a06d-68d7b8680d78"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "4693b3a2-c255-4505-8ffa-09aaf8b468cb",
+          "retrievedAt": "2026-08-13T22:39:08.779213+00:00",
+          "publishedAt": "2024-05-20T00:00:00+00:00",
+          "contentHash": "b110dcbfd30c4ee32142ecd6927774c572ea916572c4e6a1f7ddaafa118b45f5",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "cluster-member:4d3171a7-fb52-5bc8-a2cd-8ddd5a5094c5:81278a55-8666-4691-be9f-5b6789d4f044",
+        "source": "cluster:4d3171a7-fb52-5bc8-a2cd-8ddd5a5094c5",
+        "target": "source:81278a55-8666-4691-be9f-5b6789d4f044",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:857098ec-603b-47d2-94c6-e668edac699f",
+        "source": "source:81278a55-8666-4691-be9f-5b6789d4f044",
+        "target": "snapshot:857098ec-603b-47d2-94c6-e668edac699f",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:b878e71d-2dcb-51e2-9ccd-5e8f6401f5a2:0326fb08-355a-44ab-a458-186b2e24d656",
+        "source": "cluster:b878e71d-2dcb-51e2-9ccd-5e8f6401f5a2",
+        "target": "source:0326fb08-355a-44ab-a458-186b2e24d656",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:401a1b57-248e-49de-b03c-91019a315da7",
+        "source": "source:0326fb08-355a-44ab-a458-186b2e24d656",
+        "target": "snapshot:401a1b57-248e-49de-b03c-91019a315da7",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:a9917403-80e9-58ff-bd22-31ea5a15f1bd:e98f8c42-fcd5-43eb-aaba-0b71b911294c",
+        "source": "cluster:a9917403-80e9-58ff-bd22-31ea5a15f1bd",
+        "target": "source:e98f8c42-fcd5-43eb-aaba-0b71b911294c",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:cf35c647-8933-46dd-bfe0-7067fc53a885",
+        "source": "source:e98f8c42-fcd5-43eb-aaba-0b71b911294c",
+        "target": "snapshot:cf35c647-8933-46dd-bfe0-7067fc53a885",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:f8ae77fe-116b-51b6-aba6-f706f3df553a:aaa98ec5-1a8c-4b6a-9059-15bcae56b4cc",
+        "source": "cluster:f8ae77fe-116b-51b6-aba6-f706f3df553a",
+        "target": "source:aaa98ec5-1a8c-4b6a-9059-15bcae56b4cc",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:52e9088c-0b3d-494c-b136-a0ac824119b4",
+        "source": "source:aaa98ec5-1a8c-4b6a-9059-15bcae56b4cc",
+        "target": "snapshot:52e9088c-0b3d-494c-b136-a0ac824119b4",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:f233b664-13a1-5a36-9b99-6f11331014eb:f6edc6ac-9ff5-49b9-9e7e-193a9844c5e4",
+        "source": "cluster:f233b664-13a1-5a36-9b99-6f11331014eb",
+        "target": "source:f6edc6ac-9ff5-49b9-9e7e-193a9844c5e4",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:fb8a72a6-66a3-4b79-a274-92a74ab188a3",
+        "source": "source:f6edc6ac-9ff5-49b9-9e7e-193a9844c5e4",
+        "target": "snapshot:fb8a72a6-66a3-4b79-a274-92a74ab188a3",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:dea72688-b000-5865-8c37-e55d6b916ebc:479436ed-4996-4d3e-b0ea-0aa1de725c96",
+        "source": "cluster:dea72688-b000-5865-8c37-e55d6b916ebc",
+        "target": "source:479436ed-4996-4d3e-b0ea-0aa1de725c96",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:70d9c149-24f9-41c6-890f-7076937e180d",
+        "source": "source:479436ed-4996-4d3e-b0ea-0aa1de725c96",
+        "target": "snapshot:70d9c149-24f9-41c6-890f-7076937e180d",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:b2d72403-160e-5a5b-ad02-deb30f48c189:b7ed2cfb-9095-40b5-8afc-22776374f0df",
+        "source": "cluster:b2d72403-160e-5a5b-ad02-deb30f48c189",
+        "target": "source:b7ed2cfb-9095-40b5-8afc-22776374f0df",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:58f039db-00e3-4bde-b4a1-d50e49289baf",
+        "source": "source:b7ed2cfb-9095-40b5-8afc-22776374f0df",
+        "target": "snapshot:58f039db-00e3-4bde-b4a1-d50e49289baf",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:010cac8a-c461-5a35-99d6-ca26eba644dc:f784acf3-0c26-4e2b-992c-7e6b20538089",
+        "source": "cluster:010cac8a-c461-5a35-99d6-ca26eba644dc",
+        "target": "source:f784acf3-0c26-4e2b-992c-7e6b20538089",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:645d6bf9-439f-46b9-a77f-e6ac8fd6df16",
+        "source": "source:f784acf3-0c26-4e2b-992c-7e6b20538089",
+        "target": "snapshot:645d6bf9-439f-46b9-a77f-e6ac8fd6df16",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:010cac8a-c461-5a35-99d6-ca26eba644dc:7f07462e-4b2a-4f8e-b744-6e45433fd924",
+        "source": "cluster:010cac8a-c461-5a35-99d6-ca26eba644dc",
+        "target": "source:7f07462e-4b2a-4f8e-b744-6e45433fd924",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:14ca77fd-2a8b-448b-b24f-a9d5e0a49eeb",
+        "source": "source:7f07462e-4b2a-4f8e-b744-6e45433fd924",
+        "target": "snapshot:14ca77fd-2a8b-448b-b24f-a9d5e0a49eeb",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:cb9a71f0-6e30-5e81-aab9-d991b544b64a:f026f592-0894-487d-a3e2-535b4c3b238c",
+        "source": "cluster:cb9a71f0-6e30-5e81-aab9-d991b544b64a",
+        "target": "source:f026f592-0894-487d-a3e2-535b4c3b238c",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:4693b3a2-c255-4505-8ffa-09aaf8b468cb",
+        "source": "source:f026f592-0894-487d-a3e2-535b4c3b238c",
+        "target": "snapshot:4693b3a2-c255-4505-8ffa-09aaf8b468cb",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "dependency:f85240a9-74a3-4aae-bb88-da05c466afb8",
+        "source": "source:f784acf3-0c26-4e2b-992c-7e6b20538089",
+        "target": "source:7f07462e-4b2a-4f8e-b744-6e45433fd924",
+        "label": "republishes",
+        "relationship": "REPUBLISHES",
+        "confidence": 1,
+        "data": {
+          "relationship": "REPUBLISHES",
+          "confidence": 1,
+          "detectionMethod": "identical_content"
+        }
+      }
+    ]
+  },
+  "calculations": [
+    {
+      "id": "ff5f4440-9be3-4fbc-bfc2-1545f622a201",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.7",
+        "D": "0.6",
+        "F": "0.9",
+        "R": "0.9",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449"
+      },
+      "result": {
+        "quality": "0.795"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "8c3a3611-11ef-4e82-80ae-180f4023a9f7",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.6",
+        "D": "0.7",
+        "F": "0.9",
+        "R": "0.9",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "0996c7a2-eec5-5d15-807f-741a1bea4688"
+      },
+      "result": {
+        "quality": "0.795"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e6b7c302-c2b7-4882-9659-1d88668acb8a",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.795",
+        "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.79500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "59c97a27-b207-4418-9445-b7ea4bddd97d",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.795",
+        "passage_id": "0996c7a2-eec5-5d15-807f-741a1bea4688",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.79500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0ee13477-2499-4745-b29b-4f1235a40449",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.435",
+        "passage_id": "119b8103-7df3-564d-abbc-2a4cc1a966cf",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.43500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "b6ff4b25-f5d3-4cdf-bf1d-912071a74cf8",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.2",
+        "F": "0.5",
+        "R": "0.6",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "119b8103-7df3-564d-abbc-2a4cc1a966cf"
+      },
+      "result": {
+        "quality": "0.435"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "9ae63d5b-0d69-42f4-89a1-0b5a6c0907af",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.5",
+        "D": "0.2",
+        "F": "0.8",
+        "R": "0.6",
+        "T": "0.3",
+        "X": "1.0",
+        "passage_id": "3c51c668-c1cf-50b1-ae71-af2a4a596f2d"
+      },
+      "result": {
+        "quality": "0.515"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "159fa330-2717-4160-ac65-d26b97be468c",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.7",
+        "D": "0.6",
+        "F": "0.9",
+        "R": "0.9",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d"
+      },
+      "result": {
+        "quality": "0.795"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "8358c1c1-d3a7-427a-8661-59ce6ec54d83",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.515",
+        "passage_id": "3c51c668-c1cf-50b1-ae71-af2a4a596f2d",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.51500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "8089c86a-f67f-43ed-a838-0c6276c84c09",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "0.7",
+        "F": "0.8",
+        "R": "0.9",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb"
+      },
+      "result": {
+        "quality": "0.840"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f260ac84-11f4-4fe5-b561-eed411204589",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.795",
+        "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.79500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "391f7437-a39b-4079-85fd-d6f6a1ffbab0",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.7",
+        "D": "0.8",
+        "F": "0.8",
+        "R": "0.9",
+        "T": "0.6",
+        "X": "1.0",
+        "passage_id": "0762f58f-3674-5f32-98b5-86f7401165bd"
+      },
+      "result": {
+        "quality": "0.795"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c44178e0-7a77-44e3-a852-613bb8648c1c",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.840",
+        "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.84000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a8224834-f9f8-45e9-a6b4-f90df148a3d1",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.795",
+        "passage_id": "0762f58f-3674-5f32-98b5-86f7401165bd",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.79500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "367a0e67-7efb-4bf2-859c-335aa807a1f4",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.290",
+        "passage_id": "162403bf-2f82-58ac-9936-d340d67ff6dd",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.29000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7fd5bd1a-932f-44c6-b41f-d4668a07be1f",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.1",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "162403bf-2f82-58ac-9936-d340d67ff6dd"
+      },
+      "result": {
+        "quality": "0.290"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1b928334-f896-44e5-9d88-2df378d2dd9e",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.360",
+        "passage_id": "19363b1b-8892-519f-ac09-3a3e1a7f3dbc",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.36000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "478994f6-eea9-4d14-b66d-3cf4da55745f",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "19363b1b-8892-519f-ac09-3a3e1a7f3dbc"
+      },
+      "result": {
+        "quality": "0.360"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c19f48e6-d103-4904-8ae6-9cf8a2c99c1d",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "0.9",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc"
+      },
+      "result": {
+        "quality": "0.915"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "5533a924-8c8a-4ee4-953a-3246b8dcf661",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.915",
+        "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.91500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "ee471c62-3041-4593-8296-f8cd945f3666",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "supporting_weight",
+      "formula_text": "P = sum(max(stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+          "0996c7a2-eec5-5d15-807f-741a1bea4688",
+          "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+          "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+          "0762f58f-3674-5f32-98b5-86f7401165bd",
+          "24919aac-5020-57c7-9a28-60eae6d13dbc"
+        ]
+      },
+      "result": {
+        "P": "2.9250000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "4e7c76a7-bc43-498e-b035-dfb657908808",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "contradicting_weight",
+      "formula_text": "N = sum(max(-stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+          "0996c7a2-eec5-5d15-807f-741a1bea4688",
+          "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+          "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+          "0762f58f-3674-5f32-98b5-86f7401165bd",
+          "24919aac-5020-57c7-9a28-60eae6d13dbc"
+        ]
+      },
+      "result": {
+        "N": "0.00000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "dbcbb032-dcd2-4cd8-ac43-6d3a00864718",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_support",
+      "formula_text": "100 * P / (P + N)",
+      "inputs": {
+        "N": "0.00000",
+        "P": "2.9250000"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "389bad0b-42d2-4a7d-bd2b-ace102a7699d",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "evidence_consistency",
+      "formula_text": "100 * abs(P - N) / (P + N)",
+      "inputs": {
+        "N": "0.00000",
+        "P": "2.9250000"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0748cb1d-1df7-43d0-ab4f-b92cb0ebcc6d",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "developing_event_low": "5",
+          "essential_term_ambiguous": "10.5",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "75.00",
+        "primary_access": "0",
+        "average_quality": "82.49088145896656534954407295"
+      },
+      "result": {
+        "score": "60.12272036474164133738601824"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "94e07a07-75a4-45d1-a1a8-0143e4731828",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "75.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "227264d6-d6d3-4f9f-888e-532df0391367",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "material_penalties": {
+          "scope_omitted": "15",
+          "correlation_as_causation": "25",
+          "conditional_language_removed": "25",
+          "baseline_or_denominator_omitted": "20"
+        }
+      },
+      "result": {
+        "score": "15"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "63252619-be26-417c-8aa7-51a277ab1108",
+      "atomic_claim_id": "d3e37b6e-231c-4b3c-a06d-68d7b8680d78",
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "15",
+        "support": "100",
+        "confidence": "60.12272036474164133738601824",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "insufficient_evidence_reasons": []
+      },
+      "result": {
+        "label": "Technically supported but misleading"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "5bdf7615-2f44-4fbb-9394-246294c7cc80",
+      "atomic_claim_id": null,
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "75.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "eca63c83-25bf-47c9-a687-628054942c62",
+      "atomic_claim_id": null,
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "developing_event_low": "5",
+          "citation_partial_support": "14",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "75.00",
+        "primary_access": "0",
+        "average_quality": "82.49088145896656534954407295"
+      },
+      "result": {
+        "score": "57"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a81c0aa1-486d-4044-8cbc-57679f254147",
+      "atomic_claim_id": null,
+      "formula_name": "article_factual_accuracy",
+      "formula_text": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "100",
+            "importance_weight": 3
+          }
+        ],
+        "citation_partial_support_penalty": "10"
+      },
+      "result": {
+        "score": "90",
+        "essential_claim_gate": false
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1b2b20db-6f58-45c8-b19d-b037112799e5",
+      "atomic_claim_id": null,
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "15",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "factual_accuracy": "100",
+        "verdict_confidence": "70.62272036474164133738601824",
+        "insufficient_evidence_reasons": [],
+        "strongly_refuted_essential_claim": false
+      },
+      "result": {
+        "label": "Technically supported but misleading"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7b52f94a-9d17-439f-b211-5f368fbbed91",
+      "atomic_claim_id": null,
+      "formula_name": "research_coverage",
+      "formula_text": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+      "inputs": {
+        "claims": [
+          {
+            "claim_ref": "claim-1-9fd525f73e873c64",
+            "adequate_evidence": true,
+            "importance_weight": 3
+          }
+        ],
+        "confidence_issues": [
+          "developing_event_low",
+          "important_source_inaccessible",
+          "primary_evidence_unavailable"
+        ]
+      },
+      "result": {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "5"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "4a68ac43-0bbf-4260-80fe-8875ff0fe0a4",
+      "atomic_claim_id": null,
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "claims": [
+          {
+            "context": "15",
+            "claim_ref": "claim-1-9fd525f73e873c64",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "15"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f2e54c2f-be0c-4fd5-a9af-411297bcb152",
+      "atomic_claim_id": null,
+      "formula_name": "citation_partial_support_penalty",
+      "formula_text": "reported score = clamp(original score - partial citation penalty, 0, 100)",
+      "inputs": {
+        "partial_sentence_count": 2,
+        "evidence_support_penalty": "10",
+        "verdict_confidence_penalty": "14"
+      },
+      "result": {
+        "evidence_support": 90,
+        "verdict_confidence": 57
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "methodology_version": "not-recorded",
+  "workflow_version": "1.0.0",
+  "model_versions": {
+    "intake": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1089,
+        "prompt_tokens": 967,
+        "completion_tokens": 122
+      },
+      "provider": "deepseek",
+      "latency_ms": 1348,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "planner": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 2263,
+        "prompt_tokens": 1112,
+        "completion_tokens": 1151
+      },
+      "provider": "deepseek",
+      "latency_ms": 6859,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "embedding": {
+      "status": "unconfigured_fallback",
+      "provider": "deepseek",
+      "retryable": false,
+      "error_code": "embedding_route_unavailable",
+      "latency_ms": 0,
+      "used_model": null,
+      "status_code": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "request_count": 0,
+      "retrieval_mode": "lexical_metadata_fallback",
+      "configured_model": null
+    },
+    "synthesis": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 10315,
+        "prompt_tokens": 9238,
+        "completion_tokens": 1077
+      },
+      "provider": "deepseek",
+      "latency_ms": 7335,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "decomposition": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1556,
+        "prompt_tokens": 1358,
+        "completion_tokens": 198
+      },
+      "provider": "deepseek",
+      "latency_ms": 1679,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_audit": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 10648,
+        "prompt_tokens": 8541,
+        "completion_tokens": 2107
+      },
+      "provider": "deepseek",
+      "latency_ms": 12171,
+      "batch_count": 9,
+      "repair_count": 0,
+      "request_count": 9,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "evidence_classification": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 19423,
+        "prompt_tokens": 16800,
+        "completion_tokens": 2623
+      },
+      "provider": "deepseek",
+      "latency_ms": 12393,
+      "batch_count": 10,
+      "repair_count": 0,
+      "request_count": 10,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    }
+  },
+  "prompt_versions": {
+    "intake": "intake-v2",
+    "planner": "planner-v2",
+    "synthesis": "synthesis-v4",
+    "decomposition": "decomposition-v3",
+    "citation_audit": "citation-audit-v4",
+    "evidence_classification": "evidence-classification-v4"
+  },
+  "parser_versions": {
+    "playwright": "1.62.0",
+    "trafilatura": "2.2.0"
+  },
+  "retrieval_versions": {
+    "implementation": "not-recorded",
+    "version": "not-recorded"
+  },
+  "score_roles": {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured."
+  },
+  "report_sentences": [
+    {
+      "id": "70cabd5e-3cea-4da5-a3d8-42c9083ad0ba",
+      "report_section": "summary",
+      "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+      "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that studies show associations between social media use and depression but do not establish causation, directly supporting the sentence's claim."
+    },
+    {
+      "id": "b7fb7412-cc9e-484a-ab5c-65cd5f9dbd92",
+      "report_section": "summary",
+      "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+      "passage_id": "0996c7a2-eec5-5d15-807f-741a1bea4688",
+      "audit_status": "partial",
+      "audit_note": "The passage mentions a unidirectional association between social media use and depression, but it does not explicitly state that causation is not established; it focuses on patterns of use and mood, providing narrower support for the claim about lack of causation."
+    },
+    {
+      "id": "27f8f997-1678-4bfd-85fd-0bdd97c9ad66",
+      "report_section": "summary",
+      "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+      "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states that research has not shown a causal relationship between social media use and poorer mental health, and describes associations and correlations, which directly supports the sentence's claim that studies show associations but do not establish causation."
+    },
+    {
+      "id": "0b2a15a5-06e2-4b90-89a4-552b72cf392c",
+      "report_section": "summary",
+      "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+      "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+      "audit_status": "passed",
+      "audit_note": "The passage concludes that increased social media use is associated with negative mental health outcomes but notes the effects are small and the relationship is complex, and calls for further research to understand mechanisms, which supports the sentence's statement that studies show associations but do not establish causation."
+    },
+    {
+      "id": "2a5f4680-16d2-4ed3-8b99-f5ebbba36614",
+      "report_section": "summary",
+      "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+      "passage_id": "0762f58f-3674-5f32-98b5-86f7401165bd",
+      "audit_status": "partial",
+      "audit_note": "The passage states a link between social media use and depressive symptoms, suggesting a one-way relationship, but does not establish causation. This partially supports the sentence's claim that studies show associations but do not establish causation."
+    },
+    {
+      "id": "64e87348-82f9-4461-80c4-1d238902e923",
+      "report_section": "summary",
+      "sentence_text": "The claim that social media use causes depression in adolescents is not fully supported by the available evidence; studies show associations but do not establish causation.",
+      "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+      "audit_status": "partial",
+      "audit_note": "The passage describes a study finding significant associations between social media use and depressive symptoms, but it does not explicitly state that causation is not established. It provides evidence of association, which partially supports the sentence's claim that studies show associations but do not establish causation."
+    },
+    {
+      "id": "36fded2f-5708-4c10-b93d-6bab79ea8003",
+      "report_section": "factual_finding",
+      "sentence_text": "A systematic review found that use of social networking sites is associated with an increased risk of depression, anxiety, and psychological distress, but the associations are not by themselves proof of causation.",
+      "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+      "audit_status": "passed",
+      "audit_note": "The passage states that a systematic review found an association between social networking site use and increased risk of depression, anxiety, and psychological distress, and that the associations are not proof of causation. This directly matches the sentence's claims."
+    },
+    {
+      "id": "542899d2-e746-4a64-b82c-abf5924cebd3",
+      "report_section": "factual_finding",
+      "sentence_text": "A study of 11,876 participants aged 9 to 10 at baseline found that within-person increases in social media use were significantly associated with greater depressive symptoms a year later, with effects from year 1 to year 2 (β = 0.07; P = .01) and year 2 to year 3 (β = 0.09; P < .001).",
+      "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+      "audit_status": "passed",
+      "audit_note": "The passage reports the same study details: 11,876 participants aged 9-10 at baseline, within-person increases in social media use associated with greater depressive symptoms a year later, with the same beta coefficients and p-values for year 1-2 and year 2-3."
+    },
+    {
+      "id": "fba23749-351b-4ecb-9eae-f2afbbabb717",
+      "report_section": "factual_finding",
+      "sentence_text": "The authors of that study noted that their findings suggest a unidirectional association between social media use and depression, but prior research shows adolescents can shift to more positive patterns when aware of its impact.",
+      "passage_id": "0996c7a2-eec5-5d15-807f-741a1bea4688",
+      "audit_status": "passed",
+      "audit_note": "The passage directly states the authors noted a unidirectional association between social media use and depression, and that prior research shows adolescents can shift to more positive patterns when aware of its impact. The sentence accurately paraphrases this content without adding or omitting key information."
+    },
+    {
+      "id": "23583fa9-cf42-4fb8-891c-a28fc89b6655",
+      "report_section": "factual_finding",
+      "sentence_text": "A meta-analysis concluded that increased social media use is associated with negative mental health outcomes in adolescents, but the effects are small and the relationship is complex, with several moderating factors.",
+      "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+      "audit_status": "passed",
+      "audit_note": "The passage's conclusion explicitly states that increased social media use is associated with negative mental health outcomes in adolescents, the effects are small, and the relationship is complex with several moderating factors. The sentence accurately reflects this conclusion."
+    },
+    {
+      "id": "7c31412e-4153-449b-85b9-ee09c5ac804c",
+      "report_section": "factual_finding",
+      "sentence_text": "The American Academy of Pediatrics warns that media use and screen time are associated with increased risks for children and adolescents, such as depression, but research has not necessarily shown a causal relationship.",
+      "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+      "audit_status": "passed",
+      "audit_note": "The passage directly quotes the American Academy of Pediatrics warning that media use and screen time are associated with increased risks such as depression, and also states that research has not necessarily shown a causal relationship, matching the sentence's claims."
+    },
+    {
+      "id": "c502102a-1167-425a-ab1c-a93900d013f3",
+      "report_section": "factual_finding",
+      "sentence_text": "Increased social media use in early adolescence is linked to higher depressive symptoms a year later, suggesting a one-way relationship.",
+      "passage_id": "0762f58f-3674-5f32-98b5-86f7401165bd",
+      "audit_status": "passed",
+      "audit_note": "The passage exactly states that increased social media use in early adolescence is linked to higher depressive symptoms a year later, suggesting a one-way relationship, which is identical to the sentence."
+    },
+    {
+      "id": "f5bc8e49-90ab-4734-b333-793c7014f62f",
+      "report_section": "strongest_contradiction",
+      "sentence_text": "Research has not necessarily shown that social media use has a causal relationship with poorer mental health in young people.",
+      "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+      "audit_status": "passed",
+      "audit_note": "The passage states 'Although research has not necessarily shown that the use of social media has a causal relationship with poorer mental health in young people', which directly matches the sentence's claim that research has not necessarily shown a causal relationship."
+    },
+    {
+      "id": "52c9ddaa-1310-465b-a3d6-deac7e073f14",
+      "report_section": "attribution",
+      "sentence_text": "The evidence for an association between social media use and depression in adolescents is attributed to multiple sources, including a systematic review, a longitudinal study, a meta-analysis, and professional organizations such as the American Academy of Pediatrics.",
+      "passage_id": "6019d51b-09d6-5c1a-b354-fb24d9f98449",
+      "audit_status": "partial",
+      "audit_note": "The passage mentions a systematic review (Keles et al., 2020) and a longitudinal study (Twenge & Campbell, 2018) and a meta-analysis? Actually, it mentions a systematic review and a study by Twenge & Campbell, but does not explicitly mention a meta-analysis or the American Academy of Pediatrics. The passage does not attribute the evidence to a meta-analysis or professional organizations like the AAP. Therefore, the support is partial because some sources are mentioned but not all."
+    },
+    {
+      "id": "cfbcaf98-10ea-46d5-bba0-58da46c3db55",
+      "report_section": "attribution",
+      "sentence_text": "The evidence for an association between social media use and depression in adolescents is attributed to multiple sources, including a systematic review, a longitudinal study, a meta-analysis, and professional organizations such as the American Academy of Pediatrics.",
+      "passage_id": "24919aac-5020-57c7-9a28-60eae6d13dbc",
+      "audit_status": "partial",
+      "audit_note": "The passage describes a longitudinal study that found an association between social media use and depressive symptoms, but it does not mention a systematic review, meta-analysis, or the American Academy of Pediatrics. Thus, it partially supports the sentence's claim about multiple sources."
+    },
+    {
+      "id": "dc7c5b05-cae7-42a5-9f8d-57e5750f7f63",
+      "report_section": "attribution",
+      "sentence_text": "The evidence for an association between social media use and depression in adolescents is attributed to multiple sources, including a systematic review, a longitudinal study, a meta-analysis, and professional organizations such as the American Academy of Pediatrics.",
+      "passage_id": "d4efaea1-4d4f-5d5d-9925-dd2423e6befb",
+      "audit_status": "partial",
+      "audit_note": "The passage is a meta-analysis conclusion that supports an association between social media use and negative mental health outcomes, but it does not mention a systematic review, longitudinal study, or the American Academy of Pediatrics. Thus, it partially supports the sentence's claim about multiple sources."
+    },
+    {
+      "id": "6d6d80cc-e230-49a7-bdae-1783f80866a5",
+      "report_section": "attribution",
+      "sentence_text": "The evidence for an association between social media use and depression in adolescents is attributed to multiple sources, including a systematic review, a longitudinal study, a meta-analysis, and professional organizations such as the American Academy of Pediatrics.",
+      "passage_id": "cdae0bd1-0808-58fa-9d15-66e291d8512d",
+      "audit_status": "partial",
+      "audit_note": "The passage mentions the American Academy of Pediatrics warning about risks including depression, and also references the Surgeon General and APA, but it does not mention a systematic review, a longitudinal study, or a meta-analysis as sources. Thus, the sentence's attribution to those specific source types is not fully supported."
+    }
+  ],
+  "evidence_reviewed_at": "2026-08-13T22:39:08.779213Z",
+  "generated_at": "2026-08-13T22:39:44.454703Z",
+  "limitations": [
+    "Inaccessible source: The evidence source denied automated retrieval.",
+    "Inaccessible source: The evidence source denied automated retrieval.",
+    "Inaccessible source: rendered page contained insufficient readable content",
+    "Inaccessible source: The evidence source denied automated retrieval.",
+    "Inaccessible source: The evidence source denied automated retrieval."
+  ]
+}

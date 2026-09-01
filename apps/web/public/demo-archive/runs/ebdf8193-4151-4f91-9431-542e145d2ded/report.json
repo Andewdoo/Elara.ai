@@ -1,0 +1,2114 @@
+{
+  "run_id": "ebdf8193-4151-4f91-9431-542e145d2ded",
+  "verdict": "Leaning supported",
+  "scores": {
+    "evidence_support": 68,
+    "attribution_support": null,
+    "quote_fidelity": null,
+    "verdict_confidence": 63,
+    "source_independence": 80,
+    "context_completeness": 100
+  },
+  "atomic_claims": [
+    {
+      "id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "claim_text": "Diamonds are actually abundant on earth",
+      "importance_weight": 1,
+      "claim_type": "factual",
+      "final_label": "Insufficient evidence",
+      "support_score": 68,
+      "confidence_score": 53,
+      "context_completeness": 100,
+      "ambiguities": [
+        "The term 'abundant' is subjective and lacks a precise definition."
+      ],
+      "gaps": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "5b0e8a4f-7f03-45eb-83d3-3fa9ee32990c",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "06cab3d8-8d91-5d53-81c3-c8c609c3012d",
+      "stance": "NEUTRAL",
+      "base_quality": 0.31,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.31,
+      "citation_status": "rejected",
+      "passage_text": "Note that I believe a comparison of diamond production to gold production to be intrinsically flawed. The geological processes which create the deposits of each are vastly different. Gold is actually extraterrestrial in origin , whereas diamonds form from materials already on our planet over billions of years . There is a vast difference in the density of the materials, and gold's value is based solely upon purity of the metal, whereas determining value of a diamond is much more complex, and varies wildly from specimen to specimen.",
+      "source_title": "Are gem-quality diamonds common?",
+      "source_url": "https://skeptics.stackexchange.com/questions/19573/are-gem-quality-diamonds-common",
+      "page_or_position": "paragraph 17"
+    },
+    {
+      "id": "fe9e4191-cca9-4111-8e59-2ad56a936848",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "24d4ea99-f1b2-5d49-8ccd-9dfec521d31e",
+      "stance": "NEUTRAL",
+      "base_quality": 0.445,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.445,
+      "citation_status": "rejected",
+      "passage_text": "So, on a scale of iron being common (~50000 ppm in Earth's crust) and gold being rare (~0.005 ppm), are gem-quality diamonds rare in Earth's crust?",
+      "source_title": "Are gem-quality diamonds common?",
+      "source_url": "https://skeptics.stackexchange.com/questions/19573/are-gem-quality-diamonds-common",
+      "page_or_position": "paragraph 7"
+    },
+    {
+      "id": "8d7ec368-b44c-4da8-9945-2e8a1eeb1d9e",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "edabd3a7-81f8-59ec-8adc-bcbf73be48f0",
+      "stance": "NEUTRAL",
+      "base_quality": 0.335,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.11725,
+      "citation_status": "rejected",
+      "passage_text": "Let's explore the dynamic geological processes that lead to diamond formation and emergence at Earth's surface. These include the critical roles of specific volcanic activities, the means by which diamonds are transported to the surface, and the influence of plate tectonics on their geographic distribution.",
+      "source_title": "How Are Diamonds Formed: The Science Behind the Sparkle",
+      "source_url": "https://diamondrensu.com/blogs/education/how-are-diamonds-formed",
+      "page_or_position": "paragraph 18"
+    },
+    {
+      "id": "fec53cca-7556-4bd6-89b1-3980026cff25",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "e087c6c8-df25-5572-bb32-a7e11f082ea3",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.75855,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.75855,
+      "citation_status": "pending",
+      "passage_text": "Based on the volume of the cratons, the scientists estimated that there are almost ten 'quadrillion' (or ten to the power of 24) tons of diamonds to be found there. Just for comparison - today's global annual production of diamond is around 20 tons. Unfortunately, the diamonds are buried so deep, 90 to 150 miles below Earth's surface, that there is no way to get them. The deepest borehole in the world (the \" SG-3\" on the Kola-Peninsula ) only goes down meager 7 miles.",
+      "source_title": "There Are 'Quadrillions' Of Diamonds To Be Found Beneath Earth's Surface",
+      "source_url": "https://www.forbes.com/sites/davidbressan/2018/07/18/there-are-quadrillions-of-diamonds-to-be-found-beneath-earths-surface/",
+      "page_or_position": "paragraph 5"
+    },
+    {
+      "id": "a39f1f8e-6d57-436d-a159-7b735a4229d8",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "5e2d1075-2e17-507c-808c-475566e24b2c",
+      "stance": "NEUTRAL",
+      "base_quality": 0.36804,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.36804,
+      "citation_status": "rejected",
+      "passage_text": "At their core, diamonds are made of one single element: carbon. The same carbon found in pencil graphite or charcoal, but arranged in a completely different structure. Under the right conditions, carbon atoms bond in a way that creates the hardest known natural material on Earth [1] .",
+      "source_title": "How Are Natural Diamonds Formed? Everything You Need to Know",
+      "source_url": "https://www.greenwichjewelers.com/blogs/journal/how-are-natural-diamonds-formed-everything-you-need-to-know",
+      "page_or_position": "paragraph 4"
+    },
+    {
+      "id": "35e2dfc9-a9cf-4b66-8a93-1d6959f0a8d7",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "07c21348-b96d-55ea-b1a3-2152756f233a",
+      "stance": "PARTIALLY_CONTRADICTS",
+      "base_quality": 0.59,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.59,
+      "citation_status": "pending",
+      "passage_text": "Upon closer inspection, such claims appear to actually state that\ndiamonds cost more than their abundance alone would account for.\nSources that outright claim that diamonds are common don't seem to\nhave anything to back it up with.\n\nIn terms of where diamonds can be found, this is true.",
+      "source_title": "Are gem-quality diamonds common?",
+      "source_url": "https://skeptics.stackexchange.com/questions/19573/are-gem-quality-diamonds-common",
+      "page_or_position": "paragraph 15"
+    },
+    {
+      "id": "562b4cee-c9d3-4f0e-9716-b043b1fe2687",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "0a750917-aa5d-5ace-8875-8a940ca4d354",
+      "stance": "NEUTRAL",
+      "base_quality": 0.265,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.09275,
+      "citation_status": "rejected",
+      "passage_text": "In contrast to diamonds, precious metals like gold and silver are commodities that can be purchased on financial markets. Gold and silver can appreciate and hold value in times of inflation. Unlike gold – which is valued by weight, diamonds don’t have a universal price per gram. When no two stones are exactly the same, every diamond has to be valued on its individual merits and, most of the time, that valuation is going to be somewhat subjective.   This lack of certainty on the valuation of a diamond adds to investment risk.",
+      "source_title": "Unveiling the Truth: Are Diamonds Really Rare?",
+      "source_url": "https://www.luxuria.diamonds/blog/are-diamonds-really-rare/",
+      "page_or_position": "paragraph 23"
+    },
+    {
+      "id": "158a1e62-6b33-4a07-a87d-9507f3eb85ae",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "0effd646-8ef8-5472-b0a6-620fd2ca62c1",
+      "stance": "NEUTRAL",
+      "base_quality": 0.295,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.10325,
+      "citation_status": "rejected",
+      "passage_text": "Post-recovery, the rough diamonds are sorted and categorized based on their carat, cut, color, and clarity for industrial applications or jewelry making.",
+      "source_title": "How Are Diamonds Formed: The Science Behind the Sparkle",
+      "source_url": "https://diamondrensu.com/blogs/education/how-are-diamonds-formed",
+      "page_or_position": "paragraph 70"
+    },
+    {
+      "id": "f4bdd5c9-794c-4d01-bf45-b1a85e665b5e",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "0f3e37c2-027a-592b-90cf-ae05b690cc71",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.69,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.2415,
+      "citation_status": "pending",
+      "passage_text": "A diamond may be forever, but does that mean they are rare too?    The answer is no.   Compared to other precious gemstones like emerald, sapphires and rubies, diamonds are actually quite plentiful.  However, gem quality diamonds, i.e. those used high quality engagement rings, are rarer, but not scarce.    After all, you probably don’t know anyone who doesn’t own a diamond of some sort – right?",
+      "source_title": "Unveiling the Truth: Are Diamonds Really Rare?",
+      "source_url": "https://www.luxuria.diamonds/blog/are-diamonds-really-rare/",
+      "page_or_position": "paragraph 35"
+    },
+    {
+      "id": "da03f5f5-9457-4444-b557-fd30b410b001",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "passage_id": "1a0949a1-4b3a-5fa4-b825-ef0ad3b25169",
+      "stance": "NEUTRAL",
+      "base_quality": 0.44,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.44,
+      "citation_status": "rejected",
+      "passage_text": "P.S. Another thing to consider is that diamonds, unlike gold, are not all equal. By color alone, only about 7% of the natural gem-quality diamonds are of the VVS clarity. D-color (colorless) internally flawless diamonds are estimated to total 0.001% of worldwide diamond production - on the order of 5-6kg in worldwide reserves . Obviously these are ridiculously expensive, De Beers or not.",
+      "source_title": "Are gem-quality diamonds common?",
+      "source_url": "https://skeptics.stackexchange.com/questions/19573/are-gem-quality-diamonds-common",
+      "page_or_position": "paragraph 33"
+    }
+  ],
+  "source_graph": {
+    "nodes": [
+      {
+        "id": "cluster:5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+        "type": "cluster",
+        "label": "New Study: 80% of World Diamond Reserves Held by 3 Countries information origin",
+        "data": {
+          "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+          "originType": "shared_data_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "metadata": {
+          "representativeSourceId": "e42b778f-7b54-4770-b2a0-ab965f15f99e"
+        }
+      },
+      {
+        "id": "cluster:7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+        "type": "cluster",
+        "label": "Diamond reserves worldwide by country 2025| Statista information origin",
+        "data": {
+          "clusterId": "7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 180
+        },
+        "metadata": {
+          "representativeSourceId": "caf73819-c68f-40bb-8e49-7e1e7d62a00c"
+        }
+      },
+      {
+        "id": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "type": "cluster",
+        "label": "Are gem-quality diamonds common? information origin",
+        "data": {
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "originType": "shared_data_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 360
+        },
+        "metadata": {
+          "representativeSourceId": "05c134f5-940a-4ed2-925c-050b4676d1de"
+        }
+      },
+      {
+        "id": "cluster:570c7728-9d6c-58e6-858d-019a002a408b",
+        "type": "cluster",
+        "label": "Diamond Reserves by Country 2026 information origin",
+        "data": {
+          "clusterId": "570c7728-9d6c-58e6-858d-019a002a408b",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 540
+        },
+        "metadata": {
+          "representativeSourceId": "d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e"
+        }
+      },
+      {
+        "id": "cluster:64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+        "type": "cluster",
+        "label": "How Are Natural Diamonds Formed? Everything You Need to Know information origin",
+        "data": {
+          "clusterId": "64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 720
+        },
+        "metadata": {
+          "representativeSourceId": "8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5"
+        }
+      },
+      {
+        "id": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+        "type": "source",
+        "label": "The five countries with the world's biggest diamond reserves",
+        "data": {
+          "sourceId": "e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+          "dependencyMultiplier": 0.1,
+          "firstKnownAppearance": "2024-12-14T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 0
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.express.co.uk/news/world/1986259/five-countries-worlds-biggest-diamond-reserves",
+          "domain": "www.express.co.uk",
+          "publisher": "Daily Express",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2024-12-14T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:040799f9-ded6-4aa4-9c4a-4a413b29d656",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 0
+        },
+        "metadata": {
+          "snapshotId": "040799f9-ded6-4aa4-9c4a-4a413b29d656",
+          "retrievedAt": "2026-07-23T18:54:05.115249+00:00",
+          "publishedAt": "2024-12-14T00:00:00+00:00",
+          "contentHash": "8fa2ceba4eeba6f3853d2d5fe3a4e48bdb06f5e5e9c3c7d1120519ba249721eb",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "type": "source",
+        "label": "Unveiling the Truth: Are Diamonds Really Rare?",
+        "data": {
+          "sourceId": "c8fd4705-72a9-45c5-9146-9bb6a924956f",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2024-07-25T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.luxuria.diamonds/blog/are-diamonds-really-rare/",
+          "domain": "www.luxuria.diamonds",
+          "publisher": "Luxuria Diamonds",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2024-07-25T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:bf3dc570-fe8c-4214-97ed-81753be98229",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "c8fd4705-72a9-45c5-9146-9bb6a924956f",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "bf3dc570-fe8c-4214-97ed-81753be98229",
+          "retrievedAt": "2026-07-23T18:54:05.653721+00:00",
+          "publishedAt": "2024-07-25T00:00:00+00:00",
+          "contentHash": "1e8d1c29ccdd7ca354d76942853f174d648b850867c1529f8330eec3d6a99cd7",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:3d170f54-156f-475a-85c3-98bce13f1f13",
+        "type": "source",
+        "label": "There Are 'Quadrillions' Of Diamonds To Be Found Beneath Earth's Surface",
+        "data": {
+          "sourceId": "3d170f54-156f-475a-85c3-98bce13f1f13",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2018-07-18T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 450
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.forbes.com/sites/davidbressan/2018/07/18/there-are-quadrillions-of-diamonds-to-be-found-beneath-earths-surface/",
+          "domain": "www.forbes.com",
+          "publisher": "Forbes",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2018-07-18T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:06e6b1d3-5ac1-4944-b280-7f0886cc4fff",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "3d170f54-156f-475a-85c3-98bce13f1f13",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 450
+        },
+        "metadata": {
+          "snapshotId": "06e6b1d3-5ac1-4944-b280-7f0886cc4fff",
+          "retrievedAt": "2026-07-23T18:54:07.693907+00:00",
+          "publishedAt": "2018-07-18T00:00:00+00:00",
+          "contentHash": "a64e99d1cd383e6b6ad0b6809aff0e6277a0573803810b86387c3ddaaf6311f6",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+        "type": "source",
+        "label": "[Solved] Which of the following country is the largest producer of di",
+        "data": {
+          "sourceId": "82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2026-07-22T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://testbook.com/question-answer/which-of-the-following-country-is-the-largest-prod--60bf4f46ea3f14738697b1d2",
+          "domain": "testbook.com",
+          "publisher": "Testbook",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-07-22T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:e7c28c59-c06f-4bab-9b39-a16592f0a6d8",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "e7c28c59-c06f-4bab-9b39-a16592f0a6d8",
+          "retrievedAt": "2026-07-23T18:54:08.970394+00:00",
+          "publishedAt": "2026-07-22T00:00:00+00:00",
+          "contentHash": "48af0a23af381fef3a00fa11e4fa24ce390b8ce2347836c6c167aec9f19114bb",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+        "type": "source",
+        "label": "Diamond Reserves by Country 2026",
+        "data": {
+          "sourceId": "d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "570c7728-9d6c-58e6-858d-019a002a408b",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-07-17T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://worldpopulationreview.com/country-rankings/diamond-reserves-by-country",
+          "domain": "worldpopulationreview.com",
+          "publisher": "World Population Review",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-07-17T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:f084f25c-2d72-448a-880d-42a70bfa1524",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "570c7728-9d6c-58e6-858d-019a002a408b",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "f084f25c-2d72-448a-880d-42a70bfa1524",
+          "retrievedAt": "2026-07-23T18:54:09.178981+00:00",
+          "publishedAt": "2026-07-17T00:00:00+00:00",
+          "contentHash": "5af31312770bcd5124bb5a762d413563297c12561f13ab61e4d1345bc2d15eb2",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+        "type": "source",
+        "label": "How Are Diamonds Formed: The Science Behind the Sparkle",
+        "data": {
+          "sourceId": "d0268dff-66d6-4fc6-b42f-992e5ae13722",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2024-05-15T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 630
+        },
+        "metadata": {
+          "canonicalUrl": "https://diamondrensu.com/blogs/education/how-are-diamonds-formed",
+          "domain": "diamondrensu.com",
+          "publisher": "Diamondrensu",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2024-05-15T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:a68a7919-f391-4b7c-a4bc-49abe774ed5d",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "d0268dff-66d6-4fc6-b42f-992e5ae13722",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 630
+        },
+        "metadata": {
+          "snapshotId": "a68a7919-f391-4b7c-a4bc-49abe774ed5d",
+          "retrievedAt": "2026-07-23T18:54:09.318268+00:00",
+          "publishedAt": "2024-05-15T00:00:00+00:00",
+          "contentHash": "9ac64ec752feecdbab4d84d327b3effaa7477cb4dcc2915c11fff920fd97740b",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+        "type": "source",
+        "label": "New Study: 80% of World Diamond Reserves Held by 3 Countries",
+        "data": {
+          "sourceId": "e42b778f-7b54-4770-b2a0-ab965f15f99e",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2020-05-19T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 90
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.middiamonds.com/the-diamond-blog/more-than-80-percent-of-world-diamond-reserves-held-by-only-three-countries-says-new-study/",
+          "domain": "www.middiamonds.com",
+          "publisher": "MID House Of Diamonds",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2020-05-19T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:ff260bb3-c887-4ce8-af16-9e04463d0f81",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "e42b778f-7b54-4770-b2a0-ab965f15f99e",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 90
+        },
+        "metadata": {
+          "snapshotId": "ff260bb3-c887-4ce8-af16-9e04463d0f81",
+          "retrievedAt": "2026-07-23T18:54:09.856989+00:00",
+          "publishedAt": "2020-05-19T00:00:00+00:00",
+          "contentHash": "ccffd13c2910f1b2cf1bb046b783013d5114f48ea4544456d855abf0faa2a2a0",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+        "type": "source",
+        "label": "Are gem-quality diamonds common?",
+        "data": {
+          "sourceId": "05c134f5-940a-4ed2-925c-050b4676d1de",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2017-05-03T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 720
+        },
+        "metadata": {
+          "canonicalUrl": "https://skeptics.stackexchange.com/questions/19573/are-gem-quality-diamonds-common",
+          "domain": "skeptics.stackexchange.com",
+          "publisher": "Skeptics Stack Exchange",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2017-05-03T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:32add11c-4600-46df-92db-f93d7549d62a",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "05c134f5-940a-4ed2-925c-050b4676d1de",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 720
+        },
+        "metadata": {
+          "snapshotId": "32add11c-4600-46df-92db-f93d7549d62a",
+          "retrievedAt": "2026-07-23T18:54:11.475495+00:00",
+          "publishedAt": "2017-05-03T00:00:00+00:00",
+          "contentHash": "ddfa41d693c53a25357b8514c52a8514a5e5eb06db31e270f5f7e9fa754d0bfd",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+        "type": "source",
+        "label": "How Are Natural Diamonds Formed? Everything You Need to Know",
+        "data": {
+          "sourceId": "8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-03-10T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 720
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.greenwichjewelers.com/blogs/journal/how-are-natural-diamonds-formed-everything-you-need-to-know",
+          "domain": "www.greenwichjewelers.com",
+          "publisher": "Greenwich St. Jewelers",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-03-10T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:60e91d7a-fa07-4d1e-ab1d-73fc8572bd91",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+          "atomicClaimIds": [
+            "82287762-1add-4f74-aede-569fcc151ffc"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 720
+        },
+        "metadata": {
+          "snapshotId": "60e91d7a-fa07-4d1e-ab1d-73fc8572bd91",
+          "retrievedAt": "2026-07-23T18:54:11.721774+00:00",
+          "publishedAt": "2026-03-10T00:00:00+00:00",
+          "contentHash": "329e85fa8309eca0f161c05dc5cc758b1c53cb3c637614b6eb3a320c23f3136d",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+        "type": "source",
+        "label": "Diamond reserves worldwide by country 2025| Statista",
+        "data": {
+          "sourceId": "caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-02-05T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.statista.com/statistics/267905/world-diamond-reserves-by-country/",
+          "domain": "www.statista.com",
+          "publisher": "Statista",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-02-05T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:dc9051d4-14df-4975-a13f-3d81342d22f5",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "dc9051d4-14df-4975-a13f-3d81342d22f5",
+          "retrievedAt": "2026-07-23T18:54:12.228553+00:00",
+          "publishedAt": "2026-02-05T00:00:00+00:00",
+          "contentHash": "9cd5c5f72e69b3b800e1c9e5bb9d30050973b29c5a2cf3c0399c430e92221750",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "cluster-member:5ebfe4c1-8529-571a-b297-3ae536a0f7f9:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+        "source": "cluster:5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+        "target": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:040799f9-ded6-4aa4-9c4a-4a413b29d656",
+        "source": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+        "target": "snapshot:040799f9-ded6-4aa4-9c4a-4a413b29d656",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "target": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:bf3dc570-fe8c-4214-97ed-81753be98229",
+        "source": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "target": "snapshot:bf3dc570-fe8c-4214-97ed-81753be98229",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:3d170f54-156f-475a-85c3-98bce13f1f13",
+        "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "target": "source:3d170f54-156f-475a-85c3-98bce13f1f13",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:06e6b1d3-5ac1-4944-b280-7f0886cc4fff",
+        "source": "source:3d170f54-156f-475a-85c3-98bce13f1f13",
+        "target": "snapshot:06e6b1d3-5ac1-4944-b280-7f0886cc4fff",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+        "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "target": "source:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:e7c28c59-c06f-4bab-9b39-a16592f0a6d8",
+        "source": "source:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+        "target": "snapshot:e7c28c59-c06f-4bab-9b39-a16592f0a6d8",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:570c7728-9d6c-58e6-858d-019a002a408b:d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+        "source": "cluster:570c7728-9d6c-58e6-858d-019a002a408b",
+        "target": "source:d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:f084f25c-2d72-448a-880d-42a70bfa1524",
+        "source": "source:d82d76f7-65cb-4b4a-94a8-bf1adbc7ed6e",
+        "target": "snapshot:f084f25c-2d72-448a-880d-42a70bfa1524",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+        "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "target": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:a68a7919-f391-4b7c-a4bc-49abe774ed5d",
+        "source": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+        "target": "snapshot:a68a7919-f391-4b7c-a4bc-49abe774ed5d",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:5ebfe4c1-8529-571a-b297-3ae536a0f7f9:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+        "source": "cluster:5ebfe4c1-8529-571a-b297-3ae536a0f7f9",
+        "target": "source:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:ff260bb3-c887-4ce8-af16-9e04463d0f81",
+        "source": "source:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+        "target": "snapshot:ff260bb3-c887-4ce8-af16-9e04463d0f81",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:a624abd7-a13c-5d82-984f-fa6f4bcec3d1:05c134f5-940a-4ed2-925c-050b4676d1de",
+        "source": "cluster:a624abd7-a13c-5d82-984f-fa6f4bcec3d1",
+        "target": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:32add11c-4600-46df-92db-f93d7549d62a",
+        "source": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+        "target": "snapshot:32add11c-4600-46df-92db-f93d7549d62a",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c:8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+        "source": "cluster:64830ca0-2fa6-5ad1-93fe-3d70a3b58d0c",
+        "target": "source:8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:60e91d7a-fa07-4d1e-ab1d-73fc8572bd91",
+        "source": "source:8c415c0c-4dbf-47c0-afe9-ecb330f9ccd5",
+        "target": "snapshot:60e91d7a-fa07-4d1e-ab1d-73fc8572bd91",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+        "source": "cluster:7cd1ea49-9259-51dd-a7b9-e96f08ea3b8f",
+        "target": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:dc9051d4-14df-4975-a13f-3d81342d22f5",
+        "source": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+        "target": "snapshot:dc9051d4-14df-4975-a13f-3d81342d22f5",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "dependency:0a70f6fb-3d5b-47e5-b5f0-241715871d94",
+        "source": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+        "target": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.85,
+          "detectionMethod": "explicit_named_source"
+        }
+      },
+      {
+        "id": "dependency:b6bf8c92-5e04-4936-9425-fa2dda9e7798",
+        "source": "source:caf73819-c68f-40bb-8e49-7e1e7d62a00c",
+        "target": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.99,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.99,
+          "detectionMethod": "explicit_outbound_link"
+        }
+      },
+      {
+        "id": "dependency:9ef0acec-9d4f-4da6-a82f-35c1941d7fd8",
+        "source": "source:e42b778f-7b54-4770-b2a0-ab965f15f99e",
+        "target": "source:e0a0f2be-11e8-4b88-b706-67f425ee14bd",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:7bd2990e-708e-4a43-87a3-f4eb3bd55ef9",
+        "source": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "target": "source:82d7a7c1-e5a1-4516-8e2e-093a2ae8e9de",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:ee49b787-ae5a-41da-b5a2-41251f21e5e1",
+        "source": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+        "target": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:fc11906c-7b78-447b-a0ee-95e87344fc1f",
+        "source": "source:05c134f5-940a-4ed2-925c-050b4676d1de",
+        "target": "source:c8fd4705-72a9-45c5-9146-9bb6a924956f",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:11dc6420-9f48-4c8c-9364-2030df04ed7a",
+        "source": "source:3d170f54-156f-475a-85c3-98bce13f1f13",
+        "target": "source:d0268dff-66d6-4fc6-b42f-992e5ae13722",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      }
+    ]
+  },
+  "calculations": [
+    {
+      "id": "f0fc6465-3ee7-4226-ab34-64ef8bddae8a",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.2",
+        "D": "0.2",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.2",
+        "X": "1.0",
+        "passage_id": "06cab3d8-8d91-5d53-81c3-c8c609c3012d"
+      },
+      "result": {
+        "quality": "0.310"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "8f428ff6-deff-4ec5-9107-9b2117a48a48",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.310",
+        "passage_id": "06cab3d8-8d91-5d53-81c3-c8c609c3012d",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.31000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "243d68d7-5865-4526-93b2-820b761ba2b9",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.3",
+        "D": "0.3",
+        "F": "0.5",
+        "R": "0.4",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "24d4ea99-f1b2-5d49-8ccd-9dfec521d31e"
+      },
+      "result": {
+        "quality": "0.445"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "97215f86-0b6a-4dbf-a362-52565b48901a",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.445",
+        "passage_id": "24d4ea99-f1b2-5d49-8ccd-9dfec521d31e",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.44500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "daeb1b18-5f72-49be-b9a7-9172e1078be9",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.2",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "edabd3a7-81f8-59ec-8adc-bcbf73be48f0"
+      },
+      "result": {
+        "quality": "0.335"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "4f756171-3e4d-4009-bcff-2b32ff5c09eb",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.335",
+        "passage_id": "edabd3a7-81f8-59ec-8adc-bcbf73be48f0",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.11725"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "941fa7c5-8cca-4f56-8544-31e9c5b094d4",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.6",
+        "D": "0.8",
+        "F": "0.5",
+        "R": "0.9",
+        "T": "0.7",
+        "X": "0.9855",
+        "passage_id": "e087c6c8-df25-5572-bb32-a7e11f082ea3"
+      },
+      "result": {
+        "quality": "0.758550"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d23b2094-898f-47b7-8daa-4726b47663c1",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.758550",
+        "passage_id": "e087c6c8-df25-5572-bb32-a7e11f082ea3",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.75855000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d7eb9332-9fb0-4dcc-8cf7-daabfb5f0b9c",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.5",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.1",
+        "T": "0.5",
+        "X": "0.9804",
+        "passage_id": "5e2d1075-2e17-507c-808c-475566e24b2c"
+      },
+      "result": {
+        "quality": "0.368040"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e8f0ecd8-42b1-409f-9a35-c2a2b284dd8c",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.368040",
+        "passage_id": "5e2d1075-2e17-507c-808c-475566e24b2c",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.36804000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f5debcdf-0890-4188-a53a-f15e47784bb0",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.3",
+        "D": "0.6",
+        "F": "0.5",
+        "R": "0.8",
+        "T": "0.4",
+        "X": "1.0",
+        "passage_id": "07c21348-b96d-55ea-b1a3-2152756f233a"
+      },
+      "result": {
+        "quality": "0.590"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "84c65f47-bdb0-4adc-a035-90aa447cd5b0",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.590",
+        "passage_id": "07c21348-b96d-55ea-b1a3-2152756f233a",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.59000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "be8befcd-402f-4cc7-82ed-e395f11c2d49",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.265",
+        "passage_id": "0a750917-aa5d-5ace-8875-8a940ca4d354",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.09275"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c0e9a670-f6f6-4ea0-be2b-5dee15fc1dbb",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.2",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.1",
+        "T": "0.2",
+        "X": "1.0",
+        "passage_id": "0a750917-aa5d-5ace-8875-8a940ca4d354"
+      },
+      "result": {
+        "quality": "0.265"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "32477ee5-9aca-4971-8dfd-1f2edea1ffbc",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.2",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.1",
+        "T": "0.4",
+        "X": "1.0",
+        "passage_id": "0effd646-8ef8-5472-b0a6-620fd2ca62c1"
+      },
+      "result": {
+        "quality": "0.295"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "69e91e04-352a-44db-ad3e-4b71cccb3cba",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.3",
+        "D": "0.9",
+        "F": "0.5",
+        "R": "0.9",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "0f3e37c2-027a-592b-90cf-ae05b690cc71"
+      },
+      "result": {
+        "quality": "0.690"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "be05bb0f-6f2c-43f8-95fc-148e929316d2",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.295",
+        "passage_id": "0effd646-8ef8-5472-b0a6-620fd2ca62c1",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.10325"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e15b4ba1-7509-4908-82fd-50efa7d12910",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.690",
+        "passage_id": "0f3e37c2-027a-592b-90cf-ae05b690cc71",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.24150"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1a405e7d-6c59-424b-bf07-423ec3802d4c",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.5",
+        "D": "0.2",
+        "F": "0.5",
+        "R": "0.3",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "1a0949a1-4b3a-5fa4-b825-ef0ad3b25169"
+      },
+      "result": {
+        "quality": "0.440"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0a6b344a-cf52-44dd-a721-75fbe01ef53b",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.440",
+        "passage_id": "1a0949a1-4b3a-5fa4-b825-ef0ad3b25169",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.44000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "44dccf02-b944-4a16-b6ad-42058868b744",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "supporting_weight",
+      "formula_text": "P = sum(max(stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "e087c6c8-df25-5572-bb32-a7e11f082ea3",
+          "07c21348-b96d-55ea-b1a3-2152756f233a",
+          "0f3e37c2-027a-592b-90cf-ae05b690cc71"
+        ]
+      },
+      "result": {
+        "P": "0.6207750000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "595078ab-ca77-4b7a-8c9b-369eb39c01c7",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_support",
+      "formula_text": "100 * P / (P + N)",
+      "inputs": {
+        "N": "0.29500000",
+        "P": "0.6207750000"
+      },
+      "result": {
+        "score": "67.78684720591848434386175644"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e2d583b2-8c20-4d2e-af48-89cff7e76fda",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "contradicting_weight",
+      "formula_text": "N = sum(max(-stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "e087c6c8-df25-5572-bb32-a7e11f082ea3",
+          "07c21348-b96d-55ea-b1a3-2152756f233a",
+          "0f3e37c2-027a-592b-90cf-ae05b690cc71"
+        ]
+      },
+      "result": {
+        "N": "0.29500000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "4be53973-e591-4cd5-b966-16b815609444",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "evidence_consistency",
+      "formula_text": "100 * abs(P - N) / (P + N)",
+      "inputs": {
+        "N": "0.29500000",
+        "P": "0.6207750000"
+      },
+      "result": {
+        "score": "35.57369441183696868772351287"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "4b0d1c7f-b1a8-4a5c-9c5c-7e372b0a8ef8",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "essential_term_ambiguous": "10.5",
+          "single_information_cluster": "15"
+        },
+        "consistency": "35.57369441183696868772351287",
+        "independence": "80.00",
+        "primary_access": "100",
+        "average_quality": "68.55967438130876387534983177"
+      },
+      "result": {
+        "score": "52.97597275710273627199598487"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e5d6acf7-0389-46cb-b151-b7954982b203",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "50",
+        "primary_diversity": "100",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "80.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "ed123daa-864e-4968-a13d-3fa76bff3cde",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "material_penalties": {}
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "40be52b6-bc5b-41ac-89cf-141d091d2083",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "ambiguity_gate",
+      "formula_text": "owned ambiguity blocks unresolved key facts unless accepted adjusted evidence >= minimum, P > 0, and N = 0",
+      "inputs": {
+        "scoring_version": "1.2-citation-partial-penalty",
+        "owned_ambiguity_count": 1,
+        "minimum_adjusted_evidence": "0.50",
+        "accepted_adjusted_evidence": "0.9157750000",
+        "accepted_supporting_weight": "0.6207750000",
+        "accepted_contradicting_weight": "0.29500000"
+      },
+      "result": {
+        "non_blocking": false,
+        "has_accepted_support": true,
+        "unresolved_key_facts": true,
+        "adequate_accepted_evidence": true,
+        "no_accepted_material_contradiction": false
+      },
+      "units": "gate_decision",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "gated"
+    },
+    {
+      "id": "d735ea24-ea32-4e9a-8c94-a43d19228369",
+      "atomic_claim_id": "82287762-1add-4f74-aede-569fcc151ffc",
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "100",
+        "support": "67.78684720591848434386175644",
+        "confidence": "52.97597275710273627199598487",
+        "insufficient_evidence_reasons": [
+          "key_definitions_dates_or_identities_unresolved"
+        ]
+      },
+      "result": {
+        "label": "Insufficient evidence"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "gated"
+    },
+    {
+      "id": "45f3e626-6dfe-4328-96f8-6f4e1abd0304",
+      "atomic_claim_id": null,
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "single_information_cluster": "15"
+        },
+        "consistency": "35.57369441183696868772351287",
+        "independence": "80.00",
+        "primary_access": "100",
+        "average_quality": "68.55967438130876387534983177"
+      },
+      "result": {
+        "score": "63.47597275710273627199598487"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "869a3c18-8482-4abe-83d0-f37e095a1049",
+      "atomic_claim_id": null,
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "50",
+        "primary_diversity": "100",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "80.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "be453d07-69dd-4dfe-a099-74f476efec52",
+      "atomic_claim_id": null,
+      "formula_name": "article_factual_accuracy",
+      "formula_text": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "67.78684720591848434386175644",
+            "importance_weight": 1
+          }
+        ]
+      },
+      "result": {
+        "score": "67.78684720591848434386175644",
+        "essential_claim_gate": false
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "392eafcc-2356-47b7-a261-c7d576440229",
+      "atomic_claim_id": null,
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "100",
+        "factual_accuracy": "67.78684720591848434386175644",
+        "verdict_confidence": "63.47597275710273627199598487",
+        "insufficient_evidence_reasons": [],
+        "strongly_refuted_essential_claim": false
+      },
+      "result": {
+        "label": "Leaning supported"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e2ea4674-391c-4e1e-a006-ad7818da20fa",
+      "atomic_claim_id": null,
+      "formula_name": "research_coverage",
+      "formula_text": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+      "inputs": {
+        "claims": [
+          {
+            "claim_ref": "claim-1-d569e0b465327c66",
+            "adequate_evidence": true,
+            "importance_weight": 1
+          }
+        ],
+        "confidence_issues": [
+          "single_information_cluster"
+        ]
+      },
+      "result": {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "0"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "18e79c20-9b1c-4f44-b7d6-b259d3206bb8",
+      "atomic_claim_id": null,
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "claims": [
+          {
+            "context": "100",
+            "claim_ref": "claim-1-d569e0b465327c66",
+            "importance_weight": 1
+          }
+        ]
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "methodology_version": "not-recorded",
+  "workflow_version": "1.0.0",
+  "model_versions": {
+    "intake": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1619,
+        "prompt_tokens": 967,
+        "completion_tokens": 652
+      },
+      "provider": "deepseek",
+      "latency_ms": 5812
+    },
+    "planner": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 2131,
+        "prompt_tokens": 1127,
+        "completion_tokens": 1004
+      },
+      "provider": "deepseek",
+      "latency_ms": 8288
+    },
+    "embedding": {
+      "status": "unconfigured_fallback",
+      "provider": "deepseek",
+      "retryable": false,
+      "error_code": "embedding_route_unavailable",
+      "latency_ms": 0,
+      "used_model": null,
+      "status_code": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "request_count": 0,
+      "retrieval_mode": "lexical_metadata_fallback",
+      "configured_model": null
+    },
+    "synthesis": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 20952,
+        "prompt_tokens": 19695,
+        "completion_tokens": 1257
+      },
+      "provider": "deepseek",
+      "latency_ms": 10363
+    },
+    "decomposition": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 2197,
+        "prompt_tokens": 1372,
+        "completion_tokens": 825
+      },
+      "provider": "deepseek",
+      "latency_ms": 6231
+    },
+    "citation_audit": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 4201,
+        "prompt_tokens": 1971,
+        "completion_tokens": 2230
+      },
+      "provider": "deepseek",
+      "latency_ms": 13696
+    },
+    "citation_revision": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 7134,
+        "prompt_tokens": 3576,
+        "completion_tokens": 3558
+      },
+      "provider": "deepseek",
+      "latency_ms": 26362
+    },
+    "evidence_classification": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 7384,
+        "prompt_tokens": 3042,
+        "completion_tokens": 4342
+      },
+      "provider": "deepseek",
+      "latency_ms": 26449
+    }
+  },
+  "prompt_versions": {
+    "intake": "intake-v2",
+    "planner": "planner-v2",
+    "synthesis": "synthesis-v4",
+    "decomposition": "decomposition-v3",
+    "citation_audit": "citation-audit-v3",
+    "citation_revision": "synthesis-v4",
+    "evidence_classification": "evidence-classification-v3"
+  },
+  "parser_versions": {
+    "trafilatura": "2.1.0"
+  },
+  "retrieval_versions": {
+    "implementation": "not-recorded",
+    "version": "not-recorded"
+  },
+  "score_roles": {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured."
+  },
+  "report_sentences": [
+    {
+      "id": "6aa4237c-e893-49e9-93db-1dd6e14d0109",
+      "report_section": "summary",
+      "sentence_text": "Compared to other precious gemstones like emerald, sapphires and rubies, diamonds are described as quite plentiful.",
+      "passage_id": "0f3e37c2-027a-592b-90cf-ae05b690cc71",
+      "audit_status": "passed",
+      "audit_note": "Passage states that compared to other precious gemstones like emerald, sapphires and rubies, diamonds are actually quite plentiful."
+    },
+    {
+      "id": "15cb928c-75ee-443f-a171-5ed146737149",
+      "report_section": "summary",
+      "sentence_text": "Geological estimates suggest there are quadrillions of tons of diamonds located 90 to 150 miles beneath Earth's surface, though these are not accessible with current technology.",
+      "passage_id": "e087c6c8-df25-5572-bb32-a7e11f082ea3",
+      "audit_status": "passed",
+      "audit_note": "Passage estimates quadrillions of tons of diamonds 90-150 miles deep, noting they are inaccessible."
+    },
+    {
+      "id": "74d29b31-59f7-4a8b-97cf-787edb33aad7",
+      "report_section": "summary",
+      "sentence_text": "Some sources question whether diamonds are truly common, noting that claims of abundance often lack substantive backing.",
+      "passage_id": "07c21348-b96d-55ea-b1a3-2152756f233a",
+      "audit_status": "passed",
+      "audit_note": "Passage says sources that claim diamonds are common lack backing, matching the sentence's paraphrase."
+    },
+    {
+      "id": "7693c9c8-c292-43a3-84ce-bcc626313422",
+      "report_section": "factual_finding",
+      "sentence_text": "Diamonds are described as 'quite plentiful' in comparison to emerald, sapphires, and rubies.",
+      "passage_id": "0f3e37c2-027a-592b-90cf-ae05b690cc71",
+      "audit_status": "passed",
+      "audit_note": "Passage directly states diamonds are 'quite plentiful' compared to emerald, sapphires, and rubies."
+    },
+    {
+      "id": "d281e09f-b2f9-4e57-a516-7d8de59327c6",
+      "report_section": "factual_finding",
+      "sentence_text": "Geological estimates suggest there are quadrillions of tons of diamonds in cratons.",
+      "passage_id": "e087c6c8-df25-5572-bb32-a7e11f082ea3",
+      "audit_status": "passed",
+      "audit_note": "Passage estimates quadrillions of tons of diamonds based on craton volume."
+    },
+    {
+      "id": "ee1e6e3a-6c2e-47f6-96d5-3b7bdeffe4c7",
+      "report_section": "factual_finding",
+      "sentence_text": "These diamonds are buried 90 to 150 miles deep, beyond the reach of the deepest borehole (about 7 miles).",
+      "passage_id": "e087c6c8-df25-5572-bb32-a7e11f082ea3",
+      "audit_status": "passed",
+      "audit_note": "Passage notes diamonds are buried 90-150 miles deep and the deepest borehole is only 7 miles."
+    },
+    {
+      "id": "fe495db7-562c-4bbf-8312-269c9797532d",
+      "report_section": "factual_finding",
+      "sentence_text": "Some sources that claim diamonds are common lack supporting evidence.",
+      "passage_id": "07c21348-b96d-55ea-b1a3-2152756f233a",
+      "audit_status": "passed",
+      "audit_note": "Passage states sources that claim diamonds are common lack supporting evidence."
+    },
+    {
+      "id": "cba07372-8082-411b-ac82-da0b3beb77b4",
+      "report_section": "strongest_contradiction",
+      "sentence_text": "Sources that outright claim that diamonds are common don't seem to have anything to back it up with.",
+      "passage_id": "07c21348-b96d-55ea-b1a3-2152756f233a",
+      "audit_status": "passed",
+      "audit_note": "Passage contains the exact same statement."
+    }
+  ],
+  "evidence_reviewed_at": "2026-07-23T18:54:12.228553Z",
+  "generated_at": "2026-07-23T18:55:59.201754Z",
+  "limitations": [
+    "2 calculation audit(s) require review; inspect audit_status and inputs."
+  ]
+}

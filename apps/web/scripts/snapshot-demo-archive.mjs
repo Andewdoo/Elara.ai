@@ -1,4 +1,4 @@
-import { mkdir, rename, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, basename, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -63,6 +63,39 @@ export async function snapshotDemoArchive({
   });
 
   return { count: artifacts.length, generatedAt: manifest.generated_at, outputDir: resolvedOutputDir };
+}
+
+export async function validateBundledDemoArchive({
+  outputDir = defaultOutputDir,
+  expectedCount = DEFAULT_EXPECTED_COUNT,
+} = {}) {
+  const resolvedOutputDir = requireArchiveDirectory(outputDir);
+  const manifest = await readJson(join(resolvedOutputDir, "manifest.json"));
+  validateHistory(manifest, expectedCount);
+  if (manifest.total !== expectedCount || manifest.page !== 1 || manifest.page_size !== expectedCount) {
+    throw new Error("The bundled Demo archive manifest count metadata is inconsistent.");
+  }
+
+  const expectedRunIds = new Set(manifest.items.map((item) => item.run_id));
+  const runEntries = await readdir(join(resolvedOutputDir, "runs"), { withFileTypes: true });
+  const bundledRunIds = runEntries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+  if (bundledRunIds.length !== expectedCount || bundledRunIds.some((runId) => !expectedRunIds.has(runId))) {
+    throw new Error("The bundled Demo archive run directories do not match its manifest.");
+  }
+
+  for (const item of manifest.items) {
+    const resources = Object.fromEntries(
+      await Promise.all(
+        RESOURCE_NAMES.map(async (resource) => [
+          resource,
+          await readJson(join(resolvedOutputDir, "runs", item.run_id, `${resource}.json`)),
+        ]),
+      ),
+    );
+    validatePublishedRun(item, resources);
+  }
+
+  return { count: expectedCount, generatedAt: manifest.generated_at, outputDir: resolvedOutputDir };
 }
 
 function requireHttpOrigin(value) {
@@ -149,6 +182,22 @@ async function replaceArchiveDirectory(outputDir, build) {
       await rename(backupDir, outputDir);
     }
     throw error;
+  }
+}
+
+function requireArchiveDirectory(outputDir) {
+  const resolvedOutputDir = resolve(outputDir);
+  if (basename(resolvedOutputDir) !== "demo-archive") {
+    throw new Error("The snapshot output directory must be named demo-archive.");
+  }
+  return resolvedOutputDir;
+}
+
+async function readJson(path) {
+  try {
+    return JSON.parse(await readFile(path, "utf8"));
+  } catch (error) {
+    throw new Error(`The bundled Demo archive is missing or malformed: ${path}`, { cause: error });
   }
 }
 

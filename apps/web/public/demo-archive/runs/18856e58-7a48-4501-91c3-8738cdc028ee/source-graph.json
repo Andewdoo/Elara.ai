@@ -1,0 +1,1087 @@
+{
+  "nodes": [
+    {
+      "id": "cluster:4e53d075-351a-5222-bb37-33743807fa14",
+      "type": "cluster",
+      "label": "Strawberries aren’t true berries, botanically speaking information origin",
+      "data": {
+        "clusterId": "4e53d075-351a-5222-bb37-33743807fa14",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "metadata": {
+        "representativeSourceId": "bdaa994d-81c5-4a9c-b986-d62d8496fb5b"
+      }
+    },
+    {
+      "id": "cluster:b917d74a-0855-50fe-a96c-134667fe0b6b",
+      "type": "cluster",
+      "label": "Berry Fruit Definition Structure and Examples information origin",
+      "data": {
+        "clusterId": "b917d74a-0855-50fe-a96c-134667fe0b6b",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 180
+      },
+      "metadata": {
+        "representativeSourceId": "9888617e-72dc-4648-87a9-b8e6178e3264"
+      }
+    },
+    {
+      "id": "cluster:fc255c50-a121-554e-8773-52818612a7c9",
+      "type": "cluster",
+      "label": "Are Bananas Considered Berries or Fruits? + Other Fruity Questions | HelloFresh information origin",
+      "data": {
+        "clusterId": "fc255c50-a121-554e-8773-52818612a7c9",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 360
+      },
+      "metadata": {
+        "representativeSourceId": "412b981b-f812-40a6-946e-46c93d7ab35a"
+      }
+    },
+    {
+      "id": "cluster:549250b1-9b87-5e44-a837-591ee477ea52",
+      "type": "cluster",
+      "label": "Are Blueberries, Blackberries and Strawberries Really Berries - Veritable Vegetable information origin",
+      "data": {
+        "clusterId": "549250b1-9b87-5e44-a837-591ee477ea52",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 540
+      },
+      "metadata": {
+        "representativeSourceId": "b5ecf73a-95dc-4951-81f4-cc5f3c9738bd"
+      }
+    },
+    {
+      "id": "cluster:2b943b80-bc4d-5881-a7e4-c2ee9dfe3102",
+      "type": "cluster",
+      "label": "Berry information origin",
+      "data": {
+        "clusterId": "2b943b80-bc4d-5881-a7e4-c2ee9dfe3102",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 720
+      },
+      "metadata": {
+        "representativeSourceId": "68f57e2f-22dd-465b-bace-f53cf68f64d8"
+      }
+    },
+    {
+      "id": "cluster:d1bcb691-3e48-568e-8003-e56cefddff17",
+      "type": "cluster",
+      "label": "What Is a Strawberry Classified As? - Chef's Resource information origin",
+      "data": {
+        "clusterId": "d1bcb691-3e48-568e-8003-e56cefddff17",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 900
+      },
+      "metadata": {
+        "representativeSourceId": "bcacb6e0-7088-40b2-90d3-946cb258ca20"
+      }
+    },
+    {
+      "id": "cluster:83fb60dc-6ef8-5e5b-813b-0e2df16fa0b0",
+      "type": "cluster",
+      "label": "Bananas are Berries. Raspberries are Not. | Office for Science and Society - McGill University information origin",
+      "data": {
+        "clusterId": "83fb60dc-6ef8-5e5b-813b-0e2df16fa0b0",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1080
+      },
+      "metadata": {
+        "representativeSourceId": "58cb7c87-c5af-4ca2-b78e-cb78b9b3ba53"
+      }
+    },
+    {
+      "id": "cluster:b7d539dd-ae4f-562f-a499-eef2754f8f73",
+      "type": "cluster",
+      "label": "Are Bananas a Fruit or a Berry? Fruits vs. Berries vs. Drupes information origin",
+      "data": {
+        "clusterId": "b7d539dd-ae4f-562f-a499-eef2754f8f73",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1260
+      },
+      "metadata": {
+        "representativeSourceId": "d2acb835-0fdd-41be-be52-280e322201a2"
+      }
+    },
+    {
+      "id": "cluster:60712475-720b-54bd-9de4-c4ea06511fee",
+      "type": "cluster",
+      "label": "Why Are Bananas Berries, But Strawberries Aren't? information origin",
+      "data": {
+        "clusterId": "60712475-720b-54bd-9de4-c4ea06511fee",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1440
+      },
+      "metadata": {
+        "representativeSourceId": "b316c8a8-6224-43f3-8bb1-77504499e286"
+      }
+    },
+    {
+      "id": "cluster:3a3570d7-3692-5293-9f4f-de8084104dfc",
+      "type": "cluster",
+      "label": "Is a Banana a Berry? Yes—Here’s the Science You’ll Love information origin",
+      "data": {
+        "clusterId": "3a3570d7-3692-5293-9f4f-de8084104dfc",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1620
+      },
+      "metadata": {
+        "representativeSourceId": "06dc454e-1601-4f34-b540-ef50494fa9e6"
+      }
+    },
+    {
+      "id": "source:bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+      "type": "source",
+      "label": "Strawberries aren’t true berries, botanically speaking",
+      "data": {
+        "sourceId": "bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "4e53d075-351a-5222-bb37-33743807fa14",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2021-11-19T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "8c0ea5c1-2498-43b1-a5ed-a7141fe50130"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      },
+      "metadata": {
+        "canonicalUrl": "https://thestute.com/2021/11/19/strawberries-arent-true-berries-botanically-speaking/",
+        "domain": "thestute.com",
+        "publisher": "thestute.com",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2021-11-19T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:98248e73-6e6f-4075-b669-f1faed2ed174",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "4e53d075-351a-5222-bb37-33743807fa14",
+        "atomicClaimIds": [
+          "8c0ea5c1-2498-43b1-a5ed-a7141fe50130"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      },
+      "metadata": {
+        "snapshotId": "98248e73-6e6f-4075-b669-f1faed2ed174",
+        "retrievedAt": "2026-08-13T22:31:25.747697+00:00",
+        "publishedAt": "2021-11-19T00:00:00+00:00",
+        "contentHash": "74717c6751dadc66141a1d53a73e32bc9123e45335539260ff1bb05ac2e83d46",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:412b981b-f812-40a6-946e-46c93d7ab35a",
+      "type": "source",
+      "label": "Are Bananas Considered Berries or Fruits? + Other Fruity Questions | HelloFresh",
+      "data": {
+        "sourceId": "412b981b-f812-40a6-946e-46c93d7ab35a",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fc255c50-a121-554e-8773-52818612a7c9",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2025-05-14T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 360
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.hellofresh.com/eat/ingredient-info/are-bananas-considered-berries-or-fruits",
+        "domain": "www.hellofresh.com",
+        "publisher": "HelloFresh",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-05-14T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:d342e5b3-8482-485a-a151-ad4987892c43",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "412b981b-f812-40a6-946e-46c93d7ab35a",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "fc255c50-a121-554e-8773-52818612a7c9",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 360
+      },
+      "metadata": {
+        "snapshotId": "d342e5b3-8482-485a-a151-ad4987892c43",
+        "retrievedAt": "2026-08-13T22:31:26.428544+00:00",
+        "publishedAt": "2025-05-14T00:00:00+00:00",
+        "contentHash": "c19555d7fd80e904883cb99bb23f4b1d6ef122c1df01e1ded8e9f5c4dff79e92",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:b5ecf73a-95dc-4951-81f4-cc5f3c9738bd",
+      "type": "source",
+      "label": "Are Blueberries, Blackberries and Strawberries Really Berries - Veritable Vegetable",
+      "data": {
+        "sourceId": "b5ecf73a-95dc-4951-81f4-cc5f3c9738bd",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "549250b1-9b87-5e44-a837-591ee477ea52",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2023-02-02T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "8c0ea5c1-2498-43b1-a5ed-a7141fe50130"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://veritablevegetable.com/is-strawberry-a-berry/",
+        "domain": "veritablevegetable.com",
+        "publisher": "Veritable Vegetable",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2023-02-02T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:e6f90179-d6bd-4530-9b96-03ef292a32b0",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "b5ecf73a-95dc-4951-81f4-cc5f3c9738bd",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "549250b1-9b87-5e44-a837-591ee477ea52",
+        "atomicClaimIds": [
+          "8c0ea5c1-2498-43b1-a5ed-a7141fe50130"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "e6f90179-d6bd-4530-9b96-03ef292a32b0",
+        "retrievedAt": "2026-08-13T22:31:27.755475+00:00",
+        "publishedAt": "2023-02-02T00:00:00+00:00",
+        "contentHash": "5a860a6869eff659a6acfe1b88b1671f70e1c3efb02326eab110478a7b127c2d",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "type": "source",
+      "label": "Berry",
+      "data": {
+        "sourceId": "68f57e2f-22dd-465b-bace-f53cf68f64d8",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "2b943b80-bc4d-5881-a7e4-c2ee9dfe3102",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2009-10-31T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 720
+      },
+      "metadata": {
+        "canonicalUrl": "https://pomologyandfruit.fandom.com/wiki/Berry",
+        "domain": "pomologyandfruit.fandom.com",
+        "publisher": "Pomology and Fruit Wiki",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2009-10-31T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:f807b95c-046b-499d-a186-a5abb983ac7a",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "68f57e2f-22dd-465b-bace-f53cf68f64d8",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "2b943b80-bc4d-5881-a7e4-c2ee9dfe3102",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 720
+      },
+      "metadata": {
+        "snapshotId": "f807b95c-046b-499d-a186-a5abb983ac7a",
+        "retrievedAt": "2026-08-13T22:31:28.434236+00:00",
+        "publishedAt": "2009-10-31T00:00:00+00:00",
+        "contentHash": "ce3ebde6aa57bac9d331fa62edc37b71fcedbeec4cf1a8fce53341a434295750",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:bcacb6e0-7088-40b2-90d3-946cb258ca20",
+      "type": "source",
+      "label": "What Is a Strawberry Classified As? - Chef's Resource",
+      "data": {
+        "sourceId": "bcacb6e0-7088-40b2-90d3-946cb258ca20",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "d1bcb691-3e48-568e-8003-e56cefddff17",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:31:28.995609+00:00",
+        "contentType": null,
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 900
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.chefsresource.com/what-is-a-strawberry-classified-as/",
+        "domain": "www.chefsresource.com",
+        "publisher": null,
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:31:28.995609+00:00"
+      }
+    },
+    {
+      "id": "snapshot:cf205595-9c4e-4b23-b04c-86570b7ec6c9",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "bcacb6e0-7088-40b2-90d3-946cb258ca20",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "d1bcb691-3e48-568e-8003-e56cefddff17",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 900
+      },
+      "metadata": {
+        "snapshotId": "cf205595-9c4e-4b23-b04c-86570b7ec6c9",
+        "retrievedAt": "2026-08-13T22:31:28.995609+00:00",
+        "publishedAt": null,
+        "contentHash": null,
+        "parserName": null,
+        "parserVersion": null
+      }
+    },
+    {
+      "id": "source:58cb7c87-c5af-4ca2-b78e-cb78b9b3ba53",
+      "type": "source",
+      "label": "Bananas are Berries. Raspberries are Not. | Office for Science and Society - McGill University",
+      "data": {
+        "sourceId": "58cb7c87-c5af-4ca2-b78e-cb78b9b3ba53",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "83fb60dc-6ef8-5e5b-813b-0e2df16fa0b0",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:31:29.238076+00:00",
+        "contentType": null,
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 1080
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.mcgill.ca/oss/article/did-you-know/bananas-are-berries-raspberries-are-not",
+        "domain": "www.mcgill.ca",
+        "publisher": null,
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:31:29.238076+00:00"
+      }
+    },
+    {
+      "id": "snapshot:97c5a26e-47f5-4b9d-beb7-2dc2d3e57615",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "58cb7c87-c5af-4ca2-b78e-cb78b9b3ba53",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "83fb60dc-6ef8-5e5b-813b-0e2df16fa0b0",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 1080
+      },
+      "metadata": {
+        "snapshotId": "97c5a26e-47f5-4b9d-beb7-2dc2d3e57615",
+        "retrievedAt": "2026-08-13T22:31:29.238076+00:00",
+        "publishedAt": null,
+        "contentHash": null,
+        "parserName": null,
+        "parserVersion": null
+      }
+    },
+    {
+      "id": "source:d2acb835-0fdd-41be-be52-280e322201a2",
+      "type": "source",
+      "label": "Are Bananas a Fruit or a Berry? Fruits vs. Berries vs. Drupes",
+      "data": {
+        "sourceId": "d2acb835-0fdd-41be-be52-280e322201a2",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "b7d539dd-ae4f-562f-a499-eef2754f8f73",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-06-04T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "8c0ea5c1-2498-43b1-a5ed-a7141fe50130",
+          "f32b36b9-a7fa-4856-bba0-b2e705296240"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 1260
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm",
+        "domain": "www.medicinenet.com",
+        "publisher": "MedicineNet",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-06-04T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:7340e0f0-c7d3-4422-9965-a915d8e2e589",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "d2acb835-0fdd-41be-be52-280e322201a2",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "b7d539dd-ae4f-562f-a499-eef2754f8f73",
+        "atomicClaimIds": [
+          "8c0ea5c1-2498-43b1-a5ed-a7141fe50130",
+          "f32b36b9-a7fa-4856-bba0-b2e705296240"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 1260
+      },
+      "metadata": {
+        "snapshotId": "7340e0f0-c7d3-4422-9965-a915d8e2e589",
+        "retrievedAt": "2026-08-13T22:31:29.649287+00:00",
+        "publishedAt": "2026-06-04T00:00:00+00:00",
+        "contentHash": "50699e18a32b913a7d474c8728be6c1b17b7dad3ddd7c6ff8b3bcaf8afa4824b",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:b316c8a8-6224-43f3-8bb1-77504499e286",
+      "type": "source",
+      "label": "Why Are Bananas Berries, But Strawberries Aren't?",
+      "data": {
+        "sourceId": "b316c8a8-6224-43f3-8bb1-77504499e286",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "60712475-720b-54bd-9de4-c4ea06511fee",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2017-01-12T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 1440
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.livescience.com/57477-why-are-bananas-considered-berries.html",
+        "domain": "www.livescience.com",
+        "publisher": "Live Science",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2017-01-12T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:647087d5-c331-432d-84f8-f645ca477628",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "b316c8a8-6224-43f3-8bb1-77504499e286",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "60712475-720b-54bd-9de4-c4ea06511fee",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 1440
+      },
+      "metadata": {
+        "snapshotId": "647087d5-c331-432d-84f8-f645ca477628",
+        "retrievedAt": "2026-08-13T22:31:30.183814+00:00",
+        "publishedAt": "2017-01-12T00:00:00+00:00",
+        "contentHash": "4ce152358800b08346d9d7660b181713aff155231afb3e973b942cede18ad43d",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:06dc454e-1601-4f34-b540-ef50494fa9e6",
+      "type": "source",
+      "label": "Is a Banana a Berry? Yes—Here’s the Science You’ll Love",
+      "data": {
+        "sourceId": "06dc454e-1601-4f34-b540-ef50494fa9e6",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "3a3570d7-3692-5293-9f4f-de8084104dfc",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2025-09-21T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "8c0ea5c1-2498-43b1-a5ed-a7141fe50130",
+          "f32b36b9-a7fa-4856-bba0-b2e705296240"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 1620
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.gardenia.net/guide/why-bananas-are-berries",
+        "domain": "www.gardenia.net",
+        "publisher": "Gardenia",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-09-21T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:cdb776b2-be8f-44fa-b4ce-c3aab57972f8",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "06dc454e-1601-4f34-b540-ef50494fa9e6",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "3a3570d7-3692-5293-9f4f-de8084104dfc",
+        "atomicClaimIds": [
+          "8c0ea5c1-2498-43b1-a5ed-a7141fe50130",
+          "f32b36b9-a7fa-4856-bba0-b2e705296240"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 1620
+      },
+      "metadata": {
+        "snapshotId": "cdb776b2-be8f-44fa-b4ce-c3aab57972f8",
+        "retrievedAt": "2026-08-13T22:31:31.028964+00:00",
+        "publishedAt": "2025-09-21T00:00:00+00:00",
+        "contentHash": "f925c8358dd13e4160e0d4cc2413eb5beafa8acc2e1153ca4b8e4b5225a94368",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:9888617e-72dc-4648-87a9-b8e6178e3264",
+      "type": "source",
+      "label": "Berry Fruit Definition Structure and Examples",
+      "data": {
+        "sourceId": "9888617e-72dc-4648-87a9-b8e6178e3264",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "b917d74a-0855-50fe-a96c-134667fe0b6b",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2022-01-06T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "f32b36b9-a7fa-4856-bba0-b2e705296240"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 180
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.vedantu.com/biology/berry-fruit",
+        "domain": "www.vedantu.com",
+        "publisher": "VEDANTU",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2022-01-06T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:23fc67e4-71de-4475-8f51-63772a39099d",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "9888617e-72dc-4648-87a9-b8e6178e3264",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "b917d74a-0855-50fe-a96c-134667fe0b6b",
+        "atomicClaimIds": [
+          "f32b36b9-a7fa-4856-bba0-b2e705296240"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 180
+      },
+      "metadata": {
+        "snapshotId": "23fc67e4-71de-4475-8f51-63772a39099d",
+        "retrievedAt": "2026-08-13T22:31:31.275519+00:00",
+        "publishedAt": "2022-01-06T00:00:00+00:00",
+        "contentHash": "1957b99f801c552bacc70782856ea95a1dc79afdb6e2bf62d425b2ba0cceac7c",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "cluster-member:4e53d075-351a-5222-bb37-33743807fa14:bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+      "source": "cluster:4e53d075-351a-5222-bb37-33743807fa14",
+      "target": "source:bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:98248e73-6e6f-4075-b669-f1faed2ed174",
+      "source": "source:bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+      "target": "snapshot:98248e73-6e6f-4075-b669-f1faed2ed174",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:fc255c50-a121-554e-8773-52818612a7c9:412b981b-f812-40a6-946e-46c93d7ab35a",
+      "source": "cluster:fc255c50-a121-554e-8773-52818612a7c9",
+      "target": "source:412b981b-f812-40a6-946e-46c93d7ab35a",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:d342e5b3-8482-485a-a151-ad4987892c43",
+      "source": "source:412b981b-f812-40a6-946e-46c93d7ab35a",
+      "target": "snapshot:d342e5b3-8482-485a-a151-ad4987892c43",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:549250b1-9b87-5e44-a837-591ee477ea52:b5ecf73a-95dc-4951-81f4-cc5f3c9738bd",
+      "source": "cluster:549250b1-9b87-5e44-a837-591ee477ea52",
+      "target": "source:b5ecf73a-95dc-4951-81f4-cc5f3c9738bd",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:e6f90179-d6bd-4530-9b96-03ef292a32b0",
+      "source": "source:b5ecf73a-95dc-4951-81f4-cc5f3c9738bd",
+      "target": "snapshot:e6f90179-d6bd-4530-9b96-03ef292a32b0",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:2b943b80-bc4d-5881-a7e4-c2ee9dfe3102:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "source": "cluster:2b943b80-bc4d-5881-a7e4-c2ee9dfe3102",
+      "target": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:f807b95c-046b-499d-a186-a5abb983ac7a",
+      "source": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "target": "snapshot:f807b95c-046b-499d-a186-a5abb983ac7a",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:d1bcb691-3e48-568e-8003-e56cefddff17:bcacb6e0-7088-40b2-90d3-946cb258ca20",
+      "source": "cluster:d1bcb691-3e48-568e-8003-e56cefddff17",
+      "target": "source:bcacb6e0-7088-40b2-90d3-946cb258ca20",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:cf205595-9c4e-4b23-b04c-86570b7ec6c9",
+      "source": "source:bcacb6e0-7088-40b2-90d3-946cb258ca20",
+      "target": "snapshot:cf205595-9c4e-4b23-b04c-86570b7ec6c9",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:83fb60dc-6ef8-5e5b-813b-0e2df16fa0b0:58cb7c87-c5af-4ca2-b78e-cb78b9b3ba53",
+      "source": "cluster:83fb60dc-6ef8-5e5b-813b-0e2df16fa0b0",
+      "target": "source:58cb7c87-c5af-4ca2-b78e-cb78b9b3ba53",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:97c5a26e-47f5-4b9d-beb7-2dc2d3e57615",
+      "source": "source:58cb7c87-c5af-4ca2-b78e-cb78b9b3ba53",
+      "target": "snapshot:97c5a26e-47f5-4b9d-beb7-2dc2d3e57615",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:b7d539dd-ae4f-562f-a499-eef2754f8f73:d2acb835-0fdd-41be-be52-280e322201a2",
+      "source": "cluster:b7d539dd-ae4f-562f-a499-eef2754f8f73",
+      "target": "source:d2acb835-0fdd-41be-be52-280e322201a2",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:7340e0f0-c7d3-4422-9965-a915d8e2e589",
+      "source": "source:d2acb835-0fdd-41be-be52-280e322201a2",
+      "target": "snapshot:7340e0f0-c7d3-4422-9965-a915d8e2e589",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:60712475-720b-54bd-9de4-c4ea06511fee:b316c8a8-6224-43f3-8bb1-77504499e286",
+      "source": "cluster:60712475-720b-54bd-9de4-c4ea06511fee",
+      "target": "source:b316c8a8-6224-43f3-8bb1-77504499e286",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:647087d5-c331-432d-84f8-f645ca477628",
+      "source": "source:b316c8a8-6224-43f3-8bb1-77504499e286",
+      "target": "snapshot:647087d5-c331-432d-84f8-f645ca477628",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:3a3570d7-3692-5293-9f4f-de8084104dfc:06dc454e-1601-4f34-b540-ef50494fa9e6",
+      "source": "cluster:3a3570d7-3692-5293-9f4f-de8084104dfc",
+      "target": "source:06dc454e-1601-4f34-b540-ef50494fa9e6",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:cdb776b2-be8f-44fa-b4ce-c3aab57972f8",
+      "source": "source:06dc454e-1601-4f34-b540-ef50494fa9e6",
+      "target": "snapshot:cdb776b2-be8f-44fa-b4ce-c3aab57972f8",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:b917d74a-0855-50fe-a96c-134667fe0b6b:9888617e-72dc-4648-87a9-b8e6178e3264",
+      "source": "cluster:b917d74a-0855-50fe-a96c-134667fe0b6b",
+      "target": "source:9888617e-72dc-4648-87a9-b8e6178e3264",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:23fc67e4-71de-4475-8f51-63772a39099d",
+      "source": "source:9888617e-72dc-4648-87a9-b8e6178e3264",
+      "target": "snapshot:23fc67e4-71de-4475-8f51-63772a39099d",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "dependency:e794bc5d-dc3f-478b-ac4b-faf5098cbecb",
+      "source": "source:58cb7c87-c5af-4ca2-b78e-cb78b9b3ba53",
+      "target": "source:bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.99,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.99,
+        "detectionMethod": "explicit_outbound_link"
+      }
+    },
+    {
+      "id": "dependency:33ca70e9-6d03-4008-a0f2-b2a7f802cd5d",
+      "source": "source:b316c8a8-6224-43f3-8bb1-77504499e286",
+      "target": "source:bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.99,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.99,
+        "detectionMethod": "explicit_outbound_link"
+      }
+    },
+    {
+      "id": "dependency:4660a82d-7f94-4ebb-824e-4c802529be84",
+      "source": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "target": "source:bdaa994d-81c5-4a9c-b986-d62d8496fb5b",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:72bb3f5e-5436-4f00-a0db-9012f24fd060",
+      "source": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "target": "source:412b981b-f812-40a6-946e-46c93d7ab35a",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:5328d325-42c8-4d3a-9c62-1062998f810d",
+      "source": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "target": "source:b5ecf73a-95dc-4951-81f4-cc5f3c9738bd",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:d807a9dd-7c9a-441d-a071-4120ea8e37e0",
+      "source": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "target": "source:d2acb835-0fdd-41be-be52-280e322201a2",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:0212a4ac-b65e-471e-b992-af37af4fee14",
+      "source": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "target": "source:b316c8a8-6224-43f3-8bb1-77504499e286",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:b45a59b7-4df0-44e1-8b05-d1ca62dee852",
+      "source": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "target": "source:06dc454e-1601-4f34-b540-ef50494fa9e6",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    },
+    {
+      "id": "dependency:6ba5cfdd-1e10-47ca-8019-ea420c21363a",
+      "source": "source:68f57e2f-22dd-465b-bace-f53cf68f64d8",
+      "target": "source:9888617e-72dc-4648-87a9-b8e6178e3264",
+      "label": "cites",
+      "relationship": "CITES",
+      "confidence": 0.85,
+      "data": {
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "detectionMethod": "explicit_named_source"
+      }
+    }
+  ]
+}

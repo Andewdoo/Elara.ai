@@ -1,0 +1,2374 @@
+{
+  "run_id": "c6382322-e9c8-4061-a650-2a4a5db5f59f",
+  "verdict": "Supported",
+  "scores": {
+    "evidence_support": 80,
+    "attribution_support": null,
+    "quote_fidelity": null,
+    "verdict_confidence": 46,
+    "source_independence": 73,
+    "context_completeness": 70
+  },
+  "atomic_claims": [
+    {
+      "id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "claim_text": "Headphones are better than earbuds for ear health",
+      "importance_weight": 3,
+      "claim_type": "factual",
+      "final_label": "Supported",
+      "support_score": 100,
+      "confidence_score": 61,
+      "context_completeness": 70,
+      "ambiguities": [
+        "definition of 'better' in terms of ear health"
+      ],
+      "gaps": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "a6ef5d4c-157d-438c-b7f3-626b7684ad56",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "330333a0-c788-5dbc-8980-94be2c4f5841",
+      "stance": "NEUTRAL",
+      "base_quality": 0.315,
+      "dependency_multiplier": 0.1,
+      "adjusted_weight": 0.0315,
+      "citation_status": "rejected",
+      "passage_text": "Whether it’s for commuting, exercising, or a little background enjoyment while you work, headphones and earbuds have become nearly as essential to our daily routines as the smartphones they often connect to. But if you’ve ever wondered if one is better than the other when it comes to your health, experts weigh in with a resounding yes. Some sources suggest that these devices can harbor bacteria levels up to 2,700 times greater than those found on an average cutting board and 330 times more than on a kitchen countertop. Maybe it’s no wonder some doctors are saying ear infections have increased in the past couple years.",
+      "source_title": "Earbuds vs. Headphones: Ear Doctors Reveal Which Is Safer",
+      "source_url": "https://www.thehealthy.com/ear-nose-throat/earbuds-vs-headphones-ear-doctors-reveal-which-is-better-for-you/",
+      "page_or_position": "paragraph 5"
+    },
+    {
+      "id": "b524e21a-3c1d-465d-b3d7-9893622c4296",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "8dd96e27-10bb-56ca-aefd-ebe75e81c801",
+      "stance": "NEUTRAL",
+      "base_quality": 0.25482,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.089187,
+      "citation_status": "rejected",
+      "passage_text": "So the big question many people ask is: 👉 Are headphones safer than earbuds for long-term hearing health?",
+      "source_title": "Headphones vs Earbuds: Which Is Safer for Long-Term Hearing?",
+      "source_url": "https://eljayhearing.com/headphones-vs-earbuds-which-is-safer-for-long-term-hearing/",
+      "page_or_position": "paragraph 4"
+    },
+    {
+      "id": "c938a1e7-4de5-4157-b33d-fdec4ae366ea",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "5c17b24a-989f-51e3-b941-f324b18683e7",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.72333,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.253166,
+      "citation_status": "pending",
+      "passage_text": "Yes, headphones are somewhat safer than earbuds for a couple of reasons. They don’t go in the ear, so there’s less risk of infections. Plus, your audio content isn’t pumped directly into your ear canal – but you can still get hearing damage with headphones if you listen too loudly.",
+      "source_title": "Fact or fiction: Are earbuds bad for your ears?",
+      "source_url": "https://www.healthpartners.com/blog/how-to-use-earbuds-safely/",
+      "page_or_position": "paragraph 31"
+    },
+    {
+      "id": "98a57e49-0f9f-421e-8f16-85a108813df8",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "616ff6c2-fe73-570f-9c18-9a1a0a78eeff",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.67,
+      "dependency_multiplier": 0.1,
+      "adjusted_weight": 0.067,
+      "citation_status": "pending",
+      "passage_text": "For those experiencing wax occlusion due to earbuds, Dr. Taylor recommends switching to circum-aural headphones. These headphones envelop the ears rather than entering the ear canal, which minimizes pressure on the ear canal and decreases the risk of wax impaction.",
+      "source_title": "Earbuds vs. Headphones: Ear Doctors Reveal Which Is Safer",
+      "source_url": "https://www.thehealthy.com/ear-nose-throat/earbuds-vs-headphones-ear-doctors-reveal-which-is-better-for-you/",
+      "page_or_position": "paragraph 19"
+    },
+    {
+      "id": "f503f93c-87e7-4ea0-9a97-de1f132a501f",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "6b037903-fd67-5722-b3ef-47c8b0ee1770",
+      "stance": "NEUTRAL",
+      "base_quality": 0.27,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.0945,
+      "citation_status": "rejected",
+      "passage_text": "The term “chronic use” generally refers to wearing headphones or earbuds for prolonged periods—often several hours daily—frequently at moderate to high volumes. For instance, someone who listens to music or podcasts for several hours during their commute, plus additional use during workouts or relaxing, may unknowingly put their ear health at risk. It’s like consistently putting your ears under strain without letting them rest.",
+      "source_title": "How Headphones Damage Your Hearing Over Time (ENT Warning Signs)",
+      "source_url": "https://sleepandsinuscenters.com/blog/chronic-headphone-use-and-its-impact-on-ear-health-risks-and-prevention",
+      "page_or_position": "paragraph 3"
+    },
+    {
+      "id": "39586670-f4c3-40d4-8995-833a7aeda146",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "70bddc9b-facf-53b9-8bb1-9fa3bdef2408",
+      "stance": "NEUTRAL",
+      "base_quality": 0.255,
+      "dependency_multiplier": 0.1,
+      "adjusted_weight": 0.0255,
+      "citation_status": "rejected",
+      "passage_text": "Ahead, we share insights from audiologists and ear, nose, and throat (ENT) MDs to uncover critical health differences between earbuds and headphones—and whether there is a cleaner, safer choice for your unique ears.",
+      "source_title": "Earbuds vs. Headphones: Ear Doctors Reveal Which Is Safer",
+      "source_url": "https://www.thehealthy.com/ear-nose-throat/earbuds-vs-headphones-ear-doctors-reveal-which-is-better-for-you/",
+      "page_or_position": "paragraph 6"
+    },
+    {
+      "id": "f95af489-400e-4075-ae41-07a6537c3f60",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "a7192ecf-d924-5e9b-b718-b89c5f804ade",
+      "stance": "NEUTRAL",
+      "base_quality": 0.245,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.08575,
+      "citation_status": "rejected",
+      "passage_text": "Headphones are an incredible tool for modern life, enabling seamless communication and entertainment. However, their impact on ear health is real—from noise-induced hearing loss and infections to discomfort and irritation. The best way to enjoy your favorite sounds is to stay mindful: keep volumes at safe levels, limit total listening time, maintain headphone hygiene, and schedule regular hearing check-ups.",
+      "source_title": "How Headphones Damage Your Hearing Over Time (ENT Warning Signs)",
+      "source_url": "https://sleepandsinuscenters.com/blog/chronic-headphone-use-and-its-impact-on-ear-health-risks-and-prevention",
+      "page_or_position": "paragraph 52"
+    },
+    {
+      "id": "1e48beb0-024f-46b3-9304-9a69f4b3b051",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "adf517f9-3168-583e-aa3b-dd5ad3f75b5c",
+      "stance": "PARTIALLY_SUPPORTS",
+      "base_quality": 0.53,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.1855,
+      "citation_status": "pending",
+      "passage_text": "It’s important to give your ears regular breaks and allow air to circulate. Using over-ear headphones, which generally allow better ventilation, may help reduce infection risk. Proper hygiene—such as wiping earbuds and washing hands before handling them—also makes a significant difference. For more detailed information, see What is an Ear Infection? . Keeping your ears clean and dry helps prevent infections.",
+      "source_title": "How Headphones Damage Your Hearing Over Time (ENT Warning Signs)",
+      "source_url": "https://sleepandsinuscenters.com/blog/chronic-headphone-use-and-its-impact-on-ear-health-risks-and-prevention",
+      "page_or_position": "paragraph 19"
+    },
+    {
+      "id": "ee65b9cd-8912-4726-80bb-cf767b404e6e",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "b1f4fb1f-5391-58f1-a957-0db615a2dea5",
+      "stance": "NEUTRAL",
+      "base_quality": 0.27,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.0945,
+      "citation_status": "rejected",
+      "passage_text": "With modern lifestyles revolving around music, podcasts, virtual meetings, and on-the-go communication, headphones and earbuds have become everyday essentials. This technology offers remarkable convenience and immersive sound experiences, allowing us to stay connected, entertained, and productive almost anywhere. However, an increasing number of people face health risks from chronic headphone use—especially when listening for extended hours at high volumes. Understanding how headphones can impact your ear health is the first step toward enjoying your favorite sounds responsibly and protecting your hearing for the long term.",
+      "source_title": "How Headphones Damage Your Hearing Over Time (ENT Warning Signs)",
+      "source_url": "https://sleepandsinuscenters.com/blog/chronic-headphone-use-and-its-impact-on-ear-health-risks-and-prevention",
+      "page_or_position": "paragraph 1"
+    },
+    {
+      "id": "9046e837-3542-4c77-b88c-e80252286e4d",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "passage_id": "e0ebc7eb-2667-5b50-98c2-cd6ecc04fa21",
+      "stance": "STRONGLY_SUPPORTS",
+      "base_quality": 0.70982,
+      "dependency_multiplier": 0.35,
+      "adjusted_weight": 0.248437,
+      "citation_status": "pending",
+      "passage_text": "👉 Verdict: Over-ear headphones are generally safer than earbuds for long-term hearing , especially when used at moderate volumes.",
+      "source_title": "Headphones vs Earbuds: Which Is Safer for Long-Term Hearing?",
+      "source_url": "https://eljayhearing.com/headphones-vs-earbuds-which-is-safer-for-long-term-hearing/",
+      "page_or_position": "paragraph 37"
+    }
+  ],
+  "source_graph": {
+    "nodes": [
+      {
+        "id": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "type": "cluster",
+        "label": "Earbuds vs. Over-the-Ear Headphones: Which Should You Use? — Hearing Health Foundation information origin",
+        "data": {
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "originType": "shared_data_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "metadata": {
+          "representativeSourceId": "c1885ac1-5c2a-4ec2-8a21-c5c08a5da963"
+        }
+      },
+      {
+        "id": "cluster:e7a2b804-c979-5bce-9c4d-948ef8a4d869",
+        "type": "cluster",
+        "label": "Headphones and hearing loss: Possible risks and more information origin",
+        "data": {
+          "clusterId": "e7a2b804-c979-5bce-9c4d-948ef8a4d869",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 180
+        },
+        "metadata": {
+          "representativeSourceId": "5bbfc01e-bf45-4155-ae31-7631a6e95196"
+        }
+      },
+      {
+        "id": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "type": "source",
+        "label": "Fact or fiction: Are earbuds bad for your ears?",
+        "data": {
+          "sourceId": "947081c7-267e-4e73-8e47-e852c86f7833",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2022-12-13T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "6549df08-b1c6-48c9-9d40-a7bf86f1429f"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 0
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.healthpartners.com/blog/how-to-use-earbuds-safely/",
+          "domain": "www.healthpartners.com",
+          "publisher": "HealthPartners Blog",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2022-12-13T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:4ccd1144-fe07-45a9-8957-03e5520f645f",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "947081c7-267e-4e73-8e47-e852c86f7833",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [
+            "6549df08-b1c6-48c9-9d40-a7bf86f1429f"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 0
+        },
+        "metadata": {
+          "snapshotId": "4ccd1144-fe07-45a9-8957-03e5520f645f",
+          "retrievedAt": "2026-07-23T18:17:20.141181+00:00",
+          "publishedAt": "2022-12-13T00:00:00+00:00",
+          "contentHash": "9b166e93fa7634c204d1d7ee0d043719b6e85d22c687e453c66b11d0ec399dfb",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "type": "source",
+        "label": "Are Earbuds Bad for Your Ears? Tips for Listening Safely - GoodRx",
+        "data": {
+          "sourceId": "f4b33837-ba2e-4fe9-90dd-205f213ba939",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2024-10-07T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 90
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.goodrx.com/health-topic/ear/are-earbuds-bad-for-your-ears",
+          "domain": "www.goodrx.com",
+          "publisher": "GoodRx",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2024-10-07T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:96284354-f849-4469-866d-13d91533390b",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "f4b33837-ba2e-4fe9-90dd-205f213ba939",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 90
+        },
+        "metadata": {
+          "snapshotId": "96284354-f849-4469-866d-13d91533390b",
+          "retrievedAt": "2026-07-23T18:17:20.703446+00:00",
+          "publishedAt": "2024-10-07T00:00:00+00:00",
+          "contentHash": "c55997c712d717be8659765b9e20c151276c5d1a7ae66c2bfa35ddb078575367",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "type": "source",
+        "label": "Headphones vs Earbuds: Which Is Safer for Long-Term Hearing?",
+        "data": {
+          "sourceId": "3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2025-12-23T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "6549df08-b1c6-48c9-9d40-a7bf86f1429f"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://eljayhearing.com/headphones-vs-earbuds-which-is-safer-for-long-term-hearing/",
+          "domain": "eljayhearing.com",
+          "publisher": "Eljay",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2025-12-23T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:40d55b1a-81b6-433d-bf22-f9e3a14f982b",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [
+            "6549df08-b1c6-48c9-9d40-a7bf86f1429f"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "40d55b1a-81b6-433d-bf22-f9e3a14f982b",
+          "retrievedAt": "2026-07-23T18:17:21.057544+00:00",
+          "publishedAt": "2025-12-23T00:00:00+00:00",
+          "contentHash": "bac9123b906169e0c1a8ce0dfd6d79a5efaf969762b20e5318d279e78213383d",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "type": "source",
+        "label": "How Headphones Damage Your Hearing Over Time (ENT Warning Signs)",
+        "data": {
+          "sourceId": "779b7895-d413-4658-a23b-1747bb1e1d73",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2026-05-21T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "6549df08-b1c6-48c9-9d40-a7bf86f1429f"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 270
+        },
+        "metadata": {
+          "canonicalUrl": "https://sleepandsinuscenters.com/blog/chronic-headphone-use-and-its-impact-on-ear-health-risks-and-prevention",
+          "domain": "sleepandsinuscenters.com",
+          "publisher": "Sleep & Sinus Centers of Georgia",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-05-21T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:6522d328-45de-420a-9850-107030dcebd1",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "779b7895-d413-4658-a23b-1747bb1e1d73",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [
+            "6549df08-b1c6-48c9-9d40-a7bf86f1429f"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 270
+        },
+        "metadata": {
+          "snapshotId": "6522d328-45de-420a-9850-107030dcebd1",
+          "retrievedAt": "2026-07-23T18:17:23.241431+00:00",
+          "publishedAt": "2026-05-21T00:00:00+00:00",
+          "contentHash": "3f0da2d0f49365507cf3df48c1188fc0aef9fa94e4aff01a6231567a3991d566",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "type": "source",
+        "label": "Earbuds vs. Over-the-Ear Headphones: Which Should You Use? — Hearing Health Foundation",
+        "data": {
+          "sourceId": "c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2020-07-28T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://hearinghealthfoundation.org/blogs/earbuds-vs-over-the-ear-headphones-which-should-you-use",
+          "domain": "hearinghealthfoundation.org",
+          "publisher": "Hearing Health Foundation",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2020-07-28T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:ff0a7133-0bdf-4364-a0e2-c1e4ece83897",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "ff0a7133-0bdf-4364-a0e2-c1e4ece83897",
+          "retrievedAt": "2026-07-23T18:17:23.537929+00:00",
+          "publishedAt": "2020-07-28T00:00:00+00:00",
+          "contentHash": "e58dfb51c15dd34e482674752ea42e8393645c03cdf409fee755f9a3a0e3b6ca",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "type": "source",
+        "label": "Earbuds vs. Headphones: Ear Doctors Reveal Which Is Safer",
+        "data": {
+          "sourceId": "c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 0.1,
+          "firstKnownAppearance": "2024-06-12T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "6549df08-b1c6-48c9-9d40-a7bf86f1429f"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 450
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.thehealthy.com/ear-nose-throat/earbuds-vs-headphones-ear-doctors-reveal-which-is-better-for-you/",
+          "domain": "www.thehealthy.com",
+          "publisher": "The Healthy",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2024-06-12T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:80b0e062-dc70-4754-b764-c5d46549c987",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [
+            "6549df08-b1c6-48c9-9d40-a7bf86f1429f"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 450
+        },
+        "metadata": {
+          "snapshotId": "80b0e062-dc70-4754-b764-c5d46549c987",
+          "retrievedAt": "2026-07-23T18:17:23.851222+00:00",
+          "publishedAt": "2024-06-12T00:00:00+00:00",
+          "contentHash": "21deea49cbf2ccff205085f676e255dac35c196d599db13d2b20a0c0d6616550",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "type": "source",
+        "label": "How Headphones and Earbuds Can Harm Your Hearing",
+        "data": {
+          "sourceId": "8c73d854-046b-4c51-bad5-f3cfe044652b",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2024-09-23T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://health.clevelandclinic.org/how-to-rock-out-with-ear-buds-or-headphones-without-damaging-your-hearing",
+          "domain": "health.clevelandclinic.org",
+          "publisher": "Cleveland Clinic",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2024-09-23T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:d3dcb75b-033f-4c99-8d29-cc0a3259218c",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "8c73d854-046b-4c51-bad5-f3cfe044652b",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "d3dcb75b-033f-4c99-8d29-cc0a3259218c",
+          "retrievedAt": "2026-07-23T18:17:24.016624+00:00",
+          "publishedAt": "2024-09-23T00:00:00+00:00",
+          "contentHash": "afca90d0bb65a9a02328d551cba5aa3a42d19fb55a3d73dedbbcf4d97cd741e0",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:5bbfc01e-bf45-4155-ae31-7631a6e95196",
+        "type": "source",
+        "label": "Headphones and hearing loss: Possible risks and more",
+        "data": {
+          "sourceId": "5bbfc01e-bf45-4155-ae31-7631a6e95196",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "e7a2b804-c979-5bce-9c4d-948ef8a4d869",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2022-09-28T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.medicalnewstoday.com/articles/do-headphones-cause-hearing-loss",
+          "domain": "www.medicalnewstoday.com",
+          "publisher": "Medical News Today",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2022-09-28T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:9e4ba77f-f53d-42dd-8e16-58791f9fc3f9",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "5bbfc01e-bf45-4155-ae31-7631a6e95196",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "e7a2b804-c979-5bce-9c4d-948ef8a4d869",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "9e4ba77f-f53d-42dd-8e16-58791f9fc3f9",
+          "retrievedAt": "2026-07-23T18:17:24.189927+00:00",
+          "publishedAt": "2022-09-28T00:00:00+00:00",
+          "contentHash": "965fd713205927e908a19f6b7c4da7a4c69275243cb15d7be6f1b36f4e4f377e",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:fad51b95-289a-4967-895d-6651c1f8b1c2",
+        "type": "source",
+        "label": "Listen Up: Headphone Use Can Impact Your Hearing Health",
+        "data": {
+          "sourceId": "fad51b95-289a-4967-895d-6651c1f8b1c2",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 0.1,
+          "firstKnownAppearance": "2024-01-26T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 630
+        },
+        "metadata": {
+          "canonicalUrl": "https://healthcare.utah.edu/healthfeed/2024/01/listen-headphone-use-can-impact-your-hearing-health",
+          "domain": "healthcare.utah.edu",
+          "publisher": "U of U Health Publishing Team",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2024-01-26T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:2a7229b8-fcc3-4aa3-9290-3c10af945044",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "fad51b95-289a-4967-895d-6651c1f8b1c2",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 630
+        },
+        "metadata": {
+          "snapshotId": "2a7229b8-fcc3-4aa3-9290-3c10af945044",
+          "retrievedAt": "2026-07-23T18:17:24.478027+00:00",
+          "publishedAt": "2024-01-26T00:00:00+00:00",
+          "contentHash": "b86e9fc0a51b3e195743c90d59d1e8037d661f49f52d7564022b5c37874eb0d7",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      },
+      {
+        "id": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "type": "source",
+        "label": "Headphones & Hearing Loss | American Osteopathic Association",
+        "data": {
+          "sourceId": "feb46d11-2739-4275-b9af-a44e96454da6",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "dependencyMultiplier": 0.35,
+          "firstKnownAppearance": "2025-05-23T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 720
+        },
+        "metadata": {
+          "canonicalUrl": "https://osteopathic.org/what-is-osteopathic-medicine/headphones-hearing-loss/",
+          "domain": "osteopathic.org",
+          "publisher": "American Osteopathic Association",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2025-05-23T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:d4e0982e-15a8-4ba7-b53c-9803c4606247",
+        "type": "snapshot",
+        "label": "Snapshot 2026-07-23",
+        "data": {
+          "sourceId": "feb46d11-2739-4275-b9af-a44e96454da6",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "600d06ec-d1a2-555e-82ed-4830699d3baa",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 720
+        },
+        "metadata": {
+          "snapshotId": "d4e0982e-15a8-4ba7-b53c-9803c4606247",
+          "retrievedAt": "2026-07-23T18:17:25.114147+00:00",
+          "publishedAt": "2025-05-23T00:00:00+00:00",
+          "contentHash": "72ac64de37f49897f43d21bdfb563d67ea2eff65c9a8988d9e47c2cfc0eb8921",
+          "parserName": "trafilatura",
+          "parserVersion": "2.1.0"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:947081c7-267e-4e73-8e47-e852c86f7833",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:4ccd1144-fe07-45a9-8957-03e5520f645f",
+        "source": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "target": "snapshot:4ccd1144-fe07-45a9-8957-03e5520f645f",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:96284354-f849-4469-866d-13d91533390b",
+        "source": "source:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "target": "snapshot:96284354-f849-4469-866d-13d91533390b",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:40d55b1a-81b6-433d-bf22-f9e3a14f982b",
+        "source": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "target": "snapshot:40d55b1a-81b6-433d-bf22-f9e3a14f982b",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:6522d328-45de-420a-9850-107030dcebd1",
+        "source": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "target": "snapshot:6522d328-45de-420a-9850-107030dcebd1",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:ff0a7133-0bdf-4364-a0e2-c1e4ece83897",
+        "source": "source:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "target": "snapshot:ff0a7133-0bdf-4364-a0e2-c1e4ece83897",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:80b0e062-dc70-4754-b764-c5d46549c987",
+        "source": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "target": "snapshot:80b0e062-dc70-4754-b764-c5d46549c987",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:d3dcb75b-033f-4c99-8d29-cc0a3259218c",
+        "source": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "target": "snapshot:d3dcb75b-033f-4c99-8d29-cc0a3259218c",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:e7a2b804-c979-5bce-9c4d-948ef8a4d869:5bbfc01e-bf45-4155-ae31-7631a6e95196",
+        "source": "cluster:e7a2b804-c979-5bce-9c4d-948ef8a4d869",
+        "target": "source:5bbfc01e-bf45-4155-ae31-7631a6e95196",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:9e4ba77f-f53d-42dd-8e16-58791f9fc3f9",
+        "source": "source:5bbfc01e-bf45-4155-ae31-7631a6e95196",
+        "target": "snapshot:9e4ba77f-f53d-42dd-8e16-58791f9fc3f9",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:fad51b95-289a-4967-895d-6651c1f8b1c2",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:fad51b95-289a-4967-895d-6651c1f8b1c2",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:2a7229b8-fcc3-4aa3-9290-3c10af945044",
+        "source": "source:fad51b95-289a-4967-895d-6651c1f8b1c2",
+        "target": "snapshot:2a7229b8-fcc3-4aa3-9290-3c10af945044",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:600d06ec-d1a2-555e-82ed-4830699d3baa:feb46d11-2739-4275-b9af-a44e96454da6",
+        "source": "cluster:600d06ec-d1a2-555e-82ed-4830699d3baa",
+        "target": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:d4e0982e-15a8-4ba7-b53c-9803c4606247",
+        "source": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "target": "snapshot:d4e0982e-15a8-4ba7-b53c-9803c4606247",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "dependency:6b67734b-5473-4307-a960-dd70d8e4f0d8",
+        "source": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "target": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.99,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.99,
+          "detectionMethod": "explicit_outbound_link"
+        }
+      },
+      {
+        "id": "dependency:7a5b1165-16b8-4367-9cd1-36d07b400817",
+        "source": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "target": "source:fad51b95-289a-4967-895d-6651c1f8b1c2",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.99,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.99,
+          "detectionMethod": "explicit_outbound_link"
+        }
+      },
+      {
+        "id": "dependency:5cd85626-8c46-4fef-8ec9-00f42bcae264",
+        "source": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "target": "source:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:0745a30e-3676-4b0b-bb52-eb3b934359ed",
+        "source": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "target": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.82,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.82,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:8f153d6f-0335-4c06-8779-c7ee4e07e8a3",
+        "source": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "target": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:a905abe5-8ffc-4098-a9d9-0cabab2c0833",
+        "source": "source:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "target": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.78,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.78,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:fc277c13-88ba-476d-9e96-8d38b1b64007",
+        "source": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "target": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:f1fb020c-14dc-4680-86a9-3fdc33d09c1d",
+        "source": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "target": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.88,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.88,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:da18863d-5ef1-4ae1-bbfe-b55053a8140f",
+        "source": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "target": "source:fad51b95-289a-4967-895d-6651c1f8b1c2",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:17d78cdd-c0f2-42ea-9c04-d1803f375d15",
+        "source": "source:947081c7-267e-4e73-8e47-e852c86f7833",
+        "target": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:f7bff790-40b5-4293-86d7-6ff504fa7101",
+        "source": "source:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "target": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:3b61efee-346a-42b8-b0ea-6a150226f50a",
+        "source": "source:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "target": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:333c4d23-a351-47d8-894b-2ec8175d2ba8",
+        "source": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "target": "source:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:2592edea-af16-43de-a9a2-a335b71555e1",
+        "source": "source:f4b33837-ba2e-4fe9-90dd-205f213ba939",
+        "target": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:a1f3a140-2c96-495f-90dc-b69a3e67ef95",
+        "source": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "target": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:39b0d16e-4e0f-42b7-82c3-7662ac6b6cbd",
+        "source": "source:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "target": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:28c2c57c-876f-42ab-afb5-fdec7333270f",
+        "source": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "target": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:467d2d1f-faa0-41c3-b131-466324c820cc",
+        "source": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "target": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:51428e46-1aee-40aa-b305-a84d7fd0d17c",
+        "source": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "target": "source:3d7e3b8e-a28d-498a-87f4-6a48b8c01836",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:46693e08-7ade-4dd9-ba17-49844ce58e4f",
+        "source": "source:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "target": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:427ccdac-b981-46bc-b64b-c8ee6072f312",
+        "source": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "target": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:5a3dee09-9526-4893-9134-1a74dd552fd3",
+        "source": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "target": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:f5ed8527-fa22-4c0a-a0eb-bf015966c33f",
+        "source": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "target": "source:779b7895-d413-4658-a23b-1747bb1e1d73",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:e867d213-9fea-4f2b-8481-c4cfb2ff4d98",
+        "source": "source:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "target": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:80d809fe-bac0-42f7-ae0f-8f960c568ca8",
+        "source": "source:c1885ac1-5c2a-4ec2-8a21-c5c08a5da963",
+        "target": "source:fad51b95-289a-4967-895d-6651c1f8b1c2",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:1d9b2ddf-64aa-4a7f-958c-85b4c07b740a",
+        "source": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "target": "source:8c73d854-046b-4c51-bad5-f3cfe044652b",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:e1f45154-7844-4b93-8c9c-ae716d5c96f8",
+        "source": "source:c0db9c87-b5ae-4116-ae60-f7fe833cd123",
+        "target": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:68dca057-7511-4fc9-9815-511a7887d14c",
+        "source": "source:fad51b95-289a-4967-895d-6651c1f8b1c2",
+        "target": "source:feb46d11-2739-4275-b9af-a44e96454da6",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.74,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.74,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      }
+    ]
+  },
+  "calculations": [
+    {
+      "id": "a88eaccb-9e28-43b0-9a4b-18ff30f284a6",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.2",
+        "F": "0.5",
+        "R": "0.3",
+        "T": "0.2",
+        "X": "1.0",
+        "passage_id": "330333a0-c788-5dbc-8980-94be2c4f5841"
+      },
+      "result": {
+        "quality": "0.315"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "bd27b8f0-9162-4fcf-b9ac-cba6513c934c",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.315",
+        "passage_id": "330333a0-c788-5dbc-8980-94be2c4f5841",
+        "dependency_multiplier": "0.10"
+      },
+      "result": {
+        "adjusted_weight": "0.03150"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "03164839-5534-499c-b53d-108a2d8f5806",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.1",
+        "X": "0.9982",
+        "passage_id": "8dd96e27-10bb-56ca-aefd-ebe75e81c801"
+      },
+      "result": {
+        "quality": "0.254820"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "5d0fe7ef-ab41-4ada-b2e1-d4e7eba5dda1",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.254820",
+        "passage_id": "8dd96e27-10bb-56ca-aefd-ebe75e81c801",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.08918700"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "030583b1-df46-413d-b377-94985ba09756",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.5",
+        "D": "0.9",
+        "F": "0.8",
+        "R": "0.9",
+        "T": "0.3",
+        "X": "0.9333",
+        "passage_id": "5c17b24a-989f-51e3-b941-f324b18683e7"
+      },
+      "result": {
+        "quality": "0.723330"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "ebf2672c-db02-4ace-a978-7a5b6dcce23d",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.723330",
+        "passage_id": "5c17b24a-989f-51e3-b941-f324b18683e7",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.25316550"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0fc4d863-462c-4991-8e56-45089fa9bb01",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.670",
+        "passage_id": "616ff6c2-fe73-570f-9c18-9a1a0a78eeff",
+        "dependency_multiplier": "0.10"
+      },
+      "result": {
+        "adjusted_weight": "0.06700"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e59d7fa6-9f32-4a61-962f-07b0142bfc9b",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.6",
+        "D": "0.8",
+        "F": "0.8",
+        "R": "0.6",
+        "T": "0.4",
+        "X": "1.0",
+        "passage_id": "616ff6c2-fe73-570f-9c18-9a1a0a78eeff"
+      },
+      "result": {
+        "quality": "0.670"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a9a923d6-c0c3-4d7b-b228-6c23abdfc641",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.2",
+        "X": "1.0",
+        "passage_id": "6b037903-fd67-5722-b3ef-47c8b0ee1770"
+      },
+      "result": {
+        "quality": "0.270"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "52620bce-e527-4403-ace8-3645e78a710a",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.1",
+        "X": "1.0",
+        "passage_id": "70bddc9b-facf-53b9-8bb1-9fa3bdef2408"
+      },
+      "result": {
+        "quality": "0.255"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "9f0eb6d6-273f-414f-9f9c-01bbabfa664b",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.270",
+        "passage_id": "6b037903-fd67-5722-b3ef-47c8b0ee1770",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.09450"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "39f13d22-38fb-4461-86e7-9a786b11d38f",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.255",
+        "passage_id": "70bddc9b-facf-53b9-8bb1-9fa3bdef2408",
+        "dependency_multiplier": "0.10"
+      },
+      "result": {
+        "adjusted_weight": "0.02550"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "67641a0d-9380-402b-b60b-08c511e0bcc2",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.1",
+        "T": "0.2",
+        "X": "1.0",
+        "passage_id": "a7192ecf-d924-5e9b-b718-b89c5f804ade"
+      },
+      "result": {
+        "quality": "0.245"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "d96697fa-37b5-4fc7-a592-547cd1214f71",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.245",
+        "passage_id": "a7192ecf-d924-5e9b-b718-b89c5f804ade",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.08575"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f15c3005-661e-42d9-90bd-8fe267672735",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.3",
+        "D": "0.6",
+        "F": "0.8",
+        "R": "0.5",
+        "T": "0.3",
+        "X": "1.0",
+        "passage_id": "adf517f9-3168-583e-aa3b-dd5ad3f75b5c"
+      },
+      "result": {
+        "quality": "0.530"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "711fd1fc-3c67-4638-a120-4f1b9ddff8f3",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.2",
+        "X": "1.0",
+        "passage_id": "b1f4fb1f-5391-58f1-a957-0db615a2dea5"
+      },
+      "result": {
+        "quality": "0.270"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "800e4b24-6755-45bf-8fe6-7ca5f5b78579",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.530",
+        "passage_id": "adf517f9-3168-583e-aa3b-dd5ad3f75b5c",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.18550"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1a629013-14c6-4968-82a1-bd44fba14c94",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.270",
+        "passage_id": "b1f4fb1f-5391-58f1-a957-0db615a2dea5",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.09450"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "8473b63c-564b-4fa4-bc29-e0d3ae2dbaac",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.4",
+        "D": "0.9",
+        "F": "0.8",
+        "R": "0.9",
+        "T": "0.3",
+        "X": "0.9982",
+        "passage_id": "e0ebc7eb-2667-5b50-98c2-cd6ecc04fa21"
+      },
+      "result": {
+        "quality": "0.709820"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f52f4187-c76e-4aac-9711-b6a7a9cea328",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.709820",
+        "passage_id": "e0ebc7eb-2667-5b50-98c2-cd6ecc04fa21",
+        "dependency_multiplier": "0.35"
+      },
+      "result": {
+        "adjusted_weight": "0.24843700"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "ca60afdb-5bd1-4f17-9b99-b58f554fb6df",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "contradicting_weight",
+      "formula_text": "N = sum(max(-stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "5c17b24a-989f-51e3-b941-f324b18683e7",
+          "616ff6c2-fe73-570f-9c18-9a1a0a78eeff",
+          "adf517f9-3168-583e-aa3b-dd5ad3f75b5c",
+          "e0ebc7eb-2667-5b50-98c2-cd6ecc04fa21"
+        ]
+      },
+      "result": {
+        "N": "0E-8"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e057c319-374f-487e-a214-17a6bee8261f",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "supporting_weight",
+      "formula_text": "P = sum(max(stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "5c17b24a-989f-51e3-b941-f324b18683e7",
+          "616ff6c2-fe73-570f-9c18-9a1a0a78eeff",
+          "adf517f9-3168-583e-aa3b-dd5ad3f75b5c",
+          "e0ebc7eb-2667-5b50-98c2-cd6ecc04fa21"
+        ]
+      },
+      "result": {
+        "P": "0.6278525000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f052b23c-3589-4168-affa-04edcf8e5d9f",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_support",
+      "formula_text": "100 * P / (P + N)",
+      "inputs": {
+        "N": "0E-8",
+        "P": "0.6278525000"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "4ff4f4c8-c639-4549-b4db-2a221fba84e3",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "50",
+        "origin_diversity": "50",
+        "primary_diversity": "100",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "72.50"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "b07f073b-2c02-4032-8cc2-e816e0c32e5b",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "evidence_consistency",
+      "formula_text": "100 * abs(P - N) / (P + N)",
+      "inputs": {
+        "N": "0E-8",
+        "P": "0.6278525000"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0ce63979-3f5a-4a69-9748-5ee3fe961bae",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "material_penalties": {
+          "scope_omitted": "15",
+          "material_qualifier_omitted": "15"
+        }
+      },
+      "result": {
+        "score": "70"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "12722681-ed5f-41c0-8378-f5be5590b057",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "essential_term_ambiguous": "10.5",
+          "single_information_cluster": "15"
+        },
+        "consistency": "100",
+        "independence": "72.50",
+        "primary_access": "100",
+        "average_quality": "66.65841214622680603764077165"
+      },
+      "result": {
+        "score": "60.66460303655670150941019291"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "36c0c5aa-1244-4a51-be36-12f5140e4032",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "70",
+        "support": "100",
+        "confidence": "60.66460303655670150941019291",
+        "insufficient_evidence_reasons": []
+      },
+      "result": {
+        "label": "Supported"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "1fa83d20-5c2c-4ffe-ac7a-eb996aa4079e",
+      "atomic_claim_id": null,
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "50",
+        "origin_diversity": "50",
+        "primary_diversity": "100",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "72.50"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7536c768-725f-4c6b-bf20-b7776b1f47d6",
+      "atomic_claim_id": "6549df08-b1c6-48c9-9d40-a7bf86f1429f",
+      "formula_name": "ambiguity_gate",
+      "formula_text": "owned ambiguity blocks unresolved key facts unless accepted adjusted evidence >= minimum, P > 0, and N = 0",
+      "inputs": {
+        "scoring_version": "1.2-citation-partial-penalty",
+        "owned_ambiguity_count": 1,
+        "minimum_adjusted_evidence": "0.50",
+        "accepted_adjusted_evidence": "0.6278525000",
+        "accepted_supporting_weight": "0.6278525000",
+        "accepted_contradicting_weight": "0E-8"
+      },
+      "result": {
+        "non_blocking": true,
+        "has_accepted_support": true,
+        "unresolved_key_facts": false,
+        "adequate_accepted_evidence": true,
+        "no_accepted_material_contradiction": true
+      },
+      "units": "gate_decision",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "non_blocking"
+    },
+    {
+      "id": "03b245e9-233f-493d-ba40-deb791f85040",
+      "atomic_claim_id": null,
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "citation_partial_support": "25",
+          "single_information_cluster": "15"
+        },
+        "consistency": "100",
+        "independence": "72.50",
+        "primary_access": "100",
+        "average_quality": "66.65841214622680603764077165"
+      },
+      "result": {
+        "score": "46"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "40a9bfdb-87ea-4222-b4ac-29eb2cd7047c",
+      "atomic_claim_id": null,
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "70",
+        "factual_accuracy": "100",
+        "verdict_confidence": "71.16460303655670150941019291",
+        "insufficient_evidence_reasons": [],
+        "strongly_refuted_essential_claim": false
+      },
+      "result": {
+        "label": "Supported"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7a3fcb85-d449-42a6-89b7-c87089a696a1",
+      "atomic_claim_id": null,
+      "formula_name": "article_factual_accuracy",
+      "formula_text": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "100",
+            "importance_weight": 3
+          }
+        ],
+        "citation_partial_support_penalty": "20"
+      },
+      "result": {
+        "score": "80",
+        "essential_claim_gate": false
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "660ff4ff-9166-4bfa-9d25-ef7dd91c3503",
+      "atomic_claim_id": null,
+      "formula_name": "research_coverage",
+      "formula_text": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+      "inputs": {
+        "claims": [
+          {
+            "claim_ref": "claim-1-190aae52c9d6bdc1",
+            "adequate_evidence": true,
+            "importance_weight": 3
+          }
+        ],
+        "confidence_issues": [
+          "single_information_cluster"
+        ]
+      },
+      "result": {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "0"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "b9422893-7591-44ef-ae61-81f81955f44b",
+      "atomic_claim_id": null,
+      "formula_name": "citation_partial_support_penalty",
+      "formula_text": "reported score = clamp(original score - partial citation penalty, 0, 100)",
+      "inputs": {
+        "partial_sentence_count": 7,
+        "evidence_support_penalty": "20",
+        "verdict_confidence_penalty": "25"
+      },
+      "result": {
+        "evidence_support": 80,
+        "verdict_confidence": 46
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "bbbc2fde-d89e-47ed-821f-fe217bd84fcf",
+      "atomic_claim_id": null,
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "claims": [
+          {
+            "context": "70",
+            "claim_ref": "claim-1-190aae52c9d6bdc1",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "70"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "methodology_version": "not-recorded",
+  "workflow_version": "1.0.0",
+  "model_versions": {
+    "intake": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1826,
+        "prompt_tokens": 970,
+        "completion_tokens": 856
+      },
+      "provider": "deepseek",
+      "latency_ms": 7181
+    },
+    "planner": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 2331,
+        "prompt_tokens": 1150,
+        "completion_tokens": 1181
+      },
+      "provider": "deepseek",
+      "latency_ms": 9236
+    },
+    "embedding": {
+      "status": "unconfigured_fallback",
+      "provider": "deepseek",
+      "retryable": false,
+      "error_code": "embedding_route_unavailable",
+      "latency_ms": 0,
+      "used_model": null,
+      "status_code": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "request_count": 0,
+      "retrieval_mode": "lexical_metadata_fallback",
+      "configured_model": null
+    },
+    "synthesis": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 16105,
+        "prompt_tokens": 14977,
+        "completion_tokens": 1128
+      },
+      "provider": "deepseek",
+      "latency_ms": 8966
+    },
+    "decomposition": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 2982,
+        "prompt_tokens": 1383,
+        "completion_tokens": 1599
+      },
+      "provider": "deepseek",
+      "latency_ms": 13387
+    },
+    "citation_audit": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 6571,
+        "prompt_tokens": 2189,
+        "completion_tokens": 4382
+      },
+      "provider": "deepseek",
+      "latency_ms": 29976
+    },
+    "evidence_classification": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 7493,
+        "prompt_tokens": 3031,
+        "completion_tokens": 4462
+      },
+      "provider": "deepseek",
+      "latency_ms": 30115
+    }
+  },
+  "prompt_versions": {
+    "intake": "intake-v2",
+    "planner": "planner-v2",
+    "synthesis": "synthesis-v4",
+    "decomposition": "decomposition-v3",
+    "citation_audit": "citation-audit-v3",
+    "evidence_classification": "evidence-classification-v3"
+  },
+  "parser_versions": {
+    "trafilatura": "2.1.0"
+  },
+  "retrieval_versions": {
+    "implementation": "not-recorded",
+    "version": "not-recorded"
+  },
+  "score_roles": {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured."
+  },
+  "report_sentences": [
+    {
+      "id": "39d857ec-d2e7-4b17-ac24-3826e4516647",
+      "report_section": "summary",
+      "sentence_text": "The evidence indicates that over-ear headphones are generally safer than earbuds for long-term ear health, particularly regarding infection risk and earwax impaction.",
+      "passage_id": "5c17b24a-989f-51e3-b941-f324b18683e7",
+      "audit_status": "partial",
+      "audit_note": "Passage supports that headphones are safer due to reduced infection risk, but does not mention earwax impaction."
+    },
+    {
+      "id": "aeeb8243-a192-46f4-8259-f0e3e2b7c336",
+      "report_section": "summary",
+      "sentence_text": "The evidence indicates that over-ear headphones are generally safer than earbuds for long-term ear health, particularly regarding infection risk and earwax impaction.",
+      "passage_id": "616ff6c2-fe73-570f-9c18-9a1a0a78eeff",
+      "audit_status": "partial",
+      "audit_note": "Passage supports reduction in wax impaction risk but does not address infection risk."
+    },
+    {
+      "id": "0ec6f7ba-608c-45c1-802d-404b4d94cec6",
+      "report_section": "summary",
+      "sentence_text": "The evidence indicates that over-ear headphones are generally safer than earbuds for long-term ear health, particularly regarding infection risk and earwax impaction.",
+      "passage_id": "e0ebc7eb-2667-5b50-98c2-cd6ecc04fa21",
+      "audit_status": "partial",
+      "audit_note": "Passage supports general claim of safety for long-term hearing but does not specify infection risk or earwax impaction."
+    },
+    {
+      "id": "3665307b-ecba-49bf-9049-629226caddcf",
+      "report_section": "factual_finding",
+      "sentence_text": "Headphones do not go into the ear canal, reducing the risk of ear infections and wax impaction.",
+      "passage_id": "5c17b24a-989f-51e3-b941-f324b18683e7",
+      "audit_status": "partial",
+      "audit_note": "Passage supports reduced infection risk but not wax impaction."
+    },
+    {
+      "id": "2f890f8c-894c-40e0-a237-72fc027106dd",
+      "report_section": "factual_finding",
+      "sentence_text": "Headphones do not go into the ear canal, reducing the risk of ear infections and wax impaction.",
+      "passage_id": "616ff6c2-fe73-570f-9c18-9a1a0a78eeff",
+      "audit_status": "partial",
+      "audit_note": "Passage supports reduced wax impaction risk but not infection risk."
+    },
+    {
+      "id": "ad4ce81e-d412-47c2-9bce-0a9bc88e4faa",
+      "report_section": "factual_finding",
+      "sentence_text": "Over-ear headphones allow better ventilation, which may help reduce infection risk.",
+      "passage_id": "adf517f9-3168-583e-aa3b-dd5ad3f75b5c",
+      "audit_status": "passed",
+      "audit_note": "Passage explicitly states that over-ear headphones allow better ventilation and may help reduce infection risk."
+    },
+    {
+      "id": "686c8b18-faf3-4e75-8b1c-088acd4fa379",
+      "report_section": "factual_finding",
+      "sentence_text": "However, both headphones and earbuds can cause hearing damage if used at high volumes.",
+      "passage_id": "5c17b24a-989f-51e3-b941-f324b18683e7",
+      "audit_status": "partial",
+      "audit_note": "Passage supports that headphones can cause hearing damage at high volumes but does not mention earbuds."
+    },
+    {
+      "id": "3f543206-8051-4bcc-8827-20e4a923d38b",
+      "report_section": "attribution",
+      "sentence_text": "HealthPartners states that headphones are somewhat safer than earbuds due to less infection risk and less direct sound into the ear canal.",
+      "passage_id": "5c17b24a-989f-51e3-b941-f324b18683e7",
+      "audit_status": "partial",
+      "audit_note": "Passage supports the claim that headphones are safer due to less infection risk and less direct sound, but does not attribute it to HealthPartners."
+    },
+    {
+      "id": "405965e8-cf26-4689-84e8-e09e5f4e36a7",
+      "report_section": "attribution",
+      "sentence_text": "Dr. Taylor, cited in The Healthy, recommends circum-aural headphones to minimize pressure on the ear canal and decrease wax impaction risk.",
+      "passage_id": "616ff6c2-fe73-570f-9c18-9a1a0a78eeff",
+      "audit_status": "partial",
+      "audit_note": "Passage supports Dr. Taylor's recommendation but does not cite The Healthy."
+    },
+    {
+      "id": "28f794c3-ea6c-4cd5-bb5f-44afa52ec672",
+      "report_section": "attribution",
+      "sentence_text": "Eljay Hearing concludes that over-ear headphones are generally safer than earbuds for long-term hearing when used at moderate volumes.",
+      "passage_id": "e0ebc7eb-2667-5b50-98c2-cd6ecc04fa21",
+      "audit_status": "partial",
+      "audit_note": "Passage supports the conclusion that over-ear headphones are safer for long-term hearing at moderate volumes, but does not attribute it to Eljay Hearing."
+    },
+    {
+      "id": "b35c3da2-812e-4adf-889f-2f14658a95f3",
+      "report_section": "attribution",
+      "sentence_text": "Sleep & Sinus Centers of Georgia notes that over-ear headphones allow better ventilation, potentially reducing infection risk.",
+      "passage_id": "adf517f9-3168-583e-aa3b-dd5ad3f75b5c",
+      "audit_status": "partial",
+      "audit_note": "Passage supports the claim about ventilation and infection risk but does not attribute it to Sleep & Sinus Centers of Georgia."
+    }
+  ],
+  "evidence_reviewed_at": "2026-07-23T18:17:25.114147Z",
+  "generated_at": "2026-07-23T18:18:40.404036Z",
+  "limitations": [
+    "Claim claim-1-190aae52c9d6bdc1 is supported with an unresolved interpretation (1 claim-local limitation(s)); accepted evidence was adequate and not materially contradicted."
+  ]
+}

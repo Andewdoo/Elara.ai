@@ -1,0 +1,2196 @@
+{
+  "run_id": "191e09ac-19d5-480a-b203-2e6e401702c4",
+  "verdict": "Contradicted",
+  "scores": {
+    "evidence_support": 0,
+    "attribution_support": null,
+    "quote_fidelity": null,
+    "verdict_confidence": 71,
+    "source_independence": 75,
+    "context_completeness": 100
+  },
+  "atomic_claims": [
+    {
+      "id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "claim_text": "Cracking your knuckles causes arthritis.",
+      "importance_weight": 3,
+      "claim_type": "causal",
+      "final_label": "Contradicted",
+      "support_score": 0,
+      "confidence_score": 78,
+      "context_completeness": 100,
+      "ambiguities": [],
+      "gaps": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "a3d36028-3e44-4780-a4f6-75b5e4c70dfa",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "7690184b-7b34-5f4f-b6ee-a61321477ca9",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.9336,
+      "dependency_multiplier": 0.1,
+      "adjusted_weight": 0.09336,
+      "citation_status": "pending",
+      "passage_text": "Other similar studies have also found no evidence to support that cracking your knuckles causes arthritis.",
+      "source_title": "Does cracking your knuckles cause arthritis?",
+      "source_url": "https://www.arthritis-uk.org/news/does-cracking-your-knuckles-cause-arthritis/",
+      "page_or_position": "paragraph 12"
+    },
+    {
+      "id": "28eff6c7-2c00-4e2c-a077-d871c041f253",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "8c481d2d-1d8d-5721-b6c0-b8b515512cb3",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.945,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.945,
+      "citation_status": "pending",
+      "passage_text": "We’ve established that cracking your knuckles correctly won’t enlarge them or cause you to develop arthritis. But that doesn’t mean there aren’t any risks associated with the practice.",
+      "source_title": "Is Cracking Your Knuckles Bad for You?",
+      "source_url": "https://health.clevelandclinic.org/is-cracking-your-knuckles-bad-for-you",
+      "page_or_position": "paragraph 12"
+    },
+    {
+      "id": "74f2224f-52a1-4f64-bcd2-ae0175ab5521",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "f363c349-86c9-5432-a2f6-dc082387f830",
+      "stance": "NEUTRAL",
+      "base_quality": 0.545,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.545,
+      "citation_status": "rejected",
+      "passage_text": "The sound of knuckles cracking signals relief for some and sends others running for the hills . Whether you’re a habitual knuckle cracker or cringe at the thought, you’ve probably heard that cracking your knuckles enlarges them or causes arthritis in your fingers. But is that really true?",
+      "source_title": "Is Cracking Your Knuckles Bad for You?",
+      "source_url": "https://health.clevelandclinic.org/is-cracking-your-knuckles-bad-for-you",
+      "page_or_position": "paragraph 5"
+    },
+    {
+      "id": "4c2368c9-6f58-498b-b4a3-a9b71ea50d1f",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "0d5aa243-4f10-5a91-a04f-5bbfd504a32a",
+      "stance": "NEUTRAL",
+      "base_quality": 0.315,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.315,
+      "citation_status": "rejected",
+      "passage_text": "The clicking, cracking, popping, or snapping that occurs when you crack your knuckles is associated with tiny gas bubbles.",
+      "source_title": "Does Cracking Your Knuckles Cause Arthritis?",
+      "source_url": "https://www.arthritis-health.com/blog/does-cracking-your-knuckles-cause-arthritis",
+      "page_or_position": "paragraph 3"
+    },
+    {
+      "id": "8727c1e7-50e2-478d-9604-66670da8bf24",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "19d1e769-3f84-5862-9c74-11214f91e78e",
+      "stance": "STRONGLY_CONTRADICTS",
+      "base_quality": 0.935,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.935,
+      "citation_status": "pending",
+      "passage_text": "There is no evidence that cracking knuckles causes any damage such as arthritis in the joints. However, a couple of reports in the medical literature are available associating knuckle cracking with injury of the ligaments surrounding the joint or dislocation of the tendons ( attachments of muscles to bones) which improved with conservative treatment. A study found that after many years of cracking habitual knuckle crackers may have reduced grip strength compared with people not cracking their knuckles.",
+      "source_title": "Arthritis News : Knuckle Cracking Q&A from Johns Hopkins Arthritis Center",
+      "source_url": "https://www.hopkinsarthritis.org/arthritis-news/knuckle-cracking-q-a-from/",
+      "page_or_position": "paragraph 5"
+    },
+    {
+      "id": "65cbd3fd-949d-44fa-be3f-bd8705084433",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "1fee32ba-c6e3-565e-bd18-578e59fa2bbc",
+      "stance": "NEUTRAL",
+      "base_quality": 0.125,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.125,
+      "citation_status": "rejected",
+      "passage_text": "As is so often the case, technique matters. Don’t pull or press with too much force, and be mindful of direction. You’ll know quickly if you’ve made a mistake because it’ll hurt, and cracking your knuckles isn’t supposed to hurt.",
+      "source_title": "Is Cracking Your Knuckles Bad for You?",
+      "source_url": "https://health.clevelandclinic.org/is-cracking-your-knuckles-bad-for-you",
+      "page_or_position": "paragraph 13"
+    },
+    {
+      "id": "8960e089-186d-4683-8376-f5727817077d",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "4e46b303-d0b7-5022-abdf-1432fc16f0e3",
+      "stance": "NEUTRAL",
+      "base_quality": 0.1,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.1,
+      "citation_status": "rejected",
+      "passage_text": "Whatever your reason, rest assured: Cracking your knuckles actually is all it’s cracked up to be.",
+      "source_title": "Is Cracking Your Knuckles Bad for You?",
+      "source_url": "https://health.clevelandclinic.org/is-cracking-your-knuckles-bad-for-you",
+      "page_or_position": "paragraph 22"
+    },
+    {
+      "id": "ab5b10db-00bf-4025-b85b-133058c9e64e",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "77309770-b5ab-5e0d-bf85-96e5dae4d44e",
+      "stance": "NEUTRAL",
+      "base_quality": 0.36,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.36,
+      "citation_status": "rejected",
+      "passage_text": "According to Dr. Stearns, cracking your knuckles releases gas — in the form of nitrogen bubbles — from the space around your joints . The sound is triggered as the bubbles are compressed.",
+      "source_title": "Is Cracking Your Knuckles Bad for You?",
+      "source_url": "https://health.clevelandclinic.org/is-cracking-your-knuckles-bad-for-you",
+      "page_or_position": "paragraph 10"
+    },
+    {
+      "id": "01fc5a7d-ac38-4480-aca2-01633eb1c0f4",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "881c296b-28b2-5118-b5a4-8a83bee75c5a",
+      "stance": "NEUTRAL",
+      "base_quality": 0.29,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.29,
+      "citation_status": "rejected",
+      "passage_text": "“Researchers aren’t sure if the sound emitted from cracking your knuckles is that of gas bubbles being formed or released,” he notes. “But either way, it’s just gas.”",
+      "source_title": "Is Cracking Your Knuckles Bad for You?",
+      "source_url": "https://health.clevelandclinic.org/is-cracking-your-knuckles-bad-for-you",
+      "page_or_position": "paragraph 11"
+    },
+    {
+      "id": "a8700772-8838-4db0-9756-34d34c97edba",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "passage_id": "8ff9c665-e96b-5fea-9eeb-e7a07b4c0963",
+      "stance": "NEUTRAL",
+      "base_quality": 0.375,
+      "dependency_multiplier": 1,
+      "adjusted_weight": 0.375,
+      "citation_status": "rejected",
+      "passage_text": "Manual labor can be a risk factor for osteoarthritis. If you have a manual labor job, finding ways to reduce daily stress on your joints may be more important than quitting knuckle cracking to lower your risk of arthritis.",
+      "source_title": "Does Cracking Your Knuckles Cause Arthritis?",
+      "source_url": "https://www.arthritis-health.com/blog/does-cracking-your-knuckles-cause-arthritis",
+      "page_or_position": "paragraph 18"
+    }
+  ],
+  "source_graph": {
+    "nodes": [
+      {
+        "id": "cluster:0ac6691d-9a88-5b78-b336-7cbd07bae0f2",
+        "type": "cluster",
+        "label": "WHO launches a Repository of systematic reviews on interventions in environment, climate change and health information origin",
+        "data": {
+          "clusterId": "0ac6691d-9a88-5b78-b336-7cbd07bae0f2",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "metadata": {
+          "representativeSourceId": "47f95931-d334-450c-b1a1-d65baea3cf52"
+        }
+      },
+      {
+        "id": "cluster:5ede573f-c2a8-5a77-9b63-fb96985c8445",
+        "type": "cluster",
+        "label": "Is Cracking Your Knuckles Bad for You? information origin",
+        "data": {
+          "clusterId": "5ede573f-c2a8-5a77-9b63-fb96985c8445",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 180
+        },
+        "metadata": {
+          "representativeSourceId": "47736de8-27bb-45a2-9d28-6b665198ddac"
+        }
+      },
+      {
+        "id": "cluster:3681e609-baac-5edc-9c3a-4a52a8e94ba1",
+        "type": "cluster",
+        "label": "Assessing the problems and developing a scoping review information origin",
+        "data": {
+          "clusterId": "3681e609-baac-5edc-9c3a-4a52a8e94ba1",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 360
+        },
+        "metadata": {
+          "representativeSourceId": "0f0fb43e-dcd5-4b41-a1f9-ac02fa343fd6"
+        }
+      },
+      {
+        "id": "cluster:b364b069-e9ad-5391-9ddc-9e459c6ac6b2",
+        "type": "cluster",
+        "label": "Training package for rapid reviews information origin",
+        "data": {
+          "clusterId": "b364b069-e9ad-5391-9ddc-9e459c6ac6b2",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 540
+        },
+        "metadata": {
+          "representativeSourceId": "ac2c7605-af6e-4c08-9405-31ef22498387"
+        }
+      },
+      {
+        "id": "cluster:0583db04-fa0d-5d57-9e5d-0bf6650769fe",
+        "type": "cluster",
+        "label": "PowerPoint Presentation information origin",
+        "data": {
+          "clusterId": "0583db04-fa0d-5d57-9e5d-0bf6650769fe",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 720
+        },
+        "metadata": {
+          "representativeSourceId": "03bd76bc-03e3-49e4-b7e4-a102497bc9d9"
+        }
+      },
+      {
+        "id": "cluster:968be0a6-8d27-5470-8315-42fe15722919",
+        "type": "cluster",
+        "label": "Assessing the problems and developing a scoping review 3.6 information origin",
+        "data": {
+          "clusterId": "968be0a6-8d27-5470-8315-42fe15722919",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 900
+        },
+        "metadata": {
+          "representativeSourceId": "1df9e969-4037-43e9-83e3-fd21e33b57f9"
+        }
+      },
+      {
+        "id": "cluster:de441c94-13a5-5eaf-8cdb-3f64956e0987",
+        "type": "cluster",
+        "label": "Arthritis News : Knuckle Cracking Q&A from Johns Hopkins Arthritis Center information origin",
+        "data": {
+          "clusterId": "de441c94-13a5-5eaf-8cdb-3f64956e0987",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 1080
+        },
+        "metadata": {
+          "representativeSourceId": "a6055c34-8b4a-45c8-96a6-a79805a20a6a"
+        }
+      },
+      {
+        "id": "cluster:93549d50-7da2-55f7-aba1-f90e90ea848b",
+        "type": "cluster",
+        "label": "Does Cracking Your Knuckles Cause Arthritis? information origin",
+        "data": {
+          "clusterId": "93549d50-7da2-55f7-aba1-f90e90ea848b",
+          "originType": "derived_reporting_chain"
+        },
+        "position": {
+          "x": 0,
+          "y": 1260
+        },
+        "metadata": {
+          "representativeSourceId": "879241c1-04f2-41f8-b6a0-3717b83a58a9"
+        }
+      },
+      {
+        "id": "cluster:6a4dac22-7153-5a05-bfb6-63f4580e5332",
+        "type": "cluster",
+        "label": "Cracking your knuckles causes osteoarthritis and other... information origin",
+        "data": {
+          "clusterId": "6a4dac22-7153-5a05-bfb6-63f4580e5332",
+          "originType": "independent_origin"
+        },
+        "position": {
+          "x": 0,
+          "y": 1440
+        },
+        "metadata": {
+          "representativeSourceId": "1e01f4be-2e22-46c5-8b57-3393889e919f"
+        }
+      },
+      {
+        "id": "source:47f95931-d334-450c-b1a1-d65baea3cf52",
+        "type": "source",
+        "label": "WHO launches a Repository of systematic reviews on interventions in environment, climate change and health",
+        "data": {
+          "sourceId": "47f95931-d334-450c-b1a1-d65baea3cf52",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "0ac6691d-9a88-5b78-b336-7cbd07bae0f2",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2024-02-29T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 0
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.who.int/news/item/29-02-2024-who-launches-a-repository-of-systematic-reviews-on-interventions-in-environment--climate-change-and-health",
+          "domain": "www.who.int",
+          "publisher": "World Health Organization: WHO",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2024-02-29T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:1eb96957-b86c-4f0f-9257-7b7ac69ac252",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "47f95931-d334-450c-b1a1-d65baea3cf52",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "0ac6691d-9a88-5b78-b336-7cbd07bae0f2",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 0
+        },
+        "metadata": {
+          "snapshotId": "1eb96957-b86c-4f0f-9257-7b7ac69ac252",
+          "retrievedAt": "2026-08-13T22:29:15.232143+00:00",
+          "publishedAt": "2024-02-29T00:00:00+00:00",
+          "contentHash": "cb6367bb932fb55790dd589f4264b26cc7eee79856562eb5fd5296e0f036fa1a",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:0f0fb43e-dcd5-4b41-a1f9-ac02fa343fd6",
+        "type": "source",
+        "label": "Assessing the problems and developing a scoping review",
+        "data": {
+          "sourceId": "0f0fb43e-dcd5-4b41-a1f9-ac02fa343fd6",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "3681e609-baac-5edc-9c3a-4a52a8e94ba1",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:29:16.322729+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "metadata": {
+          "canonicalUrl": "https://extranet.who.int/kobe_centre/sites/default/files/chapters/Chapter%203.6%20Further%20reading.pdf",
+          "domain": "extranet.who.int",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:29:16.322729+00:00"
+        }
+      },
+      {
+        "id": "snapshot:f88f1d62-e20e-4f3f-8541-777a2e929bcb",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "0f0fb43e-dcd5-4b41-a1f9-ac02fa343fd6",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "3681e609-baac-5edc-9c3a-4a52a8e94ba1",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 360
+        },
+        "metadata": {
+          "snapshotId": "f88f1d62-e20e-4f3f-8541-777a2e929bcb",
+          "retrievedAt": "2026-08-13T22:29:16.322729+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:ac2c7605-af6e-4c08-9405-31ef22498387",
+        "type": "source",
+        "label": "Training package for rapid reviews",
+        "data": {
+          "sourceId": "ac2c7605-af6e-4c08-9405-31ef22498387",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "b364b069-e9ad-5391-9ddc-9e459c6ac6b2",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 540
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.emro.who.int/evidence-data-to-policy/training-package/rapid-reviews.html",
+          "domain": "www.emro.who.int",
+          "publisher": "emro.who.int",
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2026-08-13T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:c8c7c66f-cba2-4e92-9911-ad4e1fc747ed",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "ac2c7605-af6e-4c08-9405-31ef22498387",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "b364b069-e9ad-5391-9ddc-9e459c6ac6b2",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 540
+        },
+        "metadata": {
+          "snapshotId": "c8c7c66f-cba2-4e92-9911-ad4e1fc747ed",
+          "retrievedAt": "2026-08-13T22:29:17.271656+00:00",
+          "publishedAt": "2026-08-13T00:00:00+00:00",
+          "contentHash": "96e74d4e22fed4edd3f6ef3a863670474eaba6aac77ff4422f27df3ed26923ae",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:03bd76bc-03e3-49e4-b7e4-a102497bc9d9",
+        "type": "source",
+        "label": "PowerPoint Presentation",
+        "data": {
+          "sourceId": "03bd76bc-03e3-49e4-b7e4-a102497bc9d9",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "0583db04-fa0d-5d57-9e5d-0bf6650769fe",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2018-03-27T11:28:26+00:00",
+          "contentType": "application/pdf",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 720
+        },
+        "metadata": {
+          "canonicalUrl": "https://ahpsr.who.int/docs/librariesprovider11/publications/supplementary-material/alliancehpsr_rrguide_trainingslides.pdf",
+          "domain": "ahpsr.who.int",
+          "publisher": null,
+          "sourceType": "PRIMARY",
+          "firstKnownAppearance": "2018-03-27T11:28:26+00:00"
+        }
+      },
+      {
+        "id": "snapshot:5995ad02-697a-4163-8aa7-9d61c92b0f69",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "03bd76bc-03e3-49e4-b7e4-a102497bc9d9",
+          "accessStatus": "FETCHED",
+          "role": "PRIMARY",
+          "clusterId": "0583db04-fa0d-5d57-9e5d-0bf6650769fe",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 720
+        },
+        "metadata": {
+          "snapshotId": "5995ad02-697a-4163-8aa7-9d61c92b0f69",
+          "retrievedAt": "2026-08-13T22:29:19.069389+00:00",
+          "publishedAt": "2018-03-27T11:28:26+00:00",
+          "contentHash": "37457e6665e69dd9b0cfef1240b5269a7b2468e9e5afff1c45b803796044e2fa",
+          "parserName": "pymupdf",
+          "parserVersion": "1.28.2"
+        }
+      },
+      {
+        "id": "source:1df9e969-4037-43e9-83e3-fd21e33b57f9",
+        "type": "source",
+        "label": "Assessing the problems and developing a scoping review 3.6",
+        "data": {
+          "sourceId": "1df9e969-4037-43e9-83e3-fd21e33b57f9",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "968be0a6-8d27-5470-8315-42fe15722919",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-08-13T22:29:19.862070+00:00",
+          "contentType": null,
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 900
+        },
+        "metadata": {
+          "canonicalUrl": "https://extranet.who.int/kobe_centre/sites/default/files/pdf/WHO%20Guidance_Research%20Methods_Health-EDRM_3.6.pdf",
+          "domain": "extranet.who.int",
+          "publisher": null,
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-08-13T22:29:19.862070+00:00"
+        }
+      },
+      {
+        "id": "snapshot:47e7dac3-9137-42ff-8492-8f97d00bf2e5",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "1df9e969-4037-43e9-83e3-fd21e33b57f9",
+          "accessStatus": "INACCESSIBLE",
+          "role": "UNKNOWN",
+          "clusterId": "968be0a6-8d27-5470-8315-42fe15722919",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 900
+        },
+        "metadata": {
+          "snapshotId": "47e7dac3-9137-42ff-8492-8f97d00bf2e5",
+          "retrievedAt": "2026-08-13T22:29:19.862070+00:00",
+          "publishedAt": null,
+          "contentHash": null,
+          "parserName": null,
+          "parserVersion": null
+        }
+      },
+      {
+        "id": "source:a6055c34-8b4a-45c8-96a6-a79805a20a6a",
+        "type": "source",
+        "label": "Arthritis News : Knuckle Cracking Q&A from Johns Hopkins Arthritis Center",
+        "data": {
+          "sourceId": "a6055c34-8b4a-45c8-96a6-a79805a20a6a",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "de441c94-13a5-5eaf-8cdb-3f64956e0987",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2007-09-10T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "9aab96fc-ec51-4e61-b977-fccd9d0fa660"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 1080
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.hopkinsarthritis.org/arthritis-news/knuckle-cracking-q-a-from/",
+          "domain": "www.hopkinsarthritis.org",
+          "publisher": "Johns Hopkins Arthritis Center",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2007-09-10T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:1142ffac-ecbc-493c-b247-c3c0870e96a8",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "a6055c34-8b4a-45c8-96a6-a79805a20a6a",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "de441c94-13a5-5eaf-8cdb-3f64956e0987",
+          "atomicClaimIds": [
+            "9aab96fc-ec51-4e61-b977-fccd9d0fa660"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 1080
+        },
+        "metadata": {
+          "snapshotId": "1142ffac-ecbc-493c-b247-c3c0870e96a8",
+          "retrievedAt": "2026-08-13T22:29:20.538747+00:00",
+          "publishedAt": "2007-09-10T00:00:00+00:00",
+          "contentHash": "40185cd9af006261096f1ef3210a6366b13e87b78b72fe53037b11e9a8b26c2f",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:c664d9f8-7683-43c5-aba0-f09449fee458",
+        "type": "source",
+        "label": "Does cracking your knuckles cause arthritis?",
+        "data": {
+          "sourceId": "c664d9f8-7683-43c5-aba0-f09449fee458",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "93549d50-7da2-55f7-aba1-f90e90ea848b",
+          "dependencyMultiplier": 0.1,
+          "firstKnownAppearance": "2025-11-30T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "9aab96fc-ec51-4e61-b977-fccd9d0fa660"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 1260
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.arthritis-uk.org/news/does-cracking-your-knuckles-cause-arthritis/",
+          "domain": "www.arthritis-uk.org",
+          "publisher": "Arthritis UK",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2025-11-30T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:efc78f59-821e-4aef-93fb-ccc74fada3c0",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "c664d9f8-7683-43c5-aba0-f09449fee458",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "93549d50-7da2-55f7-aba1-f90e90ea848b",
+          "atomicClaimIds": [
+            "9aab96fc-ec51-4e61-b977-fccd9d0fa660"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 1260
+        },
+        "metadata": {
+          "snapshotId": "efc78f59-821e-4aef-93fb-ccc74fada3c0",
+          "retrievedAt": "2026-08-13T22:29:21.523347+00:00",
+          "publishedAt": "2025-11-30T00:00:00+00:00",
+          "contentHash": "6fb8f4a2aa24f2a55ef2750f8a82b206031d53e5f880b606dc656c717687a996",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:879241c1-04f2-41f8-b6a0-3717b83a58a9",
+        "type": "source",
+        "label": "Does Cracking Your Knuckles Cause Arthritis?",
+        "data": {
+          "sourceId": "879241c1-04f2-41f8-b6a0-3717b83a58a9",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "93549d50-7da2-55f7-aba1-f90e90ea848b",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2017-01-18T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "9aab96fc-ec51-4e61-b977-fccd9d0fa660"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 1350
+        },
+        "metadata": {
+          "canonicalUrl": "https://www.arthritis-health.com/blog/does-cracking-your-knuckles-cause-arthritis",
+          "domain": "www.arthritis-health.com",
+          "publisher": "Arthritis-health",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2017-01-18T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:3bce52e2-8bca-4f26-8cab-e27943719c3d",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "879241c1-04f2-41f8-b6a0-3717b83a58a9",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "93549d50-7da2-55f7-aba1-f90e90ea848b",
+          "atomicClaimIds": [
+            "9aab96fc-ec51-4e61-b977-fccd9d0fa660"
+          ],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 1350
+        },
+        "metadata": {
+          "snapshotId": "3bce52e2-8bca-4f26-8cab-e27943719c3d",
+          "retrievedAt": "2026-08-13T22:29:22.308817+00:00",
+          "publishedAt": "2017-01-18T00:00:00+00:00",
+          "contentHash": "263aa975c4cc260b396610da2b2f114c9b012a4105f1b095e69d4fb72d380db6",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:1e01f4be-2e22-46c5-8b57-3393889e919f",
+        "type": "source",
+        "label": "Cracking your knuckles causes osteoarthritis and other...",
+        "data": {
+          "sourceId": "1e01f4be-2e22-46c5-8b57-3393889e919f",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6a4dac22-7153-5a05-bfb6-63f4580e5332",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2026-02-08T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 320,
+          "y": 1440
+        },
+        "metadata": {
+          "canonicalUrl": "https://factually.co/fact-checks/health/cracking-knuckles-osteoporosis-osteoarthritis-myth-or-fact-30f7a4",
+          "domain": "factually.co",
+          "publisher": "Factually",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2026-02-08T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:15853554-728e-4518-b172-2f10ebe1fbbb",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "1e01f4be-2e22-46c5-8b57-3393889e919f",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "6a4dac22-7153-5a05-bfb6-63f4580e5332",
+          "atomicClaimIds": [],
+          "evidenceUsed": false
+        },
+        "position": {
+          "x": 640,
+          "y": 1440
+        },
+        "metadata": {
+          "snapshotId": "15853554-728e-4518-b172-2f10ebe1fbbb",
+          "retrievedAt": "2026-08-13T22:29:22.689980+00:00",
+          "publishedAt": "2026-02-08T00:00:00+00:00",
+          "contentHash": "70388da10adc9170df8deb1bf706f51a1644e76139bc0a9553162a1392be75e0",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      },
+      {
+        "id": "source:47736de8-27bb-45a2-9d28-6b665198ddac",
+        "type": "source",
+        "label": "Is Cracking Your Knuckles Bad for You?",
+        "data": {
+          "sourceId": "47736de8-27bb-45a2-9d28-6b665198ddac",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "5ede573f-c2a8-5a77-9b63-fb96985c8445",
+          "dependencyMultiplier": 1,
+          "firstKnownAppearance": "2023-01-06T00:00:00+00:00",
+          "contentType": "text/html",
+          "atomicClaimIds": [
+            "9aab96fc-ec51-4e61-b977-fccd9d0fa660"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 320,
+          "y": 180
+        },
+        "metadata": {
+          "canonicalUrl": "https://health.clevelandclinic.org/is-cracking-your-knuckles-bad-for-you",
+          "domain": "health.clevelandclinic.org",
+          "publisher": "Cleveland Clinic",
+          "sourceType": "UNKNOWN",
+          "firstKnownAppearance": "2023-01-06T00:00:00+00:00"
+        }
+      },
+      {
+        "id": "snapshot:33ba2cd3-24be-43f0-8bde-9ac3c9012fc6",
+        "type": "snapshot",
+        "label": "Snapshot 2026-08-13",
+        "data": {
+          "sourceId": "47736de8-27bb-45a2-9d28-6b665198ddac",
+          "accessStatus": "FETCHED",
+          "role": "UNKNOWN",
+          "clusterId": "5ede573f-c2a8-5a77-9b63-fb96985c8445",
+          "atomicClaimIds": [
+            "9aab96fc-ec51-4e61-b977-fccd9d0fa660"
+          ],
+          "evidenceUsed": true
+        },
+        "position": {
+          "x": 640,
+          "y": 180
+        },
+        "metadata": {
+          "snapshotId": "33ba2cd3-24be-43f0-8bde-9ac3c9012fc6",
+          "retrievedAt": "2026-08-13T22:29:23.022303+00:00",
+          "publishedAt": "2023-01-06T00:00:00+00:00",
+          "contentHash": "7eea73ebc73f1539177806a22de509e3e31567dd448b0ecc3fe56d9303653d26",
+          "parserName": "trafilatura",
+          "parserVersion": "2.2.0"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "cluster-member:0ac6691d-9a88-5b78-b336-7cbd07bae0f2:47f95931-d334-450c-b1a1-d65baea3cf52",
+        "source": "cluster:0ac6691d-9a88-5b78-b336-7cbd07bae0f2",
+        "target": "source:47f95931-d334-450c-b1a1-d65baea3cf52",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:1eb96957-b86c-4f0f-9257-7b7ac69ac252",
+        "source": "source:47f95931-d334-450c-b1a1-d65baea3cf52",
+        "target": "snapshot:1eb96957-b86c-4f0f-9257-7b7ac69ac252",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:3681e609-baac-5edc-9c3a-4a52a8e94ba1:0f0fb43e-dcd5-4b41-a1f9-ac02fa343fd6",
+        "source": "cluster:3681e609-baac-5edc-9c3a-4a52a8e94ba1",
+        "target": "source:0f0fb43e-dcd5-4b41-a1f9-ac02fa343fd6",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:f88f1d62-e20e-4f3f-8541-777a2e929bcb",
+        "source": "source:0f0fb43e-dcd5-4b41-a1f9-ac02fa343fd6",
+        "target": "snapshot:f88f1d62-e20e-4f3f-8541-777a2e929bcb",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:b364b069-e9ad-5391-9ddc-9e459c6ac6b2:ac2c7605-af6e-4c08-9405-31ef22498387",
+        "source": "cluster:b364b069-e9ad-5391-9ddc-9e459c6ac6b2",
+        "target": "source:ac2c7605-af6e-4c08-9405-31ef22498387",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:c8c7c66f-cba2-4e92-9911-ad4e1fc747ed",
+        "source": "source:ac2c7605-af6e-4c08-9405-31ef22498387",
+        "target": "snapshot:c8c7c66f-cba2-4e92-9911-ad4e1fc747ed",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:0583db04-fa0d-5d57-9e5d-0bf6650769fe:03bd76bc-03e3-49e4-b7e4-a102497bc9d9",
+        "source": "cluster:0583db04-fa0d-5d57-9e5d-0bf6650769fe",
+        "target": "source:03bd76bc-03e3-49e4-b7e4-a102497bc9d9",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:5995ad02-697a-4163-8aa7-9d61c92b0f69",
+        "source": "source:03bd76bc-03e3-49e4-b7e4-a102497bc9d9",
+        "target": "snapshot:5995ad02-697a-4163-8aa7-9d61c92b0f69",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:968be0a6-8d27-5470-8315-42fe15722919:1df9e969-4037-43e9-83e3-fd21e33b57f9",
+        "source": "cluster:968be0a6-8d27-5470-8315-42fe15722919",
+        "target": "source:1df9e969-4037-43e9-83e3-fd21e33b57f9",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:47e7dac3-9137-42ff-8492-8f97d00bf2e5",
+        "source": "source:1df9e969-4037-43e9-83e3-fd21e33b57f9",
+        "target": "snapshot:47e7dac3-9137-42ff-8492-8f97d00bf2e5",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:de441c94-13a5-5eaf-8cdb-3f64956e0987:a6055c34-8b4a-45c8-96a6-a79805a20a6a",
+        "source": "cluster:de441c94-13a5-5eaf-8cdb-3f64956e0987",
+        "target": "source:a6055c34-8b4a-45c8-96a6-a79805a20a6a",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:1142ffac-ecbc-493c-b247-c3c0870e96a8",
+        "source": "source:a6055c34-8b4a-45c8-96a6-a79805a20a6a",
+        "target": "snapshot:1142ffac-ecbc-493c-b247-c3c0870e96a8",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:93549d50-7da2-55f7-aba1-f90e90ea848b:c664d9f8-7683-43c5-aba0-f09449fee458",
+        "source": "cluster:93549d50-7da2-55f7-aba1-f90e90ea848b",
+        "target": "source:c664d9f8-7683-43c5-aba0-f09449fee458",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:efc78f59-821e-4aef-93fb-ccc74fada3c0",
+        "source": "source:c664d9f8-7683-43c5-aba0-f09449fee458",
+        "target": "snapshot:efc78f59-821e-4aef-93fb-ccc74fada3c0",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:93549d50-7da2-55f7-aba1-f90e90ea848b:879241c1-04f2-41f8-b6a0-3717b83a58a9",
+        "source": "cluster:93549d50-7da2-55f7-aba1-f90e90ea848b",
+        "target": "source:879241c1-04f2-41f8-b6a0-3717b83a58a9",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:3bce52e2-8bca-4f26-8cab-e27943719c3d",
+        "source": "source:879241c1-04f2-41f8-b6a0-3717b83a58a9",
+        "target": "snapshot:3bce52e2-8bca-4f26-8cab-e27943719c3d",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:6a4dac22-7153-5a05-bfb6-63f4580e5332:1e01f4be-2e22-46c5-8b57-3393889e919f",
+        "source": "cluster:6a4dac22-7153-5a05-bfb6-63f4580e5332",
+        "target": "source:1e01f4be-2e22-46c5-8b57-3393889e919f",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:15853554-728e-4518-b172-2f10ebe1fbbb",
+        "source": "source:1e01f4be-2e22-46c5-8b57-3393889e919f",
+        "target": "snapshot:15853554-728e-4518-b172-2f10ebe1fbbb",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "cluster-member:5ede573f-c2a8-5a77-9b63-fb96985c8445:47736de8-27bb-45a2-9d28-6b665198ddac",
+        "source": "cluster:5ede573f-c2a8-5a77-9b63-fb96985c8445",
+        "target": "source:47736de8-27bb-45a2-9d28-6b665198ddac",
+        "label": "information cluster",
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "data": {
+          "relationship": "INFORMATION_CLUSTER",
+          "confidence": 1,
+          "detectionMethod": "deterministic_cluster_membership"
+        }
+      },
+      {
+        "id": "snapshot-of:33ba2cd3-24be-43f0-8bde-9ac3c9012fc6",
+        "source": "source:47736de8-27bb-45a2-9d28-6b665198ddac",
+        "target": "snapshot:33ba2cd3-24be-43f0-8bde-9ac3c9012fc6",
+        "label": "snapshot of",
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "data": {
+          "relationship": "SNAPSHOT_OF",
+          "confidence": 1,
+          "detectionMethod": "stored_snapshot_reference"
+        }
+      },
+      {
+        "id": "dependency:5b874479-36d9-4aa2-ba95-c2ce7d1b06b7",
+        "source": "source:03bd76bc-03e3-49e4-b7e4-a102497bc9d9",
+        "target": "source:ac2c7605-af6e-4c08-9405-31ef22498387",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.85,
+          "detectionMethod": "explicit_named_source"
+        }
+      },
+      {
+        "id": "dependency:8349a783-fae7-4d9a-827c-3fae5edaf0ef",
+        "source": "source:879241c1-04f2-41f8-b6a0-3717b83a58a9",
+        "target": "source:c664d9f8-7683-43c5-aba0-f09449fee458",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.85,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.85,
+          "detectionMethod": "explicit_named_source"
+        }
+      },
+      {
+        "id": "dependency:d1f0dd1f-29e5-41be-a339-6e9a877b07da",
+        "source": "source:c664d9f8-7683-43c5-aba0-f09449fee458",
+        "target": "source:1e01f4be-2e22-46c5-8b57-3393889e919f",
+        "label": "cites",
+        "relationship": "CITES",
+        "confidence": 0.99,
+        "data": {
+          "relationship": "CITES",
+          "confidence": 0.99,
+          "detectionMethod": "explicit_outbound_link"
+        }
+      },
+      {
+        "id": "dependency:f5397b80-c72e-4244-95d5-2941e07f6176",
+        "source": "source:879241c1-04f2-41f8-b6a0-3717b83a58a9",
+        "target": "source:c664d9f8-7683-43c5-aba0-f09449fee458",
+        "label": "uses same data",
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "data": {
+          "relationship": "USES_SAME_DATA",
+          "confidence": 0.7,
+          "detectionMethod": "shared_table_or_statistics"
+        }
+      },
+      {
+        "id": "dependency:d8c4f316-8c02-4109-8cc3-9e270f0a9386",
+        "source": "source:879241c1-04f2-41f8-b6a0-3717b83a58a9",
+        "target": "source:c664d9f8-7683-43c5-aba0-f09449fee458",
+        "label": "derives from",
+        "relationship": "DERIVES_FROM",
+        "confidence": 0.86,
+        "data": {
+          "relationship": "DERIVES_FROM",
+          "confidence": 0.86,
+          "detectionMethod": "shared_error_or_cited_evidence_chain"
+        }
+      }
+    ]
+  },
+  "calculations": [
+    {
+      "id": "644efc26-e5c4-45c3-ba50-83b7a491c98a",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "0.986",
+        "passage_id": "7690184b-7b34-5f4f-b6ee-a61321477ca9"
+      },
+      "result": {
+        "quality": "0.93360"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "63f3e41b-fbcd-4665-a0f8-293264632a12",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.93360",
+        "passage_id": "7690184b-7b34-5f4f-b6ee-a61321477ca9",
+        "dependency_multiplier": "0.10"
+      },
+      "result": {
+        "adjusted_weight": "0.0933600"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "696bc114-bb47-4ccd-b1df-7b8676ffc77d",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "1.0",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "8c481d2d-1d8d-5721-b6c0-b8b515512cb3"
+      },
+      "result": {
+        "quality": "0.945"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "873a8ac8-ad6c-4ee5-b089-7e9faf1fda63",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.945",
+        "passage_id": "8c481d2d-1d8d-5721-b6c0-b8b515512cb3",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.94500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "70776c35-5733-44eb-b9f0-fb93306eb67b",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.2",
+        "F": "0.5",
+        "R": "0.8",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "f363c349-86c9-5432-a2f6-dc082387f830"
+      },
+      "result": {
+        "quality": "0.545"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "b063cd94-f20a-4da5-8391-fb2b1f8be68f",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.545",
+        "passage_id": "f363c349-86c9-5432-a2f6-dc082387f830",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.54500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "eaf750fa-53b2-4abf-8d6c-366c517f9711",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "0d5aa243-4f10-5a91-a04f-5bbfd504a32a"
+      },
+      "result": {
+        "quality": "0.315"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "ce94c040-c583-4e9e-9d44-b1502dbdedaa",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.315",
+        "passage_id": "0d5aa243-4f10-5a91-a04f-5bbfd504a32a",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.31500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "3a869ffb-8d54-41a2-93a4-0728991856b9",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.8",
+        "D": "1.0",
+        "F": "0.9",
+        "R": "1.0",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "19d1e769-3f84-5862-9c74-11214f91e78e"
+      },
+      "result": {
+        "quality": "0.935"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a198f8da-f752-4c73-b5b1-7647544a847f",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.935",
+        "passage_id": "19d1e769-3f84-5862-9c74-11214f91e78e",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.93500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "afa1dab7-1cd7-47a7-ac20-fb50efdbd559",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.0",
+        "D": "0.0",
+        "F": "0.0",
+        "R": "0.1",
+        "T": "0.0",
+        "X": "1.0",
+        "passage_id": "1fee32ba-c6e3-565e-bd18-578e59fa2bbc"
+      },
+      "result": {
+        "quality": "0.125"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e81e1871-ab50-475e-b8b1-2d26c40b02a9",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.125",
+        "passage_id": "1fee32ba-c6e3-565e-bd18-578e59fa2bbc",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.12500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "110579df-afb4-48b4-a050-5656a3d3aad7",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.0",
+        "D": "0.0",
+        "F": "0.0",
+        "R": "0.0",
+        "T": "0.0",
+        "X": "1.0",
+        "passage_id": "4e46b303-d0b7-5022-abdf-1432fc16f0e3"
+      },
+      "result": {
+        "quality": "0.100"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "717d1e25-03cd-4eb5-aba3-255237dcdb52",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.100",
+        "passage_id": "4e46b303-d0b7-5022-abdf-1432fc16f0e3",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.10000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "29f0da01-2907-458b-a5ae-eb1ebd0e5d7d",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.8",
+        "X": "1.0",
+        "passage_id": "77309770-b5ab-5e0d-bf85-96e5dae4d44e"
+      },
+      "result": {
+        "quality": "0.360"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "0c1b33e1-4a86-4d05-87ee-62d36aa0add1",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.360",
+        "passage_id": "77309770-b5ab-5e0d-bf85-96e5dae4d44e",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.36000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a57fe87f-2929-4439-8d45-839eda292161",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.1",
+        "T": "0.5",
+        "X": "1.0",
+        "passage_id": "881c296b-28b2-5118-b5a4-8a83bee75c5a"
+      },
+      "result": {
+        "quality": "0.290"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "367b5ba0-55d3-4b16-ab25-03bade0ccc14",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.290",
+        "passage_id": "881c296b-28b2-5118-b5a4-8a83bee75c5a",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.29000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "41e1f091-1cc0-4c83-8759-c8fa39c2c7a9",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_quality",
+      "formula_text": "q_i = 0.25R + 0.20D + 0.20A + 0.15T + 0.10F + 0.10X",
+      "inputs": {
+        "A": "0.1",
+        "D": "0.1",
+        "F": "0.5",
+        "R": "0.2",
+        "T": "0.9",
+        "X": "1.0",
+        "passage_id": "8ff9c665-e96b-5fea-9eeb-e7a07b4c0963"
+      },
+      "result": {
+        "quality": "0.375"
+      },
+      "units": "ratio",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "7fd13bad-521b-4b96-b346-740e39a41abd",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "adjusted_evidence_weight",
+      "formula_text": "w_i = q_i * dependency_multiplier",
+      "inputs": {
+        "quality": "0.375",
+        "passage_id": "8ff9c665-e96b-5fea-9eeb-e7a07b4c0963",
+        "dependency_multiplier": "1.00"
+      },
+      "result": {
+        "adjusted_weight": "0.37500"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "655bdfc8-944d-475a-8e6a-b5eef815ceb6",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "supporting_weight",
+      "formula_text": "P = sum(max(stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "7690184b-7b34-5f4f-b6ee-a61321477ca9",
+          "8c481d2d-1d8d-5721-b6c0-b8b515512cb3",
+          "19d1e769-3f84-5862-9c74-11214f91e78e"
+        ]
+      },
+      "result": {
+        "P": "0E-7"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a0564ba3-3ffe-4330-91a6-a854bd6b56f2",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "contradicting_weight",
+      "formula_text": "N = sum(max(-stance_i, 0) * w_i)",
+      "inputs": {
+        "evidence": [
+          "7690184b-7b34-5f4f-b6ee-a61321477ca9",
+          "8c481d2d-1d8d-5721-b6c0-b8b515512cb3",
+          "19d1e769-3f84-5862-9c74-11214f91e78e"
+        ]
+      },
+      "result": {
+        "N": "1.973360000"
+      },
+      "units": "weight",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "49d2ab27-d848-4185-9880-ee664337276c",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_consistency",
+      "formula_text": "100 * abs(P - N) / (P + N)",
+      "inputs": {
+        "N": "1.973360000",
+        "P": "0E-7"
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c84969b9-7688-4d5f-8e1e-693f58f47549",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "evidence_support",
+      "formula_text": "100 * P / (P + N)",
+      "inputs": {
+        "N": "1.973360000",
+        "P": "0E-7"
+      },
+      "result": {
+        "score": "0E+2"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "a491b293-5e2b-463f-96aa-b00d9fc43251",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "75.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "5f2342da-6de1-48c4-b11e-f9528df99b0d",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "75.00",
+        "primary_access": "0",
+        "average_quality": "93.97225523979405683706976933"
+      },
+      "result": {
+        "score": "78.49306380994851420926744233"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "c9be67c2-89a7-41dc-bde7-276fc0624744",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "material_penalties": {}
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "006d44c0-e1f7-42a8-817f-0e2d2089d508",
+      "atomic_claim_id": "9aab96fc-ec51-4e61-b977-fccd9d0fa660",
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "100",
+        "support": "0E+2",
+        "confidence": "78.49306380994851420926744233",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "insufficient_evidence_reasons": []
+      },
+      "result": {
+        "label": "Contradicted"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "ac9fc726-b9f8-47e6-aca6-eaf52501c8be",
+      "atomic_claim_id": null,
+      "formula_name": "source_independence",
+      "formula_text": "0.40O + 0.25P + 0.20G + 0.15M",
+      "inputs": {
+        "method_diversity": "100",
+        "origin_diversity": "100",
+        "primary_diversity": "0",
+        "organizational_diversity": "100"
+      },
+      "result": {
+        "score": "75.00"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "3891fbe8-729e-4b5e-bd6c-05107469a8ec",
+      "atomic_claim_id": null,
+      "formula_name": "verdict_confidence",
+      "formula_text": "clamp(0.30COV + 0.25QUAL + 0.20IND + 0.15CONS + 0.10PRI - penalties, 0, 100)",
+      "inputs": {
+        "coverage": "100",
+        "penalties": {
+          "citation_partial_support": "7",
+          "primary_evidence_unavailable": "0",
+          "important_source_inaccessible": "5"
+        },
+        "consistency": "100",
+        "independence": "75.00",
+        "primary_access": "0",
+        "average_quality": "93.97225523979405683706976933"
+      },
+      "result": {
+        "score": "71"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "e2dd285c-15da-447e-af14-f6153a916653",
+      "atomic_claim_id": null,
+      "formula_name": "article_factual_accuracy",
+      "formula_text": "sum(atomic_claim_support * importance_weight) / sum(importance_weight)",
+      "inputs": {
+        "claims": [
+          {
+            "support": "0E+2",
+            "importance_weight": 3
+          }
+        ],
+        "citation_partial_support_penalty": "5"
+      },
+      "result": {
+        "score": "0",
+        "essential_claim_gate": true
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "f1c5e704-27cb-45bc-8a15-a3a8eadf8242",
+      "atomic_claim_id": null,
+      "formula_name": "final_label",
+      "formula_text": "apply insufficient-evidence gate, confidence < 35 gate, context override, support thresholds, and essential-claim gate",
+      "inputs": {
+        "context": "100",
+        "scoring_version": "1.4-directional-insufficient-evidence",
+        "factual_accuracy": "0",
+        "verdict_confidence": "78.49306380994851420926744233",
+        "insufficient_evidence_reasons": [],
+        "strongly_refuted_essential_claim": true
+      },
+      "result": {
+        "label": "Contradicted"
+      },
+      "units": "label",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "gated"
+    },
+    {
+      "id": "649eddef-72a3-4384-a5b5-772095f2b395",
+      "atomic_claim_id": null,
+      "formula_name": "research_coverage",
+      "formula_text": "importance-weighted adequate evidence percentage; insufficient = 100 - adequate; inaccessible impact = deterministic confidence penalty",
+      "inputs": {
+        "claims": [
+          {
+            "claim_ref": "claim-1-e694fa0a57bb4109",
+            "adequate_evidence": true,
+            "importance_weight": 3
+          }
+        ],
+        "confidence_issues": [
+          "important_source_inaccessible",
+          "primary_evidence_unavailable"
+        ]
+      },
+      "result": {
+        "adequate_evidence": "100",
+        "insufficient_evidence": "0",
+        "inaccessible_source_impact": "5"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "584be973-a879-48bb-b8b1-301fe5a7531b",
+      "atomic_claim_id": null,
+      "formula_name": "context_completeness",
+      "formula_text": "clamp(100 - sum(material penalties), 0, 100)",
+      "inputs": {
+        "claims": [
+          {
+            "context": "100",
+            "claim_ref": "claim-1-e694fa0a57bb4109",
+            "importance_weight": 3
+          }
+        ]
+      },
+      "result": {
+        "score": "100"
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    },
+    {
+      "id": "99a77e43-b3e8-45e2-8f9e-9133150dd96e",
+      "atomic_claim_id": null,
+      "formula_name": "citation_partial_support_penalty",
+      "formula_text": "reported score = clamp(original score - partial citation penalty, 0, 100)",
+      "inputs": {
+        "partial_sentence_count": 1,
+        "evidence_support_penalty": "5",
+        "verdict_confidence_penalty": "7"
+      },
+      "result": {
+        "evidence_support": 0,
+        "verdict_confidence": 71
+      },
+      "units": "score_0_100",
+      "decimal_context": {
+        "rounding": "ROUND_HALF_UP",
+        "precision": 28
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "methodology_version": "not-recorded",
+  "workflow_version": "1.0.0",
+  "model_versions": {
+    "intake": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1065,
+        "prompt_tokens": 967,
+        "completion_tokens": 98
+      },
+      "provider": "deepseek",
+      "latency_ms": 1231,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "planner": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1915,
+        "prompt_tokens": 1095,
+        "completion_tokens": 820
+      },
+      "provider": "deepseek",
+      "latency_ms": 4893,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "embedding": {
+      "status": "unconfigured_fallback",
+      "provider": "deepseek",
+      "retryable": false,
+      "error_code": "embedding_route_unavailable",
+      "latency_ms": 0,
+      "used_model": null,
+      "status_code": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "request_count": 0,
+      "retrieval_mode": "lexical_metadata_fallback",
+      "configured_model": null
+    },
+    "synthesis": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 12913,
+        "prompt_tokens": 12299,
+        "completion_tokens": 614
+      },
+      "provider": "deepseek",
+      "latency_ms": 4594,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "decomposition": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 1468,
+        "prompt_tokens": 1334,
+        "completion_tokens": 134
+      },
+      "provider": "deepseek",
+      "latency_ms": 1376,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_audit": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 4014,
+        "prompt_tokens": 3192,
+        "completion_tokens": 822
+      },
+      "provider": "deepseek",
+      "latency_ms": 4105,
+      "batch_count": 4,
+      "repair_count": 0,
+      "request_count": 4,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "citation_revision": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 4119,
+        "prompt_tokens": 3610,
+        "completion_tokens": 509
+      },
+      "provider": "deepseek",
+      "latency_ms": 3091,
+      "batch_count": 1,
+      "repair_count": 0,
+      "request_count": 1,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    },
+    "evidence_classification": {
+      "model": "deepseek-v4-flash",
+      "usage": {
+        "total_tokens": 18204,
+        "prompt_tokens": 16269,
+        "completion_tokens": 1935
+      },
+      "provider": "deepseek",
+      "latency_ms": 9562,
+      "batch_count": 10,
+      "repair_count": 0,
+      "request_count": 10,
+      "recovery_count": 0,
+      "split_fallback_count": 0,
+      "recovery_success_count": 0,
+      "structured_failure_counts": {}
+    }
+  },
+  "prompt_versions": {
+    "intake": "intake-v2",
+    "planner": "planner-v2",
+    "synthesis": "synthesis-v4",
+    "decomposition": "decomposition-v3",
+    "citation_audit": "citation-audit-v4",
+    "citation_revision": "synthesis-v4",
+    "evidence_classification": "evidence-classification-v4"
+  },
+  "parser_versions": {
+    "pymupdf": "1.28.2",
+    "trafilatura": "2.2.0"
+  },
+  "retrieval_versions": {
+    "implementation": "not-recorded",
+    "version": "not-recorded"
+  },
+  "score_roles": {
+    "evidence_support": "How strongly the stored evidence supports the factual claims.",
+    "attribution_support": "Whether the statement is accurately attributed to the named speaker or source.",
+    "quote_fidelity": "How faithfully a quotation or paraphrase matches its stored source passage.",
+    "verdict_confidence": "Confidence that the available evidence is sufficient for this report's conclusion.",
+    "source_independence": "How much the cited evidence comes from genuinely independent sources.",
+    "context_completeness": "Whether material surrounding context and limitations were captured."
+  },
+  "report_sentences": [
+    {
+      "id": "23bb0e0b-ea0c-4767-8d50-bf05d465052f",
+      "report_section": "summary",
+      "sentence_text": "The claim that cracking your knuckles causes arthritis is contradicted by the available evidence.",
+      "passage_id": "7690184b-7b34-5f4f-b6ee-a61321477ca9",
+      "audit_status": "passed",
+      "audit_note": "The passage directly states that studies found no evidence that cracking knuckles causes arthritis, which supports the claim that the claim is contradicted by evidence."
+    },
+    {
+      "id": "11dc1e69-37e5-4008-984f-4b660d99a931",
+      "report_section": "summary",
+      "sentence_text": "The claim that cracking your knuckles causes arthritis is contradicted by the available evidence.",
+      "passage_id": "8c481d2d-1d8d-5721-b6c0-b8b515512cb3",
+      "audit_status": "partial",
+      "audit_note": "The passage states that cracking knuckles correctly won't cause arthritis, but it also mentions risks, which is narrower than the claim that the claim is contradicted by available evidence. It partially supports but does not fully address the broader claim."
+    },
+    {
+      "id": "000e157d-942c-4de6-a733-5af02545034f",
+      "report_section": "summary",
+      "sentence_text": "The claim that cracking your knuckles causes arthritis is contradicted by the available evidence.",
+      "passage_id": "19d1e769-3f84-5862-9c74-11214f91e78e",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states 'There is no evidence that cracking knuckles causes any damage such as arthritis in the joints,' which directly supports the claim that the available evidence contradicts the idea that cracking knuckles causes arthritis."
+    },
+    {
+      "id": "0ae1d747-846d-47a6-855f-bff03539a4c6",
+      "report_section": "factual_finding",
+      "sentence_text": "Multiple medical sources state that there is no evidence that cracking knuckles causes arthritis.",
+      "passage_id": "7690184b-7b34-5f4f-b6ee-a61321477ca9",
+      "audit_status": "passed",
+      "audit_note": "The passage states 'Other similar studies have also found no evidence to support that cracking your knuckles causes arthritis,' which directly supports the sentence's claim that multiple medical sources state there is no evidence for this causation."
+    },
+    {
+      "id": "91d0ac86-cd7d-4340-9cf9-065606acc29f",
+      "report_section": "factual_finding",
+      "sentence_text": "Multiple medical sources state that there is no evidence that cracking knuckles causes arthritis.",
+      "passage_id": "19d1e769-3f84-5862-9c74-11214f91e78e",
+      "audit_status": "passed",
+      "audit_note": "The passage states 'There is no evidence that cracking knuckles causes any damage such as arthritis in the joints,' which directly supports the claim that there is no evidence for arthritis causation."
+    },
+    {
+      "id": "d6b9b59b-2ea4-43b8-b549-7f2172d50d72",
+      "report_section": "factual_finding",
+      "sentence_text": "One source explicitly states that cracking your knuckles correctly will not cause you to develop arthritis.",
+      "passage_id": "8c481d2d-1d8d-5721-b6c0-b8b515512cb3",
+      "audit_status": "passed",
+      "audit_note": "The passage states 'cracking your knuckles correctly won’t enlarge them or cause you to develop arthritis,' which directly supports the claim that cracking correctly will not cause arthritis."
+    },
+    {
+      "id": "0ad12d93-eb01-4481-8872-7ecbe744e996",
+      "report_section": "factual_finding",
+      "sentence_text": "Another source notes that there is no evidence that cracking knuckles causes any damage such as arthritis in the joints.",
+      "passage_id": "19d1e769-3f84-5862-9c74-11214f91e78e",
+      "audit_status": "passed",
+      "audit_note": "The passage explicitly states 'There is no evidence that cracking knuckles causes any damage such as arthritis in the joints.' This directly supports the sentence's claim."
+    },
+    {
+      "id": "6b035bc8-b440-421b-964c-a0eda38d2288",
+      "report_section": "strongest_contradiction",
+      "sentence_text": "There is no evidence that cracking knuckles causes any damage such as arthritis in the joints.",
+      "passage_id": "19d1e769-3f84-5862-9c74-11214f91e78e",
+      "audit_status": "passed",
+      "audit_note": "The passage contains the exact sentence 'There is no evidence that cracking knuckles causes any damage such as arthritis in the joints.' This fully supports the sentence."
+    }
+  ],
+  "evidence_reviewed_at": "2026-08-13T22:29:23.022303Z",
+  "generated_at": "2026-08-13T22:29:59.157154Z",
+  "limitations": [
+    "Inaccessible source: The evidence source could not be accessed safely.",
+    "Inaccessible source: The evidence source could not be accessed safely.",
+    "1 calculation audit(s) require review; inspect audit_status and inputs."
+  ]
+}

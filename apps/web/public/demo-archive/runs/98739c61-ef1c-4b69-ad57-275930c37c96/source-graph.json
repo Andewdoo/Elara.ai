@@ -1,0 +1,966 @@
+{
+  "nodes": [
+    {
+      "id": "cluster:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+      "type": "cluster",
+      "label": "Remote Work Productivity Study: Surprising Findings From a 4-Year Analysis information origin",
+      "data": {
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "originType": "shared_data_chain"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "metadata": {
+        "representativeSourceId": "ddcfef3b-d62c-4169-a091-7b833e9538d7"
+      }
+    },
+    {
+      "id": "cluster:25e0dd54-e8f4-5fa4-a192-9a8e6271648d",
+      "type": "cluster",
+      "label": "The Impact of Remote Work on Employee Productivity information origin",
+      "data": {
+        "clusterId": "25e0dd54-e8f4-5fa4-a192-9a8e6271648d",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 180
+      },
+      "metadata": {
+        "representativeSourceId": "f3f33c9b-e77b-4736-8012-2b2568f1cfe4"
+      }
+    },
+    {
+      "id": "cluster:383fc8d2-d7d0-53d7-86af-68613068506a",
+      "type": "cluster",
+      "label": "A growing body of data is debunking myths about remote work information origin",
+      "data": {
+        "clusterId": "383fc8d2-d7d0-53d7-86af-68613068506a",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 360
+      },
+      "metadata": {
+        "representativeSourceId": "c5a93484-94a9-4a90-8e99-f9a3714a3848"
+      }
+    },
+    {
+      "id": "cluster:3c848ca5-8685-5a65-963e-cf7d9fd79ecd",
+      "type": "cluster",
+      "label": "Top 5 Remote Team Performance Metrics for Leaders information origin",
+      "data": {
+        "clusterId": "3c848ca5-8685-5a65-963e-cf7d9fd79ecd",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 540
+      },
+      "metadata": {
+        "representativeSourceId": "a35a4577-edd4-4e4f-871d-6aa28de6d585"
+      }
+    },
+    {
+      "id": "cluster:f44e2258-f670-56e5-8637-2735fdc83f78",
+      "type": "cluster",
+      "label": "Client Challenge information origin",
+      "data": {
+        "clusterId": "f44e2258-f670-56e5-8637-2735fdc83f78",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 720
+      },
+      "metadata": {
+        "representativeSourceId": "1e4bb11d-1864-4a0f-9b4a-303166d0996a"
+      }
+    },
+    {
+      "id": "cluster:9c61bab6-278d-5268-8261-3feb4506942f",
+      "type": "cluster",
+      "label": "In-Office vs Remote Productivity: What the Data Shows | Worklytics information origin",
+      "data": {
+        "clusterId": "9c61bab6-278d-5268-8261-3feb4506942f",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 900
+      },
+      "metadata": {
+        "representativeSourceId": "35603946-fb4b-4d19-96ae-fc29bc56cc89"
+      }
+    },
+    {
+      "id": "cluster:ed8689c6-1ee2-50e3-8f55-ba93be22a56b",
+      "type": "cluster",
+      "label": "The Surprising Truth About Remote Work Productivity information origin",
+      "data": {
+        "clusterId": "ed8689c6-1ee2-50e3-8f55-ba93be22a56b",
+        "originType": "independent_origin"
+      },
+      "position": {
+        "x": 0,
+        "y": 1080
+      },
+      "metadata": {
+        "representativeSourceId": "26b195be-e23d-47f5-adbe-b89dbf5165d4"
+      }
+    },
+    {
+      "id": "source:513e94b2-15d3-447f-b064-ec6bd6c16c75",
+      "type": "source",
+      "label": "How to Measure Remote Employee Performance in 2026",
+      "data": {
+        "sourceId": "513e94b2-15d3-447f-b064-ec6bd6c16c75",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2025-06-23T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      },
+      "metadata": {
+        "canonicalUrl": "https://teamflect.com/blog/performance-management/how-to-measure-remote-employee-performance",
+        "domain": "teamflect.com",
+        "publisher": "Teamflect",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-06-23T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:b79aa8f1-0135-4ad8-94ef-c7d3964fd12a",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "513e94b2-15d3-447f-b064-ec6bd6c16c75",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      },
+      "metadata": {
+        "snapshotId": "b79aa8f1-0135-4ad8-94ef-c7d3964fd12a",
+        "retrievedAt": "2026-08-13T22:35:21.449242+00:00",
+        "publishedAt": "2025-06-23T00:00:00+00:00",
+        "contentHash": "5681c0b1c6ed2022d1922b85379d943c97417f67c02dbfb529ad2c6107a7ed21",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:f3f33c9b-e77b-4736-8012-2b2568f1cfe4",
+      "type": "source",
+      "label": "The Impact of Remote Work on Employee Productivity",
+      "data": {
+        "sourceId": "f3f33c9b-e77b-4736-8012-2b2568f1cfe4",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "25e0dd54-e8f4-5fa4-a192-9a8e6271648d",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2024-06-26T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 180
+      },
+      "metadata": {
+        "canonicalUrl": "https://auroratrainingadvantage.com/articles/impact-of-remote-work-on-employee-productivity/",
+        "domain": "auroratrainingadvantage.com",
+        "publisher": "Aurora Training Advantage",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2024-06-26T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:1de60dd4-e8f5-4d1e-acbd-bb7e1adfd3fe",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "f3f33c9b-e77b-4736-8012-2b2568f1cfe4",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "25e0dd54-e8f4-5fa4-a192-9a8e6271648d",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 180
+      },
+      "metadata": {
+        "snapshotId": "1de60dd4-e8f5-4d1e-acbd-bb7e1adfd3fe",
+        "retrievedAt": "2026-08-13T22:35:21.683158+00:00",
+        "publishedAt": "2024-06-26T00:00:00+00:00",
+        "contentHash": "1eeb7ccfa9c508af74672c6774808e80af4bff10efb6251551411cfae33c4570",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:a35a4577-edd4-4e4f-871d-6aa28de6d585",
+      "type": "source",
+      "label": "Top 5 Remote Team Performance Metrics for Leaders",
+      "data": {
+        "sourceId": "a35a4577-edd4-4e4f-871d-6aa28de6d585",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "3c848ca5-8685-5a65-963e-cf7d9fd79ecd",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2025-04-11T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 540
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.workstatus.io/blog/productivity-management/remote-team-performance-metrics/",
+        "domain": "www.workstatus.io",
+        "publisher": "WorkStatus – Blog",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-04-11T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:e6775149-ec98-4886-a6fe-30b4647075d2",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "a35a4577-edd4-4e4f-871d-6aa28de6d585",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "3c848ca5-8685-5a65-963e-cf7d9fd79ecd",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 540
+      },
+      "metadata": {
+        "snapshotId": "e6775149-ec98-4886-a6fe-30b4647075d2",
+        "retrievedAt": "2026-08-13T22:35:22.078760+00:00",
+        "publishedAt": "2025-04-11T00:00:00+00:00",
+        "contentHash": "ca7852dd676f8b49bcc9f16fbec82c7e15e6a80f74b6311f5b301f8c49255434",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:a02544a1-ba3a-42d2-820b-932aced14178",
+      "type": "source",
+      "label": "Remote Work Productivity Study 2026: 50+ Studies | eMonitor",
+      "data": {
+        "sourceId": "a02544a1-ba3a-42d2-820b-932aced14178",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2026-04-01T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "b44a7dc2-36df-46f8-bcf0-7c832bde2bce"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 90
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.employee-monitoring.net/blog/remote-work-productivity-research-meta-analysis",
+        "domain": "www.employee-monitoring.net",
+        "publisher": "Emonitor",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-04-01T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:0e898380-6265-4db7-b4c4-5debb89f4ed6",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "a02544a1-ba3a-42d2-820b-932aced14178",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "atomicClaimIds": [
+          "b44a7dc2-36df-46f8-bcf0-7c832bde2bce"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 90
+      },
+      "metadata": {
+        "snapshotId": "0e898380-6265-4db7-b4c4-5debb89f4ed6",
+        "retrievedAt": "2026-08-13T22:35:22.404755+00:00",
+        "publishedAt": "2026-04-01T00:00:00+00:00",
+        "contentHash": "cb22e4e98badb12da6c1d630b5e1cb658516aa0f9c31f65c7da9681c974b9da8",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:c5a93484-94a9-4a90-8e99-f9a3714a3848",
+      "type": "source",
+      "label": "A growing body of data is debunking myths about remote work",
+      "data": {
+        "sourceId": "c5a93484-94a9-4a90-8e99-f9a3714a3848",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "383fc8d2-d7d0-53d7-86af-68613068506a",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:35:23.901445+00:00",
+        "contentType": null,
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 360
+      },
+      "metadata": {
+        "canonicalUrl": "https://thehill.com/opinion/technology/4747313-remote-work-benefits-meta-analysis/",
+        "domain": "thehill.com",
+        "publisher": null,
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:35:23.901445+00:00"
+      }
+    },
+    {
+      "id": "snapshot:dd8de43b-2f81-4b77-8c10-af5900d6d629",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "c5a93484-94a9-4a90-8e99-f9a3714a3848",
+        "accessStatus": "BOT_BLOCKED",
+        "role": "UNKNOWN",
+        "clusterId": "383fc8d2-d7d0-53d7-86af-68613068506a",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 360
+      },
+      "metadata": {
+        "snapshotId": "dd8de43b-2f81-4b77-8c10-af5900d6d629",
+        "retrievedAt": "2026-08-13T22:35:23.901445+00:00",
+        "publishedAt": null,
+        "contentHash": null,
+        "parserName": null,
+        "parserVersion": null
+      }
+    },
+    {
+      "id": "source:1e4bb11d-1864-4a0f-9b4a-303166d0996a",
+      "type": "source",
+      "label": "Client Challenge",
+      "data": {
+        "sourceId": "1e4bb11d-1864-4a0f-9b4a-303166d0996a",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "f44e2258-f670-56e5-8637-2735fdc83f78",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-08-13T22:35:24.040901+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 720
+      },
+      "metadata": {
+        "canonicalUrl": "https://link.springer.com/article/10.1007/s43546-025-00931-7",
+        "domain": "link.springer.com",
+        "publisher": "link.springer.com",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-08-13T22:35:24.040901+00:00"
+      }
+    },
+    {
+      "id": "snapshot:6bbf3fe9-c571-4697-b11c-5cd9efb3b72c",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "1e4bb11d-1864-4a0f-9b4a-303166d0996a",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "f44e2258-f670-56e5-8637-2735fdc83f78",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 720
+      },
+      "metadata": {
+        "snapshotId": "6bbf3fe9-c571-4697-b11c-5cd9efb3b72c",
+        "retrievedAt": "2026-08-13T22:35:24.040901+00:00",
+        "publishedAt": null,
+        "contentHash": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:26b195be-e23d-47f5-adbe-b89dbf5165d4",
+      "type": "source",
+      "label": "The Surprising Truth About Remote Work Productivity",
+      "data": {
+        "sourceId": "26b195be-e23d-47f5-adbe-b89dbf5165d4",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ed8689c6-1ee2-50e3-8f55-ba93be22a56b",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2023-04-04T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "b44a7dc2-36df-46f8-bcf0-7c832bde2bce"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 1080
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.psychologytoday.com/us/blog/intentional-insights/202303/the-surprising-truth-about-remote-work-productivity",
+        "domain": "www.psychologytoday.com",
+        "publisher": "Psychology Today",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2023-04-04T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:d2619280-ea9f-41c4-920f-c725071e8138",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "26b195be-e23d-47f5-adbe-b89dbf5165d4",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ed8689c6-1ee2-50e3-8f55-ba93be22a56b",
+        "atomicClaimIds": [
+          "b44a7dc2-36df-46f8-bcf0-7c832bde2bce"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 1080
+      },
+      "metadata": {
+        "snapshotId": "d2619280-ea9f-41c4-920f-c725071e8138",
+        "retrievedAt": "2026-08-13T22:35:24.221045+00:00",
+        "publishedAt": "2023-04-04T00:00:00+00:00",
+        "contentHash": "3142d2c8550e85d4b7f6dba40d52d96fccb94869d8470d05e8133053b47cd4e9",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+      "type": "source",
+      "label": "Remote Work vs Office Productivity - What Research Actually Shows About Where Work Gets Done - SoftwareSeni",
+      "data": {
+        "sourceId": "4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "dependencyMultiplier": 0.35,
+        "firstKnownAppearance": "2025-12-26T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "b44a7dc2-36df-46f8-bcf0-7c832bde2bce"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 180
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.softwareseni.com/remote-work-vs-office-productivity-what-research-actually-shows-about-where-work-gets-done/",
+        "domain": "www.softwareseni.com",
+        "publisher": "SoftwareSeni",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-12-26T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:e76228b0-bfb9-40f3-92f0-c12a6d05fd76",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "atomicClaimIds": [
+          "b44a7dc2-36df-46f8-bcf0-7c832bde2bce"
+        ],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 180
+      },
+      "metadata": {
+        "snapshotId": "e76228b0-bfb9-40f3-92f0-c12a6d05fd76",
+        "retrievedAt": "2026-08-13T22:35:24.414667+00:00",
+        "publishedAt": "2025-12-26T00:00:00+00:00",
+        "contentHash": "c8d071da44f271eb58411a9a35a089e3b0cd6cead876e9ec55c95efd192846ef",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:35603946-fb4b-4d19-96ae-fc29bc56cc89",
+      "type": "source",
+      "label": "In-Office vs Remote Productivity: What the Data Shows | Worklytics",
+      "data": {
+        "sourceId": "35603946-fb4b-4d19-96ae-fc29bc56cc89",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "9c61bab6-278d-5268-8261-3feb4506942f",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2026-03-17T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 320,
+        "y": 900
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.worklytics.co/blog/in-office-vs-remote-day-productivity-which-is-better",
+        "domain": "www.worklytics.co",
+        "publisher": "Worklytics",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2026-03-17T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:9c0c6e3b-fec9-4d74-a283-0343d201da42",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "35603946-fb4b-4d19-96ae-fc29bc56cc89",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "9c61bab6-278d-5268-8261-3feb4506942f",
+        "atomicClaimIds": [],
+        "evidenceUsed": false
+      },
+      "position": {
+        "x": 640,
+        "y": 900
+      },
+      "metadata": {
+        "snapshotId": "9c0c6e3b-fec9-4d74-a283-0343d201da42",
+        "retrievedAt": "2026-08-13T22:35:25.632444+00:00",
+        "publishedAt": "2026-03-17T00:00:00+00:00",
+        "contentHash": "539be9f45a5a2cc3d2d6f8fe715c452a35d7b987b0786111c3ae49cc9525c939",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    },
+    {
+      "id": "source:ddcfef3b-d62c-4169-a091-7b833e9538d7",
+      "type": "source",
+      "label": "Remote Work Productivity Study: Surprising Findings From a 4-Year Analysis",
+      "data": {
+        "sourceId": "ddcfef3b-d62c-4169-a091-7b833e9538d7",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "dependencyMultiplier": 1,
+        "firstKnownAppearance": "2025-05-20T00:00:00+00:00",
+        "contentType": "text/html",
+        "atomicClaimIds": [
+          "b44a7dc2-36df-46f8-bcf0-7c832bde2bce"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 320,
+        "y": 270
+      },
+      "metadata": {
+        "canonicalUrl": "https://www.greatplacetowork.com/resources/blog/remote-work-productivity-study-finds-surprising-reality-2-year-study",
+        "domain": "www.greatplacetowork.com",
+        "publisher": "Great Place To Work®",
+        "sourceType": "UNKNOWN",
+        "firstKnownAppearance": "2025-05-20T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "snapshot:8087f334-babc-4d4b-8a5b-8da1e03492cd",
+      "type": "snapshot",
+      "label": "Snapshot 2026-08-13",
+      "data": {
+        "sourceId": "ddcfef3b-d62c-4169-a091-7b833e9538d7",
+        "accessStatus": "FETCHED",
+        "role": "UNKNOWN",
+        "clusterId": "ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+        "atomicClaimIds": [
+          "b44a7dc2-36df-46f8-bcf0-7c832bde2bce"
+        ],
+        "evidenceUsed": true
+      },
+      "position": {
+        "x": 640,
+        "y": 270
+      },
+      "metadata": {
+        "snapshotId": "8087f334-babc-4d4b-8a5b-8da1e03492cd",
+        "retrievedAt": "2026-08-13T22:35:25.907962+00:00",
+        "publishedAt": "2025-05-20T00:00:00+00:00",
+        "contentHash": "a3d36d39280c7b07e97f9713bd53eab6b8ffd53f901ffd08bbad51cc8f9130fe",
+        "parserName": "trafilatura",
+        "parserVersion": "2.2.0"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "cluster-member:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd:513e94b2-15d3-447f-b064-ec6bd6c16c75",
+      "source": "cluster:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+      "target": "source:513e94b2-15d3-447f-b064-ec6bd6c16c75",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:b79aa8f1-0135-4ad8-94ef-c7d3964fd12a",
+      "source": "source:513e94b2-15d3-447f-b064-ec6bd6c16c75",
+      "target": "snapshot:b79aa8f1-0135-4ad8-94ef-c7d3964fd12a",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:25e0dd54-e8f4-5fa4-a192-9a8e6271648d:f3f33c9b-e77b-4736-8012-2b2568f1cfe4",
+      "source": "cluster:25e0dd54-e8f4-5fa4-a192-9a8e6271648d",
+      "target": "source:f3f33c9b-e77b-4736-8012-2b2568f1cfe4",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:1de60dd4-e8f5-4d1e-acbd-bb7e1adfd3fe",
+      "source": "source:f3f33c9b-e77b-4736-8012-2b2568f1cfe4",
+      "target": "snapshot:1de60dd4-e8f5-4d1e-acbd-bb7e1adfd3fe",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:3c848ca5-8685-5a65-963e-cf7d9fd79ecd:a35a4577-edd4-4e4f-871d-6aa28de6d585",
+      "source": "cluster:3c848ca5-8685-5a65-963e-cf7d9fd79ecd",
+      "target": "source:a35a4577-edd4-4e4f-871d-6aa28de6d585",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:e6775149-ec98-4886-a6fe-30b4647075d2",
+      "source": "source:a35a4577-edd4-4e4f-871d-6aa28de6d585",
+      "target": "snapshot:e6775149-ec98-4886-a6fe-30b4647075d2",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd:a02544a1-ba3a-42d2-820b-932aced14178",
+      "source": "cluster:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+      "target": "source:a02544a1-ba3a-42d2-820b-932aced14178",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:0e898380-6265-4db7-b4c4-5debb89f4ed6",
+      "source": "source:a02544a1-ba3a-42d2-820b-932aced14178",
+      "target": "snapshot:0e898380-6265-4db7-b4c4-5debb89f4ed6",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:383fc8d2-d7d0-53d7-86af-68613068506a:c5a93484-94a9-4a90-8e99-f9a3714a3848",
+      "source": "cluster:383fc8d2-d7d0-53d7-86af-68613068506a",
+      "target": "source:c5a93484-94a9-4a90-8e99-f9a3714a3848",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:dd8de43b-2f81-4b77-8c10-af5900d6d629",
+      "source": "source:c5a93484-94a9-4a90-8e99-f9a3714a3848",
+      "target": "snapshot:dd8de43b-2f81-4b77-8c10-af5900d6d629",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:f44e2258-f670-56e5-8637-2735fdc83f78:1e4bb11d-1864-4a0f-9b4a-303166d0996a",
+      "source": "cluster:f44e2258-f670-56e5-8637-2735fdc83f78",
+      "target": "source:1e4bb11d-1864-4a0f-9b4a-303166d0996a",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:6bbf3fe9-c571-4697-b11c-5cd9efb3b72c",
+      "source": "source:1e4bb11d-1864-4a0f-9b4a-303166d0996a",
+      "target": "snapshot:6bbf3fe9-c571-4697-b11c-5cd9efb3b72c",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:ed8689c6-1ee2-50e3-8f55-ba93be22a56b:26b195be-e23d-47f5-adbe-b89dbf5165d4",
+      "source": "cluster:ed8689c6-1ee2-50e3-8f55-ba93be22a56b",
+      "target": "source:26b195be-e23d-47f5-adbe-b89dbf5165d4",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:d2619280-ea9f-41c4-920f-c725071e8138",
+      "source": "source:26b195be-e23d-47f5-adbe-b89dbf5165d4",
+      "target": "snapshot:d2619280-ea9f-41c4-920f-c725071e8138",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd:4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+      "source": "cluster:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+      "target": "source:4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:e76228b0-bfb9-40f3-92f0-c12a6d05fd76",
+      "source": "source:4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+      "target": "snapshot:e76228b0-bfb9-40f3-92f0-c12a6d05fd76",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:9c61bab6-278d-5268-8261-3feb4506942f:35603946-fb4b-4d19-96ae-fc29bc56cc89",
+      "source": "cluster:9c61bab6-278d-5268-8261-3feb4506942f",
+      "target": "source:35603946-fb4b-4d19-96ae-fc29bc56cc89",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:9c0c6e3b-fec9-4d74-a283-0343d201da42",
+      "source": "source:35603946-fb4b-4d19-96ae-fc29bc56cc89",
+      "target": "snapshot:9c0c6e3b-fec9-4d74-a283-0343d201da42",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "cluster-member:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd:ddcfef3b-d62c-4169-a091-7b833e9538d7",
+      "source": "cluster:ad9e5d93-f528-5eca-bb9e-a1d84a2bcdfd",
+      "target": "source:ddcfef3b-d62c-4169-a091-7b833e9538d7",
+      "label": "information cluster",
+      "relationship": "INFORMATION_CLUSTER",
+      "confidence": 1,
+      "data": {
+        "relationship": "INFORMATION_CLUSTER",
+        "confidence": 1,
+        "detectionMethod": "deterministic_cluster_membership"
+      }
+    },
+    {
+      "id": "snapshot-of:8087f334-babc-4d4b-8a5b-8da1e03492cd",
+      "source": "source:ddcfef3b-d62c-4169-a091-7b833e9538d7",
+      "target": "snapshot:8087f334-babc-4d4b-8a5b-8da1e03492cd",
+      "label": "snapshot of",
+      "relationship": "SNAPSHOT_OF",
+      "confidence": 1,
+      "data": {
+        "relationship": "SNAPSHOT_OF",
+        "confidence": 1,
+        "detectionMethod": "stored_snapshot_reference"
+      }
+    },
+    {
+      "id": "dependency:dd32baec-7e95-45a9-9013-ac4e074eab2d",
+      "source": "source:513e94b2-15d3-447f-b064-ec6bd6c16c75",
+      "target": "source:4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.7,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.7,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:c8444d09-03b7-4497-a75c-23872f8fbf52",
+      "source": "source:4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+      "target": "source:a02544a1-ba3a-42d2-820b-932aced14178",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.88,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.88,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:f1db368a-501b-4f1a-aa69-9617fb33e177",
+      "source": "source:ddcfef3b-d62c-4169-a091-7b833e9538d7",
+      "target": "source:a02544a1-ba3a-42d2-820b-932aced14178",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.88,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.88,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    },
+    {
+      "id": "dependency:b2e80b4b-f96b-425d-bcf2-dc78a89f2f92",
+      "source": "source:ddcfef3b-d62c-4169-a091-7b833e9538d7",
+      "target": "source:4d82d216-18c7-4111-aabd-e8bf071d9e7d",
+      "label": "uses same data",
+      "relationship": "USES_SAME_DATA",
+      "confidence": 0.86,
+      "data": {
+        "relationship": "USES_SAME_DATA",
+        "confidence": 0.86,
+        "detectionMethod": "shared_table_or_statistics"
+      }
+    }
+  ]
+}
