@@ -3,15 +3,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, CircleHelp, FilePlus2, Layers3, Scale, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
+import { VerifierUnavailableDialog } from "@/components/app/verifier-unavailable-dialog";
 import { Button } from "@/components/ui/button";
 import { useFirebaseAuth } from "@/components/providers/firebase-auth-provider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/form-controls";
-import { apiErrorMessage, authenticatedApiFetch } from "@/lib/auth";
+import { apiBaseUrl, apiErrorMessage, authenticatedApiFetch } from "@/lib/auth";
 import { useActiveVerificationStore } from "@/stores/active-verification-store";
 
 const verificationSchema = z.object({
@@ -21,6 +22,9 @@ const verificationSchema = z.object({
 
 type VerificationFormValues = z.infer<typeof verificationSchema>;
 type VerificationCreateResponse = { run_id: string; status: "QUEUED"; events_url: string };
+
+const VERIFIER_AVAILABILITY_TIMEOUT_MS = 4_000;
+const VERIFIER_UNAVAILABLE_STATUSES = new Set([502, 503, 504]);
 
 const researchDepthOptions = [
   { value: "QUICK", label: "Quick", description: "Focused evidence breadth for simple claims, with expansion when discovery coverage is insufficient.", icon: Zap },
@@ -33,6 +37,7 @@ export function VerifyForm() {
   const { user } = useFirebaseAuth();
   const resumeVerification = useActiveVerificationStore((state) => state.resume);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [unavailableOpen, setUnavailableOpen] = useState(false);
   const {
     register,
     handleSubmit,
@@ -45,8 +50,30 @@ export function VerifyForm() {
   const target = useWatch({ control, name: "target" }) ?? "";
   const researchDepth = useWatch({ control, name: "researchDepth" });
 
+  useEffect(() => {
+    let mounted = true;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), VERIFIER_AVAILABILITY_TIMEOUT_MS);
+
+    void fetch(`${apiBaseUrl}/health`, { cache: "no-store", signal: controller.signal })
+      .then((response) => {
+        if (mounted && !response.ok) setUnavailableOpen(true);
+      })
+      .catch(() => {
+        if (mounted) setUnavailableOpen(true);
+      })
+      .finally(() => window.clearTimeout(timeout));
+
+    return () => {
+      mounted = false;
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, []);
+
   return (
     <div className="mx-auto max-w-4xl py-3 sm:py-8">
+      <VerifierUnavailableDialog open={unavailableOpen} onClose={() => setUnavailableOpen(false)} />
       <header className="mb-6 max-w-3xl">
         <h1 className="font-editorial text-[2.6rem] font-normal leading-[0.95] tracking-[-0.045em] text-foreground sm:text-[3.5rem]">Start a full verification</h1>
         <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">Submit the exact claim as written. Elara locates, reads, and evaluates timestamped evidence and returns transparent, citable results.</p>
@@ -64,6 +91,7 @@ export function VerifyForm() {
               return;
             }
             setApiError(null);
+            setUnavailableOpen(false);
             try {
               const payload = {
                 input_type: "CLAIM",
@@ -75,14 +103,18 @@ export function VerifyForm() {
                 body: JSON.stringify(payload),
               });
               if (!response.ok) {
+                if (VERIFIER_UNAVAILABLE_STATUSES.has(response.status)) {
+                  setUnavailableOpen(true);
+                  return;
+                }
                 setApiError(await apiErrorMessage(response));
                 return;
               }
               const created = (await response.json()) as VerificationCreateResponse;
               resumeVerification(created.run_id);
               router.push(`/verify/${created.run_id}`);
-            } catch (error) {
-              setApiError(error instanceof Error ? error.message : "Could not reach the verification API.");
+            } catch {
+              setUnavailableOpen(true);
             }
           })}
         >
